@@ -1,2 +1,2 @@
 # MUITNM_boilerplate
-MUI-Typescrypt-Node-MongoDB
+MUI-Typescrypt-Nestjs-MongoDB
