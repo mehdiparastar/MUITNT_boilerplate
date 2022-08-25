@@ -7,9 +7,6 @@
     "@emotion/styled": "^11.10.0",
     "@mui/icons-material": "^5.10.2",
     "@mui/material": "^5.10.2",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
-    "@testing-library/user-event": "^13.2.1",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
@@ -46,6 +43,9 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^14.4.3",
     "babel-plugin-import": "^1.13.5",
     "customize-cra": "^1.0.0",
     "react-app-rewired": "^2.2.1"

@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+
+  client:
+    build:
+      context: ./client
+      dockerfile: dockerfile.prod
+      
+    ports:
+      - 80:80
+
+    container_name: muitnm-client
+    
+    networks:
+      - muitnm-stack-net
+
+networks:
+  muitnm-stack-net:
+    driver: bridge

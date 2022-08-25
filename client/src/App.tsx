@@ -9,7 +9,7 @@ import HomeLayout from './layouts/HomeLayout/HomeLayout';
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
+      <CssBaseline />            
       <Router>
         <HomeLayout>
           <Routes>

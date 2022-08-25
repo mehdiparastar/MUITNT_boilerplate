@@ -20,7 +20,7 @@ const HomeLayout: FC<HomeLayoutProps> = ({ children }) => {
           maxWidth: "100vw",
           flexGrow: 1,
         }}
-      >
+      >        
         <Navbar />
         {children}
         <Footer />

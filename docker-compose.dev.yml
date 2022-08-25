@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+
+  client:
+    build:
+      context: ./client
+      dockerfile: dockerfile.dev
+      
+    ports:
+      - 3000:3000
+
+    container_name: muitnm-client
+    
+    networks:
+      - muitnm-stack-net
+
+    volumes:
+    -  ./client/src:/usr/app/src
+    -  ./client/public:/usr/app/public
+
+    stdin_open: true
+    tty: true
+
+networks:
+  muitnm-stack-net:
+    driver: bridge
