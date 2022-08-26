@@ -6,12 +6,14 @@ services:
     build:
       context: ./client
       dockerfile: dockerfile.prod
-      
+
     ports:
       - 80:80
 
     container_name: muitnm-client
-    
+
+    restart: "always"
+
     networks:
       - muitnm-stack-net
 

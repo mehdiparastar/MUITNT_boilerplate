@@ -6,18 +6,20 @@ services:
     build:
       context: ./client
       dockerfile: dockerfile.dev
-      
+
     ports:
       - 3000:3000
 
     container_name: muitnm-client
-    
+
     networks:
       - muitnm-stack-net
 
     volumes:
-    -  ./client/src:/usr/app/src
-    -  ./client/public:/usr/app/public
+      - ./client/src:/usr/app/src
+      - ./client/public:/usr/app/public
+
+    restart: "always"
 
     stdin_open: true
     tty: true
