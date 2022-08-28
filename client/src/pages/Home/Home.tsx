@@ -1,9 +1,10 @@
 import React, { ReactElement, FC } from "react";
 import { Box, Typography } from "@mui/material";
+import { Auth0Features } from "../../components/Auth0Features/Auth0Features";
 
 const Home: FC<any> = (): ReactElement => (
     <>
-        <Box
+        {/* <Box
             sx={{
                 flexGrow: 1,
                 backgroundColor: "whitesmoke",
@@ -21,7 +22,7 @@ const Home: FC<any> = (): ReactElement => (
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                flexDirection:'column'
+                flexDirection: 'column'
             }}
         >
             <Typography variant="caption">
@@ -30,7 +31,8 @@ const Home: FC<any> = (): ReactElement => (
             <Typography variant="caption">
                 {`Node_ENV = ${process.env.NODE_ENV}`}
             </Typography>
-        </Box>
+        </Box> */}
+        <Auth0Features />
     </>
 );
 

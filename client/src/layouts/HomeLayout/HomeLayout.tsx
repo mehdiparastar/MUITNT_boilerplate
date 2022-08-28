@@ -13,6 +13,7 @@ const HomeLayout: FC<HomeLayoutProps> = ({ children }) => {
       <CssBaseline />
       <Box
         sx={{
+          bgcolor: 'black',
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-start",
@@ -20,7 +21,7 @@ const HomeLayout: FC<HomeLayoutProps> = ({ children }) => {
           maxWidth: "100vw",
           flexGrow: 1,
         }}
-      >        
+      >
         <Navbar />
         {children}
         <Footer />
