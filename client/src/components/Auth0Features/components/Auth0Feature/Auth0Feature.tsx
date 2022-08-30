@@ -18,31 +18,30 @@ export const Auth0Feature: React.FC<Auth0FeatureProps> = ({
             rel="noopener noreferrer"
             sx={{
                 display: 'block',
-                bgcolor: 'white',
+                backgroundColor: 'white',
                 color: 'black',
                 cursor: 'pointer',
                 transition: "all 0.3s ease-in-out 0s",
-                padding: 3,
-                borderRadius: 1,
+                padding: "4.8rem",
+                borderRadius: '1.6rem',
+                textDecoration: "none",
                 '&:hover': {
-                    transform: "scale(1.03)",
-                    textDecoration: "underline solid 2px black",
-                    textUnderlineOffset: '2px',
+                    transform: "scale(1.03)",                    
                     transition: "all 0.3s ease-in-out 0s"
                 },
             }}
         >
             <Typography
                 variant="h3"
-                display="flex"
-                alignItems="center"
-                mt={0}
-                color="black"
-                fontWeight={600}
-                letterSpacing="-0.05rem"
-                fontSize="2.4rem"
-                lineHeight="3.2rem"
                 sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    mt: 0,
+                    color: "black",
+                    fontWeight: 600,
+                    letterSpacing: "-0.05rem",
+                    fontSize: "2.4rem",
+                    lineHeight: "3.2rem",
                     '&:hover': {
                         textDecoration: "underline solid 2px black",
                         textUnderlineOffset: '2px',
@@ -60,13 +59,17 @@ export const Auth0Feature: React.FC<Auth0FeatureProps> = ({
             </Typography>
             <Box
                 component="p"
-                m={0}
-                color="rgb(36, 36, 36)"
-                fontWeight={500}
-                fontSize="1.6rem"
-                lineHeight="2.4rem"
                 sx={{
-                    opacity: 0.7
+                    margin: 0,
+                    color: "rgb(36, 36, 36)",
+                    fontWeight: 500,
+                    fontSize: "1.6rem",
+                    lineHeight: "2.4rem",
+                    opacity: 0.7,
+                    '&:hover': {
+                        textDecoration: 'none !important',
+                        color:'blue'
+                    }
                 }}
             >
                 {description}

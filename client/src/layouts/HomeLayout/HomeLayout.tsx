@@ -13,7 +13,7 @@ const HomeLayout: FC<HomeLayoutProps> = ({ children }) => {
       <CssBaseline />
       <Box
         sx={{
-          bgcolor: 'black',
+          backgroundColor: 'black',
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-start",

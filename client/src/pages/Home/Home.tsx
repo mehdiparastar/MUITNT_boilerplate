@@ -1,10 +1,11 @@
 import React, { ReactElement, FC } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { Auth0Features } from "../../components/Auth0Features/Auth0Features";
+import { HeroBanner } from "../../components/HeroBanner/HeroBanner";
 
 const Home: FC<any> = (): ReactElement => (
-    <>
-        {/* <Box
+    <Container maxWidth="lg">
+        <Box
             sx={{
                 flexGrow: 1,
                 backgroundColor: "whitesmoke",
@@ -22,7 +23,8 @@ const Home: FC<any> = (): ReactElement => (
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                flexDirection: 'column'
+                flexDirection: 'column',
+                color:'black'
             }}
         >
             <Typography variant="caption">
@@ -31,9 +33,10 @@ const Home: FC<any> = (): ReactElement => (
             <Typography variant="caption">
                 {`Node_ENV = ${process.env.NODE_ENV}`}
             </Typography>
-        </Box> */}
+        </Box>
+        <HeroBanner />
         <Auth0Features />
-    </>
+    </Container>
 );
 
 export default Home;

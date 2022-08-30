@@ -1,4 +1,4 @@
-import { Container, Grid, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import { Auth0Feature } from "./components/Auth0Feature/Auth0Feature";
 
 export const Auth0Features: React.FC = () => {
@@ -33,16 +33,22 @@ export const Auth0Features: React.FC = () => {
         },
     ];
     return (
-        <Container maxWidth="xl">
+        <Box
+        sx={{
+            padding: "3.2rem 4.8rem"
+        }}
+        >
             <Typography
                 variant="h2"
-                textAlign={"center"}
-                color={'white'}
-                fontWeight={600}
-                mt={0}
-                mb={3}
-                fontSize={"3.2 rem"}
-                lineHeight={"4.8 rem"}
+                sx={{
+                    textAlign: "center",
+                    color: 'white',
+                    fontWeight: 600,
+                    marginTop: 0,
+                    marginBottom: "4.8 rem",
+                    fontSize: "3.2 rem",
+                    lineHeight: "4.8 rem",
+                }}
             >
                 Explore Auth0 Features
             </Typography>
@@ -63,6 +69,6 @@ export const Auth0Features: React.FC = () => {
                     </Grid>
                 ))}
             </Grid>
-        </Container>
+        </Box>
     )
 }
