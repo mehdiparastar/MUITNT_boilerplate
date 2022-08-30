@@ -48,6 +48,7 @@ export const HeroBanner: React.FC = () => {
                     letterSpacing: "-1.5px",
                     margin: "2.4rem 0 8px 0",
                     fontSize: "4.8rem",
+                    fontFamily:["Yellowtail", "cursive"].join(",")
                 }}
             >
                 Hello, React World!
