@@ -1,0 +1,44 @@
+
+<!-- Generated with http://jxnblk.com/paths -->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="133.22"
+  height="92"
+  fill="none"
+  viewBox="0 0 133.22 92"
+>
+  <rect
+    x="20"
+    y="1"
+    width="93.22"
+    height="90"
+    fill='none'
+    stroke="#005db0"
+    stroke-width="1"
+    rx="1"
+    ry="1"      
+  />
+  <text
+    x="39.5"
+    y="38"
+    fill="#005db0"
+    stroke="#005db0"
+    font-size="35"
+    font-weight="600"
+    stroke-width="2.5"
+  >
+    MP
+  </text>
+  <text
+    x="1"
+    y="78"
+    fill="#4db6ac"
+    font-size="28"
+    font-weight="600"
+    letter-spacing="2.5"
+    stroke-width="2"
+    stroke="#4db6ac"
+  >
+    MUITNM
+  </text>      
+</svg>

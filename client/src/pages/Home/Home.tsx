@@ -5,7 +5,7 @@ import { HeroBanner } from "../../components/HeroBanner/HeroBanner";
 
 const Home: FC<any> = (): ReactElement => (
     <Container maxWidth="lg">
-        <Box
+        {/* <Box
             sx={{
                 flexGrow: 1,
                 backgroundColor: "whitesmoke",
@@ -33,7 +33,7 @@ const Home: FC<any> = (): ReactElement => (
             <Typography variant="caption">
                 {`Node_ENV = ${process.env.NODE_ENV}`}
             </Typography>
-        </Box>
+        </Box> */}
         <HeroBanner />
         <Auth0Features />
     </Container>
