@@ -13,7 +13,10 @@ export const Auth0Features: React.FC = () => {
                 "Auth0 supports social providers such as Google, Facebook, and Twitter, along with Enterprise providers such as Microsoft Office 365, Google Apps, and Azure. You can also use any OAuth 2.0 Authorization Server.",
             resourceUrl: "https://auth0.com/docs/connections",
             // banner: "/statics/Auth0Banner.png",
-            banner: <Auth0BannerSVG width={800} height={310}/>,
+            banner: <Auth0BannerSVG sx={{
+                backgroundColor: 'whitesmoke',
+                padding: '1rem'
+            }} />,
         },
         {
             title: "Multi-Factor Authentication",
@@ -65,7 +68,8 @@ export const Auth0Features: React.FC = () => {
             >
                 {featuresList.map((feature) => (
                     <Grid
-                        xs={6}
+                        xs={12}
+                        md={6}
                         key={feature.resourceUrl}
                     >
                         <Auth0Feature
