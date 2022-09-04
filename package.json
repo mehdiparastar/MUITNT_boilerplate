@@ -7,6 +7,10 @@
   "author": "mehdiparastar <parastar.mehdi@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start-client": "cd client && yarn start"    
+    "start-client": "cd client && yarn start"
+  },
+  "devDependencies": {
+    "@prettier/plugin-xml": "^2.2.0",
+    "prettier": "^2.7.1"
   }
 }
