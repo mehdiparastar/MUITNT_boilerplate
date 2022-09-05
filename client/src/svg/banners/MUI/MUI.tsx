@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@emotion/react';
 import { css } from '@emotion/css';
-import { ReactComponent as Svg } from './analytics-laptop-svgrepo-com.svg';
+import { ReactComponent as Svg } from './MUI.svg';
 
 const anim1 = keyframes`
         0%    { transform: translateY(-48%); }
