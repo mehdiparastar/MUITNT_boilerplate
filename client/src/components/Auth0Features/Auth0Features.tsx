@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import Auth0BannerSVG from 'svg/banners/Auth0/Auth0';
+import DockerBannerSVG from 'svg/banners/Docker/Docker';
 import MUIBannerSVG from 'svg/banners/MUI/MUI';
 import { Auth0Feature } from './components/Auth0Feature/Auth0Feature';
 
@@ -36,12 +37,18 @@ export const Auth0Features: React.FC = () => {
       ),
     },
     {
-      title: 'Attack Protection',
+      title: 'Efficiency of Docker',
       description:
-        'Auth0 can detect attacks and stop malicious attempts to access your application such as blocking traffic from certain IPs and displaying CAPTCHA. Auth0 supports the principle of layered protection in security that uses a variety of signals to detect and mitigate attacks.',
-      resourceUrl: 'https://auth0.com/docs/attack-protection',
-      banner:
-        'https://cdn.auth0.com/blog/hello-auth0/advanced-protection-logo.svg',
+        'Docker takes away repetitive, mundane configuration tasks and is used throughout the development lifecycle for fast, easy and portable application development – desktop and cloud. Docker’s comprehensive end to end platform includes UIs, CLIs, APIs and security that are engineered to work together across the entire application delivery lifecycle.',
+      resourceUrl: 'https://www.docker.com/',
+      banner: (
+        <DockerBannerSVG
+          sx={{
+            backgroundColor: 'whitesmoke',
+            padding: '1rem',
+          }}
+        />
+      ),
     },
     {
       title: 'Serverless Extensibility',
