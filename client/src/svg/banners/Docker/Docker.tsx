@@ -5,17 +5,11 @@ import { keyframes } from '@emotion/react';
 import { css } from '@emotion/css';
 import { ReactComponent as Svg } from './Docker1.svg';
 
-const anim1 = keyframes`
-to {
-    transform: scaleY(1);
-  }  
-    `;
+const anim1 = keyframes`to {transform: scaleY(1);}`;
+
 const anim2 = keyframes`
-        0% {transform: rotate(-65deg);opacity:0;}
-        5% {transform: rotate(-55deg);opacity:1;}
-        45% {transform: rotate(22deg);opacity:1;}        
-        50% {transform: rotate(32deg);opacity:0;}        
-        100% {transform: rotate(360deg);opacity:0;}        
+        0%    { transform: translateY(-52%); }
+        100%  { transform: translateY(0); }        
     `;
 const anim3 = keyframes`
         50%    { transform: rotateY(0deg); }
@@ -79,37 +73,48 @@ const anim9 = keyframes`
         }
     `;
 
-const DockerBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
-    const theme = useTheme();
-    const colorPrimaryLight = theme.palette.primary.light;
-    const colorPrimaryMain = theme.palette.primary.main;
-    const colorPrimaryDark = theme.palette.primary.dark;
-    const colorSecondaryLight = theme.palette.secondary.light;
-    const colorSecondaryMain = theme.palette.secondary.main;
-    const colorSecondaryDark = theme.palette.secondary.dark;
+function getTime(seconds:number):number {
+  const msDuration:number = (seconds * 1000);
+  const currentTime:number = new Date().getTime();
+  const msDelay:number = msDuration - (currentTime % msDuration);
+  return (msDelay / 1000);
+}
 
-    return (
-        <SvgIcon
-            viewBox="0 0 800 310"
-            sx={{
-                width: '-webkit-fill-available',
-                height: 'auto',
-                ...sx,
-            }}
-            {...rest}
-        >
-            <Svg 
-            title='docker' 
-            className={css`
-                #hook_arm {
-                    transform: scaleY(0);
-                    transform-origin: center center;
-                    animation: ${anim1} 1.5s linear infinite forwards;
-                }
-            `}
-            />
-        </SvgIcon>
-    );
+const DockerBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
+  const theme = useTheme();
+  const colorPrimaryLight = theme.palette.primary.light;
+  const colorPrimaryMain = theme.palette.primary.main;
+  const colorPrimaryDark = theme.palette.primary.dark;
+  const colorSecondaryLight = theme.palette.secondary.light;
+  const colorSecondaryMain = theme.palette.secondary.main;
+  const colorSecondaryDark = theme.palette.secondary.dark;
+
+  return (
+    <SvgIcon
+      viewBox="0 0 800 310"
+      sx={{
+        width: '-webkit-fill-available',
+        height: 'auto',
+        ...sx,
+      }}
+      {...rest}
+    >
+      <Svg
+        title="docker"
+        className={css`
+          #hook_arm {
+            transform: scaleY(0);
+            transform-origin: center center;
+            animation: ${getTime(6)}s ${anim1} linear infinite forwards;
+          }
+
+          #hook_head {
+            animation: ${getTime(6)}s ${anim2} linear infinite;
+          }
+        `}
+      />
+    </SvgIcon>
+  );
 };
 
 export default DockerBannerSVG;
