@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import Auth0BannerSVG from 'svg/banners/Auth0/Auth0';
 import DockerBannerSVG from 'svg/banners/Docker/Docker';
+import GoogleBannerSVG from 'svg/banners/Google/Google';
 import MUIBannerSVG from 'svg/banners/MUI/MUI';
 import { Auth0Feature } from './components/Auth0Feature/Auth0Feature';
 
@@ -51,11 +52,17 @@ export const Auth0Features: React.FC = () => {
       ),
     },
     {
-      title: 'Serverless Extensibility',
+      title: 'Google Cloud Functions',
       description:
-        'Actions are functions that allow you to customize the behavior of Auth0. Each action is bound to a specific triggering event on the Auth0 platform. Auth0 invokes the custom code of these Actions when the corresponding triggering event is produced at runtime.',
-      resourceUrl: 'https://auth0.com/docs/actions',
-      banner: 'https://cdn.auth0.com/blog/hello-auth0/private-cloud-logo.svg',
+        'Cloud Functions has a simple and intuitive developer experience. Just write your code and let Google Cloud handle the operational infrastructure. Develop faster by writing and running small code snippets that respond to events. Streamline challenging orchestration problems by connecting Google Cloud products to one another or third party services using events.',
+      resourceUrl: 'https://cloud.google.com/functions',
+      banner: 
+        <GoogleBannerSVG
+          sx={{
+            backgroundColor: 'whitesmoke',
+            padding: '1rem',
+          }}
+        />,
     },
   ];
   return (

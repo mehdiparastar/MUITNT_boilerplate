@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 800 310" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path d="M252.925854,103.237077 L200.327344,11.759667 C196.302579,4.62225703 188.80054,0.148424726 180.607902,0 L75.3908814,0 C67.1970912,0.14438548 59.6931984,4.61932363 55.6714398,11.759667 L3.05292985,102.997083 C-1.01764328,110.080373 -1.01764328,118.793146 3.05292985,125.876436 L55.6514404,217.87383 C59.6319755,225.112707 67.1159052,229.735134 75.370882,230.053486 L180.587903,230.053486 C188.842442,229.770144 196.339809,225.166896 200.327344,217.933829 L252.925854,126.456419 C257.024715,119.259311 257.024715,110.434185 252.925854,103.237077 Z" id="path-1"/>
+    <linearGradient gradientUnits="userSpaceOnUse" x1="379.943" y1="38.378" x2="379.943" y2="58.179" id="gradient-0" gradientTransform="matrix(0.819239, 0, 0, 0.819239, 88.736153, -6.441123)">
+      <stop offset="0" style="stop-color: rgba(136, 136, 136, 1)"/>
+      <stop offset="1" style="stop-color: rgba(85, 85, 85, 1)"/>
+    </linearGradient>
+  </defs>
+  <g transform="matrix(0.379551, 0, 0, 0.379551, 351.41745, 111.116913)" style="" id="GoogleCloudFunctions">
+    <title>GoogleCloudFunctions</title>
+    <mask id="mask-2" fill="white">
+      <path d="M252.925854,103.237077 L200.327344,11.759667 C196.302579,4.62225703 188.80054,0.148424726 180.607902,0 L75.3908814,0 C67.1970912,0.14438548 59.6931984,4.61932363 55.6714398,11.759667 L3.05292985,102.997083 C-1.01764328,110.080373 -1.01764328,118.793146 3.05292985,125.876436 L55.6514404,217.87383 C59.6319755,225.112707 67.1159052,229.735134 75.370882,230.053486 L180.587903,230.053486 C188.842442,229.770144 196.339809,225.166896 200.327344,217.933829 L252.925854,126.456419 C257.024715,119.259311 257.024715,110.434185 252.925854,103.237077 Z" transform="matrix(1, 0, 0, 1, 0, 0)"/>
+    </mask>
+    <g fill-rule="nonzero"/>
+    <path d="M252.925854,103.237077 L200.327344,11.759667 C196.302579,4.62225703 188.80054,0.148424726 180.607902,0 L75.3908814,0 C67.1970912,0.14438548 59.6931984,4.61932363 55.6714398,11.759667 L3.05292985,102.997083 C-1.01764328,110.080373 -1.01764328,118.793146 3.05292985,125.876436 L55.6514404,217.87383 C59.6319755,225.112707 67.1159052,229.735134 75.370882,230.053486 L180.587903,230.053486 C188.842442,229.770144 196.339809,225.166896 200.327344,217.933829 L252.925854,126.456419 C257.024715,119.259311 257.024715,110.434185 252.925854,103.237077 Z" fill="#4285F4" fill-rule="nonzero" mask="url(#mask-2)"/>
+    <path d="M187.167605,84.731603 L179.915711,92.6409485 L181.549379,139.638797 L174.676019,149.60019 L170.691462,145.615633 L174.357254,145.615633 L174.357254,129.318795 L156.765435,111.726976 L143.468746,118.373047 L99.3678929,74.1725271 L78.1302045,85.5484371 L75.500397,107.583037 L82.9515184,147.906753 L93.7496677,158.485752 L88.8287399,165.478649 L153.076098,231.236816 L179.915711,231.236816 C188.138614,230.95456 197.044276,225.565698 201.016528,218.360352 L244.795336,142.356934 L187.167605,84.731603 Z" fill="#000000" fill-rule="nonzero" opacity="0.0700000003" mask="url(#mask-2)"/>
+    <polygon fill="#FFFFFF" fill-rule="nonzero" mask="url(#mask-2)" points="88.8287399 165.478649 99.3678929 154.939496 83.5691247 139.140728 83.5691247 89.9712953 99.3678929 74.1725271 88.8287399 63.6333741 67.730511 84.731603 67.730511 144.38042"/>
+    <circle fill="#FFFFFF" fill-rule="nonzero" mask="url(#mask-2)" cx="105.1455" cy="114.556012" r="7.47104423"/>
+    <circle fill="#FFFFFF" fill-rule="nonzero" mask="url(#mask-2)" cx="127.498865" cy="114.556012" r="7.47104423"/>
+    <circle fill="#FFFFFF" fill-rule="nonzero" mask="url(#mask-2)" cx="149.852229" cy="114.556012" r="7.47104423"/>
+    <polygon fill="#FFFFFF" fill-rule="nonzero" mask="url(#mask-2)" points="166.069376 63.6333741 155.530223 74.1725271 171.328991 89.9712953 171.328991 139.140728 155.530223 154.939496 166.069376 165.478649 187.167605 144.38042 187.167605 84.731603"/>
+  </g>
+  <circle style="fill: none; stroke-width: 5px; stroke: rgb(240, 75, 57);" transform="matrix(-0.028425, 0.999596, -0.999596, -0.028424, 138.233479, -27.842005)" cx="82.606" cy="53.612" r="13" id="EmptyCircle01">
+    <title>EmptyCircle01</title>
+  </circle>
+  <circle style="fill: none; stroke: rgb(251, 195, 5); stroke-width: 4px;" transform="matrix(0.014814, 0.99989, -0.99989, 0.014813, 305.47377, -177.311459)" cx="242.798" cy="66.246" r="10" id="EmptyCircle02">
+    <title>EmptyCircle02</title>
+  </circle>
+  <circle style="fill: none; stroke: rgb(61, 174, 108); stroke-width: 4.5px;" transform="matrix(0.007518, 0.999972, -0.999972, 0.007518, 365.378886, -149.275144)" cx="258.013" cy="109.206" r="13" id="EmptyCircle03">
+    <title>EmptyCircle03</title>
+  </circle>
+  <circle style="fill: none; stroke: rgb(240, 74, 60); stroke-width: 4px;" transform="matrix(-0.026776, 0.999641, -0.999642, -0.026776, 422.841253, -134.108722)" cx="276.841" cy="138.527" r="11" id="EmptyCircle04">
+    <title>EmptyCircle04</title>
+  </circle>
+  <circle style="stroke-width: 4px; stroke: rgb(182, 62, 49); fill: none;" cx="414.522" cy="317.229" r="9.993" id="EmptyCircle05">
+    <title>EmptyCircle05</title>
+  </circle>
+  <circle style="stroke-width: 4px; fill: none; stroke: rgb(194, 64, 48);" transform="matrix(0.019227, 0.999815, -0.999815, 0.019228, 726.90266, -138.173082)" cx="433.84" cy="301.441" r="10.15" id="EmptyCircle06">
+    <title>EmptyCircle06</title>
+  </circle>
+  <circle style="stroke-width: 3.99625px; fill: none; stroke: rgb(236, 76, 58);" transform="matrix(-0.021004, 0.999779, -0.999779, -0.021005, 588.684113, -466.389006)" cx="522.561" cy="55.009" r="13.1" id="EmptyCircle07">
+    <title>EmptyCircle07</title>
+  </circle>
+  <circle style="fill: rgb(50, 152, 79); stroke: rgb(50, 152, 79);" transform="matrix(-0.010638, 0.999943, -0.999944, -0.010637, 505.010901, 56.33032)" cx="224.471" cy="277.631" r="14" id="FullCircle01">
+    <title>FullCircle01</title>
+  </circle>
+  <circle style="fill: rgb(201, 65, 51); stroke: rgb(201, 65, 51);" transform="matrix(0.030289, 0.999541, -0.999541, 0.030289, 669.109762, -137.477923)" cx="405.794" cy="276.533" r="12.75" id="FullCircle02">
+    <title>FullCircle02</title>
+  </circle>
+  <circle style="fill: rgb(237, 75, 60); stroke: rgb(237, 75, 60);" transform="matrix(0, 1, -1, 0, 647.9151, -385.113983)" cx="516.409" cy="131.401" r="12.25" id="FullCircle03">
+    <title>FullCircle03</title>
+  </circle>
+  <circle style="fill: rgb(65, 122, 209); stroke: rgb(64, 121, 208);" transform="matrix(0, 1, -1.000144, 0, 794.678345, -257.788147)" cx="526.411" cy="269.015" r="12.748" id="FullCircle04">
+    <title>FullCircle04</title>
+  </circle>
+  <circle style="fill: rgb(58, 177, 93); stroke: rgb(58, 177, 93);" transform="matrix(0, 1, -1.001674, 0, 734.785095, -361.963348)" cx="548.1809474912379" cy="186.21758524077404" r="13.8268546904428" id="FullCircle05">
+    <title>FullCircle05</title>
+  </circle>
+  <circle style="fill: rgb(74, 142, 243); stroke: rgb(75, 143, 244);" transform="matrix(-0.015502, 0.99988, -0.99988, -0.015502, 793.344811, -384.264697)" cx="586.033" cy="198.377" r="12.5" id="FullCircle06">
+    <title>FullCircle06</title>
+  </circle>
+  <circle style="fill: rgb(253, 196, 5); stroke: rgb(253, 196, 5);" transform="matrix(-0.008264, 0.999966, -1.001906, -0.00828, 727.174683, -605.930786)" cx="664.111566605131" cy="57.29299441585224" r="11.727251301352954" id="FullCircle07">
+    <title>FullCircle07</title>
+  </circle>
+  <rect x="107.493" y="105.661" width="14.309" height="14.468" style="fill: rgb(58, 177, 93); stroke: rgb(58, 177, 93);" id="Rectangle01">
+    <title>Rectangle01</title>
+  </rect>
+  <rect x="241.124" y="178.072" width="18.654" height="18.575" style="stroke: rgb(77, 145, 244); fill: rgb(77, 145, 244);" id="Rectangle02">
+    <title>Rectangle02</title>
+  </rect>
+  <rect x="260.907" y="215.726" width="17.286" height="17.826" style="fill: rgb(68, 173, 99); stroke: rgb(68, 175, 99);" id="Rectangle03">
+    <title>Rectangle03</title>
+  </rect>
+  <rect x="287.719" y="189.405" width="13.302" height="13.38" style="fill: rgb(75, 144, 245); stroke: rgb(75, 144, 245);" id="Rectangle04">
+    <title>Rectangle04</title>
+  </rect>
+  <rect x="387.238" y="230.593" width="15.838" height="15.442" style="stroke: rgb(237, 188, 31); fill: rgb(237, 188, 33);" id="Rectangle05">
+    <title>Rectangle05</title>
+  </rect>
+  <rect x="419.544" y="273.69" width="14" height="14" style="fill: rgb(201, 65, 51); stroke: rgb(201, 65, 51);" id="Rectangle06">
+    <title>Rectangle06</title>
+  </rect>
+  <rect x="553.486" y="204.572" width="16.673" height="16.456" style="fill: rgb(56, 173, 92); stroke: rgb(56, 174, 90);" id="Rectangle07">
+    <title>Rectangle07</title>
+  </rect>
+  <rect x="578.821" y="218.43" width="15.157" height="14.724" style="fill: rgb(225, 75, 61); stroke: rgb(225, 76, 62);" id="Rectangle08">
+    <title>Rectangle08</title>
+  </rect>
+  <text style="fill: url(#gradient-0); font-family: Arial, sans-serif; font-size: 14.7px; white-space: pre;" x="354.945" y="38.181">Google Cloud</text>
+</svg>
