@@ -1,4 +1,4 @@
-import React, {  useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@emotion/react';
@@ -11,22 +11,22 @@ interface IpxToMove {
 }
 
 interface IobjectsPXToMove {
-  [key: string]: IpxToMove
+  [key: string]: IpxToMove;
 }
 
 const createTranslator =
   (svgViewBox: SVGRect | null, svgDimension: DOMRect | null) =>
-    (a: number, b: number): [x: number, y: number] => {
-      if (!svgViewBox || !svgDimension) {
-        return [a, b];
-      }
-      const { width: viewBoxWidth, height: viewBoxHeight } = svgViewBox;
-      const { top, left, width: svgWidth, height: svgHeight } = svgDimension;
+  (a: number, b: number): [x: number, y: number] => {
+    if (!svgViewBox || !svgDimension) {
+      return [a, b];
+    }
+    const { width: viewBoxWidth, height: viewBoxHeight } = svgViewBox;
+    const { top, left, width: svgWidth, height: svgHeight } = svgDimension;
 
-      const x = ((a - left) * viewBoxWidth) / svgWidth;
-      const y = ((b - top) * viewBoxHeight) / svgHeight;
-      return [x, y];
-    };
+    const x = ((a - left) * viewBoxWidth) / svgWidth;
+    const y = ((b - top) * viewBoxHeight) / svgHeight;
+    return [x, y];
+  };
 
 const GoogleBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
   const theme = useTheme();
@@ -93,6 +93,7 @@ const GoogleBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
         width: '-webkit-fill-available',
         height: 'auto',
         ...sx,
+        padding: 0,
       }}
       {...rest}
     >
@@ -100,28 +101,72 @@ const GoogleBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
         title="google"
         ref={svgRef}
         className={css`
-          #EmptyCircle01 {animation: 30s ${emptyCircle01_anim} 0s alternate both;}
-          #EmptyCircle02 {animation: 30s ${emptyCircle02_anim} 0.1s alternate both;}
-          #EmptyCircle03 {animation: 30s ${emptyCircle03_anim} 0.2s alternate both;}
-          #EmptyCircle04 {animation: 30s ${emptyCircle04_anim} 0.3s alternate both;}
-          #EmptyCircle05 {animation: 30s ${emptyCircle05_anim} 0.4s alternate both;}
-          #EmptyCircle06 {animation: 30s ${emptyCircle06_anim} 0.5s alternate both;}
-          #EmptyCircle07 {animation: 30s ${emptyCircle07_anim} 0.6s alternate both;}
-          #FullCircle01 {animation: 30s ${fullCircle01_anim} 0.7s alternate both;}
-          #FullCircle02 {animation: 30s ${fullCircle02_anim} 0.8s alternate both;}
-          #FullCircle03 {animation: 30s ${fullCircle03_anim} 0.9s alternate both;}
-          #FullCircle04 {animation: 30s ${fullCircle04_anim} 1.0s alternate both;}
-          #FullCircle05 {animation: 30s ${fullCircle05_anim} 1.1s alternate both;}
-          #FullCircle06 {animation: 30s ${fullCircle06_anim} 1.2s alternate both;}
-          #FullCircle07 {animation: 30s ${fullCircle07_anim} 1.3s alternate both;}
-          #Rectangle01 {animation: 30s ${rectangle01_anim} 1.4s alternate both;}
-          #Rectangle02 {animation: 30s ${rectangle02_anim} 1.5s alternate both;}
-          #Rectangle03 {animation: 30s ${rectangle03_anim} 1.6s alternate both;}
-          #Rectangle04 {animation: 30s ${rectangle04_anim} 1.7s alternate both;}
-          #Rectangle05 {animation: 30s ${rectangle05_anim} 1.8s alternate both;}
-          #Rectangle06 {animation: 30s ${rectangle06_anim} 1.9s alternate both;}
-          #Rectangle07 {animation: 30s ${rectangle07_anim} 2.0s alternate both;}
-          #Rectangle08 {animation: 30s ${rectangle08_anim} 2.1s alternate both;}
+          #EmptyCircle01 {
+            animation: 30s ${emptyCircle01_anim} 0s alternate both;
+          }
+          #EmptyCircle02 {
+            animation: 30s ${emptyCircle02_anim} 0.1s alternate both;
+          }
+          #EmptyCircle03 {
+            animation: 30s ${emptyCircle03_anim} 0.2s alternate both;
+          }
+          #EmptyCircle04 {
+            animation: 30s ${emptyCircle04_anim} 0.3s alternate both;
+          }
+          #EmptyCircle05 {
+            animation: 30s ${emptyCircle05_anim} 0.4s alternate both;
+          }
+          #EmptyCircle06 {
+            animation: 30s ${emptyCircle06_anim} 0.5s alternate both;
+          }
+          #EmptyCircle07 {
+            animation: 30s ${emptyCircle07_anim} 0.6s alternate both;
+          }
+          #FullCircle01 {
+            animation: 30s ${fullCircle01_anim} 0.7s alternate both;
+          }
+          #FullCircle02 {
+            animation: 30s ${fullCircle02_anim} 0.8s alternate both;
+          }
+          #FullCircle03 {
+            animation: 30s ${fullCircle03_anim} 0.9s alternate both;
+          }
+          #FullCircle04 {
+            animation: 30s ${fullCircle04_anim} 1s alternate both;
+          }
+          #FullCircle05 {
+            animation: 30s ${fullCircle05_anim} 1.1s alternate both;
+          }
+          #FullCircle06 {
+            animation: 30s ${fullCircle06_anim} 1.2s alternate both;
+          }
+          #FullCircle07 {
+            animation: 30s ${fullCircle07_anim} 1.3s alternate both;
+          }
+          #Rectangle01 {
+            animation: 30s ${rectangle01_anim} 1.4s alternate both;
+          }
+          #Rectangle02 {
+            animation: 30s ${rectangle02_anim} 1.5s alternate both;
+          }
+          #Rectangle03 {
+            animation: 30s ${rectangle03_anim} 1.6s alternate both;
+          }
+          #Rectangle04 {
+            animation: 30s ${rectangle04_anim} 1.7s alternate both;
+          }
+          #Rectangle05 {
+            animation: 30s ${rectangle05_anim} 1.8s alternate both;
+          }
+          #Rectangle06 {
+            animation: 30s ${rectangle06_anim} 1.9s alternate both;
+          }
+          #Rectangle07 {
+            animation: 30s ${rectangle07_anim} 2s alternate both;
+          }
+          #Rectangle08 {
+            animation: 30s ${rectangle08_anim} 2.1s alternate both;
+          }
         `}
         onMouseOver={(event) => {
           if (svgRef.current) {
@@ -141,30 +186,359 @@ const GoogleBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
             const [x, y] = translateCoords(clientX, clientY);
 
             setSvgObjectsPXtoCursor({
-              emptyCircle01: { x: x - (svgRef.current.getElementById("EmptyCircle01") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("EmptyCircle01") as SVGCircleElement).cy.animVal.value },
-              emptyCircle02: { x: x - (svgRef.current.getElementById("EmptyCircle02") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("EmptyCircle02") as SVGCircleElement).cy.animVal.value },
-              emptyCircle03: { x: x - (svgRef.current.getElementById("EmptyCircle03") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("EmptyCircle03") as SVGCircleElement).cy.animVal.value },
-              emptyCircle04: { x: x - (svgRef.current.getElementById("EmptyCircle04") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("EmptyCircle04") as SVGCircleElement).cy.animVal.value },
-              emptyCircle05: { x: x - (svgRef.current.getElementById("EmptyCircle05") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("EmptyCircle05") as SVGCircleElement).cy.animVal.value },
-              emptyCircle06: { x: x - (svgRef.current.getElementById("EmptyCircle06") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("EmptyCircle06") as SVGCircleElement).cy.animVal.value },
-              emptyCircle07: { x: x - (svgRef.current.getElementById("EmptyCircle07") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("EmptyCircle07") as SVGCircleElement).cy.animVal.value },
-              fullCircle01: { x: x - (svgRef.current.getElementById("FullCircle01") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("FullCircle01") as SVGCircleElement).cy.animVal.value },
-              fullCircle02: { x: x - (svgRef.current.getElementById("FullCircle02") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("FullCircle02") as SVGCircleElement).cy.animVal.value },
-              fullCircle03: { x: x - (svgRef.current.getElementById("FullCircle03") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("FullCircle03") as SVGCircleElement).cy.animVal.value },
-              fullCircle04: { x: x - (svgRef.current.getElementById("FullCircle04") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("FullCircle04") as SVGCircleElement).cy.animVal.value },
-              fullCircle05: { x: x - (svgRef.current.getElementById("FullCircle05") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("FullCircle05") as SVGCircleElement).cy.animVal.value },
-              fullCircle06: { x: x - (svgRef.current.getElementById("FullCircle06") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("FullCircle06") as SVGCircleElement).cy.animVal.value },
-              fullCircle07: { x: x - (svgRef.current.getElementById("FullCircle07") as SVGCircleElement).cx.animVal.value, y: y - (svgRef.current.getElementById("FullCircle07") as SVGCircleElement).cy.animVal.value },
-              rectangle01: { x: x - (svgRef.current.getElementById("Rectangle01") as SVGRectElement).x.animVal.value, y: y - (svgRef.current.getElementById("Rectangle01") as SVGRectElement).y.animVal.value },
-              rectangle02: { x: x - (svgRef.current.getElementById("Rectangle02") as SVGRectElement).x.animVal.value, y: y - (svgRef.current.getElementById("Rectangle02") as SVGRectElement).y.animVal.value },
-              rectangle03: { x: x - (svgRef.current.getElementById("Rectangle03") as SVGRectElement).x.animVal.value, y: y - (svgRef.current.getElementById("Rectangle03") as SVGRectElement).y.animVal.value },
-              rectangle04: { x: x - (svgRef.current.getElementById("Rectangle04") as SVGRectElement).x.animVal.value, y: y - (svgRef.current.getElementById("Rectangle04") as SVGRectElement).y.animVal.value },
-              rectangle05: { x: x - (svgRef.current.getElementById("Rectangle05") as SVGRectElement).x.animVal.value, y: y - (svgRef.current.getElementById("Rectangle05") as SVGRectElement).y.animVal.value },
-              rectangle06: { x: x - (svgRef.current.getElementById("Rectangle06") as SVGRectElement).x.animVal.value, y: y - (svgRef.current.getElementById("Rectangle06") as SVGRectElement).y.animVal.value },
-              rectangle07: { x: x - (svgRef.current.getElementById("Rectangle07") as SVGRectElement).x.animVal.value, y: y - (svgRef.current.getElementById("Rectangle07") as SVGRectElement).y.animVal.value },
-              rectangle08: { x: x - (svgRef.current.getElementById("Rectangle08") as SVGRectElement).x.animVal.value, y: y - (svgRef.current.getElementById("Rectangle08") as SVGRectElement).y.animVal.value },
-            })
-
+              emptyCircle01: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle01',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle01',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              emptyCircle02: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle02',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle02',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              emptyCircle03: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle03',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle03',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              emptyCircle04: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle04',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle04',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              emptyCircle05: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle05',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle05',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              emptyCircle06: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle06',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle06',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              emptyCircle07: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle07',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'EmptyCircle07',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              fullCircle01: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle01',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle01',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              fullCircle02: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle02',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle02',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              fullCircle03: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle03',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle03',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              fullCircle04: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle04',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle04',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              fullCircle05: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle05',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle05',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              fullCircle06: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle06',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle06',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              fullCircle07: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle07',
+                    ) as SVGCircleElement
+                  ).cx.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'FullCircle07',
+                    ) as SVGCircleElement
+                  ).cy.animVal.value,
+              },
+              rectangle01: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle01',
+                    ) as SVGRectElement
+                  ).x.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle01',
+                    ) as SVGRectElement
+                  ).y.animVal.value,
+              },
+              rectangle02: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle02',
+                    ) as SVGRectElement
+                  ).x.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle02',
+                    ) as SVGRectElement
+                  ).y.animVal.value,
+              },
+              rectangle03: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle03',
+                    ) as SVGRectElement
+                  ).x.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle03',
+                    ) as SVGRectElement
+                  ).y.animVal.value,
+              },
+              rectangle04: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle04',
+                    ) as SVGRectElement
+                  ).x.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle04',
+                    ) as SVGRectElement
+                  ).y.animVal.value,
+              },
+              rectangle05: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle05',
+                    ) as SVGRectElement
+                  ).x.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle05',
+                    ) as SVGRectElement
+                  ).y.animVal.value,
+              },
+              rectangle06: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle06',
+                    ) as SVGRectElement
+                  ).x.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle06',
+                    ) as SVGRectElement
+                  ).y.animVal.value,
+              },
+              rectangle07: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle07',
+                    ) as SVGRectElement
+                  ).x.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle07',
+                    ) as SVGRectElement
+                  ).y.animVal.value,
+              },
+              rectangle08: {
+                x:
+                  x -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle08',
+                    ) as SVGRectElement
+                  ).x.animVal.value,
+                y:
+                  y -
+                  (
+                    svgRef.current.getElementById(
+                      'Rectangle08',
+                    ) as SVGRectElement
+                  ).y.animVal.value,
+              },
+            });
           }
         }}
       />

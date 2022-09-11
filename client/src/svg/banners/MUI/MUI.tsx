@@ -79,35 +79,49 @@ const anim9 = keyframes`
     `;
 
 const MUIBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
-    const theme = useTheme();
-    const colorPrimaryLight = theme.palette.primary.light;
-    const colorPrimaryMain = theme.palette.primary.main;
-    const colorPrimaryDark = theme.palette.primary.dark;
-    const colorSecondaryLight = theme.palette.secondary.light;
-    const colorSecondaryMain = theme.palette.secondary.main;
-    const colorSecondaryDark = theme.palette.secondary.dark;
+  const theme = useTheme();
+  const colorPrimaryLight = theme.palette.primary.light;
+  const colorPrimaryMain = theme.palette.primary.main;
+  const colorPrimaryDark = theme.palette.primary.dark;
+  const colorSecondaryLight = theme.palette.secondary.light;
+  const colorSecondaryMain = theme.palette.secondary.main;
+  const colorSecondaryDark = theme.palette.secondary.dark;
 
-    return (
-        <SvgIcon
-            viewBox="0 0 800 310"
-            sx={{
-                width: '-webkit-fill-available',
-                height: 'auto',
-                ...sx,
-            }}
-            {...rest}
-        >
-            <MUISvg
-                title="mui"
-                className={css`
-                    #dot04, #dot05 {transform-origin: 440px 36px; animation: 5s linear infinite running ${anim1};}
-                    #dot03 {transform-origin: 420px 36px; animation: 5s linear infinite running ${anim2};}
-                    #li02 {transform-origin: 650px; animation: 1.5s linear infinite running ${anim3};}
-                    #li04 {transform-origin: 650px; animation: 2s linear 1s infinite running ${anim3};}
-                `}
-            />
-        </SvgIcon>
-    );
+  return (
+    <SvgIcon
+      viewBox="0 0 800 310"
+      sx={{
+        width: '-webkit-fill-available',
+        height: 'auto',
+        ...sx,
+        padding: 0,
+      }}
+      {...rest}
+    >
+      <MUISvg
+        title="mui"
+        className={css`
+          #dot04,
+          #dot05 {
+            transform-origin: 440px 36px;
+            animation: 5s linear infinite running ${anim1};
+          }
+          #dot03 {
+            transform-origin: 420px 36px;
+            animation: 5s linear infinite running ${anim2};
+          }
+          #li02 {
+            transform-origin: 650px;
+            animation: 1.5s linear infinite running ${anim3};
+          }
+          #li04 {
+            transform-origin: 650px;
+            animation: 2s linear 1s infinite running ${anim3};
+          }
+        `}
+      />
+    </SvgIcon>
+  );
 };
 
 export default MUIBannerSVG;

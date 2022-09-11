@@ -127,7 +127,7 @@ const text_anim = keyframes`
       }
     `;
 
-  const seaWaves_anim=keyframes`
+const seaWaves_anim = keyframes`
     0%{
       d: path("M 0 250.178 C 133.333 232.607 266.667 232.607 400 250.178 C 533.333 268.894 666.667 268.894 800 250.178 L 800 309 L 0 309");
     }
@@ -143,7 +143,7 @@ const text_anim = keyframes`
     100%{
       d: path("M 0 250.178 C 133.333 232.607 266.667 232.607 400 250.178 C 533.333 268.894 666.667 268.894 800 250.178 L 800 309 L 0 309");
     }
-  `
+  `;
 
 const DockerBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
   const theme = useTheme();
@@ -161,6 +161,7 @@ const DockerBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
         width: '-webkit-fill-available',
         height: 'auto',
         ...sx,
+        padding: 0,
       }}
       {...rest}
     >
@@ -209,7 +210,7 @@ const DockerBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
             font-family: 'Yellowtail' !important;
             font-size: xxx-large !important;
             animation: 35s ${text_anim} 24.5s linear infinite forwards;
-          }          
+          }
 
           #first_wave {
             animation: 480s ${sea_waves_anim} 0s linear infinite both;
@@ -255,30 +256,29 @@ const DockerBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
             animation: 240s ${clouds_anim06} 0s linear infinite forwards;
           }
           #seaWave01 {
-            animation:${seaWaves_anim} 14s; 
+            animation: ${seaWaves_anim} 14s;
             animation-timing-function: linear;
             animation-iteration-count: infinite;
-            animation-delay: 0s
+            animation-delay: 0s;
           }
           #seaWave02 {
-            animation:${seaWaves_anim} 14s; 
+            animation: ${seaWaves_anim} 14s;
             animation-timing-function: linear;
             animation-iteration-count: infinite;
-            animation-delay: 2s
+            animation-delay: 2s;
           }
           #seaWave03 {
-            animation:${seaWaves_anim} 14s; 
+            animation: ${seaWaves_anim} 14s;
             animation-timing-function: linear;
             animation-iteration-count: infinite;
-            animation-delay: 4s
+            animation-delay: 4s;
           }
           #seaWave04 {
-            animation:${seaWaves_anim} 14s; 
+            animation: ${seaWaves_anim} 14s;
             animation-timing-function: linear;
             animation-iteration-count: infinite;
-            animation-delay: 6s
+            animation-delay: 6s;
           }
-          
         `}
       />
     </SvgIcon>

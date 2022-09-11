@@ -90,6 +90,7 @@ const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
         width: '-webkit-fill-available',
         height: 'auto',
         ...sx,
+        padding: 0,
       }}
       {...rest}
     >
