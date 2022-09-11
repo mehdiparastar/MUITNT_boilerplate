@@ -1,9 +1,9 @@
 import { red } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
-import IransansXWoff from "../assets/fonts/IRANSansX-Regular.woff";
-import IransansXWoff2 from "../assets/fonts/IRANSansX-Regular.woff2";
-import IransansXBoldWoff from "../assets/fonts/IRANSansX-Bold.woff";
-import IransansXBoldWoff2 from "../assets/fonts/IRANSansX-Bold.woff2";
+import IransansXWoff from '../assets/fonts/IRANSansX-Regular.woff';
+import IransansXWoff2 from '../assets/fonts/IRANSansX-Regular.woff2';
+import IransansXBoldWoff from '../assets/fonts/IRANSansX-Bold.woff';
+import IransansXBoldWoff2 from '../assets/fonts/IRANSansX-Bold.woff2';
 // Create a theme instance.
 const theme = createTheme({
   palette: {

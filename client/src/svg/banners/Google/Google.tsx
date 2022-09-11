@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { useTheme } from '@mui/material/styles';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@emotion/react';
 import { css } from '@emotion/css';
@@ -29,7 +28,6 @@ const createTranslator =
   };
 
 const GoogleBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
-  const theme = useTheme();
   const svgRef = useRef<SVGSVGElement>(null);
   const [svgObjectsPXtoCursor, setSvgObjectsPXtoCursor] =
     useState<IobjectsPXToMove>({
@@ -56,12 +54,6 @@ const GoogleBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
       rectangle07: { x: 0, y: 0 },
       rectangle08: { x: 0, y: 0 },
     });
-  const colorPrimaryLight = theme.palette.primary.light;
-  const colorPrimaryMain = theme.palette.primary.main;
-  const colorPrimaryDark = theme.palette.primary.dark;
-  const colorSecondaryLight = theme.palette.secondary.light;
-  const colorSecondaryMain = theme.palette.secondary.main;
-  const colorSecondaryDark = theme.palette.secondary.dark;
 
   const emptyCircle01_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle01.x}px, ${svgObjectsPXtoCursor.emptyCircle01.y}px, 0px);}`;
   const emptyCircle02_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle02.x}px, ${svgObjectsPXtoCursor.emptyCircle02.y}px, 0px);}`;

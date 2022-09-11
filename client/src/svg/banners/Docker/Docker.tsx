@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTheme } from '@mui/material/styles';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@emotion/react';
 import { css } from '@emotion/css';
@@ -146,13 +145,6 @@ const seaWaves_anim = keyframes`
   `;
 
 const DockerBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
-  const theme = useTheme();
-  const colorPrimaryLight = theme.palette.primary.light;
-  const colorPrimaryMain = theme.palette.primary.main;
-  const colorPrimaryDark = theme.palette.primary.dark;
-  const colorSecondaryLight = theme.palette.secondary.light;
-  const colorSecondaryMain = theme.palette.secondary.main;
-  const colorSecondaryDark = theme.palette.secondary.dark;
 
   return (
     <SvgIcon
