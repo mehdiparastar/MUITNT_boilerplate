@@ -1,13 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {  useRef, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@emotion/react';
 import { css } from '@emotion/css';
 import { ReactComponent as Svg } from './Google.svg';
 
-interface ImousePos {
+interface IpxToMove {
   x: number;
   y: number;
+}
+
+interface IobjectsPXToMove {
+  [key: string]: IpxToMove
 }
 
 const createTranslator =
@@ -28,7 +32,7 @@ const GoogleBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
   const theme = useTheme();
   const svgRef = useRef<SVGSVGElement>(null);
   const [svgObjectsPXtoCursor, setSvgObjectsPXtoCursor] =
-    useState({
+    useState<IobjectsPXToMove>({
       emptyCircle01: { x: 0, y: 0 },
       emptyCircle02: { x: 0, y: 0 },
       emptyCircle03: { x: 0, y: 0 },
@@ -59,28 +63,28 @@ const GoogleBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
   const colorSecondaryMain = theme.palette.secondary.main;
   const colorSecondaryDark = theme.palette.secondary.dark;
 
-  const emptyCircle01_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle01.x}px, ${svgObjectsPXtoCursor.emptyCircle01.y}px, 0px);opacity:0;}`;
-  const emptyCircle02_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle02.x}px, ${svgObjectsPXtoCursor.emptyCircle02.y}px, 0px);opacity:0;}`;
-  const emptyCircle03_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle03.x}px, ${svgObjectsPXtoCursor.emptyCircle03.y}px, 0px);opacity:0;}`;
-  const emptyCircle04_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle04.x}px, ${svgObjectsPXtoCursor.emptyCircle04.y}px, 0px);opacity:0;}`;
-  const emptyCircle05_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle05.x}px, ${svgObjectsPXtoCursor.emptyCircle05.y}px, 0px);opacity:0;}`;
-  const emptyCircle06_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle06.x}px, ${svgObjectsPXtoCursor.emptyCircle06.y}px, 0px);opacity:0;}`;
-  const emptyCircle07_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle07.x}px, ${svgObjectsPXtoCursor.emptyCircle07.y}px, 0px);opacity:0;}`;
-  const fullCircle01_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle01.x}px, ${svgObjectsPXtoCursor.fullCircle01.y}px, 0px);opacity:0;}`;
-  const fullCircle02_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle02.x}px, ${svgObjectsPXtoCursor.fullCircle02.y}px, 0px);opacity:0;}`;
-  const fullCircle03_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle03.x}px, ${svgObjectsPXtoCursor.fullCircle03.y}px, 0px);opacity:0;}`;
-  const fullCircle04_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle04.x}px, ${svgObjectsPXtoCursor.fullCircle04.y}px, 0px);opacity:0;}`;
-  const fullCircle05_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle05.x}px, ${svgObjectsPXtoCursor.fullCircle05.y}px, 0px);opacity:0;}`;
-  const fullCircle06_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle06.x}px, ${svgObjectsPXtoCursor.fullCircle06.y}px, 0px);opacity:0;}`;
-  const fullCircle07_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle07.x}px, ${svgObjectsPXtoCursor.fullCircle07.y}px, 0px);opacity:0;}`;
-  const rectangle01_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle01.x}px, ${svgObjectsPXtoCursor.rectangle01.y}px, 0px);opacity:0;}`;
-  const rectangle02_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle02.x}px, ${svgObjectsPXtoCursor.rectangle02.y}px, 0px);opacity:0;}`;
-  const rectangle03_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle03.x}px, ${svgObjectsPXtoCursor.rectangle03.y}px, 0px);opacity:0;}`;
-  const rectangle04_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle04.x}px, ${svgObjectsPXtoCursor.rectangle04.y}px, 0px);opacity:0;}`;
-  const rectangle05_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle05.x}px, ${svgObjectsPXtoCursor.rectangle05.y}px, 0px);opacity:0;}`;
-  const rectangle06_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle06.x}px, ${svgObjectsPXtoCursor.rectangle06.y}px, 0px);opacity:0;}`;
-  const rectangle07_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle07.x}px, ${svgObjectsPXtoCursor.rectangle07.y}px, 0px);opacity:0;}`;
-  const rectangle08_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle08.x}px, ${svgObjectsPXtoCursor.rectangle08.y}px, 0px);opacity:0;}`;
+  const emptyCircle01_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle01.x}px, ${svgObjectsPXtoCursor.emptyCircle01.y}px, 0px);}`;
+  const emptyCircle02_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle02.x}px, ${svgObjectsPXtoCursor.emptyCircle02.y}px, 0px);}`;
+  const emptyCircle03_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle03.x}px, ${svgObjectsPXtoCursor.emptyCircle03.y}px, 0px);}`;
+  const emptyCircle04_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle04.x}px, ${svgObjectsPXtoCursor.emptyCircle04.y}px, 0px);}`;
+  const emptyCircle05_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle05.x}px, ${svgObjectsPXtoCursor.emptyCircle05.y}px, 0px);}`;
+  const emptyCircle06_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle06.x}px, ${svgObjectsPXtoCursor.emptyCircle06.y}px, 0px);}`;
+  const emptyCircle07_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.emptyCircle07.x}px, ${svgObjectsPXtoCursor.emptyCircle07.y}px, 0px);}`;
+  const fullCircle01_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle01.x}px, ${svgObjectsPXtoCursor.fullCircle01.y}px, 0px);}`;
+  const fullCircle02_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle02.x}px, ${svgObjectsPXtoCursor.fullCircle02.y}px, 0px);}`;
+  const fullCircle03_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle03.x}px, ${svgObjectsPXtoCursor.fullCircle03.y}px, 0px);}`;
+  const fullCircle04_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle04.x}px, ${svgObjectsPXtoCursor.fullCircle04.y}px, 0px);}`;
+  const fullCircle05_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle05.x}px, ${svgObjectsPXtoCursor.fullCircle05.y}px, 0px);}`;
+  const fullCircle06_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle06.x}px, ${svgObjectsPXtoCursor.fullCircle06.y}px, 0px);}`;
+  const fullCircle07_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.fullCircle07.x}px, ${svgObjectsPXtoCursor.fullCircle07.y}px, 0px);}`;
+  const rectangle01_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle01.x}px, ${svgObjectsPXtoCursor.rectangle01.y}px, 0px);}`;
+  const rectangle02_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle02.x}px, ${svgObjectsPXtoCursor.rectangle02.y}px, 0px);}`;
+  const rectangle03_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle03.x}px, ${svgObjectsPXtoCursor.rectangle03.y}px, 0px);}`;
+  const rectangle04_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle04.x}px, ${svgObjectsPXtoCursor.rectangle04.y}px, 0px);}`;
+  const rectangle05_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle05.x}px, ${svgObjectsPXtoCursor.rectangle05.y}px, 0px);}`;
+  const rectangle06_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle06.x}px, ${svgObjectsPXtoCursor.rectangle06.y}px, 0px);}`;
+  const rectangle07_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle07.x}px, ${svgObjectsPXtoCursor.rectangle07.y}px, 0px);}`;
+  const rectangle08_anim = keyframes`50% {transform: translate3d(${svgObjectsPXtoCursor.rectangle08.x}px, ${svgObjectsPXtoCursor.rectangle08.y}px, 0px);}`;
 
   return (
     <SvgIcon
@@ -96,28 +100,28 @@ const GoogleBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
         title="google"
         ref={svgRef}
         className={css`
-          #EmptyCircle01 {animation: 2s ${emptyCircle01_anim} 0s linear alternate infinite forwards;}
-          #EmptyCircle02 {animation: 2s ${emptyCircle02_anim} 0.1s linear alternate infinite forwards;}
-          #EmptyCircle03 {animation: 2s ${emptyCircle03_anim} 0.2s linear alternate infinite forwards;}
-          #EmptyCircle04 {animation: 2s ${emptyCircle04_anim} 0.3s linear alternate infinite forwards;}
-          #EmptyCircle05 {animation: 2s ${emptyCircle05_anim} 0.4s linear alternate infinite forwards;}
-          #EmptyCircle06 {animation: 2s ${emptyCircle06_anim} 0.5s linear alternate infinite forwards;}
-          #EmptyCircle07 {animation: 2s ${emptyCircle07_anim} 0.6s linear alternate infinite forwards;}
-          #FullCircle01 {animation: 2s ${fullCircle01_anim} 0.7s linear alternate infinite forwards;}
-          #FullCircle02 {animation: 2s ${fullCircle02_anim} 0.8s linear alternate infinite forwards;}
-          #FullCircle03 {animation: 2s ${fullCircle03_anim} 0.9s linear alternate infinite forwards;}
-          #FullCircle04 {animation: 2s ${fullCircle04_anim} 1.0s linear alternate infinite forwards;}
-          #FullCircle05 {animation: 2s ${fullCircle05_anim} 1.1s linear alternate infinite forwards;}
-          #FullCircle06 {animation: 2s ${fullCircle06_anim} 1.2s linear alternate infinite forwards;}
-          #FullCircle07 {animation: 2s ${fullCircle07_anim} 1.3s linear alternate infinite forwards;}
-          #Rectangle01 {animation: 2s ${rectangle01_anim} 1.4s linear alternate infinite forwards;}
-          #Rectangle02 {animation: 2s ${rectangle02_anim} 1.5s linear alternate infinite forwards;}
-          #Rectangle03 {animation: 2s ${rectangle03_anim} 1.6s linear alternate infinite forwards;}
-          #Rectangle04 {animation: 2s ${rectangle04_anim} 1.7s linear alternate infinite forwards;}
-          #Rectangle05 {animation: 2s ${rectangle05_anim} 1.8s linear alternate infinite forwards;}
-          #Rectangle06 {animation: 2s ${rectangle06_anim} 1.9s linear alternate infinite forwards;}
-          #Rectangle07 {animation: 2s ${rectangle07_anim} 2.0s linear alternate infinite forwards;}
-          #Rectangle08 {animation: 2s ${rectangle08_anim} 2.1s linear alternate infinite forwards;}
+          #EmptyCircle01 {animation: 30s ${emptyCircle01_anim} 0s alternate both;}
+          #EmptyCircle02 {animation: 30s ${emptyCircle02_anim} 0.1s alternate both;}
+          #EmptyCircle03 {animation: 30s ${emptyCircle03_anim} 0.2s alternate both;}
+          #EmptyCircle04 {animation: 30s ${emptyCircle04_anim} 0.3s alternate both;}
+          #EmptyCircle05 {animation: 30s ${emptyCircle05_anim} 0.4s alternate both;}
+          #EmptyCircle06 {animation: 30s ${emptyCircle06_anim} 0.5s alternate both;}
+          #EmptyCircle07 {animation: 30s ${emptyCircle07_anim} 0.6s alternate both;}
+          #FullCircle01 {animation: 30s ${fullCircle01_anim} 0.7s alternate both;}
+          #FullCircle02 {animation: 30s ${fullCircle02_anim} 0.8s alternate both;}
+          #FullCircle03 {animation: 30s ${fullCircle03_anim} 0.9s alternate both;}
+          #FullCircle04 {animation: 30s ${fullCircle04_anim} 1.0s alternate both;}
+          #FullCircle05 {animation: 30s ${fullCircle05_anim} 1.1s alternate both;}
+          #FullCircle06 {animation: 30s ${fullCircle06_anim} 1.2s alternate both;}
+          #FullCircle07 {animation: 30s ${fullCircle07_anim} 1.3s alternate both;}
+          #Rectangle01 {animation: 30s ${rectangle01_anim} 1.4s alternate both;}
+          #Rectangle02 {animation: 30s ${rectangle02_anim} 1.5s alternate both;}
+          #Rectangle03 {animation: 30s ${rectangle03_anim} 1.6s alternate both;}
+          #Rectangle04 {animation: 30s ${rectangle04_anim} 1.7s alternate both;}
+          #Rectangle05 {animation: 30s ${rectangle05_anim} 1.8s alternate both;}
+          #Rectangle06 {animation: 30s ${rectangle06_anim} 1.9s alternate both;}
+          #Rectangle07 {animation: 30s ${rectangle07_anim} 2.0s alternate both;}
+          #Rectangle08 {animation: 30s ${rectangle08_anim} 2.1s alternate both;}
         `}
         onMouseOver={(event) => {
           if (svgRef.current) {

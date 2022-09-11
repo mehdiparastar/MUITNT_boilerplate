@@ -127,6 +127,24 @@ const text_anim = keyframes`
       }
     `;
 
+  const seaWaves_anim=keyframes`
+    0%{
+      d: path("M 0 250.178 C 133.333 232.607 266.667 232.607 400 250.178 C 533.333 268.894 666.667 268.894 800 250.178 L 800 309 L 0 309");
+    }
+    25%{
+      d: path("M 0 236.999 C 133.333 236.999 266.667 271.559 400 271.559 C 533.333 271.559 666.667 236.999 800 236.999 L 800 308.999 L 0 308.999");
+    }
+    50%{
+      d: path("M 0 250.177 C 133.333 268.893 266.667 268.893 400 250.177 C 533.333 232.606 666.667 232.606 800 250.177 L 800 308.999 L 0 308.999");
+    }
+    75%{
+      d: path("M 0 271.559 C 133.333 271.559 266.667 236.999 400 236.999 C 533.333 236.999 666.667 271.559 800 271.559 L 800 308.999 L 0 308.999");
+    }
+    100%{
+      d: path("M 0 250.178 C 133.333 232.607 266.667 232.607 400 250.178 C 533.333 268.894 666.667 268.894 800 250.178 L 800 309 L 0 309");
+    }
+  `
+
 const DockerBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
   const theme = useTheme();
   const colorPrimaryLight = theme.palette.primary.light;
@@ -236,7 +254,30 @@ const DockerBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
           #cloud06 {
             animation: 240s ${clouds_anim06} 0s linear infinite forwards;
           }
-
+          #seaWave01 {
+            animation:${seaWaves_anim} 14s; 
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            animation-delay: 0s
+          }
+          #seaWave02 {
+            animation:${seaWaves_anim} 14s; 
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            animation-delay: 2s
+          }
+          #seaWave03 {
+            animation:${seaWaves_anim} 14s; 
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            animation-delay: 4s
+          }
+          #seaWave04 {
+            animation:${seaWaves_anim} 14s; 
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            animation-delay: 6s
+          }
           
         `}
       />
