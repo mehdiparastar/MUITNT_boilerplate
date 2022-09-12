@@ -8,7 +8,6 @@ interface SVGProps {
 
 const MUITNMSVG: React.FC<SVGProps> = ({ width = 101.36, height = 70 }) => {
   const theme = useTheme();
-  const colorPrimaryMain = theme.palette.primary.main;
   const colorPrimaryDark = theme.palette.primary.dark;
   return (
     <svg

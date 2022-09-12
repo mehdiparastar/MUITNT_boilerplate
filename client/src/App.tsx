@@ -1,23 +1,18 @@
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme/theme';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { routes as appRoutes } from "./routes/routes";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { routes as appRoutes } from './routes/routes';
 import HomeLayout from './layouts/HomeLayout/HomeLayout';
 import { useAuth0 } from '@auth0/auth0-react';
 import { PageLoader } from './components/PageLoader/PageLoader';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 
-
 const App: React.FC = () => {
-  const { isLoading } = useAuth0()
+  const { isLoading } = useAuth0();
 
   if (isLoading) {
-    return (
-      <div className="page-layout">
-        <PageLoader />
-      </div>
-    );
+    return <PageLoader />;
   }
 
   return (
@@ -31,9 +26,12 @@ const App: React.FC = () => {
                 key={route.key}
                 path={route.path}
                 element={
-                  route.isProtected ?
-                    <ProtectedRoute component={route.component} /> :
-                    <route.component />}
+                  route.isProtected ? (
+                    <ProtectedRoute component={route.component} />
+                  ) : (
+                    <route.component />
+                  )
+                }
               />
             ))}
           </Routes>
@@ -41,7 +39,6 @@ const App: React.FC = () => {
       </Router>
     </ThemeProvider>
   );
-}
+};
 
 export default App;
-
