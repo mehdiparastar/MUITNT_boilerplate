@@ -6,6 +6,7 @@ import IransansXWoff from '../assets/fonts/IRANSansX-Regular.woff';
 import IransansXWoff2 from '../assets/fonts/IRANSansX-Regular.woff2';
 import IransansXBoldWoff from '../assets/fonts/IRANSansX-Bold.woff';
 import IransansXBoldWoff2 from '../assets/fonts/IRANSansX-Bold.woff2';
+
 const getTheme = (mode: themeMode, paletteType: themePaletteType) =>
   responsiveFontSizes(
     createTheme({

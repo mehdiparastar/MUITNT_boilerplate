@@ -151,9 +151,8 @@ const DockerBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
       viewBox="0 0 800 310"
       sx={{
         width: '-webkit-fill-available',
-        height: 'auto',
+        height: 'auto',                
         ...sx,
-        padding: 0,
       }}
       {...rest}
     >

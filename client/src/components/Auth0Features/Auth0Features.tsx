@@ -1,3 +1,5 @@
+import React from 'react';
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -6,6 +8,12 @@ import DockerBannerSVG from 'svg/banners/Docker/Docker';
 import GoogleBannerSVG from 'svg/banners/Google/Google';
 import MUIBannerSVG from 'svg/banners/MUI/MUI';
 import { Auth0Feature } from './components/Auth0Feature/Auth0Feature';
+import { ThemeContext } from 'WithLayout';
+import { IconButton } from '@mui/material';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import CircleIcon from '@mui/icons-material/Circle';
+import { paletteTypes } from 'theme/paletteTypes';
 
 export const Auth0Features: React.FC = () => {
   const featuresList = [
@@ -17,8 +25,7 @@ export const Auth0Features: React.FC = () => {
       banner: (
         <Auth0BannerSVG
           sx={{
-            backgroundColor: 'whitesmoke',
-            padding: '1rem',
+            backgroundColor: 'background.level2',
           }}
         />
       ),
@@ -31,8 +38,7 @@ export const Auth0Features: React.FC = () => {
       banner: (
         <MUIBannerSVG
           sx={{
-            backgroundColor: 'whitesmoke',
-            padding: '1rem',
+            backgroundColor: 'background.level2',
           }}
         />
       ),
@@ -45,8 +51,7 @@ export const Auth0Features: React.FC = () => {
       banner: (
         <DockerBannerSVG
           sx={{
-            backgroundColor: 'whitesmoke',
-            padding: '1rem',
+            backgroundColor: 'background.level2',
           }}
         />
       ),
@@ -56,21 +61,54 @@ export const Auth0Features: React.FC = () => {
       description:
         'Cloud Functions has a simple and intuitive developer experience. Just write your code and let Google Cloud handle the operational infrastructure. Develop faster by writing and running small code snippets that respond to events. Streamline challenging orchestration problems by connecting Google Cloud products to one another or third party services using events.',
       resourceUrl: 'https://cloud.google.com/functions',
-      banner: 
+      banner: (
         <GoogleBannerSVG
           sx={{
-            backgroundColor: 'whitesmoke',
-            padding: '1rem',
+            backgroundColor: 'background.level2',
           }}
-        />,
+        />
+      ),
     },
   ];
+
+  const theme = useTheme();
+  const themeConfig = React.useContext(ThemeContext);
+
   return (
     <Box
       sx={{
         padding: '3.2rem 4.8rem',
       }}
     >
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.default,
+          padding: theme.spacing(1),
+        }}
+      >
+        {theme.palette.mode} mode
+        <IconButton
+          sx={{ ml: 1 }}
+          onClick={themeConfig.themeMode.toggleThemeMode}
+          color="inherit"
+        >
+          {theme.palette.mode === 'dark' ? (
+            <Brightness7Icon />
+          ) : (
+            <Brightness4Icon />
+          )}
+        </IconButton>
+        {paletteTypes.map((item, index) => (
+          <IconButton
+            key={index}
+            onClick={() =>
+              themeConfig.themePaletteType.changeThemePaletteType(item)
+            }
+          >
+            <CircleIcon sx={{ color: item }} />
+          </IconButton>
+        ))}
+      </Box>
       <Typography
         variant="h2"
         sx={{

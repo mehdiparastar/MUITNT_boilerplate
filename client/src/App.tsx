@@ -1,12 +1,11 @@
 import { CssBaseline } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from './theme/theme';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { routes as appRoutes } from './routes/routes';
 import HomeLayout from './layouts/HomeLayout/HomeLayout';
 import { useAuth0 } from '@auth0/auth0-react';
 import { PageLoader } from './components/PageLoader/PageLoader';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
+import { WithLayout } from 'WithLayout';
 
 const App: React.FC = () => {
   const { isLoading } = useAuth0();
@@ -16,7 +15,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <WithLayout>
       <CssBaseline />
       <Router>
         <HomeLayout>
@@ -37,7 +36,7 @@ const App: React.FC = () => {
           </Routes>
         </HomeLayout>
       </Router>
-    </ThemeProvider>
+    </WithLayout>
   );
 };
 
