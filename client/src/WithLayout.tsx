@@ -3,9 +3,6 @@ import * as React from 'react';
 import getTheme from 'theme';
 import { paletteTypes } from 'theme/paletteTypes';
 
-type Props = {
-  children?: React.ReactNode;
-};
 
 export const ThemeContext = React.createContext({
   themeMode: {

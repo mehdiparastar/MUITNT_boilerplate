@@ -93,7 +93,6 @@ const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
       }}
       {...rest}
     >
-      {/* <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 800 310" {...rest}> */}
       <g>
         <g fill="rgb(155, 65, 65)">
           <g>
@@ -138,7 +137,7 @@ const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
               y="141.5"
               width="82"
               height="18"
-              fill="#2b8b3b"
+              fill={theme.palette.primary.main}
               rx="10"
               ry="10"
             />
@@ -287,11 +286,11 @@ const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
           />
           <path
             d="M 308.4 88.8 C 308.4 88.8 314.5 89.4 314.5 89.4 S 315 76.9 315 76.9 S 282.6 74.5 282.6 74.5 S 279.8 77.9 279.8 77.9 S 279.6 81.3 279.6 81.3 S 284 86.7 284 86.7"
-            fill="rgb(193, 20, 20)"
+            fill={theme.palette.primary.dark}
           />
           <path
             d="M 307.1 88.3 C 306.9 87.3 305.9 101.2 305.9 101.2 S 313.8 100 313.8 100 S 314.6 88.7 314.6 88.3"
-            fill="rgb(193, 20, 20)"
+            fill={theme.palette.primary.dark}
           />
         </g>
         <g>
@@ -387,7 +386,7 @@ const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
             fontSize="28"
             x="383.1"
             y="51.9"
-            fill="#021818"
+            fill={colorPrimaryMain}
           >
             AN EFFECTIVE
           </text>
@@ -397,7 +396,7 @@ const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
             fontWeight="900"
             fontSize="45"
             y="91.9"
-            fill="#034d24"
+            fill={colorPrimaryLight}
           >
             SOCIAL
           </text>
@@ -407,7 +406,7 @@ const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
             fontWeight="900"
             fontSize="45"
             y="141.9"
-            fill="#034d24"
+            fill={colorSecondaryMain}
           >
             AUTHENTICATION
           </text>
@@ -446,7 +445,7 @@ const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
             fontSize="28"
             x="383.1"
             y="225.9"
-            fill="#021818"
+            fill={colorSecondaryLight}
             className={css`
               &:hover {
                 animation: 1s ${anim9} ease-in-out;

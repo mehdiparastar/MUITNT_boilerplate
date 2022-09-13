@@ -9,6 +9,7 @@ export const light: Palette = {
   },
   cardShadow: 'rgba(23, 70, 161, .11)',
   mode: 'light',
+  paletteType: 'pink',
   primary: {
     main: '#c2185b',
     light: '#e91e63',
@@ -47,6 +48,7 @@ export const dark: Palette = {
     white: '#fff',
   },
   mode: 'dark',
+  paletteType: 'pink',
   primary: {
     main: '#c2185b',
     light: '#e91e63',

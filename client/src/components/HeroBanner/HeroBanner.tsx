@@ -14,24 +14,31 @@ export const HeroBanner: React.FC = () => {
         // background:"linear-gradient(153.07deg, #ebca40 -2.47%, #ff7f38 102.78%)",
         color: 'black',
         margin: '0 auto',
-        padding: '3.2rem 6.4rem',
+        padding: '6.4rem 6.4rem',
         background:
           'linear-gradient(153.07deg, #ff44dd -2.47%, #ebca40 102.78%)',
       }}
     >
       <Paper
+        elevation={1}
         sx={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: 'whitesmoke',
           borderRadius: '50%',
-          boxShadow: '0 2px 4px rgb(0 0 0 / 12%)',
-          width: '12.8rem',
-          height: '12.8rem',
+          boxShadow: '0 0 16px #ea4c89, inset 0 0 14px #ea4c89;',
+          width: '14rem',
+          height: '14rem',
+          
         }}
       >
-        <MUITNMSVG />
+        <MUITNMSVG
+          sx={{
+            width: '12rem',
+            height: '12rem',
+          }}
+        />
       </Paper>
       <Typography
         variant="h1"

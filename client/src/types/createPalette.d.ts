@@ -7,6 +7,7 @@ declare module '@mui/material/styles/createPalette' {
       dark: string;
     };
     cardShadow: string;
+    paletteType: themePaletteType;
   }
 
   interface PaletteOptions extends createPalette.PaletteOptions {
@@ -15,6 +16,7 @@ declare module '@mui/material/styles/createPalette' {
       dark: string;
     };
     cardShadow?: string;
+    paletteType?: themePaletteType;
   }
 
   interface TypeBackground extends createPalette.TypeBackground {

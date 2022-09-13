@@ -1,30 +1,31 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
+import { SvgIcon, SvgIconProps } from '@mui/material';
 
-interface SVGProps {
-  width?: number
-  height?: number
-}
 
-const MUITNMSVG: React.FC<SVGProps> = ({ width = 101.36, height = 70 }) => {
+const MUITNMSVG: React.FC<SvgIconProps> = ({
+  width = 101.36,
+  height = 70,
+  ...rest
+}) => {
   const theme = useTheme();
-  const colorPrimaryDark = theme.palette.primary.dark;
   return (
-    <svg
+    <SvgIcon
       xmlns="http://www.w3.org/2000/svg"
       width={width}
       height={height}
       fill="none"
       viewBox="0 0 133.22 92"
+      {...rest}
     >
       <rect
         x="20"
         y="1"
         width="93.22"
         height="90"
-        fill='none'
-        stroke={colorPrimaryDark}
-        strokeWidth="1"
+        fill="none"
+        stroke={theme.palette.primary.dark}
+        strokeWidth="2"
         rx="1"
         ry="1"
       />
@@ -50,10 +51,9 @@ const MUITNMSVG: React.FC<SVGProps> = ({ width = 101.36, height = 70 }) => {
         stroke={theme.palette.secondary.main}
       >
         MUITNM
-      </text>      
-    </svg>
+      </text>
+    </SvgIcon>
   );
 };
-
 
 export default MUITNMSVG;
