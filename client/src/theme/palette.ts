@@ -3,7 +3,6 @@ import { light as lightBlue, dark as darkBlue } from './palette--blue';
 import { light as lightIndigo, dark as darkIndigo } from './palette--indigo';
 import { light as lightPink, dark as darkPink } from './palette--pink';
 import { light as lightOrange, dark as darkOrange } from './palette--orange';
-import { themeMode, themePaletteType } from 'types/types';
 
 const palette = (
   themeMode: themeMode = 'light',

@@ -2,7 +2,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import getTheme from 'theme';
 import { paletteTypes } from 'theme/paletteTypes';
-import { themeMode, themePaletteType } from 'types/types';
 
 type Props = {
   children?: React.ReactNode;

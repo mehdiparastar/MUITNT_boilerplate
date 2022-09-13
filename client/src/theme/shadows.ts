@@ -1,5 +1,4 @@
 import { alpha } from '@mui/material/styles';
-import { themeMode } from 'types/types';
 import { Shadows } from '@mui/material/styles';
 
 const shadows = (themeMode: themeMode = 'light'): Shadows => {

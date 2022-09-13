@@ -1,7 +1,6 @@
 import { responsiveFontSizes, createTheme } from '@mui/material/styles';
 import shadows from './shadows';
 import palette from './palette';
-import { themeMode, themePaletteType } from 'types/types';
 import IransansXWoff from '../assets/fonts/IRANSansX-Regular.woff';
 import IransansXWoff2 from '../assets/fonts/IRANSansX-Regular.woff2';
 import IransansXBoldWoff from '../assets/fonts/IRANSansX-Bold.woff';
