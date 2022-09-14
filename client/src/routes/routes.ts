@@ -30,6 +30,6 @@ export const routes: Array<Route> = [
     path: '/about',
     enabled: true,
     component: About,
-    isProtected: true,
+    isProtected: false,
   },
 ];

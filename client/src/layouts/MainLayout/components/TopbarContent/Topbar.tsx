@@ -33,7 +33,7 @@ export const Topbar: React.FC<Props & { onSidebarOpen: () => void }> = ({
         alignItems={'center'}
       >
         <IconButton
-          color="inherit"
+          color="primary"
           aria-label="Menu"
           edge="start"
           onClick={onSidebarOpen}

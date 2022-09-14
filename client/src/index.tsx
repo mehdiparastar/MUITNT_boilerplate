@@ -9,9 +9,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-      <Auth0ProviderWithConfig>
+    <Auth0ProviderWithConfig>
         <App />
-      </Auth0ProviderWithConfig>
+    </Auth0ProviderWithConfig>
   </React.StrictMode>
 );
 

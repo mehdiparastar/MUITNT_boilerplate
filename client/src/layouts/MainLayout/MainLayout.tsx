@@ -1,6 +1,11 @@
 import React from 'react';
 import { HidableAppBar } from 'components/HidableAppBar/HidableAppBar';
-import { Topbar } from './components/Topbar/Topbar';
+import { Topbar } from './components/TopbarContent/Topbar';
+import { Sidebar } from 'components/Sidebar/Sidebar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import { SidebarContent } from './components/SidebarContent/SidebarContent';
+
 
 export const MainLayout: React.FC<layoutProps> = ({ children }) => {
   const [openSidebar, setOpenSidebar] = React.useState<boolean>(false);
@@ -13,14 +18,28 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
     setOpenSidebar(false);
   };
 
-  console.log(openSidebar, handleSidebarClose);
-
   return (
     <div>
       <HidableAppBar>
         <Topbar onSidebarOpen={handleSidebarOpen} />
       </HidableAppBar>
-      <main>{children}</main>
+      <Sidebar
+        onClose={handleSidebarClose}
+        open={openSidebar}
+        variant="temporary"
+      >
+        <SidebarContent />
+      </Sidebar>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+        }}
+      >
+        <Toolbar />
+        {children}
+      </Box>
     </div>
   );
 };

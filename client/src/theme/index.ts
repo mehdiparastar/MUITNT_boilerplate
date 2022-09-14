@@ -27,21 +27,33 @@ const getTheme = (mode: themeMode, paletteType: themePaletteType) =>
       },
       components: {
         MuiCssBaseline: {
-          styleOverrides: (themeParam) => `        
-            @font-face {
-              font-family: 'IRANSansX';
-              font-style: normal;
-              font-weight: 400;
-              src: url(${IransansXWoff}) format('woff'), url(${IransansXWoff2}) format('woff2');
-            }      
-            
-            @font-face {
-              font-family: 'IRANSansX';
-              font-style: normal;
-              font-weight: 700;
-              src: url(${IransansXBoldWoff}) format('woff'), url(${IransansXBoldWoff2}) format('woff2');
-            }                  
-          `,
+          styleOverrides(theme) {
+            return `
+              @font-face {
+                font-family: 'IRANSansX';
+                font-style: normal;
+                font-weight: 400;
+                src: url(${IransansXWoff}) format('woff'), url(${IransansXWoff2}) format('woff2');
+              }
+
+              @font-face {
+                font-family: 'IRANSansX';
+                font-style: normal;
+                font-weight: 700;
+                src: url(${IransansXBoldWoff}) format('woff'), url(${IransansXBoldWoff2}) format('woff2');
+              }
+
+              ::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+                background-color: #aaa;
+              }
+
+              ::-webkit-scrollbar-thumb {
+                background: ${theme.palette.primary.light};
+              }
+            `;
+          },
         },
         MuiButton: {
           styleOverrides: {

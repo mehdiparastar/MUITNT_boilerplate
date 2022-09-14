@@ -6,12 +6,11 @@ const About: FC<any> = (): ReactElement => {
     return (
         <Box sx={{
             flexGrow: 1,
-            backgroundColor: 'whitesmoke',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
         }}>
-            <Typography variant="h3">About</Typography>
+            <Typography fontFamily={'iransansx'} variant="h3">مهدی پرستار</Typography>
         </Box>
     );
 };

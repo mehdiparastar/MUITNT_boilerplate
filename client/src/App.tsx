@@ -16,27 +16,27 @@ const App: React.FC = () => {
 
   return (
     <WithLayout>
-      <CssBaseline />
+      <CssBaseline enableColorScheme />
       <Paper elevation={0}>
-        <Router>
-          <MainLayout>
-            <Routes>
-              {appRoutes.map((route) => (
-                <Route
-                  key={route.key}
-                  path={route.path}
-                  element={
-                    route.isProtected ? (
-                      <ProtectedRoute component={route.component} />
-                    ) : (
-                      <route.component />
-                    )
-                  }
-                />
-              ))}
-            </Routes>
-          </MainLayout>
-        </Router>
+          <Router>
+            <MainLayout>
+              <Routes>
+                {appRoutes.map((route) => (
+                  <Route
+                    key={route.key}
+                    path={route.path}
+                    element={
+                      route.isProtected ? (
+                        <ProtectedRoute component={route.component} />
+                      ) : (
+                        <route.component />
+                      )
+                    }
+                  />
+                ))}
+              </Routes>
+            </MainLayout>
+          </Router>
       </Paper>
     </WithLayout>
   );
