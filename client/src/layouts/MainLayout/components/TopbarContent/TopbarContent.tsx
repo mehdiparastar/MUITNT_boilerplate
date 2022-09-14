@@ -10,7 +10,7 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import MUITNMSVG from 'svg/logos/MUITNM';
 
-export const Topbar: React.FC<Props & { onSidebarOpen: () => void }> = ({
+export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   onSidebarOpen,
 }) => {
   const theme = useTheme();

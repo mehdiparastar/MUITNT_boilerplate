@@ -1,10 +1,12 @@
 import React from 'react';
 import { HidableAppBar } from 'components/HidableAppBar/HidableAppBar';
-import { Topbar } from './components/TopbarContent/Topbar';
+import { TopbarContent } from './components/TopbarContent/TopbarContent';
 import { Sidebar } from 'components/Sidebar/Sidebar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import { SidebarContent } from './components/SidebarContent/SidebarContent';
+import Divider from '@mui/material/Divider';
+import { FooterContent } from './components/FooterContent/FooterContent';
 
 
 export const MainLayout: React.FC<layoutProps> = ({ children }) => {
@@ -19,9 +21,9 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
   };
 
   return (
-    <div>
+    <React.Fragment>
       <HidableAppBar>
-        <Topbar onSidebarOpen={handleSidebarOpen} />
+        <TopbarContent onSidebarOpen={handleSidebarOpen} />
       </HidableAppBar>
       <Sidebar
         onClose={handleSidebarClose}
@@ -34,12 +36,16 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          minHeight: 1080,
+          px: 3,
+          py: 1
         }}
       >
         <Toolbar />
         {children}
       </Box>
-    </div>
+      <Divider />
+      <FooterContent />
+    </React.Fragment>
   );
 };
