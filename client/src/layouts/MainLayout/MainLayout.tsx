@@ -8,7 +8,6 @@ import { SidebarContent } from './components/SidebarContent/SidebarContent';
 import Divider from '@mui/material/Divider';
 import { FooterContent } from './components/FooterContent/FooterContent';
 
-
 export const MainLayout: React.FC<layoutProps> = ({ children }) => {
   const [openSidebar, setOpenSidebar] = React.useState<boolean>(false);
 
@@ -38,14 +37,17 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
           flexGrow: 1,
           minHeight: 1080,
           px: 3,
-          py: 1
+          pt: 1,
+          pb: 0,
         }}
       >
         <Toolbar />
         {children}
       </Box>
       <Divider />
-      <FooterContent />
+      <Box component={'footer'}>
+        <FooterContent />
+      </Box>
     </React.Fragment>
   );
 };

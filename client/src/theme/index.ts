@@ -44,14 +44,14 @@ const getTheme = (mode: themeMode, paletteType: themePaletteType) =>
               }
 
               ::-webkit-scrollbar {
-                width: 8px;
+                width: 4px;
                 height: 8px;
                 background-color: #aaa;
               }
 
               ::-webkit-scrollbar-thumb {
                 background: ${theme.palette.primary.light};
-              }
+              }              
             `;
           },
         },
