@@ -60,6 +60,16 @@ const getTheme = (mode: themeMode, paletteType: themePaletteType) =>
             containedSecondary: mode === 'light' ? { color: 'white' } : {},
           },
         },
+        MuiIconButton: {
+          defaultProps: {
+            sx: { color: 'inherit' },
+          },
+        },
+        MuiListItemIcon: {          
+          defaultProps:{
+            sx:{color:'inherit'}
+          }
+        },
       },
     }),
   );

@@ -85,7 +85,7 @@ const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
 
   return (
     <SvgIcon
-      viewBox="0 0 800 310"
+      viewBox="-10 -10 810 320"
       sx={{
         width: '-webkit-fill-available',
         height: 'auto',

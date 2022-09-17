@@ -1,3 +1,4 @@
+import React from 'react';
 import { CssBaseline, Paper } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { routes as appRoutes } from './routes/routes';
@@ -5,7 +6,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { PageLoader } from './components/PageLoader/PageLoader';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { WithLayout } from 'WithLayout';
-import { MainLayout } from 'layouts/MainLayout/MainLayout';
+import 'aos/dist/aos.css';
 
 const App: React.FC = () => {
   const { isLoading } = useAuth0();
@@ -18,25 +19,27 @@ const App: React.FC = () => {
     <WithLayout>
       <CssBaseline enableColorScheme />
       <Paper elevation={0}>
-          <Router>
-            <MainLayout>
-              <Routes>
-                {appRoutes.map((route) => (
-                  <Route
-                    key={route.key}
-                    path={route.path}
-                    element={
-                      route.isProtected ? (
-                        <ProtectedRoute component={route.component} />
-                      ) : (
-                        <route.component />
-                      )
-                    }
-                  />
-                ))}
-              </Routes>
-            </MainLayout>
-          </Router>
+        <Router>
+          <Routes>
+            {appRoutes.map((route) => (
+              <Route
+                key={route.key}
+                path={route.path}
+                element={
+                  route.isProtected ? (
+                    <route.layout>
+                      <ProtectedRoute component={route.component} />
+                    </route.layout>
+                  ) : (
+                    <route.layout>
+                      <route.component />
+                    </route.layout>
+                  )
+                }
+              />
+            ))}
+          </Routes>
+        </Router>
       </Paper>
     </WithLayout>
   );

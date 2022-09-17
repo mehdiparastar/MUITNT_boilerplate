@@ -95,7 +95,7 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
             onClick={() => themeToggler()}
             aria-label="Dark mode toggler"
             sx={{
-              color: themeMode === 'light' ? 'common.black' : 'common.white',
+              color: themeMode === 'light' ? 'blueviolet' : 'yellow',
             }}
           >
             {themeMode === 'light' ? <Brightness4Icon /> : <Brightness7Icon />}

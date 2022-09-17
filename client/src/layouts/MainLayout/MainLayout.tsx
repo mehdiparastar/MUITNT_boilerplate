@@ -29,19 +29,18 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
         open={openSidebar}
         variant="temporary"
       >
-        <SidebarContent />
+        <SidebarContent onClose={handleSidebarClose} />
       </Sidebar>
+      <Toolbar />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          minHeight: 1080,
-          px: 3,
-          pt: 1,
+          minHeight: 200,
+          pt: 0.5,
           pb: 0,
         }}
       >
-        <Toolbar />
         {children}
       </Box>
       <Divider />

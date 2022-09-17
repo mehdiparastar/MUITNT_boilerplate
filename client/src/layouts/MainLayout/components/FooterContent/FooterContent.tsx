@@ -11,7 +11,6 @@ import {
   Twitter,
   YouTube,
 } from '@mui/icons-material';
-import { UIBGSVG } from 'svg/backgrounds/UIBGSVG';
 
 export const FooterContent: React.FC = () => {
   const theme = useTheme();
@@ -20,7 +19,8 @@ export const FooterContent: React.FC = () => {
       maxWidth="lg"
       sx={{
         height: '100%',
-        padding: 1,
+        px: 2,
+        py: 4,
       }}
     >
       <Grid
@@ -30,7 +30,6 @@ export const FooterContent: React.FC = () => {
       >
         <Grid
           xs={12}
-          sm={8}
           alignItems="center"
           sx={{}}
         >
@@ -51,7 +50,7 @@ export const FooterContent: React.FC = () => {
                     width="100%"
                     display="flex"
                     alignItems="center"
-                    justifyContent="space-between"
+                    justifyContent="center"
                     flexDirection={{ xs: 'column', sm: 'row' }}
                   >
                     <IconButton
@@ -160,18 +159,6 @@ export const FooterContent: React.FC = () => {
                 </Grid>
               </Box>
             </Box>
-          </Box>
-        </Grid>
-        <Grid
-          sm={4}
-          sx={{ display: { xs: 'none', sm: 'block' } }}
-        >
-          <Box
-            width="100%"
-            height="100%"
-            textAlign="center"
-          >
-            <UIBGSVG width="100%" />
           </Box>
         </Grid>
       </Grid>

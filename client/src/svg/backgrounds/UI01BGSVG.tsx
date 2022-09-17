@@ -1,12 +1,12 @@
 import { SvgIconProps } from '@mui/material';
-import { ReactComponent as UISVG } from './UI.svg';
+import { ReactComponent as UI01SVG } from './UI01.svg';
 import { css } from '@emotion/css';
 import { useTheme } from '@mui/material/styles';
 
-export const UIBGSVG: React.FC<SvgIconProps> = (props) => {
+export const UI01BGSVG: React.FC<SvgIconProps> = (props) => {
   const theme = useTheme();
   return (
-    <UISVG
+    <UI01SVG
       className={css`
         #shirt {
           fill: ${theme.palette.secondary.dark};

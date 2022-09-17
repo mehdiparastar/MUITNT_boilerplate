@@ -2,7 +2,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import getTheme from 'theme';
 import { paletteTypes } from 'theme/paletteTypes';
-
+import AOS from 'aos';
 
 export const ThemeContext = React.createContext({
   themeMode: {
@@ -14,19 +14,34 @@ export const ThemeContext = React.createContext({
 });
 
 export const WithLayout: React.FC<Props> = ({ children }) => {
-  const [mode, setMode] = React.useState<themeMode>('light');
+  const [mode, setMode] = React.useState<themeMode>('dark');
   const [palleteType, setPaletteType] = React.useState<themePaletteType>(
     paletteTypes[0],
   );
 
-  const themeMode = React.useMemo(
-    () => ({
+  const themeMode = React.useMemo(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles: HTMLInputElement | null =
+      document.querySelector('#jss-server-side');
+    if (jssStyles) {
+      jssStyles.parentElement?.removeChild(jssStyles);
+    }
+
+    AOS.init({
+      offset: 120, // offset (in px) from the original trigger point
+      delay: 0, // values from 0 to 3000, with step 50ms
+      duration: 400, // values from 0 to 3000, with step 50ms
+      easing: 'ease', // default easing for AOS animations
+      once: true, // whether animation should happen only once - while scrolling down
+      anchorPlacement: 'top-bottom', // defines which position of the element regarding to window should trigger the animation
+    });
+
+    return {
       toggleThemeMode: () => {
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
       },
-    }),
-    [],
-  );
+    };
+  }, []);
 
   const themePaletteType = React.useMemo(
     () => ({
@@ -40,10 +55,10 @@ export const WithLayout: React.FC<Props> = ({ children }) => {
     [],
   );
 
-  const theme = React.useMemo(
-    () => getTheme(mode, palleteType),
-    [mode, palleteType],
-  );
+  const theme = React.useMemo(() => {
+    AOS.refresh();
+    return getTheme(mode, palleteType);
+  }, [mode, palleteType]);
 
   return (
     <ThemeContext.Provider value={{ themeMode, themePaletteType }}>

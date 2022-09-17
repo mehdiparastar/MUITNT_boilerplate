@@ -5,14 +5,14 @@ import { Auth0ProviderWithConfig } from './auth0-provider-with-config';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById('root') as HTMLElement,
 );
 root.render(
   <React.StrictMode>
     <Auth0ProviderWithConfig>
-        <App />
+      <App />
     </Auth0ProviderWithConfig>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

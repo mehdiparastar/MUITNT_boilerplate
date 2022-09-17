@@ -1,12 +1,17 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-export const MUINavLink = React.forwardRef<any, any>((props, ref) => (
+export const MUINavLink = React.forwardRef<any, any>((props, ref) => {
+  
+    return (
     <NavLink
-        ref={ref}
-        to={props.to}
-        className={({ isActive }) => `${props.className} ${isActive ? props.activeClassName : ''}`}
+      ref={ref}
+      to={props.to}
+      className={({ isActive }) =>
+        `${props.className} ${isActive ? props.activeClassName : ''}`
+      }
     >
-        {props.children}
+      {props.children}
     </NavLink>
-));
+  );
+});
