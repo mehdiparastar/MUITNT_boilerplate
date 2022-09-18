@@ -3,15 +3,11 @@ import { Box, Container, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import Grid from '@mui/material/Unstable_Grid2';
-import { NotFoundSVG } from 'svg/pages/NotFoundSVG';
+import { MaintenanceSVG } from 'svg/pages/MaintenanceSVG';
 
-const NotFound: FC<any> = (): ReactElement => {
-  const theme = useTheme();
-  const isMd = useMediaQuery(theme.breakpoints.up('md'), {
-    defaultMatches: true,
-  });
+const Maintenance: FC<any> = (): ReactElement => {
+  const theme = useTheme();  
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -38,16 +34,15 @@ const NotFound: FC<any> = (): ReactElement => {
             container
             justifyContent={'center'}
             xs={12}
-            md={6}
             p={3}
           >
             <Box
               height={'100%'}
               width={'100%'}
-              maxWidth={{ xs: 500, md: '100%' }}
-              data-aos={isMd ? 'fade-right' : 'fade-up'}
+              maxWidth={500}
+              data-aos="fade-up"
             >
-              <NotFoundSVG
+              <MaintenanceSVG
                 width={'100%'}
                 height={'100%'}
               />
@@ -58,38 +53,30 @@ const NotFound: FC<any> = (): ReactElement => {
             alignItems={'center'}
             justifyContent={'center'}
             xs={12}
-            md={6}
             p={3}
           >
-            <Box data-aos={isMd ? 'fade-left' : 'fade-up'}>
+            <Box>
               <Typography
-                variant="h1"
-                component={'h1'}
-                align={isMd ? 'left' : 'center'}
+                variant="h4"
+                component={'h4'}
+                align={'center'}
                 sx={{ fontWeight: 700 }}
               >
-                404
+                We are in maintenance mode
               </Typography>
               <Typography
-                variant="h6"
                 component="p"
                 color="textSecondary"
-                align={isMd ? 'left' : 'center'}
+                align={'center'}
               >
-                Oops! Looks like you followed a bad link.
+                We are working to deliver the cool features ever.
                 <br />
-                If you think this is a problem with us, please{' '}
-                <Link
-                  href={''}
-                  underline="none"
-                >
-                  tell us
-                </Link>
+                Stay tuned!
               </Typography>
               <Box
                 marginTop={4}
                 display={'flex'}
-                justifyContent={{ xs: 'center', md: 'flex-start' }}
+                justifyContent={'center'}
               >
                 <Button
                   component={Link}
@@ -109,4 +96,4 @@ const NotFound: FC<any> = (): ReactElement => {
   );
 };
 
-export default NotFound;
+export default Maintenance;
