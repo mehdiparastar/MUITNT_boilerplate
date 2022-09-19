@@ -7,7 +7,9 @@
   "author": "mehdiparastar <parastar.mehdi@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start-client": "cd client && yarn start"
+    "start-client-windows": "cd client && yarn start-windows",
+    "start-client-linux": "cd client && yarn start-linux",
+    "start-crud-app-server": "cd servers/crud-app && yarn start:dev"
   },
   "devDependencies": {
     "@prettier/plugin-xml": "^2.2.0",
