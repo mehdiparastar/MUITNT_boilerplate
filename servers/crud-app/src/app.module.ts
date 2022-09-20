@@ -8,7 +8,7 @@ import { BlogService } from './blog/service/blog.service';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://mehdi:mpmp1370@192.168.33.26:27017', {
+    MongooseModule.forRoot('mongodb://mehdi:mpmp1370@localhost:27017', {
       dbName: 'blogdb',
     }),
     MongooseModule.forFeature([
