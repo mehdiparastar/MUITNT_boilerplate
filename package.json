@@ -7,8 +7,7 @@
   "author": "mehdiparastar <parastar.mehdi@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start-client-windows": "cd client && yarn start-windows",
-    "start-client-linux": "cd client && yarn start-linux"
+    "start-client": "cd client && yarn start"
   },
   "comments": {
     "adding ssl to react app": "https://www.makeuseof.com/create-react-app-ssl-https/"
