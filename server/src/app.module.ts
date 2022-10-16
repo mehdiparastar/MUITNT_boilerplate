@@ -1,10 +1,16 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSource } from './data-source';
+import { APP_PIPE } from '@nestjs/core';
 // import cookieSession from 'cookie-session';
 const cookieSession = require('cookie-session');
 @Module({
@@ -22,7 +28,15 @@ const cookieSession = require('cookie-session');
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+      }),
+    },
+    AppService,
+  ],
 })
 export class AppModule implements NestModule {
   constructor(private configService: ConfigService<IconfigService>) {}
