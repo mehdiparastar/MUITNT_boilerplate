@@ -1,0 +1,9 @@
+### Signup a new user
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "email":"test@test.com",
+    "password":"test",
+    "role":"user_l12"
+}

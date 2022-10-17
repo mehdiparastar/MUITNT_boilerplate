@@ -11,6 +11,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSource } from './data-source';
 import { APP_PIPE } from '@nestjs/core';
+import { DataSource } from 'typeorm';
+import { User } from './users/entities/user.entity';
 // import cookieSession from 'cookie-session';
 const cookieSession = require('cookie-session');
 @Module({
@@ -19,12 +21,7 @@ const cookieSession = require('cookie-session');
       isGlobal: true,
       envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService<IconfigService>) =>
-        AppDataSource(configService).options,
-      inject: [ConfigService],
-    }),
+    TypeOrmModule.forRoot(AppDataSource.options),
     UsersModule,
   ],
   controllers: [AppController],
@@ -39,7 +36,10 @@ const cookieSession = require('cookie-session');
   ],
 })
 export class AppModule implements NestModule {
-  constructor(private configService: ConfigService<IconfigService>) {}
+  constructor(
+    private dataSource: DataSource,
+    private configService: ConfigService<IconfigService>,
+  ) {}
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(

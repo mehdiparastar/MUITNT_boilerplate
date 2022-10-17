@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "yarn prebuild && nest build",
+    "build": "yarn run prebuild && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "cross-env NODE_ENV=development nest start",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
@@ -19,8 +19,9 @@
     "test:cov": "cross-env NODE_ENV=test jest --coverage",
     "test:debug": "cross-env NODE_ENV=test node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json",
-    "migration:dev:create": "cross-env NODE_ENV=development npx typeorm migration:create src/migration_dev/${npm_config_name}",
-    "migration:dev:generate": "cross-env NODE_ENV=development npx typeorm-ts-node-commonjs migration:generate src/migration_dev/${npm_config_name} -d src/data-source.ts -o",
+    "typeorm": "cross-env NODE_ENV=development npx typeorm-ts-node-commonjs",
+    "migration:dev:create": "cross-env NODE_ENV=development npx typeorm migration:create src/migration_dev/$npm_config_name",
+    "migration:dev:generate": "cross-env NODE_ENV=development npx typeorm-ts-node-commonjs migration:generate src/migration_dev/$npm_config_name -d src/data-source.ts -o",
     "migration:dev:run": "cross-env NODE_ENV=development npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts"
   },
   "dependencies": {
