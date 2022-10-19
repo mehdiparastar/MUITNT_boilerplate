@@ -1,4 +1,5 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { Roles } from './users/entities/roles.entity';
 import { User } from './users/entities/user.entity';
 
 interface IDBConfig {
@@ -9,11 +10,16 @@ interface IDBConfig {
 
 const dbConfig: IDBConfig = {
   development: {
-    type: 'sqlite',
-    database: 'devDB.sqlite',
-    entities: [User],
+    type: 'mysql',
+    host: 'localhost',
+    port: 3306,
+    username: 'admin',
+    password: 'password',
+    database: 'dev_db',
+    entities: [User,Roles],
     synchronize: false,
     migrations: ['src/migration_dev/*.js'],
+    logging: true,
   },
 };
 

@@ -37,7 +37,6 @@ const cookieSession = require('cookie-session');
 })
 export class AppModule implements NestModule {
   constructor(
-    private dataSource: DataSource,
     private configService: ConfigService<IconfigService>,
   ) {}
   configure(consumer: MiddlewareConsumer) {

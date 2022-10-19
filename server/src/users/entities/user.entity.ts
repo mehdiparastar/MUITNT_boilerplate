@@ -1,12 +1,13 @@
-import { UserRoles } from '../../enum/userRoles.enum';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { IuserRole } from '../../types/global';
+import { Roles } from './roles.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -18,8 +19,9 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: UserRoles.user_l2, enum: UserRoles })
-  role?: string;
+  @OneToOne(()=>Roles)
+  @JoinColumn()
+  roles:Roles
 
   @CreateDateColumn()
   createdAt?: Date;

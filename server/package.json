@@ -36,6 +36,7 @@
     "class-validator": "^0.13.2",
     "cookie-session": "^2.0.0",
     "cross-env": "^7.0.3",
+    "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.7",

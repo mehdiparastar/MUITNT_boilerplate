@@ -1,9 +1,12 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/user/create-user.dto';
+import { UpdateUserDto } from './dto/user/update-user.dto';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { UserDto } from './dto/user/user.dto';
 
 @Controller('users')
+@Serialize(UserDto)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
