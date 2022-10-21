@@ -1,32 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/user/create-user.dto';
 import { UpdateUserDto } from './dto/user/update-user.dto';
-import { Roles } from './entities/roles.entity';
 import { User } from './entities/user.entity';
-import { CreateUserRolesDto } from './dto/userRoles/create-user-roles.dto';
+import { UserRolesService } from './user-roles.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepo: Repository<User>,
-    @InjectRepository(Roles) private userRolesRepo: Repository<Roles>,
+    private userRolesService: UserRolesService
   ) {}
 
-  async createUserRoles(createUserRolesDto: CreateUserRolesDto) {
-    const userRoles = this.userRolesRepo.create(createUserRolesDto);
-    return this.userRolesRepo.save(userRoles);
-  }
-
-  async create(createUserDto: CreateUserDto) {
-    const userRoles = await this.createUserRoles({});
+  async create(email: string, password: string) {
+    const userRoles = await this.userRolesService.create();
     const user = this.usersRepo.create({
-      email: createUserDto.email,
-      password: createUserDto.password,
+      email: email,
+      password: password,
       roles: userRoles,
     });
     return this.usersRepo.save(user);
+  }
+
+  findByEmail(email:string){
+    return this.usersRepo.findBy({email})
   }
 
   findAll() {
