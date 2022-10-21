@@ -10,11 +10,11 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSource } from './data-source';
-import { APP_PIPE } from '@nestjs/core';
-import { DataSource } from 'typeorm';
-import { User } from './users/entities/user.entity';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
 // import cookieSession from 'cookie-session';
 const cookieSession = require('cookie-session');
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,18 +27,20 @@ const cookieSession = require('cookie-session');
   controllers: [AppController],
   providers: [
     {
+      provide: APP_FILTER,
+      useClass: AllExceptionFilter,
+    },
+    {
       provide: APP_PIPE,
       useValue: new ValidationPipe({
         whitelist: true,
       }),
-    },
+    },    
     AppService,
   ],
 })
 export class AppModule implements NestModule {
-  constructor(
-    private configService: ConfigService<IconfigService>,
-  ) {}
+  constructor(private configService: ConfigService<IconfigService>) {}
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(

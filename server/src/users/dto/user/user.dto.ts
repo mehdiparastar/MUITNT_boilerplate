@@ -1,4 +1,5 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
+import { UserRolesDto } from '../userRoles/user-roles.dto';
 
 export class UserDto {
   @Expose()
@@ -6,4 +7,10 @@ export class UserDto {
 
   @Expose()
   email: string;
+
+  @Expose()
+  @Transform(({ obj }: { obj: UserDto }) =>
+    Object.keys(obj.roles).filter((item) => obj.roles[item]===true),
+  )
+  roles: string[];
 }

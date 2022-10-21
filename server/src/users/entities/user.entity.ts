@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -14,14 +15,15 @@ export class User {
   id: number;
 
   @Column()
+  @Index({ unique: true })
   email: string;
 
   @Column()
   password: string;
 
-  @OneToOne(()=>Roles)
+  @OneToOne(() => Roles)
   @JoinColumn()
-  roles:Roles
+  roles: Roles;
 
   @CreateDateColumn()
   createdAt?: Date;
