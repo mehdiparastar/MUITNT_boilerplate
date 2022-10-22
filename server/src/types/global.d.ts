@@ -1,12 +1,4 @@
-// enum UserRoles {
-//   superUser = 'superUser',
-//   admin = 'admin',
-//   expert_l1 = 'expert_l1',
-//   expert_l2 = 'expert_l2',
-//   user_l1 = 'user_l1',
-//   user_l2 = 'user_l2',
-// }
-
+import { User } from '../users/entities/user.entity';
 import { UserRoles } from '../enum/userRoles.enum';
 
 declare global {
@@ -15,13 +7,13 @@ declare global {
     DB_NAME?: string;
   }
 
-  type IuserRole =
-    | UserRoles.superUser
-    | UserRoles.admin
-    | UserRoles.expert_l1
-    | UserRoles.expert_l2
-    | UserRoles.user_l1
-    | UserRoles.user_l2;
+namespace Express{
+  interface Request{
+    currentUser?:User
+  }
 }
 
-export { IuserRole };
+
+}
+
+export {};

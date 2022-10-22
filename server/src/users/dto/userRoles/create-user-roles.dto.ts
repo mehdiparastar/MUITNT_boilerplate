@@ -2,8 +2,8 @@ import { IsBoolean, IsEmail, IsString } from 'class-validator';
 import { UserRoles } from '../../../enum/userRoles.enum';
 
 export class CreateUserRolesDto {
-  @IsBoolean()
-  [UserRoles.superUser]?: boolean;
+  // @IsBoolean()
+  // [UserRoles.superUser]?: boolean;
   
   @IsBoolean()
   [UserRoles.admin]?: boolean;
