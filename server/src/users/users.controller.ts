@@ -19,8 +19,10 @@ import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';
 import { UsersService } from './users.service';
 import { Roles } from 'src/decorators/roles.decorator';
 import { UserRoles } from 'src/enum/userRoles.enum';
+import { CurrentUser } from './decorators/current-user.middleware';
+import { User } from './entities/user.entity';
 
-@Controller('users')
+@Controller('auth')
 @Serialize(UserDto)
 export class UsersController {
   constructor(
@@ -51,12 +53,20 @@ export class UsersController {
     session.userId = null;
   }
 
-  @Patch(':id')
+  @Patch('change-user-roles/:id')
   @UseGuards(AuthGuard)
   @Roles(UserRoles.superUser, UserRoles.admin)
   approveUserRoles(@Param('id') id: string, @Body() body: ApproveUserRolesDto) {
     return this.usersService.changeUserRoles(parseInt(id), body);
   }
+
+  @Get('/whoami')
+  @UseGuards(AuthGuard)
+  @Roles(UserRoles.user_l2)
+  whoAmI(@CurrentUser() user: User) {
+    return user;
+  }
+
   // @Get()
   // findAll() {
   //   return this.usersService.findAll();

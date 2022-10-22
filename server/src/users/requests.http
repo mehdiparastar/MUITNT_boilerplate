@@ -1,5 +1,5 @@
 ### Signup a new user
-POST http://localhost:3000/users/signup
+POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
@@ -9,7 +9,7 @@ Content-Type: application/json
 
 
 ### Signin with email and password
-POST http://localhost:3000/users/signin
+POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
 {
@@ -19,14 +19,18 @@ Content-Type: application/json
 
 
 ### Signout user
-POST http://localhost:3000/users/signout
+POST http://localhost:3000/auth/signout
 
 
 ### Approve an existing report
-PATCH http://localhost:3000/users/1
+PATCH http://localhost:3000/auth/1
 Content-Type: application/json
 
 {
     "admin":true,
     "user_l1":true
 }
+
+
+### Get the currently signed in user
+GET http://localhost:3000/auth/whoami
