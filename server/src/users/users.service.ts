@@ -9,7 +9,7 @@ import { UserRolesService } from './user-roles.service';
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepo: Repository<User>,
-    private userRolesService: UserRolesService
+    private userRolesService: UserRolesService,
   ) {}
 
   async create(email: string, password: string) {
@@ -22,8 +22,14 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-  findByEmail(email:string){
-    return this.usersRepo.findBy({email})
+  async findByEmail(email: string) {
+    const user = await this.usersRepo.find({
+      where: { email },
+      relations: {
+        roles: true,
+      },
+    });
+    return user;
   }
 
   findAll() {

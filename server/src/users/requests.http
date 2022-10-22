@@ -16,3 +16,7 @@ Content-Type: application/json
     "email":"test@test.com",
     "password":"test"
 }
+
+
+### Signout user
+POST http://localhost:3000/users/signout

@@ -7,12 +7,14 @@ import {
   Param,
   Delete,
   Session,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/user/create-user.dto';
 import { UpdateUserDto } from './dto/user/update-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dto/user/user.dto';
 import { AuthService } from './auth.service';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('users')
 @Serialize(UserDto)
@@ -34,6 +36,7 @@ export class UsersController {
   }
 
   @Post('signout')
+  @UseGuards(AuthGuard)
   signout(@Session() session: any) {
     session.userId = null;
   }
