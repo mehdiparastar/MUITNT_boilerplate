@@ -62,7 +62,11 @@ export class UsersController {
 
   @Get('/whoami')
   @UseGuards(AuthGuard)
-  @Roles(UserRoles.user_l2)
+  @Roles(
+    UserRoles.section1ExpertL2,
+    UserRoles.section2ExpertL2,
+    UserRoles.section3ExpertL2,
+  )
   whoAmI(@CurrentUser() user: User) {
     return user;
   }

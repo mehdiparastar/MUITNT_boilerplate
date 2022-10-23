@@ -9,14 +9,29 @@ export class ApproveUserRolesDto {
   [UserRoles.admin]?: boolean = false;
 
   @IsBoolean()
-  [UserRoles.expert_l1]?: boolean = false;
+  [UserRoles.adminSection1]?: boolean = false;
 
   @IsBoolean()
-  [UserRoles.expert_l2]?: boolean = false;
+  [UserRoles.adminSection2]?: boolean = false;
 
   @IsBoolean()
-  [UserRoles.user_l1]?: boolean = false;
+  [UserRoles.adminSection3]?: boolean = false;
 
   @IsBoolean()
-  [UserRoles.user_l2]?: boolean = true;
+  [UserRoles.section1ExpertL1]?: boolean = false;
+
+  @IsBoolean()
+  [UserRoles.section1ExpertL2]?: boolean = false;
+
+  @IsBoolean()
+  [UserRoles.section2ExpertL1]?: boolean = false;
+
+  @IsBoolean()
+  [UserRoles.section2ExpertL2]?: boolean = false;
+
+  @IsBoolean()
+  [UserRoles.section3ExpertL1]?: boolean = false;
+
+  @IsBoolean()
+  [UserRoles.section3ExpertL2]?: boolean = true;
 }

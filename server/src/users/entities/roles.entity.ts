@@ -19,16 +19,31 @@ export class Roles {
   [UserRoles.admin]?: boolean;
 
   @Column({ type: 'boolean', default: false })
-  [UserRoles.expert_l1]?: boolean;
+  [UserRoles.adminSection1]?: boolean;
 
   @Column({ type: 'boolean', default: false })
-  [UserRoles.expert_l2]?: boolean;
+  [UserRoles.adminSection2]?: boolean;
 
   @Column({ type: 'boolean', default: false })
-  [UserRoles.user_l1]?: boolean;
+  [UserRoles.adminSection3]?: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  [UserRoles.section1ExpertL1]?: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  [UserRoles.section1ExpertL2]?: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  [UserRoles.section2ExpertL1]?: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  [UserRoles.section2ExpertL2]?: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  [UserRoles.section3ExpertL1]?: boolean;
 
   @Column({ type: 'boolean', default: true })
-  [UserRoles.user_l2]?: boolean;
+  [UserRoles.section3ExpertL2]?: boolean;
 
   @CreateDateColumn()
   createdAt?: Date;

@@ -3,7 +3,7 @@ POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-    "email":"test01@test.com",
+    "email":"test02@test.com",
     "password":"test"
 }
 
@@ -23,12 +23,11 @@ POST http://localhost:3000/auth/signout
 
 
 ### Approve an existing report
-PATCH http://localhost:3000/auth/change-user-roles/1
+PATCH http://localhost:3000/auth/change-user-roles/2
 Content-Type: application/json
 
 {
-    "admin":true,
-    "user_l2":false
+    "admin":true
 }
 
 

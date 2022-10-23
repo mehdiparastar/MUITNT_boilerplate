@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
-import { UserRoles } from 'src/enum/userRoles.enum';
+import { getRolesExpand, UserRoles } from '../enum/userRoles.enum';
 import { Request } from 'express';
 
 @Injectable()
@@ -32,8 +32,10 @@ export class RolesGuard implements CanActivate {
       return false;
     }
 
-    const userRoles = Object.keys(request.currentUser.roles).filter(
-      (item) => request.currentUser.roles[item] === true,
+    const userRoles = getRolesExpand(
+      Object.keys(request.currentUser.roles).filter(
+        (item) => request.currentUser.roles[item] === true,
+      ),
     );
 
     const auth = requiredRoles.some((role) => userRoles.includes(role));

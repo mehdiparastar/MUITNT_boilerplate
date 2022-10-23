@@ -9,14 +9,28 @@ export class UserRolesDto {
   [UserRoles.admin]?: boolean;
 
   @Expose()
-  [UserRoles.expert_l1]?: boolean;
+  [UserRoles.adminSection1]?: boolean;
 
   @Expose()
-  [UserRoles.expert_l2]?: boolean;
+  [UserRoles.adminSection2]?: boolean;
 
   @Expose()
-  [UserRoles.user_l1]?: boolean;
+  [UserRoles.adminSection3]?: boolean;
 
   @Expose()
-  [UserRoles.user_l2]?: boolean;
+  [UserRoles.section1ExpertL1]?: boolean;
+
+  @Expose()
+  [UserRoles.section1ExpertL2]?: boolean;
+  @Expose()
+  [UserRoles.section2ExpertL1]?: boolean;
+
+  @Expose()
+  [UserRoles.section2ExpertL2]?: boolean;
+
+  @Expose()
+  [UserRoles.section3ExpertL1]?: boolean;
+  
+  @Expose()
+  [UserRoles.section3ExpertL2]?: boolean;
 }
