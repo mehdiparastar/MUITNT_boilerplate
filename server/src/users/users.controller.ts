@@ -22,7 +22,7 @@ import { UserRoles } from 'src/enum/userRoles.enum';
 import { CurrentUser } from './decorators/current-user.middleware';
 import { User } from './entities/user.entity';
 
-@Controller('auth')
+@Controller()
 @Serialize(UserDto)
 export class UsersController {
   constructor(
@@ -30,7 +30,7 @@ export class UsersController {
     private readonly usersService: UsersService,
   ) {}
 
-  @Post('signup')
+  @Post('auth/signup')
   async create(@Body() body: CreateUserDto, @Session() session: any) {
     const user = await this.authService.signup(body.email, body.password);
     session.userId = user.id;
@@ -40,27 +40,27 @@ export class UsersController {
     return user;
   }
 
-  @Post('signin')
+  @Post('auth/signin')
   async signin(@Body() body: CreateUserDto, @Session() session: any) {
     const user = await this.authService.signin(body.email, body.password);
     session.userId = user.id;
     return user;
   }
 
-  @Post('signout')
+  @Post('auth/signout')
   @UseGuards(AuthGuard)
   signout(@Session() session: any) {
     session.userId = null;
   }
 
-  @Patch('change-user-roles/:id')
+  @Patch('auth/change-user-roles/:id')
   @UseGuards(AuthGuard)
   @Roles(UserRoles.superUser, UserRoles.admin)
   approveUserRoles(@Param('id') id: string, @Body() body: ApproveUserRolesDto) {
     return this.usersService.changeUserRoles(parseInt(id), body);
   }
 
-  @Get('/whoami')
+  @Get('auth/whoami')
   @UseGuards(AuthGuard)
   @Roles(
     UserRoles.section1ExpertL2,
@@ -71,6 +71,19 @@ export class UsersController {
     return user;
   }
 
+  @Patch('auth/change-email')
+  @UseGuards(AuthGuard)
+  changeEmail(@CurrentUser() user: User, @Body('email') email: string) {
+    return this.authService.changeUserEmail(user.id, email);
+  }
+
+  
+  @Patch('auth/change-password')
+  @UseGuards(AuthGuard)
+  changePassword(@CurrentUser() user: User, @Body('password') password: string) {
+    return this.authService.changeUserPassword(user.id, password);
+  }
+
   // @Get()
   // findAll() {
   //   return this.usersService.findAll();
@@ -79,11 +92,6 @@ export class UsersController {
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.usersService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.usersService.update(+id, updateUserDto);
   // }
 
   // @Delete(':id')

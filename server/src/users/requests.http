@@ -13,8 +13,8 @@ POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
 {
-    "email":"test01@test.com",
-    "password":"test"
+    "email":"aaa@aaa.com",
+    "password":"mehdi"
 }
 
 
@@ -33,3 +33,21 @@ Content-Type: application/json
 
 ### Get the currently signed in user
 GET http://localhost:3000/auth/whoami
+
+
+### Change user email
+PATCH http://localhost:3000/auth/change-email
+Content-Type: application/json
+
+{
+    "email":"aaa@aaa.com"
+}
+
+
+### Change user password
+PATCH http://localhost:3000/auth/change-password
+Content-Type: application/json
+
+{
+    "password":"mehdi"
+}
