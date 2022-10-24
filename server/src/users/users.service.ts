@@ -1,10 +1,8 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserRoles } from 'src/enum/userRoles.enum';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/user/update-user.dto';
 import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';

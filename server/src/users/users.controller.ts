@@ -24,7 +24,7 @@ import { UserRoles } from 'src/enum/userRoles.enum';
 import { CurrentUser } from './decorators/current-user.middleware';
 import { User } from './entities/user.entity';
 
-@Controller()
+@Controller('auth')
 @Serialize(UserDto)
 export class UsersController {
   constructor(
@@ -32,7 +32,7 @@ export class UsersController {
     private readonly usersService: UsersService,
   ) {}
 
-  @Post('auth/signup')
+  @Post('signup')
   async create(@Body() body: CreateUserDto, @Session() session: any) {
     const user = await this.authService.signup(body.email, body.password);
     session.userId = user.id;
@@ -42,27 +42,27 @@ export class UsersController {
     return user;
   }
 
-  @Post('auth/signin')
+  @Post('signin')
   async signin(@Body() body: CreateUserDto, @Session() session: any) {
     const user = await this.authService.signin(body.email, body.password);
     session.userId = user.id;
     return user;
   }
 
-  @Post('auth/signout')
+  @Post('signout')
   @UseGuards(AuthGuard)
   signout(@Session() session: any) {
     session.userId = null;
   }
 
-  @Patch('auth/change-user-roles/:id')
+  @Patch('change-user-roles/:id')
   @UseGuards(AuthGuard)
   @Roles(UserRoles.superUser, UserRoles.admin)
   approveUserRoles(@Param('id') id: string, @Body() body: ApproveUserRolesDto) {
     return this.usersService.changeUserRoles(parseInt(id), body);
   }
 
-  @Get('auth/whoami')
+  @Get('whoami')
   @UseGuards(AuthGuard)
   @Roles(
     UserRoles.section1ExpertL2,
@@ -73,13 +73,13 @@ export class UsersController {
     return user;
   }
 
-  @Patch('auth/change-email')
+  @Patch('change-email')
   @UseGuards(AuthGuard)
   changeEmail(@CurrentUser() user: User, @Body('email') email: string) {
     return this.authService.changeUserEmail(user.id, email);
   }
 
-  @Patch('auth/change-password')
+  @Patch('change-password')
   @UseGuards(AuthGuard)
   changePassword(
     @CurrentUser() user: User,
@@ -88,14 +88,14 @@ export class UsersController {
     return this.authService.changeUserPassword(user.id, password);
   }
 
-  @Get('auth/all')
+  @Get('all')
   @UseGuards(AuthGuard)
   @Roles(UserRoles.superUser, UserRoles.admin)
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Get('auth/find-by-email')
+  @Get('find-by-email')
   @UseGuards(AuthGuard)
   @Roles(
     UserRoles.superUser,
@@ -112,7 +112,7 @@ export class UsersController {
     return users;
   }
 
-  @Get('auth/find-by-id')
+  @Get('find-by-id')
   @UseGuards(AuthGuard)
   @Roles(
     UserRoles.superUser,
@@ -129,7 +129,7 @@ export class UsersController {
     return user;
   }
 
-  @Delete('auth/:id')
+  @Delete('delete-user/:id')
   @UseGuards(AuthGuard)
   @Roles(UserRoles.superUser)
   remove(@Param('id') id: string) {

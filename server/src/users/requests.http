@@ -54,7 +54,7 @@ Content-Type: application/json
 
 
 ### Delete a particular user with a given id 
-DELETE  http://localhost:3000/auth/2
+DELETE  http://localhost:3000/auth/delete-user/2
 
 
 ### Get a particular user with a given id 
