@@ -1,5 +1,5 @@
-# MUITNM_boilerplate
-MUI-Typescrypt-Nestjs-MongoDB
+# MUITNT_boilerplate
+MUI-Typescrypt-Nestjs-TypeORM
 
 
 On Ubunto Run this command at root directory:
