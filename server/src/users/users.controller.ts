@@ -8,6 +8,8 @@ import {
   Delete,
   Session,
   UseGuards,
+  Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/user/create-user.dto';
 import { UpdateUserDto } from './dto/user/update-user.dto';
@@ -77,25 +79,60 @@ export class UsersController {
     return this.authService.changeUserEmail(user.id, email);
   }
 
-  
   @Patch('auth/change-password')
   @UseGuards(AuthGuard)
-  changePassword(@CurrentUser() user: User, @Body('password') password: string) {
+  changePassword(
+    @CurrentUser() user: User,
+    @Body('password') password: string,
+  ) {
     return this.authService.changeUserPassword(user.id, password);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.usersService.findAll();
-  // }
+  @Get('auth/all')
+  @UseGuards(AuthGuard)
+  @Roles(UserRoles.superUser, UserRoles.admin)
+  findAll() {
+    return this.usersService.findAll();
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.usersService.findOne(+id);
-  // }
+  @Get('auth/find-by-email')
+  @UseGuards(AuthGuard)
+  @Roles(
+    UserRoles.superUser,
+    UserRoles.admin,
+    UserRoles.adminSection1,
+    UserRoles.adminSection2,
+    UserRoles.adminSection3,
+  )
+  async findOneByEmail(@Query('email') email: string) {
+    const users: User[] = await this.usersService.findByEmail(email);
+    if (!users.length) {
+      throw new NotFoundException('user not found');
+    }
+    return users;
+  }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.usersService.remove(+id);
-  // }
+  @Get('auth/find-by-id')
+  @UseGuards(AuthGuard)
+  @Roles(
+    UserRoles.superUser,
+    UserRoles.admin,
+    UserRoles.adminSection1,
+    UserRoles.adminSection2,
+    UserRoles.adminSection3,
+  )
+  async findOneById(@Query('id') id: string) {
+    const user: User = await this.usersService.findOneById(parseInt(id));
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    return user;
+  }
+
+  @Delete('auth/:id')
+  @UseGuards(AuthGuard)
+  @Roles(UserRoles.superUser)
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(parseInt(id));
+  }
 }

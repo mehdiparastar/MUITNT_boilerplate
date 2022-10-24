@@ -51,3 +51,15 @@ Content-Type: application/json
 {
     "password":"mehdi"
 }
+
+
+### Delete a particular user with a given id 
+DELETE  http://localhost:3000/auth/2
+
+
+### Get a particular user with a given id 
+Get  http://localhost:3000/auth/find-by-id?id=1
+
+
+### Get a particular user with a given email 
+GET   http://localhost:3000/auth/find-by-email?email=aaa@aaa.com

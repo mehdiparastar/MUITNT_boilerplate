@@ -74,15 +74,16 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    const allUsers: User[] = await this.usersRepo.find();
+    return allUsers
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.findOneById(id);
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    return this.usersRepo.remove(user);
   }
 }
