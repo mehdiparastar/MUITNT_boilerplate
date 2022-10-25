@@ -5,22 +5,13 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-      args:
+    entrypoint:
+        - MYSQL_ROOT_PASSWORD=password
         - MYSQL_DATABASE=dev_db
         - MYSQL_USER=dev
         - MYSQL_PASSWORD=dev_password
-        - MYSQL_TEST_DATABASE=test_db
-        - MYSQL_TEST_USER=test
-        - MYSQL_TEST_PASSWORD=test_password
     command: --default-authentication-plugin=mysql_native_password
-    environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_USER=dev
-      - MYSQL_PASSWORD=dev_password
-      - MYSQL_TEST_DATABASE=test_db
-      - MYSQL_TEST_USER=test
-      - MYSQL_TEST_PASSWORD=test_password
-    # restart: always
+    restart: always
     ports:
       - 3306:3306
     volumes:
