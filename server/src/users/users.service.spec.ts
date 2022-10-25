@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Roles } from 'src/users/entities/roles.entity';
+import { Roles } from '../users/entities/roles.entity';
 import { UserRoles } from '../enum/userRoles.enum';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
@@ -237,18 +237,7 @@ describe('UsersService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UsersService,
-        {
-          provide:getRepositoryToken(User),
-          useValue:{
-            findByEmail:jest.fn(),
-            findOneById:jest.fn(),
-            changeUserRoles:jest.fn(),
-            update:jest.fn(),
-            findAll:jest.fn(),
-            remove:jest.fn(),
-          }
-        }
+        UsersService,        
       ],
     }).compile();
 

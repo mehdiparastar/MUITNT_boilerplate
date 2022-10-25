@@ -1,23 +1,30 @@
 version: '3.8'
 services:
   db:
-    image: mysql
     container_name: mysqlcontainer
-    cap_add:
-      - SYS_NICE
-    restart: always
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - MYSQL_DATABASE=dev_db
+        - MYSQL_USER=dev
+        - MYSQL_PASSWORD=dev_password
+        - MYSQL_TEST_DATABASE=test_db
+        - MYSQL_TEST_USER=test
+        - MYSQL_TEST_PASSWORD=test_password
+    command: --default-authentication-plugin=mysql_native_password
     environment:
-      - MYSQL_DATABASE=dev_db
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=password
       - MYSQL_ROOT_PASSWORD=password
-      - SERVICE_TAGS=dev
-      - SERVICE_NAME=mysqldb
+      - MYSQL_USER=dev
+      - MYSQL_PASSWORD=dev_password
+      - MYSQL_TEST_DATABASE=test_db
+      - MYSQL_TEST_USER=test
+      - MYSQL_TEST_PASSWORD=test_password
+    # restart: always
     ports:
       - 3306:3306
     volumes:
       - db:/var/lib/mysql
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     expose:
       - 3306
     networks:
