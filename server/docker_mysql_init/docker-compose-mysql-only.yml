@@ -1,1 +1,30 @@
-mehdi
+version: '3.8'
+services:
+  db:
+    container_name: mysqlcontainer
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=dev_db
+      - MYSQL_USER=dev
+      - MYSQL_PASSWORD=dev_db_password
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+    expose:
+      - 3306
+    networks:
+      - mysql_dev_db_network
+
+volumes:
+  db:
+    driver: local
+
+networks:
+  mysql_dev_db_network:
+    driver: bridge
+
