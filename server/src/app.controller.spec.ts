@@ -15,8 +15,10 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe(`Hello World! ENV=${process.env.NODE_ENV}`);
+    it(`should return Hello World! ENV=${process.env.NODE_ENV}`, () => {
+      expect(appController.getHello()).toBe(
+        `Hello World! ENV=${process.env.NODE_ENV}`,
+      );
     });
   });
 });

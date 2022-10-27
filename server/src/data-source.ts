@@ -14,13 +14,25 @@ const dbConfig: IDBConfig = {
     host: 'localhost',
     port: 3306,
     username: 'admin',
-    password: 'password',
+    password: 'admin',
     database: 'dev_db',
     entities: [User,Roles],
     synchronize: false,
     migrations: ['src/migration_dev/*.js'],
-    logging: true,
+    logging: false,
   },
+  test: {
+    type: 'mysql',
+    host: 'localhost',
+    port: 3306,
+    username: 'admin',
+    password: 'admin',
+    database: 'test_db',
+    entities: [User,Roles],
+    synchronize: false,
+    migrations: ['src/migration_test/*.js'],
+    logging: false,
+  }
 };
 
 export const AppDataSource = new DataSource(

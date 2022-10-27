@@ -22,7 +22,10 @@
     "typeorm": "cross-env NODE_ENV=development npx typeorm-ts-node-commonjs",
     "migration:dev:create": "cross-env NODE_ENV=development npx typeorm migration:create src/migration_dev/$npm_config_name",
     "migration:dev:generate": "cross-env NODE_ENV=development npx typeorm-ts-node-commonjs migration:generate src/migration_dev/$npm_config_name -d src/data-source.ts -o",
-    "migration:dev:run": "cross-env NODE_ENV=development npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts"
+    "migration:dev:run": "cross-env NODE_ENV=development npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
+    "migration:test:create": "cross-env NODE_ENV=test npx typeorm migration:create src/migration_test/$npm_config_name",
+    "migration:test:generate": "cross-env NODE_ENV=test npx typeorm-ts-node-commonjs migration:generate src/migration_test/$npm_config_name -d src/data-source.ts -o",
+    "migration:test:run": "cross-env NODE_ENV=test npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts"
   },
   "dependencies": {
     "@nestjs/common": "^9.1.4",
