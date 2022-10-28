@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
-import { passwordCheck } from '../generalFunctions/password-check';
-import { saltedHashedPassword } from '../generalFunctions/salted-hashed-password';
+import { passwordCheck } from '../helperFunctions/password-check';
+import { saltedHashedPassword } from '../helperFunctions/salted-hashed-password';
 import { AuthService } from './auth.service';
 import { fakeUsersService } from './users.service.fake';
 

@@ -3,10 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { saltedHashedPassword } from '../generalFunctions/salted-hashed-password';
+import { saltedHashedPassword } from '../helperFunctions/salted-hashed-password';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
-import { passwordCheck } from '../generalFunctions/password-check';
+import { passwordCheck } from '../helperFunctions/password-check';
 
 @Injectable()
 export class AuthService {
