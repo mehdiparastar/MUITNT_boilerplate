@@ -45,6 +45,9 @@ export class UsersController {
   async signin(@Body() body: CreateUserDto, @Session() session: any) {
     const user = await this.authService.signin(body.email, body.password);
     session.userId = user.id;
+    session.userRoles = Object.keys(user.roles).filter(
+      (item) => user.roles[item] === true,
+    );
     return user;
   }
 
@@ -52,6 +55,7 @@ export class UsersController {
   @UseGuards(AuthGuard)
   signout(@Session() session: any) {
     session.userId = null;
+    session.userRoles = [];
   }
 
   @Patch('change-user-roles/:id')
@@ -103,7 +107,7 @@ export class UsersController {
     UserRoles.adminSection2,
     UserRoles.adminSection3,
   )
-  async findOneByEmail(@Query('email') email: string) {
+  async findAllByEmail(@Query('email') email: string) {
     const users: User[] = await this.usersService.findByEmail(email);
     if (!users.length) {
       throw new NotFoundException('user not found');

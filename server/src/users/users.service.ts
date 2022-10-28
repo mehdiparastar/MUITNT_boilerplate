@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/user/update-user.dto';
@@ -26,25 +23,36 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-  findByEmail(email: string) {
-    return this.usersRepo.find({
+  async findByEmail(email: string) {
+    if (!email) {
+      throw new NotFoundException('user not found');
+    }
+    const find = await this.usersRepo.find({
       where: { email },
       relations: {
         roles: true,
       },
     });
+    if (!find.length) {
+      throw new NotFoundException('user not found');
+    }
+    return find;
   }
 
-  findOneById(id: number) {
+  async findOneById(id: number) {
     if (!id) {
       throw new NotFoundException('user not found');
     }
-    return this.usersRepo.findOne({
+    const find = await this.usersRepo.findOne({
       where: { id },
       relations: {
         roles: true,
       },
     });
+    if (!find) {
+      throw new NotFoundException('user not found');
+    }
+    return find;
   }
 
   async changeUserRoles(id: number, newRoles: ApproveUserRolesDto) {
@@ -74,7 +82,7 @@ export class UsersService {
 
   async findAll() {
     const allUsers: User[] = await this.usersRepo.find();
-    return allUsers
+    return allUsers;
   }
 
   async remove(id: number) {

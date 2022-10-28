@@ -1,250 +1,90 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Roles } from '../users/entities/roles.entity';
-import { UserRoles } from '../enum/userRoles.enum';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
+import { UserRolesService } from './user-roles.service';
+import { Repository } from 'typeorm';
+import { roles as roles_ } from '../unit-test/fake.user-roles';
+import { usersArray as usersArray_ } from '../unit-test/fake.users';
+import { fakeUserRolesService } from './user-roles.service.fake';
+import { Roles } from './entities/roles.entity';
 
-const roles: Roles[] = [
-  {
-    id: 1,
-    [UserRoles.superUser]: true,
-    [UserRoles.admin]: false,
-    [UserRoles.adminSection1]: false,
-    [UserRoles.adminSection2]: false,
-    [UserRoles.adminSection3]: false,
-    [UserRoles.section1ExpertL1]: false,
-    [UserRoles.section1ExpertL2]: false,
-    [UserRoles.section2ExpertL1]: false,
-    [UserRoles.section2ExpertL2]: false,
-    [UserRoles.section3ExpertL1]: false,
-    [UserRoles.section3ExpertL2]: false,
-  } as Roles,
-  {
-    id: 2,
-    [UserRoles.superUser]: false,
-    [UserRoles.admin]: true,
-    [UserRoles.adminSection1]: false,
-    [UserRoles.adminSection2]: false,
-    [UserRoles.adminSection3]: false,
-    [UserRoles.section1ExpertL1]: false,
-    [UserRoles.section1ExpertL2]: false,
-    [UserRoles.section2ExpertL1]: false,
-    [UserRoles.section2ExpertL2]: false,
-    [UserRoles.section3ExpertL1]: false,
-    [UserRoles.section3ExpertL2]: false,
-  } as Roles,
-  {
-    id: 3,
-    [UserRoles.superUser]: false,
-    [UserRoles.admin]: false,
-    [UserRoles.adminSection1]: true,
-    [UserRoles.adminSection2]: false,
-    [UserRoles.adminSection3]: false,
-    [UserRoles.section1ExpertL1]: false,
-    [UserRoles.section1ExpertL2]: false,
-    [UserRoles.section2ExpertL1]: false,
-    [UserRoles.section2ExpertL2]: false,
-    [UserRoles.section3ExpertL1]: false,
-    [UserRoles.section3ExpertL2]: false,
-  } as Roles,
-  {
-    id: 4,
-    [UserRoles.superUser]: false,
-    [UserRoles.admin]: false,
-    [UserRoles.adminSection1]: false,
-    [UserRoles.adminSection2]: true,
-    [UserRoles.adminSection3]: false,
-    [UserRoles.section1ExpertL1]: false,
-    [UserRoles.section1ExpertL2]: false,
-    [UserRoles.section2ExpertL1]: false,
-    [UserRoles.section2ExpertL2]: false,
-    [UserRoles.section3ExpertL1]: false,
-    [UserRoles.section3ExpertL2]: false,
-  } as Roles,
-  {
-    id: 5,
-    [UserRoles.superUser]: false,
-    [UserRoles.admin]: false,
-    [UserRoles.adminSection1]: false,
-    [UserRoles.adminSection2]: false,
-    [UserRoles.adminSection3]: true,
-    [UserRoles.section1ExpertL1]: false,
-    [UserRoles.section1ExpertL2]: false,
-    [UserRoles.section2ExpertL1]: false,
-    [UserRoles.section2ExpertL2]: false,
-    [UserRoles.section3ExpertL1]: false,
-    [UserRoles.section3ExpertL2]: false,
-  } as Roles,
-  {
-    id: 6,
-    [UserRoles.superUser]: false,
-    [UserRoles.admin]: false,
-    [UserRoles.adminSection1]: false,
-    [UserRoles.adminSection2]: false,
-    [UserRoles.adminSection3]: false,
-    [UserRoles.section1ExpertL1]: true,
-    [UserRoles.section1ExpertL2]: false,
-    [UserRoles.section2ExpertL1]: false,
-    [UserRoles.section2ExpertL2]: false,
-    [UserRoles.section3ExpertL1]: false,
-    [UserRoles.section3ExpertL2]: false,
-  } as Roles,
-  {
-    id: 7,
-    [UserRoles.superUser]: false,
-    [UserRoles.admin]: false,
-    [UserRoles.adminSection1]: false,
-    [UserRoles.adminSection2]: false,
-    [UserRoles.adminSection3]: false,
-    [UserRoles.section1ExpertL1]: false,
-    [UserRoles.section1ExpertL2]: true,
-    [UserRoles.section2ExpertL1]: false,
-    [UserRoles.section2ExpertL2]: false,
-    [UserRoles.section3ExpertL1]: false,
-    [UserRoles.section3ExpertL2]: false,
-  } as Roles,
-  {
-    id: 8,
-    [UserRoles.superUser]: false,
-    [UserRoles.admin]: false,
-    [UserRoles.adminSection1]: false,
-    [UserRoles.adminSection2]: false,
-    [UserRoles.adminSection3]: false,
-    [UserRoles.section1ExpertL1]: false,
-    [UserRoles.section1ExpertL2]: false,
-    [UserRoles.section2ExpertL1]: true,
-    [UserRoles.section2ExpertL2]: false,
-    [UserRoles.section3ExpertL1]: false,
-    [UserRoles.section3ExpertL2]: false,
-  } as Roles,
-  {
-    id: 9,
-    [UserRoles.superUser]: false,
-    [UserRoles.admin]: false,
-    [UserRoles.adminSection1]: false,
-    [UserRoles.adminSection2]: false,
-    [UserRoles.adminSection3]: false,
-    [UserRoles.section1ExpertL1]: false,
-    [UserRoles.section1ExpertL2]: false,
-    [UserRoles.section2ExpertL1]: false,
-    [UserRoles.section2ExpertL2]: true,
-    [UserRoles.section3ExpertL1]: false,
-    [UserRoles.section3ExpertL2]: false,
-  } as Roles,
-  {
-    id: 10,
-    [UserRoles.superUser]: false,
-    [UserRoles.admin]: false,
-    [UserRoles.adminSection1]: false,
-    [UserRoles.adminSection2]: false,
-    [UserRoles.adminSection3]: false,
-    [UserRoles.section1ExpertL1]: false,
-    [UserRoles.section1ExpertL2]: false,
-    [UserRoles.section2ExpertL1]: false,
-    [UserRoles.section2ExpertL2]: false,
-    [UserRoles.section3ExpertL1]: true,
-    [UserRoles.section3ExpertL2]: false,
-  } as Roles,
-  {
-    id: 11,
-    [UserRoles.superUser]: false,
-    [UserRoles.admin]: false,
-    [UserRoles.adminSection1]: false,
-    [UserRoles.adminSection2]: false,
-    [UserRoles.adminSection3]: false,
-    [UserRoles.section1ExpertL1]: false,
-    [UserRoles.section1ExpertL2]: false,
-    [UserRoles.section2ExpertL1]: false,
-    [UserRoles.section2ExpertL2]: false,
-    [UserRoles.section3ExpertL1]: false,
-    [UserRoles.section3ExpertL2]: true,
-  } as Roles,
-];
-
-const usersArray: User[] = [
-  {
-    id: 1,
-    email: 'test01@test.com',
-    password: 'test01',
-    roles: roles[0],
-  } as User,
-  {
-    id: 2,
-    email: 'test02@test.com',
-    password: 'test02',
-    roles: roles[1],
-  } as User,
-  {
-    id: 3,
-    email: 'test03@test.com',
-    password: 'test03',
-    roles: roles[2],
-  } as User,
-  {
-    id: 4,
-    email: 'test04@test.com',
-    password: 'test04',
-    roles: roles[3],
-  } as User,
-  {
-    id: 5,
-    email: 'test05@test.com',
-    password: 'test05',
-    roles: roles[4],
-  } as User,
-  {
-    id: 6,
-    email: 'test06@test.com',
-    password: 'test06',
-    roles: roles[5],
-  } as User,
-  {
-    id: 7,
-    email: 'test07@test.com',
-    password: 'test07',
-    roles: roles[6],
-  } as User,
-  {
-    id: 8,
-    email: 'test08@test.com',
-    password: 'test08',
-    roles: roles[7],
-  } as User,
-  {
-    id: 9,
-    email: 'test09@test.com',
-    password: 'test09',
-    roles: roles[8],
-  } as User,
-  {
-    id: 10,
-    email: 'test010@test.com',
-    password: 'test010',
-    roles: roles[9],
-  } as User,
-  {
-    id: 11,
-    email: 'test011@test.com',
-    password: 'test011',
-    roles: roles[10],
-  } as User,
-];
+declare var usersArray: User[];
+declare var roles: Roles[];
 
 describe('UsersService', () => {
   let service: UsersService;
+  let userRepository: Repository<User>;
+  globalThis.usersArray = usersArray_;
+  globalThis.roles = roles_;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UsersService,        
+        UsersService,
+        {
+          provide: UserRolesService,
+          useValue: fakeUserRolesService,
+        },
+        {
+          provide: getRepositoryToken(User),
+          useValue: {
+            create: jest.fn().mockResolvedValue(usersArray[0]),
+            save: jest.fn().mockResolvedValue(usersArray[0]),
+            find: jest.fn().mockResolvedValue(usersArray),
+            findOne: jest.fn().mockResolvedValue(usersArray[0]),
+            remove: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<UsersService>(UsersService);
+    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('create user', async () => {
+    const newUser = await service.create(
+      usersArray[0].email,
+      usersArray[0].password,
+    );
+    expect(newUser).toEqual(usersArray[0]);
+  });
+
+  it('find user by email', async () => {
+    const user = await service.findByEmail(usersArray[0].email);
+    expect(user).toEqual(usersArray);
+  });
+
+  it('find user by id', async () => {
+    const user = await service.findOneById(usersArray[0].id);
+    expect(user).toEqual(usersArray[0]);
+  });
+
+  it('change user roles', async () => {
+    const newRoles = await service.changeUserRoles(usersArray[0].id, roles[1]);
+    expect(newRoles).toEqual(usersArray[0]);
+  });
+
+  it('update user', async () => {
+    const updatedUser = await service.update(usersArray[0].id, {
+      email: usersArray[1].email,
+      password: usersArray[3].password,
+    });
+    expect(updatedUser).toEqual(usersArray[0]);
+  });
+
+  it('find all user', async () => {
+    const allUsers = await service.findAll();
+    expect(allUsers).toEqual(usersArray);
+  });
+
+  it('remove user', async () => {
+    const remove = await service.remove(usersArray[0].id);
+    expect(remove).toEqual(undefined);
   });
 });

@@ -10,16 +10,17 @@ export class UserRolesService {
     @InjectRepository(Roles) private userRolesRepo: Repository<Roles>,
   ) {}
 
-  create() {
+  async create() {
     const userRoles = this.userRolesRepo.create();
-    return this.userRolesRepo.save(userRoles);
+    return await this.userRolesRepo.save(userRoles);
   }
 
-  findOneById(id: number) {
+  async findOneById(id: number) {
     if (!id) {
-      throw new NotFoundException('userRoles not found');
+      throw new NotFoundException('user roles not found');
     }
-    return this.userRolesRepo.findOne({ where: { id } });
+    const find = await this.userRolesRepo.findOne({ where: { id } });
+    return find;
   }
 
   async update(id: number, updateUserRolesDto: UpdateUserRolesDto) {

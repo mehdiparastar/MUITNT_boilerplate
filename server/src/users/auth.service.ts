@@ -3,22 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { randomBytes, scrypt as _scrypt } from 'crypto';
-import { promisify } from 'util';
+import { saltedHashedPassword } from '../generalFunctions/salted-hashed-password';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
-
-const scrypt = promisify(_scrypt);
+import { passwordCheck } from '../generalFunctions/password-check';
 
 @Injectable()
 export class AuthService {
   constructor(private usersService: UsersService) {}
-
-  async saltedHashedPassword(password: string) {
-    const salt = randomBytes(8).toString('hex');
-    const hash = (await scrypt(password, salt, 32)) as Buffer;
-    return salt + '.' + hash.toString('hex');
-  }
 
   async signup(email: string, password: string) {
     const users = await this.usersService.findByEmail(email);
@@ -26,7 +18,7 @@ export class AuthService {
       throw new BadRequestException('email in use');
     }
 
-    const result = await this.saltedHashedPassword(password);
+    const result = await saltedHashedPassword(password);
     const user = await this.usersService.create(email, result);
     return user;
   }
@@ -36,10 +28,10 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('user not found');
     }
-    const [salt, storedHash] = user.password.split('.');
-    const hash = (await scrypt(password, salt, 32)) as Buffer;
 
-    if (storedHash !== hash.toString('hex')) {
+    const passCheck = await passwordCheck(password, user.password);
+    
+    if (!passCheck) {
       throw new BadRequestException('bad password');
     }
     return user;
@@ -55,8 +47,8 @@ export class AuthService {
     } else {
       throw new BadRequestException('credentials issue');
     }
-
-    return this.usersService.update(id, { email });
+    const change = await this.usersService.update(id, { email });
+    return change;
   }
 
   async changeUserPassword(id: number, password: string) {
@@ -71,7 +63,7 @@ export class AuthService {
     }
 
     const newPassword = password
-      ? await this.saltedHashedPassword(password)
+      ? await saltedHashedPassword(password)
       : userById.password;
 
     return this.usersService.update(id, { password: newPassword });

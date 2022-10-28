@@ -1,5 +1,4 @@
 import { Expose, Transform } from 'class-transformer';
-import { UserRolesDto } from '../userRoles/user-roles.dto';
 
 export class UserDto {
   @Expose()

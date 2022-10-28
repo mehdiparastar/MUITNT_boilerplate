@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Roles } from './roles.entity';
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
