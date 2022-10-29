@@ -27,16 +27,17 @@ export class UsersService {
     if (!email) {
       throw new NotFoundException('user not found');
     }
-    const find = await this.usersRepo.find({
-      where: { email },
-      relations: {
-        roles: true,
-      },
-    });
-    if (!find.length) {
-      throw new NotFoundException('user not found');
+    try {
+      const find = await this.usersRepo.find({
+        where: { email },
+        relations: {
+          roles: true,
+        },
+      });
+      return find;
+    } catch (ex) {
+      console.log(ex);
     }
-    return find;
   }
 
   async findOneById(id: number) {

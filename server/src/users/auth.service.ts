@@ -17,7 +17,6 @@ export class AuthService {
     if (users.length) {
       throw new BadRequestException('email in use');
     }
-
     const result = await saltedHashedPassword(password);
     const user = await this.usersService.create(email, result);
     return user;
@@ -30,7 +29,7 @@ export class AuthService {
     }
 
     const passCheck = await passwordCheck(password, user.password);
-    
+
     if (!passCheck) {
       throw new BadRequestException('bad password');
     }

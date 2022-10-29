@@ -16,7 +16,7 @@ const dbConfig: IDBConfig = {
     username: 'admin',
     password: 'admin',
     database: 'dev_db',
-    entities: [User,Roles],
+    entities: [User, Roles],
     synchronize: false,
     migrations: ['src/migration_dev/*.js'],
     logging: false,
@@ -28,11 +28,12 @@ const dbConfig: IDBConfig = {
     username: 'admin',
     password: 'admin',
     database: 'test_db',
-    entities: [User,Roles],
+    entities: [User, Roles],
     synchronize: false,
     migrations: ['src/migration_test/*.js'],
     logging: false,
-  }
+    migrationsRun: true,
+  },
 };
 
 export const AppDataSource = new DataSource(

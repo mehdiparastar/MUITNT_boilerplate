@@ -1,7 +1,7 @@
 const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class initialMigration1666821694867 {
-    name = 'initialMigration1666821694867'
+module.exports = class testInitMigrate1667079267448 {
+    name = 'testInitMigrate1667079267448'
 
     async up(queryRunner) {
         await queryRunner.query(`CREATE TABLE \`roles\` (\`id\` int NOT NULL AUTO_INCREMENT, \`superUser\` tinyint NOT NULL DEFAULT 0, \`admin\` tinyint NOT NULL DEFAULT 0, \`adminSection1\` tinyint NOT NULL DEFAULT 0, \`adminSection2\` tinyint NOT NULL DEFAULT 0, \`adminSection3\` tinyint NOT NULL DEFAULT 0, \`section1ExpertL1\` tinyint NOT NULL DEFAULT 0, \`section1ExpertL2\` tinyint NOT NULL DEFAULT 0, \`section2ExpertL1\` tinyint NOT NULL DEFAULT 0, \`section2ExpertL2\` tinyint NOT NULL DEFAULT 0, \`section3ExpertL1\` tinyint NOT NULL DEFAULT 0, \`section3ExpertL2\` tinyint NOT NULL DEFAULT 1, \`createdAt\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updatedAt\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);

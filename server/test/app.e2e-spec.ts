@@ -13,8 +13,8 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    await app.init();
     await AppDataSource.initialize();
+    await app.init();
   });
 
   it('/ (GET)', () => {
@@ -26,7 +26,7 @@ describe('AppController (e2e)', () => {
 
   afterEach(async () => {
     await AppDataSource.dropDatabase();
-    await AppDataSource.destroy()
+    await AppDataSource.destroy();
     await app.close();
-  });  
+  });
 });
