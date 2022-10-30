@@ -99,10 +99,9 @@ describe('UsersController', () => {
   });
 
   it('change email of user', async () => {
-    const change = await controller.changeEmail(
-      globalThis.usersArray[0],
-      'parastar.mehdi@gmail.com',
-    );
+    const change = await controller.changeEmail(globalThis.usersArray[0], {
+      email: 'parastar.mehdi@gmail.com',
+    });
     expect(globalThis.usersArray[0].email).toEqual('parastar.mehdi@gmail.com');
   });
 
@@ -116,7 +115,7 @@ describe('UsersController', () => {
       globalThis.usersArray.filter(
         (user) => user.email === 'testCtrl2@test.com',
       )[0],
-      'parastar',
+      { password: 'parastar' },
     );
     const logOut = controller.signout(session);
     const login = await controller.signin(
