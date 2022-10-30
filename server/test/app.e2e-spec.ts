@@ -6,15 +6,20 @@ import { AppDataSource } from '../src/data-source';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-
-  beforeEach(async () => {
+  jest.setTimeout(600000);
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    await AppDataSource.initialize();
     await app.init();
+    await AppDataSource.initialize();    
+  });
+  afterAll(async () => {
+    await AppDataSource.dropDatabase();
+    await AppDataSource.destroy();
+    await app.close();
   });
 
   it('/ (GET)', () => {
@@ -22,11 +27,5 @@ describe('AppController (e2e)', () => {
       .get('/')
       .expect(200)
       .expect(`Hello World! ENV=${process.env.NODE_ENV}`);
-  });
-
-  afterEach(async () => {
-    await AppDataSource.dropDatabase();
-    await AppDataSource.destroy();
-    await app.close();
   });
 });

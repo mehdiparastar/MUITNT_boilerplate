@@ -1,32 +1,30 @@
 #!/bin/bash
 
 input="./server/.development.env"
+MYSQL_PASSWORD="admin"
+MYSQL_USER="admin"
+
 while IFS= read -r line; do
     eval $line
-    MYSQL_DATABASE="$DB_NAME"
-    MYSQL_PASSWORD="$DB_PASS"
-    MYSQL_USER="$DB_USER"
+    MYSQL_DATABASE="$DB_NAME"    
 done <"$input"
 
 input="./server/.test.env"
 while IFS= read -r line; do
     eval $line
-    MYSQL_TEST_DATABASE="$DB_NAME"
-    MYSQL_TEST_PASSWORD="$DB_PASS"
-    MYSQL_TEST_USER="$DB_USER"
+    MYSQL_TEST_DATABASE="$DB_NAME"    
 done <"$input"
 
 create_dev_user="CREATE USER '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';\n"
-dev_user_privileges="GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost';\n\n"
-create_test_user="CREATE USER '${MYSQL_TEST_USER}'@'localhost' IDENTIFIED BY '${MYSQL_TEST_PASSWORD}';\n"
-test_user_privileges="GRANT ALL PRIVILEGES ON ${MYSQL_TEST_DATABASE}.* TO '${MYSQL_TEST_USER}'@'localhost';\n"
-USER_SQL="${create_dev_user}${dev_user_privileges}${create_test_user}${test_user_privileges}"
+admin_user_privileges_localhost_to_dev_db="GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';\n"
+admin_user_privileges_localhost_to_test_db="GRANT ALL PRIVILEGES ON ${MYSQL_TEST_DATABASE}.* TO '${MYSQL_USER}'@'%';\n\n"
+USER_SQL="${create_dev_user}${admin_user_privileges_localhost_to_dev_db}${admin_user_privileges_localhost_to_test_db}"
 echo -e ${USER_SQL} >./server/docker_mysql_init/init/01-users.sql
 
 create_test_db="CREATE DATABASE IF NOT EXISTS ${MYSQL_TEST_DATABASE};\n"
 DB_SQL="${create_test_db}"
 echo -e ${DB_SQL} >./server/docker_mysql_init/init/02-databases.sql
-space="           ";
+
 l01="version: '3.8'\n"
 l02="services:\n"
 l03='\tdb:\n'
@@ -69,7 +67,9 @@ sleep 2
 docker-compose -f ./server/docker_mysql_init/docker-compose-mysql-only.yml down
 docker container prune -f
 docker volume prune -f
+docker system prune -f
+sleep 2
 docker-compose -f ./server/docker_mysql_init/docker-compose-mysql-only.yml up --build -d
 
-echo bye
+echo -e bye
 sleep 2
