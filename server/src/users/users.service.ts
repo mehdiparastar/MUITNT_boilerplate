@@ -82,7 +82,11 @@ export class UsersService {
   }
 
   async findAll() {
-    const allUsers: User[] = await this.usersRepo.find();
+    const allUsers: User[] = await this.usersRepo.find({
+      relations: {
+        roles: true,
+      },
+    });
     return allUsers;
   }
 

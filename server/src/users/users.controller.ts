@@ -22,7 +22,12 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../enum/userRoles.enum';
 import { CurrentUser } from './decorators/current-user.middleware';
 import { User } from './entities/user.entity';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UpdateUserDto } from './dto/user/update-user.dto';
+import { ChangeUserEmailDto } from './dto/user/change-email.dto';
+import { ChangeUserPasswordDto } from './dto/user/change-password.dto';
 
+@ApiTags('users')
 @Controller('auth')
 @Serialize(UserDto)
 export class UsersController {
@@ -78,17 +83,17 @@ export class UsersController {
 
   @Patch('change-email')
   @UseGuards(AuthGuard)
-  changeEmail(@CurrentUser() user: User, @Body('email') email: string) {
-    return this.authService.changeUserEmail(user.id, email);
+  changeEmail(@CurrentUser() user: User, @Body() body: ChangeUserEmailDto) {
+    return this.authService.changeUserEmail(user.id, body.email);
   }
 
   @Patch('change-password')
   @UseGuards(AuthGuard)
   changePassword(
     @CurrentUser() user: User,
-    @Body('password') password: string,
+    @Body() body: ChangeUserPasswordDto,
   ) {
-    return this.authService.changeUserPassword(user.id, password);
+    return this.authService.changeUserPassword(user.id, body.password);
   }
 
   @Get('all')
