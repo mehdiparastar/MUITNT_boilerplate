@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { SvgIcon, SvgIconProps } from '@mui/material';
 
 
-const MUITNMSVG: React.FC<SvgIconProps> = ({
+const MUITNTSVG: React.FC<SvgIconProps> = ({
   width = 101.36,
   height = 70,
   ...rest
@@ -50,10 +50,10 @@ const MUITNMSVG: React.FC<SvgIconProps> = ({
         strokeWidth={2}
         stroke={theme.palette.secondary.main}
       >
-        MUITNM
+        MUITNT
       </text>
     </SvgIcon>
   );
 };
 
-export default MUITNMSVG;
+export default MUITNTSVG;

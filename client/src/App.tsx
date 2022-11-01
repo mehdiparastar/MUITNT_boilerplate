@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CssBaseline, Paper } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { routes as appRoutes } from './routes/routes';
@@ -9,11 +9,22 @@ import { WithLayout } from 'WithLayout';
 import 'aos/dist/aos.css';
 
 const App: React.FC = () => {
-  const { isLoading } = useAuth0();
+  const { isLoading, getAccessTokenSilently, getIdTokenClaims, isAuthenticated } = useAuth0();
 
-  if (isLoading) {
-    return <PageLoader />;
-  }
+  // if (isLoading) {
+  //   return <PageLoader />;
+  // }
+
+  useEffect(() => {
+    const getIdentification = async () => {
+      if (isAuthenticated) {
+        const idToken = await getIdTokenClaims()
+        console.log(idToken)
+      }
+    }
+    getIdentification()
+  }, [isAuthenticated])
+
 
   return (
     <WithLayout>

@@ -60,7 +60,7 @@ export const Hero: React.FC<Props> = (props) => {
               color="textSecondary"
               sx={{ fontWeight: 400 }}
             >
-              <strong>MUITNM</strong> has gathered modern and professional
+              <strong>MUITNT</strong> has gathered modern and professional
               technologies to help you buy your time while being the best.
             </Typography>
           </Box>
@@ -76,7 +76,7 @@ export const Hero: React.FC<Props> = (props) => {
               size="large"
               fullWidth={!isMd}
               startIcon={<GitHubIcon />}
-              href={'https://github.com/mehdiparastar/MUITNM_boilerplate'}
+              href={'https://github.com/mehdiparastar/MUITNT_boilerplate'}
               target={'_blank'}
             >
               View on Github

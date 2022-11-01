@@ -8,7 +8,7 @@ import { paletteTypes } from 'theme/paletteTypes';
 import { ThemeContext } from 'WithLayout';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import MUITNMSVG from 'svg/logos/MUITNM';
+import MUITNTSVG from 'svg/logos/MUITNT';
 
 export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   onSidebarOpen,
@@ -41,7 +41,7 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
         >
           <MenuIcon />
         </IconButton>
-        <MUITNMSVG
+        <MUITNTSVG
           sx={{
             width: 50,
             height: { xs: 28, ms: 32 },

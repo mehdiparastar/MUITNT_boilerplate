@@ -1,9 +1,9 @@
 {
-  "name": "MUITNM_boilerplate",
+  "name": "MUITNT_boilerplate",
   "version": "1.0.0",
   "description": "MUI-Typescript-Nestjs-MongoDB",
   "main": "index.js",
-  "repository": "https://github.com/mehdiparastar/MUITNM_boilerplate.git",
+  "repository": "https://github.com/mehdiparastar/MUITNT_boilerplate.git",
   "author": "mehdiparastar <parastar.mehdi@gmail.com>",
   "license": "MIT",
   "scripts": {

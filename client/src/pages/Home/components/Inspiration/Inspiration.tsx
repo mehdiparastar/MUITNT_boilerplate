@@ -37,7 +37,7 @@ export const Inspiration: React.FC<Props> = (props) => {
             gutterBottom
             align={'center'}
           >
-            The statute of MUITNM
+            The statute of MUITNT
           </Box>
           <Typography
             variant={'h6'}
@@ -51,7 +51,7 @@ export const Inspiration: React.FC<Props> = (props) => {
             <br />
             have created the foundation of{' '}
             <strong style={{ color: theme.palette.secondary.main }}>
-              MUITNM
+              MUITNT
             </strong>
             .
           </Typography>
@@ -78,7 +78,7 @@ export const Inspiration: React.FC<Props> = (props) => {
             },
             {
               name: 'Mehdi Parastar 🚽',
-              title: 'SEO at MUITNM',
+              title: 'SEO at MUITNT',
               avatar: 'statics/inspiration/m01.jpeg',
             },
           ].map((item, i) => (

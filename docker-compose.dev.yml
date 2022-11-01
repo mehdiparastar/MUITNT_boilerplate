@@ -10,10 +10,10 @@ services:
     ports:
       - 3000:3000
 
-    container_name: muitnm-client
+    container_name: muitnt-client
 
     networks:
-      - muitnm-stack-net
+      - muitnt-stack-net
 
     volumes:
       - ./client/src:/usr/app/src
@@ -25,5 +25,5 @@ services:
     tty: true
 
 networks:
-  muitnm-stack-net:
+  muitnt-stack-net:
     driver: bridge

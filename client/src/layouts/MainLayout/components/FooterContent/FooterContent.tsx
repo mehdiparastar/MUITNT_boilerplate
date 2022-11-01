@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import { Container, Icon, IconButton, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import MUITNMSVG from 'svg/logos/MUITNM';
+import MUITNTSVG from 'svg/logos/MUITNT';
 import {
   Facebook,
   Instagram,
@@ -61,7 +61,7 @@ export const FooterContent: React.FC = () => {
                         })
                       }
                     >
-                      <MUITNMSVG
+                      <MUITNTSVG
                         sx={{
                           width: 50,
                           height: 50,
@@ -82,7 +82,7 @@ export const FooterContent: React.FC = () => {
                     &copy;{' '}
                     {
                       <strong style={{ color: theme.palette.secondary.main }}>
-                        MUITNM.
+                        MUITNT.
                       </strong>
                     }{' '}
                     {`${new Date().getFullYear()}`},{' '}

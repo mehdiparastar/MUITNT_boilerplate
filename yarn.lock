@@ -5,9 +5,9 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"MUITNM_boilerplate@workspace:.":
+"MUITNT_boilerplate@workspace:.":
   version: 0.0.0-use.local
-  resolution: "MUITNM_boilerplate@workspace:."
+  resolution: "MUITNT_boilerplate@workspace:."
   dependencies:
     typescript: ^4.8.4
   languageName: unknown

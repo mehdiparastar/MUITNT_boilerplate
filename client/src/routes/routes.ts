@@ -54,7 +54,7 @@ export const routes: Array<Route> = [
     path: '/crud',
     enabled: true,
     component: ComingSoon,
-    isProtected: false,
+    isProtected: true,
     layout: MainLayout,
   },
   {

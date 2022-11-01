@@ -4,7 +4,7 @@ import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import CloseIcon from '@mui/icons-material/Close';
-import MUITNMSVG from 'svg/logos/MUITNM';
+import MUITNTSVG from 'svg/logos/MUITNT';
 
 type SidebarProps = Props & {
   onClose: () => void;
@@ -42,7 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
           justifyContent: 'space-between',
         }}
       >
-        <MUITNMSVG sx={{ width: 60, height: 60 }} />
+        <MUITNTSVG sx={{ width: 60, height: 60 }} />
         <IconButton onClick={() => onClose()}>
           <CloseIcon
             color="secondary"

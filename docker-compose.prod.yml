@@ -10,13 +10,13 @@ services:
     ports:
       - 80:80
 
-    container_name: muitnm-client
+    container_name: muitnt-client
 
     restart: "always"
 
     networks:
-      - muitnm-stack-net
+      - muitnt-stack-net
 
 networks:
-  muitnm-stack-net:
+  muitnt-stack-net:
     driver: bridge
