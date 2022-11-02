@@ -36,4 +36,27 @@ declare global {
       icon?: JSX.Element;
     }[];
   };
+  interface Message {
+    text: string;
+  }
+  interface AppError {
+    message: string;
+  }
+  interface ApiResponse {
+    data: Message | null;
+    error: AppError | null;
+  }
+  interface Auth0Resource {
+    path: string;
+    label: string;
+  }
+  interface UserProfile {
+    nickname: string;
+    name: string;
+    picture: string;
+    updated_at: string;
+    email: string;
+    email_verified: boolean;
+    sub: string;
+  }
 }

@@ -1,31 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { CssBaseline, Paper } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { routes as appRoutes } from './routes/routes';
-import { useAuth0 } from '@auth0/auth0-react';
-import { PageLoader } from './components/PageLoader/PageLoader';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { WithLayout } from 'WithLayout';
 import 'aos/dist/aos.css';
 
 const App: React.FC = () => {
-  const { isLoading, getAccessTokenSilently, getIdTokenClaims, isAuthenticated } = useAuth0();
-
-  // if (isLoading) {
-  //   return <PageLoader />;
-  // }
-
-  useEffect(() => {
-    const getIdentification = async () => {
-      if (isAuthenticated) {
-        const idToken = await getIdTokenClaims()
-        console.log(idToken)
-      }
-    }
-    getIdentification()
-  }, [isAuthenticated])
-
-
   return (
     <WithLayout>
       <CssBaseline enableColorScheme />
