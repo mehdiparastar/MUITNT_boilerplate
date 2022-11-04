@@ -48,7 +48,6 @@ export class UsersController {
 
   @Post('signin')
   async signin(@Body() body: CreateUserDto, @Session() session: any) {
-    console.log('catching req ...')
     const user = await this.authService.signin(body.email, body.password);
     session.userId = user.id;
     session.userRoles = Object.keys(user.roles).filter(

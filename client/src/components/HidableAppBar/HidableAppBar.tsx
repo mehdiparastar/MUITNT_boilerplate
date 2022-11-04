@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-
 function HideOnScroll(props: HideOnScrollProps) {
   const { children } = props;
   const trigger = useScrollTrigger({});
@@ -32,9 +31,9 @@ export const HidableAppBar: React.FC<Props> = ({ children }) => {
         <AppBar
           elevation={1}
           sx={{
-            backgroundColor: theme.palette.background.paper
+            backgroundColor: theme.palette.background.paper,
           }}
-        // enableColorOnDark
+          // enableColorOnDark
         >
           <Toolbar>
             <Container maxWidth="lg">{children}</Container>

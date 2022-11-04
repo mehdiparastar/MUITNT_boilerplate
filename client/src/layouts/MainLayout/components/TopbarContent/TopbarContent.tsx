@@ -9,6 +9,9 @@ import { ThemeContext } from 'WithLayout';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import MUITNTSVG from 'svg/logos/MUITNT';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useAuth0 } from '@auth0/auth0-react';
+import { logoutService } from 'services/auth/logout.service';
 
 export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   onSidebarOpen,
@@ -20,6 +23,8 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   const paletteType = theme.palette.paletteType;
   const themeToggler = themeConfig.themeMode.toggleThemeMode;
   const setThemePalette = themeConfig.themePaletteType.changeThemePaletteType;
+
+  const { logout, isAuthenticated } = useAuth0();
 
   return (
     <Box
@@ -47,6 +52,20 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
             height: { xs: 28, ms: 32 },
           }}
         />
+        {isAuthenticated && (
+          <IconButton
+            color="primary"
+            aria-label="Menu"
+            edge="end"
+            onClick={() => {
+              logoutService();
+              logout({ returnTo: window.location.origin });
+            }}
+            sx={{ ml: { xs: 1, sm: 2 } }}
+          >
+            <LogoutIcon />
+          </IconButton>
+        )}
       </Box>
       <Box
         display="flex"

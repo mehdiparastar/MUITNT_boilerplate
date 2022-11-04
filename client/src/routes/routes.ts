@@ -63,7 +63,7 @@ export const routes: Array<Route> = [
     path: '/chat',
     enabled: true,
     component: ComingSoon,
-    isProtected: false,
+    isProtected: true,
     layout: MainLayout,
   },
   {

@@ -1,18 +1,24 @@
 import React from 'react';
+import { AuthLoalProvider } from 'auth-local-provider';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { Auth0ProviderWithConfig } from './auth0-provider-with-config';
 import reportWebVitals from './reportWebVitals';
+import { CookiesProvider } from 'react-cookie';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <CookiesProvider>
     <Auth0ProviderWithConfig>
-      <App />
+      <AuthLoalProvider>
+        <App />
+      </AuthLoalProvider>
     </Auth0ProviderWithConfig>
-  </React.StrictMode>,
+  </CookiesProvider>,
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
