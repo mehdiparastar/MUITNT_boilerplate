@@ -13,6 +13,7 @@ import { AppDataSource } from './data-source';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
 import { RolesGuard } from './guards/roles.guard';
+import { AuthModule } from './auth/auth.module';
 // import cookieSession from 'cookie-session';
 const cookieSession = require('cookie-session');
 
@@ -24,6 +25,7 @@ const cookieSession = require('cookie-session');
     }),
     TypeOrmModule.forRoot(AppDataSource.options),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

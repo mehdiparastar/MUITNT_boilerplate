@@ -1,4 +1,4 @@
-import { User } from '../users/entities/user.entity';
+import { User as UserEntity } from '../users/entities/user.entity';
 import { UserRoles } from '../enum/userRoles.enum';
 
 declare global {
@@ -7,13 +7,11 @@ declare global {
     DB_NAME?: string;
   }
 
-namespace Express{
-  interface Request{
-    currentUser?:User
+  namespace Express {
+    interface Request {
+      currentUser?: UserEntity;
+    }
   }
-}
-
-
 }
 
 export {};

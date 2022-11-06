@@ -12,6 +12,7 @@ import { CurrentUserMiddleware } from './middlewares/current-user.middleware';
   imports: [TypeOrmModule.forFeature([User, Roles])],
   controllers: [UsersController],
   providers: [UsersService, UserRolesService, AuthService],
+  exports: [UsersService],
 })
 export class UsersModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

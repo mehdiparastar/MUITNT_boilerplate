@@ -13,7 +13,7 @@ export class UsersService {
     private userRolesService: UserRolesService,
   ) {}
 
-  async create(email: string, password: string) {
+  async create(email: string, password: string): Promise<User> {
     const userRoles = await this.userRolesService.create();
     const user = this.usersRepo.create({
       email: email,
@@ -23,24 +23,21 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<User[]> {
     if (!email) {
       throw new NotFoundException('user not found');
     }
-    try {
-      const find = await this.usersRepo.find({
-        where: { email },
-        relations: {
-          roles: true,
-        },
-      });
-      return find;
-    } catch (ex) {
-      console.log(ex);
-    }
+
+    const find = await this.usersRepo.find({
+      where: { email },
+      relations: {
+        roles: true,
+      },
+    });
+    return find;
   }
 
-  async findOneById(id: number) {
+  async findOneById(id: number): Promise<User> {
     if (!id) {
       throw new NotFoundException('user not found');
     }
@@ -56,7 +53,10 @@ export class UsersService {
     return find;
   }
 
-  async changeUserRoles(id: number, newRoles: ApproveUserRolesDto) {
+  async changeUserRoles(
+    id: number,
+    newRoles: ApproveUserRolesDto,
+  ): Promise<User> {
     const user: User = await this.findOneById(id);
     if (!user) {
       throw new NotFoundException('user not found');
@@ -72,7 +72,7 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user: User = await this.findOneById(id);
     if (!user) {
       throw new NotFoundException('user not found');
@@ -81,7 +81,7 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-  async findAll() {
+  async findAll(): Promise<User[]> {
     const allUsers: User[] = await this.usersRepo.find({
       relations: {
         roles: true,
@@ -90,7 +90,7 @@ export class UsersService {
     return allUsers;
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<User> {
     const user = await this.findOneById(id);
     if (!user) {
       throw new NotFoundException('user not found');
