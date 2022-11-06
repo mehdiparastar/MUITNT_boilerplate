@@ -46,15 +46,16 @@ const cookieSession = require('cookie-session');
     AppService,
   ],
 })
-export class AppModule implements NestModule {
-  constructor(private configService: ConfigService<IconfigService>) {}
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(
-        cookieSession({
-          keys: [this.configService.get<string>('COOKIE_KEY')],
-        }),
-      )
-      .forRoutes('*');
-  }
-}
+export class AppModule {}
+// implements NestModule {
+//   constructor(private configService: ConfigService<IconfigService>) {}
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply(
+//         cookieSession({
+//           keys: [this.configService.get<string>('COOKIE_KEY')],
+//         }),
+//       )
+//       .forRoutes('*');
+//   }
+// }

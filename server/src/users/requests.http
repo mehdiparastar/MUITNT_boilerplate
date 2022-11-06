@@ -8,6 +8,16 @@ Content-Type: application/json
 }
 
 
+### Login with email and password
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+
+{
+    "email":"parastar.mehdi@gmail.com",
+    "password":"mehdi"
+}
+
+
 ### Signin with email and password
 POST http://localhost:3000/auth/signin
 Content-Type: application/json

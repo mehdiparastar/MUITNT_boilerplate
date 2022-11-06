@@ -5,11 +5,13 @@ declare global {
   interface IconfigService {
     COOKIE_KEY?: string;
     DB_NAME?: string;
+    JWT_SECRET?: string;
   }
 
   namespace Express {
     interface Request {
       currentUser?: UserEntity;
+      user?: Partial<UserEntity>;
     }
   }
 }
