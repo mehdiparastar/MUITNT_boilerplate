@@ -1,5 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthService } from '../auth/auth.service';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/user/update-user.dto';
 import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';
@@ -10,7 +16,9 @@ import { UserRolesService } from './user-roles.service';
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepo: Repository<User>,
-    private userRolesService: UserRolesService,
+    // private userRolesService: UserRolesService,
+    // @Inject(forwardRef(() => AuthService))
+    // private usersService: AuthService,
   ) {}
 
   // async create(email: string, password: string): Promise<User> {
@@ -37,21 +45,21 @@ export class UsersService {
     return find;
   }
 
-  // async findOneById(id: number): Promise<User> {
-  //   if (!id) {
-  //     throw new NotFoundException('user not found');
-  //   }
-  //   const find = await this.usersRepo.findOne({
-  //     where: { id },
-  //     relations: {
-  //       roles: true,
-  //     },
-  //   });
-  //   if (!find) {
-  //     throw new NotFoundException('user not found');
-  //   }
-  //   return find;
-  // }
+  async findOneById(id: number): Promise<User> {
+    if (!id) {
+      throw new NotFoundException('user not found');
+    }
+    const find = await this.usersRepo.findOne({
+      where: { id },
+      relations: {
+        roles: true,
+      },
+    });
+    if (!find) {
+      throw new NotFoundException('user not found');
+    }
+    return find;
+  }
 
   // async changeUserRoles(
   //   id: number,

@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  forwardRef,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,6 +18,8 @@ import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
+    forwardRef(() => AuthService),
+    // AuthService,
     TypeOrmModule.forFeature([User, Roles]),
     // JwtModule.register({
     //   secret: 'secret',
@@ -20,10 +27,9 @@ import { AuthModule } from '../auth/auth.module';
     // }),
   ],
   controllers: [UsersController],
-  providers: [UsersService, 
-    UserRolesService, 
-    // AuthService
-  ],
+  providers: [
+    UsersService,
+     UserRolesService],
   exports: [UsersService],
 })
 export class UsersModule {}

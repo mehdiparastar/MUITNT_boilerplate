@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
@@ -8,7 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    UsersModule,
+    forwardRef(() => UsersModule),
     PassportModule,
     // JwtModule.registerAsync({
     //   imports: [ConfigModule],
@@ -23,7 +23,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       signOptions: { expiresIn: '60s' },
     }),
   ],
-  providers: [AuthService, LocalStrategy],
+  providers: [
+    AuthService,
+     LocalStrategy
+    ],
   exports: [AuthService],
 })
 export class AuthModule {}
