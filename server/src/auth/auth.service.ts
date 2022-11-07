@@ -1,23 +1,15 @@
-import { forwardRef, Inject, Injectable, NotAcceptableException, OnModuleInit } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
-export class AuthService implements OnModuleInit {
-  private usersService: UsersService
+export class AuthService {
   constructor(
-    // @Inject(forwardRef(()=>UsersService))
-    private jwtService: JwtService,
-
-    private moduleRef: ModuleRef
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
   ) {}
-
-  async onModuleInit() {
-    this.usersService =await this.moduleRef.resolve(UsersService);
-  }
 
   async validateUser(
     email: string,
@@ -38,7 +30,7 @@ export class AuthService implements OnModuleInit {
     return null;
   }
 
-  async login(user: Partial<User>) {
+  async login(user: Partial<User>): Promise<{ access_token: string }> {
     const payload = { email: user.email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),

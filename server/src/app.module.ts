@@ -14,6 +14,7 @@ import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
 import { RolesGuard } from './guards/roles.guard';
 import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 // import cookieSession from 'cookie-session';
 const cookieSession = require('cookie-session');
 
@@ -26,6 +27,17 @@ const cookieSession = require('cookie-session');
     TypeOrmModule.forRoot(AppDataSource.options),
     UsersModule,
     AuthModule,
+    {
+      ...JwtModule.registerAsync({
+        imports: [ConfigModule],
+        useFactory: async (configService: ConfigService<IconfigService>) => ({
+          secret: configService.get<string>('JWT_SECRET'),
+          signOptions: { expiresIn: '60s' },
+        }),
+        inject: [ConfigService],
+      }),
+      global: true,
+    },
   ],
   controllers: [AppController],
   providers: [

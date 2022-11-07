@@ -17,8 +17,6 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepo: Repository<User>,
     // private userRolesService: UserRolesService,
-    // @Inject(forwardRef(() => AuthService))
-    // private usersService: AuthService,
   ) {}
 
   // async create(email: string, password: string): Promise<User> {

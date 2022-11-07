@@ -31,6 +31,7 @@ import { ChangeUserPasswordDto } from './dto/user/change-password.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Request as ExpressRequest } from 'express';
 import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('users')
 @Controller('auth')
@@ -53,9 +54,17 @@ export class UsersController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req: ExpressRequest) {
+  async login(
+    @Request() req: ExpressRequest,
+  ): Promise<{ access_token: string }> {
     // return req.user;
     return this.authService.login(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
   }
 
   // @Post('signin')
