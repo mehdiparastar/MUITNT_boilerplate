@@ -33,10 +33,10 @@ import { Request as ExpressRequest } from 'express';
 import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserRolesDto } from './dto/userRoles/user-roles.dto';
+import { JWTTokenDto } from './dto/jwt/token.dto';
 
 @ApiTags('users')
 @Controller('users')
-@Serialize(UserDto)
 export class UsersController {
   constructor(
     private readonly authService: AuthService,
@@ -44,12 +44,13 @@ export class UsersController {
   ) {}
 
   @Post('create')
-  async create(@Body() body: CreateUserDto) {
-    const user = await this.usersService.create(body.email, body.password);    
-    return user;
+  @Serialize(UserDto)
+  async create(@Body() body: CreateUserDto): Promise<User> {
+    return this.usersService.create(body.email, body.password);
   }
 
   @UseGuards(LocalAuthGuard)
+  @Serialize(JWTTokenDto)
   @Post('login')
   async login(
     @Request() req: ExpressRequest,
@@ -58,20 +59,12 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Serialize(UserDto)
   @Get('profile')
-  getProfile(@Request() req) {
+  getProfile(@Request() req: ExpressRequest) {
+    console.log(req);
     return req.user;
   }
-
-  // @Post('signin')
-  // async signin(@Body() body: CreateUserDto, @Session() session: any) {
-  //   const user = await this.authService.signin(body.email, body.password);
-  //   session.userId = user.id;
-  //   session.userRoles = Object.keys(user.roles).filter(
-  //     (item) => user.roles[item] === true,
-  //   );
-  //   return user;
-  // }
 
   // @Post('signout')
   // @UseGuards(AuthGuard)

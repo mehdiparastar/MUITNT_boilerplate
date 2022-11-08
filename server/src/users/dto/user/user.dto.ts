@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class UserDto {
   @Expose()
@@ -10,9 +10,6 @@ export class UserDto {
   @ApiProperty()
   email: string;
 
-  // @Transform(({ obj }: { obj: UserDto }) =>
-  //   Object.keys(obj.roles).filter((item) => obj.roles[item] === true),
-  // )
   @Expose()
   @ApiProperty({ isArray: true, type: 'string' })
   roles: string[];

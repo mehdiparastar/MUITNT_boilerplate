@@ -3,12 +3,16 @@ POST http://localhost:3001/users/create
 Content-Type: application/json
 
 {
-    "email":"parastar.mehdi@gmail.com",
+    "email":"parastar.2mehdi@gmail.com",
     "password":"mehdi"
 }
 
 
+
 ### Login with email and password
+
+# @name login
+
 POST http://localhost:3001/users/login
 Content-Type: application/json
 
@@ -18,10 +22,14 @@ Content-Type: application/json
 }
 
 
-### Get Current User
-GET  http://localhost:3001/auth/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm..."
-Content-Type: application/json
 
+### Get Current User
+
+@access_token = {{login.response.body.access_token}}
+
+GET  http://localhost:3001/users/profile
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
 
 ### Signin with email and password
 POST http://localhost:3000/auth/signin
@@ -31,6 +39,7 @@ Content-Type: application/json
     "email":"aaa@aaa.com",
     "password":"mehdi"
 }
+
 
 
 ### Signout user
