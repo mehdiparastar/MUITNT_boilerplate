@@ -1,6 +1,5 @@
 import { User } from '../users/entities/user.entity';
-import { roles } from './fake.user-roles';
-
+const roles=[]
 let usersArray: User[] = [
   {
     id: 1,

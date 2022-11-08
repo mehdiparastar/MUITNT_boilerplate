@@ -1,8 +1,8 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -19,9 +19,7 @@ export class AuthService {
     if (!user) {
       throw new NotAcceptableException('could not find the user');
     }
-    // const saltRounds = 10;
-    // const hashedPassword = await bcrypt.hash(password, saltRounds);
-    // console.log(hashedPassword);
+
     const passwordValid = await bcrypt.compare(password, user.password);
     if (user && passwordValid) {
       const { password, ...rest } = user;

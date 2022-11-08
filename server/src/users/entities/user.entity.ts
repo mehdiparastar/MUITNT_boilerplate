@@ -10,7 +10,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Roles } from './roles.entity';
 
 @Entity()
 export class User {
@@ -27,10 +26,9 @@ export class User {
   @ApiHideProperty()
   password: string;
 
-  @OneToOne(() => Roles)
-  @JoinColumn()
-  @ApiProperty({ isArray: true, enum: UserRoles })
-  roles: Roles;
+  @Column('simple-array', { nullable: true })
+  @ApiProperty()
+  roles: string[];
 
   @CreateDateColumn()
   @ApiProperty()

@@ -32,9 +32,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request as ExpressRequest } from 'express';
 import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UserRolesDto } from './dto/userRoles/user-roles.dto';
 
 @ApiTags('users')
-@Controller('auth')
+@Controller('users')
 @Serialize(UserDto)
 export class UsersController {
   constructor(
@@ -42,22 +43,17 @@ export class UsersController {
     private readonly usersService: UsersService,
   ) {}
 
-  // @Post('signup')
-  // async create(@Body() body: CreateUserDto, @Session() session: any) {
-  //   const user = await this.authService.signup(body.email, body.password);
-  //   session.userId = user.id;
-  //   session.userRoles = Object.keys(user.roles).filter(
-  //     (item) => user.roles[item] === true,
-  //   );
-  //   return user;
-  // }
+  @Post('create')
+  async create(@Body() body: CreateUserDto) {
+    const user = await this.usersService.create(body.email, body.password);    
+    return user;
+  }
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(
     @Request() req: ExpressRequest,
   ): Promise<{ access_token: string }> {
-    // return req.user;
     return this.authService.login(req.user);
   }
 

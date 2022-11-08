@@ -1,15 +1,15 @@
-### Signup a new user
-POST http://localhost:3000/auth/signup
+### Create a new user
+POST http://localhost:3001/users/create
 Content-Type: application/json
 
 {
-    "email":"test02@test.com",
-    "password":"test"
+    "email":"parastar.mehdi@gmail.com",
+    "password":"mehdi"
 }
 
 
 ### Login with email and password
-POST http://localhost:3001/auth/login
+POST http://localhost:3001/users/login
 Content-Type: application/json
 
 {

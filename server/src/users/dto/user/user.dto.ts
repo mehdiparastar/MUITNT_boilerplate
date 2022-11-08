@@ -10,10 +10,10 @@ export class UserDto {
   @ApiProperty()
   email: string;
 
+  // @Transform(({ obj }: { obj: UserDto }) =>
+  //   Object.keys(obj.roles).filter((item) => obj.roles[item] === true),
+  // )
   @Expose()
-  @Transform(({ obj }: { obj: UserDto }) =>
-    Object.keys(obj.roles).filter((item) => obj.roles[item] === true),
-  )
   @ApiProperty({ isArray: true, type: 'string' })
   roles: string[];
 }

@@ -10,24 +10,26 @@ import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/user/update-user.dto';
 import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';
 import { User } from './entities/user.entity';
-import { UserRolesService } from './user-roles.service';
+import { UserRoles } from 'src/enum/userRoles.enum';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private usersRepo: Repository<User>,
-    // private userRolesService: UserRolesService,
+    @InjectRepository(User) private usersRepo: Repository<User>, // private userRolesService: UserRolesService,
   ) {}
 
-  // async create(email: string, password: string): Promise<User> {
-  //   const userRoles = await this.userRolesService.create();
-  //   const user = this.usersRepo.create({
-  //     email: email,
-  //     password: password,
-  //     roles: userRoles,
-  //   });
-  //   return this.usersRepo.save(user);
-  // }
+  async create(email: string, password: string): Promise<User> {
+    const defaultUserRoles = [UserRoles.section3ExpertL2];
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const user = this.usersRepo.create({
+      email: email,
+      password: hashedPassword,
+      roles: defaultUserRoles,
+    });
+    return this.usersRepo.save(user);
+  }
 
   async findByEmail(email: string): Promise<User[]> {
     if (!email) {
@@ -36,9 +38,6 @@ export class UsersService {
 
     const find = await this.usersRepo.find({
       where: { email },
-      relations: {
-        roles: true,
-      },
     });
     return find;
   }
@@ -49,9 +48,6 @@ export class UsersService {
     }
     const find = await this.usersRepo.findOne({
       where: { id },
-      relations: {
-        roles: true,
-      },
     });
     if (!find) {
       throw new NotFoundException('user not found');
@@ -89,9 +85,6 @@ export class UsersService {
 
   // async findAll(): Promise<User[]> {
   //   const allUsers: User[] = await this.usersRepo.find({
-  //     relations: {
-  //       roles: true,
-  //     },
   //   });
   //   return allUsers;
   // }

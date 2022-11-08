@@ -1,5 +1,4 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { Roles } from './users/entities/roles.entity';
 import { User } from './users/entities/user.entity';
 
 interface IDBConfig {
@@ -16,7 +15,7 @@ const dbConfig: IDBConfig = {
     username: 'admin',
     password: 'admin',
     database: 'dev_db',
-    entities: [User, Roles],
+    entities: [User],
     synchronize: false,
     migrations: ['src/migration_dev/*.js'],
     logging: false,
@@ -28,7 +27,7 @@ const dbConfig: IDBConfig = {
     username: 'admin',
     password: 'admin',
     database: 'test_db',
-    entities: [User, Roles],
+    entities: [User],
     synchronize: false,
     migrations: ['src/migration_test/*.js'],
     logging: false,
