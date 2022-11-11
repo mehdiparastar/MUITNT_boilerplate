@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -15,8 +10,6 @@ import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
 import { RolesGuard } from './guards/roles.guard';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
-// import cookieSession from 'cookie-session';
-const cookieSession = require('cookie-session');
 
 @Module({
   imports: [
@@ -26,18 +19,7 @@ const cookieSession = require('cookie-session');
     }),
     TypeOrmModule.forRoot(AppDataSource.options),
     UsersModule,
-    AuthModule,
-    {
-      ...JwtModule.registerAsync({
-        imports: [ConfigModule],
-        useFactory: async (configService: ConfigService<IconfigService>) => ({
-          secret: configService.get<string>('JWT_SECRET'),
-          signOptions: { expiresIn: '60s' },
-        }),
-        inject: [ConfigService],
-      }),
-      global: true,
-    },
+    AuthModule,    
   ],
   controllers: [AppController],
   providers: [
@@ -59,15 +41,3 @@ const cookieSession = require('cookie-session');
   ],
 })
 export class AppModule {}
-// implements NestModule {
-//   constructor(private configService: ConfigService<IconfigService>) {}
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer
-//       .apply(
-//         cookieSession({
-//           keys: [this.configService.get<string>('COOKIE_KEY')],
-//         }),
-//       )
-//       .forRoutes('*');
-//   }
-// }

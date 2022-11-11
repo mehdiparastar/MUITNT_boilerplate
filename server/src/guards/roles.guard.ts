@@ -28,13 +28,13 @@ export class RolesGuard implements CanActivate {
     }
 
     const request: Request = context.switchToHttp().getRequest();
-    if (!request.currentUser) {
+    if (!request.user) {
       return false;
     }
 
     const userRoles = getRolesExpand(
-      Object.keys(request.currentUser.roles).filter(
-        (item) => request.currentUser.roles[item] === true,
+      Object.keys(request.user.roles).filter(
+        (item) => request.user.roles[item] === true,
       ),
     );
 

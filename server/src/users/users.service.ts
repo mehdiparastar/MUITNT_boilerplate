@@ -1,6 +1,5 @@
 import {
-  forwardRef,
-  Inject,
+  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -10,24 +9,29 @@ import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/user/update-user.dto';
 import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';
 import { User } from './entities/user.entity';
-import { UserRoles } from 'src/enum/userRoles.enum';
-import * as bcrypt from 'bcrypt';
+import { UserRoles } from '../enum/userRoles.enum';
+import { hashData } from '../helperFunctions/hash-data';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User) private usersRepo: Repository<User>, // private userRolesService: UserRolesService,
-  ) {}
+  constructor(@InjectRepository(User) private usersRepo: Repository<User>) {}
 
   async create(email: string, password: string): Promise<User> {
+    // Check if user exists
+    const [userExists] = await this.findByEmail(email);
+    if (userExists) {
+      throw new BadRequestException('User already exists');
+    }
+
     const defaultUserRoles = [UserRoles.section3ExpertL2];
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Create new User
     const user = this.usersRepo.create({
       email: email,
-      password: hashedPassword,
+      password: password,
       roles: defaultUserRoles,
     });
+
     return this.usersRepo.save(user);
   }
 
@@ -53,6 +57,15 @@ export class UsersService {
       throw new NotFoundException('user not found');
     }
     return find;
+  }
+
+  async update(id: number, attrs: UpdateUserDto):Promise<User> {
+    const user = await this.findOneById(id);
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    Object.assign(user, attrs);
+    return this.usersRepo.save(user);
   }
 
   // async changeUserRoles(

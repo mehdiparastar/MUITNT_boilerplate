@@ -10,68 +10,72 @@ import {
   UseGuards,
   Query,
   NotFoundException,
-  Request,
+  Req,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/user/create-user.dto';
+import { CreateUserDto } from '../users/dto/user/create-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
-import { UserDto } from './dto/user/user.dto';
+import { UserDto } from '../users/dto/user/user.dto';
 // import { AuthService } from './auth.service';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from './auth.service';
 // import { AuthGuard } from '../guards/auth.guard';
-import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';
-import { UsersService } from './users.service';
+import { ApproveUserRolesDto } from '../users/dto/userRoles/approve-user-roles.dto';
+import { UsersService } from '../users/users.service';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../enum/userRoles.enum';
-import { CurrentUser } from './decorators/current-user.middleware';
-import { User } from './entities/user.entity';
+import { CurrentUser } from '../users/decorators/current-user.middleware';
+import { User } from '../users/entities/user.entity';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UpdateUserDto } from './dto/user/update-user.dto';
-import { ChangeUserEmailDto } from './dto/user/change-email.dto';
-import { ChangeUserPasswordDto } from './dto/user/change-password.dto';
+import { UpdateUserDto } from '../users/dto/user/update-user.dto';
+import { ChangeUserEmailDto } from '../users/dto/user/change-email.dto';
+import { ChangeUserPasswordDto } from '../users/dto/user/change-password.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { Request as ExpressRequest } from 'express';
-import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { UserRolesDto } from './dto/userRoles/user-roles.dto';
-import { JWTTokenDto } from './dto/jwt/token.dto';
+import { Request } from 'express';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { UserRolesDto } from '../users/dto/userRoles/user-roles.dto';
+import { JWTTokenDto } from '../users/dto/jwt/token.dto';
+import { AccessTokenGuard } from './guards/accessToken.guard';
+import { RefreshTokenGuard } from './guards/refreshToken.guard';
+import { GoogleOauthGuard } from './guards/google-oauth.guard';
 
 @ApiTags('users')
 @Controller('users')
-export class UsersController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly usersService: UsersService,
-  ) {}
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
   @Post('create')
-  @Serialize(UserDto)
-  async create(@Body() body: CreateUserDto): Promise<User> {
-    return this.usersService.create(body.email, body.password);
+  @Serialize(JWTTokenDto)
+  async create(@Body() body: CreateUserDto): Promise<IJWTTokensPair> {
+    return this.authService.createNewUser(body.email, body.password);
   }
 
   @UseGuards(LocalAuthGuard)
   @Serialize(JWTTokenDto)
   @Post('login')
-  async login(
-    @Request() req: ExpressRequest,
-  ): Promise<{ access_token: string }> {
+  async login(@Req() req: Request): Promise<IJWTTokensPair> {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AccessTokenGuard)
+  // @UseGuards(GoogleOauthGuard)
   @Serialize(UserDto)
   @Get('profile')
-  getProfile(@Request() req: ExpressRequest) {
-    console.log(req);
+  getProfile(@Req() req: Request) {
     return req.user;
   }
 
-  // @Post('signout')
-  // @UseGuards(AuthGuard)
-  // signout(@Session() session: any) {
-  //   session.userId = null;
-  //   session.userRoles = [];
-  // }
+  @UseGuards(AccessTokenGuard)
+  @Get('logout')
+  logout(@Req() req: Request) {
+    this.authService.logout(req.user.id);
+  }
+
+  @UseGuards(RefreshTokenGuard)
+  @Get('refresh')
+  refreshTokens(@Req() req: Request): Promise<IJWTTokensPair> {
+    const id = req.user.id;
+    const refreshToken = req.user.refreshToken;
+    return this.authService.refreshTokens(id, refreshToken);
+  }
 
   // @Patch('change-user-roles/:id')
   // @UseGuards(AuthGuard)

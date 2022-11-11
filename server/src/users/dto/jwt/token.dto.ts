@@ -4,5 +4,9 @@ import { Expose } from 'class-transformer';
 export class JWTTokenDto {
   @Expose()
   @ApiProperty()
-  access_token: string;
+  accessToken: string;
+
+  @Expose()
+  @ApiProperty()
+  refreshToken: string;
 }

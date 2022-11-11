@@ -26,6 +26,10 @@ export class User {
   @ApiHideProperty()
   password: string;
 
+  @Column({ nullable: true })
+  @ApiHideProperty()
+  refreshToken: string;
+
   @Column('simple-array', { nullable: true })
   @ApiProperty()
   roles: string[];

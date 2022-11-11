@@ -3,7 +3,7 @@ POST http://localhost:3001/users/create
 Content-Type: application/json
 
 {
-    "email":"parastar.2mehdi@gmail.com",
+    "email":"parastar.mehdi@gmail.com",
     "password":"mehdi"
 }
 
@@ -22,14 +22,43 @@ Content-Type: application/json
 }
 
 
+### tokens
+@accessToken = {{login.response.body.accessToken}}
+@loginRefreshToken = {{login.response.body.refreshToken}}
+
+
+### refresh token
+
+# @name refresh
+
+GET http://localhost:3001/users/refresh
+Authorization: Bearer {{loginRefreshToken}}
+
+
+### update token
+@accessToken = {{refresh.response.body.accessToken}}
+
 
 ### Get Current User
 
-@access_token = {{login.response.body.access_token}}
-
 GET  http://localhost:3001/users/profile
 Content-Type: application/json
-Authorization: Bearer {{access_token}}
+Authorization: Bearer {{accessToken}}
+
+
+
+### Log Out
+GET http://localhost:3001/users/logout
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+
+
+
 
 ### Signin with email and password
 POST http://localhost:3000/auth/signin
