@@ -39,6 +39,16 @@ export class AuthService {
     return null;
   }
 
+  async googleValidateUser(email: string): Promise<Partial<User> | null> {
+    const [user] = await this.usersService.findByEmail(email);
+    if (user) {
+      return user;
+    }
+    const newUser = await this.usersService.create(email, 'hashedPassword');
+
+    return newUser;
+  }
+
   async createNewUser(
     email: string,
     password: string,

@@ -11,6 +11,7 @@ import {
   Query,
   NotFoundException,
   Req,
+  Res,
 } from '@nestjs/common';
 import { CreateUserDto } from '../users/dto/user/create-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
@@ -29,7 +30,7 @@ import { UpdateUserDto } from '../users/dto/user/update-user.dto';
 import { ChangeUserEmailDto } from '../users/dto/user/change-email.dto';
 import { ChangeUserPasswordDto } from '../users/dto/user/change-password.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { UserRolesDto } from '../users/dto/userRoles/user-roles.dto';
 import { JWTTokenDto } from '../users/dto/jwt/token.dto';
@@ -38,7 +39,7 @@ import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { GoogleOauthGuard } from './guards/google-oauth.guard';
 
 @ApiTags('users')
-@Controller('users')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -55,8 +56,21 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  @Get('google-logins')
+  @UseGuards(GoogleOauthGuard)
+  async googleLogin(@Req() req: Request, @Res() res: Response) {
+    // console.log(req, res);
+    return 'google logins scope';
+  }
+
+  @Get('google/callback')
+  @UseGuards(GoogleOauthGuard)
+  async googleLoginCallback(@Req() req: Request, @Res() res: Response) {
+    console.log('req, res');
+    return 'google callback scope';
+  }
+
   @UseGuards(AccessTokenGuard)
-  // @UseGuards(GoogleOauthGuard)
   @Serialize(UserDto)
   @Get('profile')
   getProfile(@Req() req: Request) {

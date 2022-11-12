@@ -1,5 +1,5 @@
 ### Create a new user
-POST http://localhost:3001/users/create
+POST http://localhost:3001/auth/create
 Content-Type: application/json
 
 {
@@ -13,7 +13,7 @@ Content-Type: application/json
 
 # @name login
 
-POST http://localhost:3001/users/login
+POST http://localhost:3001/auth/login
 Content-Type: application/json
 
 {
@@ -31,7 +31,7 @@ Content-Type: application/json
 
 # @name refresh
 
-GET http://localhost:3001/users/refresh
+GET http://localhost:3001/auth/refresh
 Authorization: Bearer {{loginRefreshToken}}
 
 
@@ -41,14 +41,14 @@ Authorization: Bearer {{loginRefreshToken}}
 
 ### Get Current User
 
-GET  http://localhost:3001/users/profile
+GET  http://localhost:3001/auth/profile
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 
 
 ### Log Out
-GET http://localhost:3001/users/logout
+GET http://localhost:3001/auth/logout
 Authorization: Bearer {{accessToken}}
 
 
