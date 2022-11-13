@@ -3,7 +3,7 @@ POST http://localhost:3001/auth/create
 Content-Type: application/json
 
 {
-    "email":"parastar.mehdi@gmail.com",
+    "email":"parastar.azkco@gmail.com",
     "password":"mehdi"
 }
 
@@ -43,7 +43,7 @@ Authorization: Bearer {{loginRefreshToken}}
 
 GET  http://localhost:3001/auth/profile
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBhcmFzdGFyLm1laGRpQGdtYWlsLmNvbSIsInN1YiI6MSwiaWF0IjoxNjY4MzY5NTkzLCJleHAiOjE2NjgzNjk4OTN9.0XLZriZVOVTL1YUxtsy8XnJGxE7nJgJCJK8yK9OrTYI
 
 
 
