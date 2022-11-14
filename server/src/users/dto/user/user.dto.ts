@@ -21,11 +21,11 @@ export class UserDto {
   @Expose()
   @ApiProperty()
   providerId: string;
-  
+
   @Expose()
   @ApiProperty()
   name: string;
-  
+
   @Expose()
   @ApiProperty()
   photo: string;

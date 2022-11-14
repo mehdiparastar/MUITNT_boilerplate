@@ -1,5 +1,5 @@
 import { User } from '../users/entities/user.entity';
-const roles=[]
+const roles = [];
 let usersArray: User[] = [
   {
     id: 1,

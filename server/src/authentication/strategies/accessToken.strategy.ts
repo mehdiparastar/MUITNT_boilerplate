@@ -29,6 +29,6 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   success(user: any, info?: any): void {
-      console.log('user')
+    console.log('user');
   }
 }

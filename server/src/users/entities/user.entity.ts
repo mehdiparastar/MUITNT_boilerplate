@@ -1,12 +1,9 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { UserRoles } from '../../enum/userRoles.enum';
 import {
   Column,
   CreateDateColumn,
   Entity,
   Index,
-  JoinColumn,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -39,7 +36,7 @@ export class User {
   @ApiProperty()
   @Index({ unique: true })
   providerId: string;
-  
+
   @Column({ nullable: true })
   @ApiProperty()
   name: string;

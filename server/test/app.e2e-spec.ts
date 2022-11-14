@@ -14,7 +14,7 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
-    await AppDataSource.initialize();    
+    await AppDataSource.initialize();
   });
   afterAll(async () => {
     await AppDataSource.dropDatabase();

@@ -6,8 +6,9 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
-import { getRolesExpand, UserRoles } from '../enum/userRoles.enum';
+import { UserRoles } from '../enum/userRoles.enum';
 import { Request } from 'express';
+import { getRolesExpand } from '../helperFunctions/get-roles-expand';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -32,11 +33,7 @@ export class RolesGuard implements CanActivate {
       return false;
     }
 
-    const userRoles = getRolesExpand(
-      Object.keys(request.user.roles).filter(
-        (item) => request.user.roles[item] === true,
-      ),
-    );
+    const userRoles = getRolesExpand(request.user.roles);
 
     const auth = requiredRoles.some((role) => userRoles.includes(role));
 

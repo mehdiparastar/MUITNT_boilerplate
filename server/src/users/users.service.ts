@@ -1,10 +1,10 @@
 import {
   BadRequestException,
   Injectable,
+  NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthService } from '../auth/auth.service';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/user/update-user.dto';
 import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';
@@ -99,34 +99,50 @@ export class UsersService {
       throw new NotFoundException('user not found');
     }
 
-    const updateUserRoles = await this.update(
-      id,
-      {roles:getRolesArray(newRoles)},
-    );
+    const updateUserRoles = await this.update(id, {
+      roles: getRolesArray(newRoles),
+    });
 
     return updateUserRoles;
   }
 
-  // async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-  //   const user: User = await this.findOneById(id);
-  //   if (!user) {
-  //     throw new NotFoundException('user not found');
-  //   }
-  //   Object.assign(user, updateUserDto);
-  //   return this.usersRepo.save(user);
-  // }
+  async changeUserEmail(id: number, newEmail: string): Promise<User> {
+    const isLocalUser =
+      (await this.findOneById(id)).provider === authTypeEnum.local;
+    if (!isLocalUser) {
+      throw new NotAcceptableException(
+        "you can change mail of only users that have been registered as 'local'!",
+      );
+    }
+    const update = await this.update(id, { email: newEmail });
 
-  // async findAll(): Promise<User[]> {
-  //   const allUsers: User[] = await this.usersRepo.find({
-  //   });
-  //   return allUsers;
-  // }
+    return update;
+  }
 
-  // async remove(id: number): Promise<User> {
-  //   const user = await this.findOneById(id);
-  //   if (!user) {
-  //     throw new NotFoundException('user not found');
-  //   }
-  //   return this.usersRepo.remove(user);
-  // }
+  async changeUserPassword(id: number, newPassword: string): Promise<User> {
+    const isLocalUser =
+      (await this.findOneById(id)).provider === authTypeEnum.local;
+    if (!isLocalUser) {
+      throw new NotAcceptableException(
+        "you can change mail of only users that have been registered as 'local'!",
+      );
+    }
+    const hashedNewPassword = await hashData(newPassword);
+    const update = await this.update(id, { password: hashedNewPassword });
+
+    return update;
+  }
+
+  async findAll(): Promise<User[]> {
+    const allUsers: User[] = await this.usersRepo.find({});
+    return allUsers;
+  }
+
+  async remove(id: number): Promise<User> {
+    const user = await this.findOneById(id);
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    return this.usersRepo.remove(user);
+  }
 }

@@ -2,7 +2,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UsersService } from '../../users/users.service';
 import { AuthService } from '../auth.service';
 import { authTypeEnum } from 'src/enum/authType.enum';
 
@@ -10,7 +9,6 @@ import { authTypeEnum } from 'src/enum/authType.enum';
 export class GoogleOauthStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
     protected configService: ConfigService<IconfigService>,
-    private readonly usersService: UsersService,
     private readonly authService: AuthService,
   ) {
     super({

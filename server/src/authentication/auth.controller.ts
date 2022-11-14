@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  Session,
   UseGuards,
   Query,
   NotFoundException,
@@ -16,27 +15,23 @@ import {
 import { CreateUserDto } from '../users/dto/user/create-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from '../users/dto/user/user.dto';
-// import { AuthService } from './auth.service';
 import { AuthService } from './auth.service';
-// import { AuthGuard } from '../guards/auth.guard';
 import { ApproveUserRolesDto } from '../users/dto/userRoles/approve-user-roles.dto';
 import { UsersService } from '../users/users.service';
-import { Roles } from '../decorators/roles.decorator';
+import { Roles } from '../authorization/roles.decorator';
 import { UserRoles } from '../enum/userRoles.enum';
 import { CurrentUser } from '../users/decorators/current-user.middleware';
 import { User } from '../users/entities/user.entity';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UpdateUserDto } from '../users/dto/user/update-user.dto';
+import {  ApiTags } from '@nestjs/swagger';
 import { ChangeUserEmailDto } from '../users/dto/user/change-email.dto';
 import { ChangeUserPasswordDto } from '../users/dto/user/change-password.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { UserRolesDto } from '../users/dto/userRoles/user-roles.dto';
 import { JWTTokenDto } from '../users/dto/jwt/token.dto';
 import { AccessTokenGuard } from './guards/accessToken.guard';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { GoogleOauthGuard } from './guards/google-oauth.guard';
+import { RolesGuard } from '../authorization/roles.guard';
 
 @ApiTags('users')
 @Controller('auth')
@@ -70,7 +65,12 @@ export class AuthController {
   }
 
   @Get('profile')
-  @UseGuards(AccessTokenGuard)
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(
+    UserRoles.section1ExpertL2,
+    UserRoles.section2ExpertL2,
+    UserRoles.section3ExpertL2,
+  )
   @Serialize(UserDto)
   getProfile(@Req() req: Request) {
     return req.user;
@@ -78,8 +78,9 @@ export class AuthController {
 
   @Get('logout')
   @UseGuards(AccessTokenGuard)
-  logout(@Req() req: Request) {
-    this.authService.logout(req.user.id);
+  @Serialize(UserDto)
+  logout(@Req() req: Request): Promise<User> {
+    return this.authService.logout(req.user.id);
   }
 
   @Get('refresh')
@@ -91,87 +92,85 @@ export class AuthController {
   }
 
   @Patch('change-user-roles/:id')
-  @UseGuards(AccessTokenGuard)
-  // @Roles(UserRoles.superUser, UserRoles.admin)
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(UserRoles.superUser, UserRoles.admin)
+  @Serialize(UserDto)
   approveUserRoles(
-    @Req() req: Request,
     @Param('id') id: string,
     @Body() body: ApproveUserRolesDto,
-  ) {
+  ): Promise<User> {
     return this.usersService.changeUserRoles(parseInt(id), body);
   }
 
-  // @Get('whoami')
-  // @UseGuards(AuthGuard)
-  // @Roles(
-  //   UserRoles.section1ExpertL2,
-  //   UserRoles.section2ExpertL2,
-  //   UserRoles.section3ExpertL2,
-  // )
-  // whoAmI(@CurrentUser() user: User) {
-  //   return user;
-  // }
+  @Patch('change-email')
+  @UseGuards(AccessTokenGuard)
+  @Serialize(UserDto)
+  changeEmail(
+    @CurrentUser() user: User,
+    @Body() body: ChangeUserEmailDto,
+  ): Promise<User> {
+    return this.usersService.changeUserEmail(user.id, body.email);
+  }
 
-  // @Patch('change-email')
-  // @UseGuards(AuthGuard)
-  // changeEmail(@CurrentUser() user: User, @Body() body: ChangeUserEmailDto) {
-  //   return this.authService.changeUserEmail(user.id, body.email);
-  // }
+  @Patch('change-password')
+  @UseGuards(AccessTokenGuard)
+  @Serialize(UserDto)
+  changePassword(
+    @CurrentUser() user: User,
+    @Body() body: ChangeUserPasswordDto,
+  ): Promise<User> {
+    return this.usersService.changeUserPassword(user.id, body.password);
+  }
 
-  // @Patch('change-password')
-  // @UseGuards(AuthGuard)
-  // changePassword(
-  //   @CurrentUser() user: User,
-  //   @Body() body: ChangeUserPasswordDto,
-  // ) {
-  //   return this.authService.changeUserPassword(user.id, body.password);
-  // }
+  @Get('all')
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(UserRoles.superUser, UserRoles.admin)
+  @Serialize(UserDto)
+  findAll(): Promise<User[]> {
+    return this.usersService.findAll();
+  }
 
-  // @Get('all')
-  // @UseGuards(AuthGuard)
-  // @Roles(UserRoles.superUser, UserRoles.admin)
-  // findAll() {
-  //   return this.usersService.findAll();
-  // }
+  @Get('find-by-email')
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(
+    UserRoles.superUser,
+    UserRoles.admin,
+    UserRoles.adminSection1,
+    UserRoles.adminSection2,
+    UserRoles.adminSection3,
+  )
+  @Serialize(UserDto)
+  async findAllByEmail(@Query('email') email: string): Promise<User[]> {
+    const users: User[] = await this.usersService.findByEmail(email);
+    if (!users.length) {
+      throw new NotFoundException('user not found');
+    }
+    return users;
+  }
 
-  // @Get('find-by-email')
-  // @UseGuards(AuthGuard)
-  // @Roles(
-  //   UserRoles.superUser,
-  //   UserRoles.admin,
-  //   UserRoles.adminSection1,
-  //   UserRoles.adminSection2,
-  //   UserRoles.adminSection3,
-  // )
-  // async findAllByEmail(@Query('email') email: string) {
-  //   const users: User[] = await this.usersService.findByEmail(email);
-  //   if (!users.length) {
-  //     throw new NotFoundException('user not found');
-  //   }
-  //   return users;
-  // }
+  @Get('find-by-id')
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(
+    UserRoles.superUser,
+    UserRoles.admin,
+    UserRoles.adminSection1,
+    UserRoles.adminSection2,
+    UserRoles.adminSection3,
+  )
+  @Serialize(UserDto)
+  async findOneById(@Query('id') id: string): Promise<User> {
+    const user: User = await this.usersService.findOneById(parseInt(id));
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    return user;
+  }
 
-  // @Get('find-by-id')
-  // @UseGuards(AuthGuard)
-  // @Roles(
-  //   UserRoles.superUser,
-  //   UserRoles.admin,
-  //   UserRoles.adminSection1,
-  //   UserRoles.adminSection2,
-  //   UserRoles.adminSection3,
-  // )
-  // async findOneById(@Query('id') id: string) {
-  //   const user: User = await this.usersService.findOneById(parseInt(id));
-  //   if (!user) {
-  //     throw new NotFoundException('user not found');
-  //   }
-  //   return user;
-  // }
-
-  // @Delete('delete-user/:id')
-  // @UseGuards(AuthGuard)
-  // @Roles(UserRoles.superUser)
-  // remove(@Param('id') id: string) {
-  //   return this.usersService.remove(parseInt(id));
-  // }
+  @Delete('delete-user/:id')
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(UserRoles.superUser)
+  @Serialize(UserDto)
+  remove(@Param('id') id: string): Promise<User> {
+    return this.usersService.remove(parseInt(id));
+  }
 }

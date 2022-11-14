@@ -7,8 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSource } from './data-source';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
-import { RolesGuard } from './guards/roles.guard';
-import { AuthModule } from './auth/auth.module';
+import { RolesGuard } from './authorization/roles.guard';
+import { AuthModule } from './authentication/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
@@ -19,7 +19,7 @@ import { JwtModule } from '@nestjs/jwt';
     }),
     TypeOrmModule.forRoot(AppDataSource.options),
     UsersModule,
-    AuthModule,    
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
@@ -33,10 +33,10 @@ import { JwtModule } from '@nestjs/jwt';
         whitelist: true,
       }),
     },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
     AppService,
   ],
 })
