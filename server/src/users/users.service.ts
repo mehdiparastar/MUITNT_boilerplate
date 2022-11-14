@@ -12,6 +12,7 @@ import { User } from './entities/user.entity';
 import { UserRoles } from '../enum/userRoles.enum';
 import { hashData } from '../helperFunctions/hash-data';
 import { authTypeEnum } from 'src/enum/authType.enum';
+import { getRolesArray } from 'src/helperFunctions/get-roles-array-from-roles-dto';
 
 @Injectable()
 export class UsersService {
@@ -37,7 +38,7 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-  async createUserGoogle(googleUser: IGoogleUser): Promise<User> {
+  async createUserWithGoogle(googleUser: IGoogleUser): Promise<User> {
     // Check if user exists
     const [userExists] = await this.findByEmail(googleUser.email);
     if (userExists) {
@@ -89,24 +90,22 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-  // async changeUserRoles(
-  //   id: number,
-  //   newRoles: ApproveUserRolesDto,
-  // ): Promise<User> {
-  //   const user: User = await this.findOneById(id);
-  //   if (!user) {
-  //     throw new NotFoundException('user not found');
-  //   }
+  async changeUserRoles(
+    id: number,
+    newRoles: ApproveUserRolesDto,
+  ): Promise<User> {
+    const user: User = await this.findOneById(id);
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
 
-  //   const updateUserRoles = await this.userRolesService.update(
-  //     user.roles.id,
-  //     newRoles,
-  //   );
+    const updateUserRoles = await this.update(
+      id,
+      {roles:getRolesArray(newRoles)},
+    );
 
-  //   user.roles = updateUserRoles;
-
-  //   return user;
-  // }
+    return updateUserRoles;
+  }
 
   // async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
   //   const user: User = await this.findOneById(id);

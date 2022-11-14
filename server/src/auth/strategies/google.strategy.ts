@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../../users/users.service';
 import { AuthService } from '../auth.service';
+import { authTypeEnum } from 'src/enum/authType.enum';
 
 @Injectable()
 export class GoogleOauthStrategy extends PassportStrategy(Strategy, 'google') {
@@ -30,7 +31,7 @@ export class GoogleOauthStrategy extends PassportStrategy(Strategy, 'google') {
       const { id, name, emails, photos } = profile;
 
       const googleUser: IGoogleUser = {
-        provider: 'google',
+        provider: authTypeEnum.google,
         providerId: id,
         name: name.givenName,
         email: emails[0].value,

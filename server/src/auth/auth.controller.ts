@@ -41,7 +41,10 @@ import { GoogleOauthGuard } from './guards/google-oauth.guard';
 @ApiTags('users')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post('create')
   @Serialize(JWTTokenDto)
@@ -64,13 +67,11 @@ export class AuthController {
   @UseGuards(GoogleOauthGuard)
   async googleLoginCallback(@Req() req: Request) {
     return this.authService.login(req.user);
-    return req.user;
   }
 
   @Get('profile')
   @UseGuards(AccessTokenGuard)
-  // @UseGuards(GoogleOauthGuard)
-  // @Serialize(UserDto)
+  @Serialize(UserDto)
   getProfile(@Req() req: Request) {
     return req.user;
   }
@@ -89,12 +90,16 @@ export class AuthController {
     return this.authService.refreshTokens(id, refreshToken);
   }
 
-  // @Patch('change-user-roles/:id')
-  // @UseGuards(AuthGuard)
+  @Patch('change-user-roles/:id')
+  @UseGuards(AccessTokenGuard)
   // @Roles(UserRoles.superUser, UserRoles.admin)
-  // approveUserRoles(@Param('id') id: string, @Body() body: ApproveUserRolesDto) {
-  //   return this.usersService.changeUserRoles(parseInt(id), body);
-  // }
+  approveUserRoles(
+    @Req() req: Request,
+    @Param('id') id: string,
+    @Body() body: ApproveUserRolesDto,
+  ) {
+    return this.usersService.changeUserRoles(parseInt(id), body);
+  }
 
   // @Get('whoami')
   // @UseGuards(AuthGuard)

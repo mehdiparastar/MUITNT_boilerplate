@@ -16,7 +16,19 @@ export class UserDto {
 
   @Expose()
   @ApiProperty()
-  authType: string;
+  provider: string;
+
+  @Expose()
+  @ApiProperty()
+  providerId: string;
+  
+  @Expose()
+  @ApiProperty()
+  name: string;
+  
+  @Expose()
+  @ApiProperty()
+  photo: string;
 
   @Expose()
   @ApiProperty({ isArray: true, type: 'string' })

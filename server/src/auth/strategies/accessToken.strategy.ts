@@ -27,4 +27,8 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
     return { id: payload.sub, email: payload.email };
   }
+
+  success(user: any, info?: any): void {
+      console.log('user')
+  }
 }

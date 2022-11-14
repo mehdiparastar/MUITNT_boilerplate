@@ -6,5 +6,9 @@ import { CreateUserDto } from './create-user.dto';
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @Expose()
   @ApiProperty()
-  refreshToken: string;
+  refreshToken?: string;
+
+  @Expose()
+  @ApiProperty({ isArray: true, type: 'string' })
+  roles?: string[];
 }

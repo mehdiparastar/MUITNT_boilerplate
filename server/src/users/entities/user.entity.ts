@@ -39,6 +39,14 @@ export class User {
   @ApiProperty()
   @Index({ unique: true })
   providerId: string;
+  
+  @Column({ nullable: true })
+  @ApiProperty()
+  name: string;
+
+  @Column({ nullable: true })
+  @ApiProperty()
+  photo: string;
 
   @Column('simple-array', { nullable: true })
   @ApiProperty()

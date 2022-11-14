@@ -19,7 +19,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async localUservalidate(
+  async localUserValidate(
     email: string,
     password: string,
   ): Promise<Partial<User> | null> {
@@ -48,9 +48,10 @@ export class AuthService {
   async googleUserValidate(
     googleUser: IGoogleUser,
   ): Promise<Partial<User> | null> {
-    const [user] = await this.usersService.findByEmail(googleUser.email);    
+    const [user] = await this.usersService.findByEmail(googleUser.email);
     if (!user) {
-      throw new NotAcceptableException('could not find the user');
+      const newUser = await this.usersService.createUserWithGoogle(googleUser);
+      return newUser;
     }
     if (user.provider !== authTypeEnum.google) {
       throw new NotAcceptableException(
@@ -60,10 +61,8 @@ export class AuthService {
     if (user) {
       return user;
     }
-    
-    const newUser = await this.usersService.createUserGoogle(googleUser);
 
-    return newUser;
+    return null;
   }
 
   async createNewUser(

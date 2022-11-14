@@ -11,20 +11,20 @@ Content-Type: application/json
 
 ### Login with email and password
 
-# @name login
+# @name localLogin
 
 POST http://localhost:3001/auth/login
 Content-Type: application/json
 
 {
-    "email":"parastar.mehdi@gmail.com",
+    "email":"parastar.azkco@gmail.com",
     "password":"mehdi"
 }
 
 
 ### tokens
-@accessToken = {{login.response.body.accessToken}}
-@loginRefreshToken = {{login.response.body.refreshToken}}
+@accessToken = {{localLogin.response.body.accessToken}}
+@loginRefreshToken = {{localLogin.response.body.refreshToken}}
 
 
 ### refresh token
@@ -43,7 +43,7 @@ Authorization: Bearer {{loginRefreshToken}}
 
 GET  http://localhost:3001/auth/profile
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBhcmFzdGFyLm1laGRpQGdtYWlsLmNvbSIsInN1YiI6MSwiaWF0IjoxNjY4MzY5NTkzLCJleHAiOjE2NjgzNjk4OTN9.0XLZriZVOVTL1YUxtsy8XnJGxE7nJgJCJK8yK9OrTYI
+Authorization: Bearer {{accessToken}}
 
 
 
@@ -53,30 +53,9 @@ Authorization: Bearer {{accessToken}}
 
 
 
-
-
-
-
-
-
-
-### Signin with email and password
-POST http://localhost:3000/auth/signin
-Content-Type: application/json
-
-{
-    "email":"aaa@aaa.com",
-    "password":"mehdi"
-}
-
-
-
-### Signout user
-POST http://localhost:3000/auth/signout
-
-
 ### Approve an existing report
-PATCH http://localhost:3000/auth/change-user-roles/2
+PATCH http://localhost:3001/auth/change-user-roles/1
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
