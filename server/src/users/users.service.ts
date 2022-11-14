@@ -11,12 +11,13 @@ import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';
 import { User } from './entities/user.entity';
 import { UserRoles } from '../enum/userRoles.enum';
 import { hashData } from '../helperFunctions/hash-data';
+import { authTypeEnum } from 'src/enum/authType.enum';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private usersRepo: Repository<User>) {}
 
-  async create(email: string, password: string): Promise<User> {
+  async createUserWithUserPass(email: string, password: string): Promise<User> {
     // Check if user exists
     const [userExists] = await this.findByEmail(email);
     if (userExists) {
@@ -30,6 +31,26 @@ export class UsersService {
       email: email,
       password: password,
       roles: defaultUserRoles,
+      provider: authTypeEnum.local,
+    });
+
+    return this.usersRepo.save(user);
+  }
+
+  async createUserGoogle(googleUser: IGoogleUser): Promise<User> {
+    // Check if user exists
+    const [userExists] = await this.findByEmail(googleUser.email);
+    if (userExists) {
+      throw new BadRequestException('User already exists');
+    }
+
+    const defaultUserRoles = [UserRoles.section3ExpertL2];
+
+    // Create new User
+    const user = this.usersRepo.create({
+      ...googleUser,
+      roles: defaultUserRoles,
+      provider: authTypeEnum.google,
     });
 
     return this.usersRepo.save(user);
@@ -59,7 +80,7 @@ export class UsersService {
     return find;
   }
 
-  async update(id: number, attrs: UpdateUserDto):Promise<User> {
+  async update(id: number, attrs: UpdateUserDto): Promise<User> {
     const user = await this.findOneById(id);
     if (!user) {
       throw new NotFoundException('user not found');

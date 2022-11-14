@@ -16,8 +16,9 @@ const dbConfig: IDBConfig = {
     password: 'admin',
     database: 'dev_db',
     entities: [User],
-    synchronize: false,
-    migrations: ['src/migration_dev/*.js'],
+    synchronize: true,
+    // synchronize: false,
+    // migrations: ['src/migration_dev/*.js'],
     logging: false,
   },
   test: {

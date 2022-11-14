@@ -15,6 +15,10 @@ export class UserDto {
   refreshToken: string;
 
   @Expose()
+  @ApiProperty()
+  authType: string;
+
+  @Expose()
   @ApiProperty({ isArray: true, type: 'string' })
   roles: string[];
 }

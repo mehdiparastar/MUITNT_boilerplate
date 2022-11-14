@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { authTypeEnum } from '../../enum/authType.enum';
 
 @Entity()
 export class User {
@@ -22,13 +23,22 @@ export class User {
   @ApiProperty({ default: 'test@test.com' })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   @ApiHideProperty()
   password: string;
 
   @Column({ nullable: true })
-  @ApiHideProperty()
+  @ApiProperty()
   refreshToken: string;
+
+  @Column({ type: 'enum', enum: authTypeEnum, default: authTypeEnum.local })
+  @ApiProperty()
+  provider: string;
+
+  @Column({ nullable: true })
+  @ApiProperty()
+  @Index({ unique: true })
+  providerId: string;
 
   @Column('simple-array', { nullable: true })
   @ApiProperty()

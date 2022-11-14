@@ -49,42 +49,40 @@ export class AuthController {
     return this.authService.createNewUser(body.email, body.password);
   }
 
+  @Post('login')
   @UseGuards(LocalAuthGuard)
   @Serialize(JWTTokenDto)
-  @Post('login')
   async login(@Req() req: Request): Promise<IJWTTokensPair> {
     return this.authService.login(req.user);
   }
 
   @Get('google-logins')
   @UseGuards(GoogleOauthGuard)
-  async googleLogin(@Req() req: Request, @Res() res: Response) {
-    // console.log(req, res);
-    return 'google logins scope';
-  }
+  async googleLogin(@Req() req: Request, @Res() res: Response) {}
 
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
-  async googleLoginCallback(@Req() req: Request, @Res() res: Response) {
-    console.log('req, res');
-    return 'google callback scope';
+  async googleLoginCallback(@Req() req: Request) {
+    return this.authService.login(req.user);
+    return req.user;
   }
 
-  @UseGuards(AccessTokenGuard)
-  @Serialize(UserDto)
   @Get('profile')
+  @UseGuards(AccessTokenGuard)
+  // @UseGuards(GoogleOauthGuard)
+  // @Serialize(UserDto)
   getProfile(@Req() req: Request) {
     return req.user;
   }
 
-  @UseGuards(AccessTokenGuard)
   @Get('logout')
+  @UseGuards(AccessTokenGuard)
   logout(@Req() req: Request) {
     this.authService.logout(req.user.id);
   }
 
-  @UseGuards(RefreshTokenGuard)
   @Get('refresh')
+  @UseGuards(RefreshTokenGuard)
   refreshTokens(@Req() req: Request): Promise<IJWTTokensPair> {
     const id = req.user.id;
     const refreshToken = req.user.refreshToken;

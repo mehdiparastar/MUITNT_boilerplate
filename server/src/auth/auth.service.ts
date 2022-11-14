@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { hashData } from '../helperFunctions/hash-data';
 import { validateHashedData } from '../helperFunctions/validate-hashed-data';
 import { ConfigService } from '@nestjs/config';
+import { authTypeEnum } from 'src/enum/authType.enum';
 
 @Injectable()
 export class AuthService {
@@ -18,13 +19,18 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(
+  async localUservalidate(
     email: string,
     password: string,
   ): Promise<Partial<User> | null> {
     const [user] = await this.usersService.findByEmail(email);
     if (!user) {
       throw new NotAcceptableException('could not find the user');
+    }
+    if (user.provider !== authTypeEnum.local) {
+      throw new NotAcceptableException(
+        `${email} address has registered via ${user.provider}!`,
+      );
     }
 
     const passwordValidation = await validateHashedData(
@@ -39,12 +45,23 @@ export class AuthService {
     return null;
   }
 
-  async googleValidateUser(email: string): Promise<Partial<User> | null> {
-    const [user] = await this.usersService.findByEmail(email);
+  async googleUserValidate(
+    googleUser: IGoogleUser,
+  ): Promise<Partial<User> | null> {
+    const [user] = await this.usersService.findByEmail(googleUser.email);    
+    if (!user) {
+      throw new NotAcceptableException('could not find the user');
+    }
+    if (user.provider !== authTypeEnum.google) {
+      throw new NotAcceptableException(
+        `${googleUser.email} address has registered via ${user.provider}!`,
+      );
+    }
     if (user) {
       return user;
     }
-    const newUser = await this.usersService.create(email, 'hashedPassword');
+    
+    const newUser = await this.usersService.createUserGoogle(googleUser);
 
     return newUser;
   }
@@ -57,7 +74,10 @@ export class AuthService {
     const hashedPassword = await hashData(password);
 
     // Create new User
-    const newUser = await this.usersService.create(email, hashedPassword);
+    const newUser = await this.usersService.createUserWithUserPass(
+      email,
+      hashedPassword,
+    );
 
     const tokens = await this.getTokens(newUser.id, newUser.email);
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
@@ -82,7 +102,7 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: '10m',
+        expiresIn: '5m',
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),

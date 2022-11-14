@@ -12,6 +12,16 @@ declare global {
     OAUTH_GOOGLE_REDIRECT_URL?: string;
   }
 
+  interface IGoogleUser {
+    provider: string;
+    providerId: string;
+    name: string;
+    email: string;
+    photo: string;
+    accessToken: string;
+    refreshToken: string;
+  }
+
   namespace Express {
     interface Request {
       user?: Partial<UserEntity>;
