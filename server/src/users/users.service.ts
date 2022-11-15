@@ -11,8 +11,8 @@ import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';
 import { User } from './entities/user.entity';
 import { UserRoles } from '../enum/userRoles.enum';
 import { hashData } from '../helperFunctions/hash-data';
-import { authTypeEnum } from 'src/enum/authType.enum';
-import { getRolesArray } from 'src/helperFunctions/get-roles-array-from-roles-dto';
+import { authTypeEnum } from '../enum/authType.enum';
+import { getRolesArray } from '../helperFunctions/get-roles-array-from-roles-dto';
 
 @Injectable()
 export class UsersService {

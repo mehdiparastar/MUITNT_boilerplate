@@ -44,7 +44,7 @@ export class AuthController {
   @Post('create')
   @Serialize(JWTTokenDto)
   async create(@Body() body: CreateUserDto): Promise<IJWTTokensPair> {
-    return this.authService.createNewUser(body.email, body.password);
+    return this.authService.createNewLocalUser(body.email, body.password);
   }
 
   @Post('login')

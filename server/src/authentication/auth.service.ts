@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { hashData } from '../helperFunctions/hash-data';
 import { validateHashedData } from '../helperFunctions/validate-hashed-data';
 import { ConfigService } from '@nestjs/config';
-import { authTypeEnum } from 'src/enum/authType.enum';
+import { authTypeEnum } from '../enum/authType.enum';
 
 @Injectable()
 export class AuthService {
@@ -65,7 +65,7 @@ export class AuthService {
     return null;
   }
 
-  async createNewUser(
+  async createNewLocalUser(
     email: string,
     password: string,
   ): Promise<IJWTTokensPair> {

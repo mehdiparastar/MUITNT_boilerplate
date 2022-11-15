@@ -2,14 +2,12 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSource } from './data-source';
-import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
-import { RolesGuard } from './authorization/roles.guard';
 import { AuthModule } from './authentication/auth.module';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -33,10 +31,6 @@ import { JwtModule } from '@nestjs/jwt';
         whitelist: true,
       }),
     },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RolesGuard,
-    // },
     AppService,
   ],
 })
