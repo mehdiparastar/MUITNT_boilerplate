@@ -1,6 +1,6 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsEmail } from 'class-validator';
-import { CreateUserDto } from './create-user.dto';
+import { CreateLocalUserDto } from './create-local-user.dto';
 
 // export class ChangeUserEmailDto {
 //   @IsEmail()
@@ -8,6 +8,6 @@ import { CreateUserDto } from './create-user.dto';
 //   email: string;
 // }
 
-export class ChangeUserEmailDto extends PickType(CreateUserDto, [
+export class ChangeLocalUserEmailDto extends PickType(CreateLocalUserDto, [
   'email',
 ] as const) {}

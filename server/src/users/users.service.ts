@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UpdateUserDto } from './dto/user/update-user.dto';
+import { UpdateLocalUserDto } from './dto/user/update-local-user.dto';
 import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';
 import { User } from './entities/user.entity';
 import { UserRoles } from '../enum/userRoles.enum';
@@ -81,7 +81,7 @@ export class UsersService {
     return find;
   }
 
-  async update(id: number, attrs: UpdateUserDto): Promise<User> {
+  async update(id: number, attrs: UpdateLocalUserDto): Promise<User> {
     const user = await this.findOneById(id);
     if (!user) {
       throw new NotFoundException('user not found');

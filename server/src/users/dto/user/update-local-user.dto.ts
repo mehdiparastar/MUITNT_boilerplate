@@ -1,9 +1,9 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { CreateUserDto } from './create-user.dto';
+import { CreateLocalUserDto } from './create-local-user.dto';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {
+export class UpdateLocalUserDto extends PartialType(CreateLocalUserDto) {
   @Expose()
   @ApiProperty()
   refreshToken?: string;

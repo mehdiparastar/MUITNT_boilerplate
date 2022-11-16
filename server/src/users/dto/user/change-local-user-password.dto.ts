@@ -1,13 +1,13 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsEmail, IsString } from 'class-validator';
-import { CreateUserDto } from './create-user.dto';
+import { CreateLocalUserDto } from './create-local-user.dto';
 
-// export class ChangeUserPasswordDto {
+// export class ChangeLocalUserPasswordDto {
 //   @IsString()
 //   @ApiProperty({ default: 'newPass' })
 //   password: string;
 // }
 
-export class ChangeUserPasswordDto extends PickType(CreateUserDto, [
+export class ChangeLocalUserPasswordDto extends PickType(CreateLocalUserDto, [
   'password',
 ] as const) {}

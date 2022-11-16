@@ -12,7 +12,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { CreateUserDto } from '../users/dto/user/create-user.dto';
+import { CreateLocalUserDto } from '../users/dto/user/create-local-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from '../users/dto/user/user.dto';
 import { AuthService } from './auth.service';
@@ -23,8 +23,8 @@ import { UserRoles } from '../enum/userRoles.enum';
 import { CurrentUser } from '../users/decorators/current-user.middleware';
 import { User } from '../users/entities/user.entity';
 import {  ApiTags } from '@nestjs/swagger';
-import { ChangeUserEmailDto } from '../users/dto/user/change-email.dto';
-import { ChangeUserPasswordDto } from '../users/dto/user/change-password.dto';
+import { ChangeLocalUserEmailDto } from '../users/dto/user/change-local-user-email.dto';
+import { ChangeLocalUserPasswordDto } from '../users/dto/user/change-local-user-password.dto';
 import { Request, Response } from 'express';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JWTTokenDto } from '../users/dto/jwt/token.dto';
@@ -43,7 +43,7 @@ export class AuthController {
 
   @Post('create')
   @Serialize(JWTTokenDto)
-  async create(@Body() body: CreateUserDto): Promise<IJWTTokensPair> {
+  async create(@Body() body: CreateLocalUserDto): Promise<IJWTTokensPair> {
     return this.authService.createNewLocalUser(body.email, body.password);
   }
 
@@ -107,7 +107,7 @@ export class AuthController {
   @Serialize(UserDto)
   changeEmail(
     @CurrentUser() user: User,
-    @Body() body: ChangeUserEmailDto,
+    @Body() body: ChangeLocalUserEmailDto,
   ): Promise<User> {
     return this.usersService.changeUserEmail(user.id, body.email);
   }
@@ -117,7 +117,7 @@ export class AuthController {
   @Serialize(UserDto)
   changePassword(
     @CurrentUser() user: User,
-    @Body() body: ChangeUserPasswordDto,
+    @Body() body: ChangeLocalUserPasswordDto,
   ): Promise<User> {
     return this.usersService.changeUserPassword(user.id, body.password);
   }

@@ -8,7 +8,7 @@ import { User } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/users.service';
 import { AuthService } from '../auth.service';
 import { BadRequestException, NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from '../../users/dto/user/create-user.dto';
+import { CreateLocalUserDto } from '../../users/dto/user/create-local-user.dto';
 import { validateHashedData } from '../../helperFunctions/validate-hashed-data';
 import { LocalStrategy } from '../strategies/local.strategy';
 import { AccessTokenStrategy } from '../strategies/accessToken.strategy';
@@ -33,7 +33,7 @@ let getFakeUsersRepo = async () => [
 describe('AuthService', () => {
   let service: AuthService;
   let fakeUsersRepo: User[];
-  let fakeUsersDto: CreateUserDto[] = [
+  let fakeUsersDto: CreateLocalUserDto[] = [
     {
       email: 'toEnterTestUser01@test.com',
       password: 'test01',
