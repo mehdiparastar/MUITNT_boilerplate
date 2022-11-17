@@ -1,14 +1,15 @@
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Request } from 'express';
+
+import { authTypeEnum } from '../../enum/authType.enum';
+import { UserRoles } from '../../enum/userRoles.enum';
+import { hashData } from '../../helperFunctions/hash-data';
+import { User } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/users.service';
 import { AuthController } from '../auth.controller';
 import { AuthService } from '../auth.service';
-import { User } from '../../users/entities/user.entity';
-import { authTypeEnum } from '../../enum/authType.enum';
-import { hashData } from '../../helperFunctions/hash-data';
-import { UserRoles } from '../../enum/userRoles.enum';
-import { Request } from 'express';
 
 let getFakeUsersRepo = async () => [
   {

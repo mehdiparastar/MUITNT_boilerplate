@@ -1,17 +1,18 @@
+import { BadRequestException, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserRoles } from '../../enum/userRoles.enum';
+
 import { authTypeEnum } from '../../enum/authType.enum';
+import { UserRoles } from '../../enum/userRoles.enum';
 import { hashData } from '../../helperFunctions/hash-data';
+import { validateHashedData } from '../../helperFunctions/validate-hashed-data';
+import { CreateLocalUserDto } from '../../users/dto/user/create-local-user.dto';
 import { User } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/users.service';
 import { AuthService } from '../auth.service';
-import { BadRequestException, NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { CreateLocalUserDto } from '../../users/dto/user/create-local-user.dto';
-import { validateHashedData } from '../../helperFunctions/validate-hashed-data';
-import { LocalStrategy } from '../strategies/local.strategy';
 import { AccessTokenStrategy } from '../strategies/accessToken.strategy';
+import { LocalStrategy } from '../strategies/local.strategy';
 import { RefreshTokenStrategy } from '../strategies/refreshToken.strategy';
 
 let getFakeUsersRepo = async () => [

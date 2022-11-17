@@ -1,12 +1,13 @@
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserRoles } from '../../enum/userRoles.enum';
-import { authTypeEnum } from '../../enum/authType.enum';
-import { hashData } from '../../helperFunctions/hash-data';
-import { UsersService } from '../users.service';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
+
+import { authTypeEnum } from '../../enum/authType.enum';
+import { UserRoles } from '../../enum/userRoles.enum';
+import { hashData } from '../../helperFunctions/hash-data';
 import { User } from '../entities/user.entity';
+import { UsersService } from '../users.service';
 
 let getFakeUsersRepo = async () => [
   {

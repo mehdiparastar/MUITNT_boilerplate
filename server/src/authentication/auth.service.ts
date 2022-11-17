@@ -1,15 +1,12 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotAcceptableException,
-} from '@nestjs/common';
-import { User } from '../users/entities/user.entity';
-import { UsersService } from '../users/users.service';
+import { ForbiddenException, Injectable, NotAcceptableException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+
+import { authTypeEnum } from '../enum/authType.enum';
 import { hashData } from '../helperFunctions/hash-data';
 import { validateHashedData } from '../helperFunctions/validate-hashed-data';
-import { ConfigService } from '@nestjs/config';
-import { authTypeEnum } from '../enum/authType.enum';
+import { User } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {

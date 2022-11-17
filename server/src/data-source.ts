@@ -1,4 +1,5 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
+
 import { User } from './users/entities/user.entity';
 
 interface IDBConfig {

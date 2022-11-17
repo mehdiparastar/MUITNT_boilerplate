@@ -1,18 +1,14 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotAcceptableException,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { authTypeEnum } from '../enum/authType.enum';
+import { UserRoles } from '../enum/userRoles.enum';
+import { getRolesArray } from '../helperFunctions/get-roles-array-from-roles-dto';
+import { hashData } from '../helperFunctions/hash-data';
 import { UpdateLocalUserDto } from './dto/user/update-local-user.dto';
 import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';
 import { User } from './entities/user.entity';
-import { UserRoles } from '../enum/userRoles.enum';
-import { hashData } from '../helperFunctions/hash-data';
-import { authTypeEnum } from '../enum/authType.enum';
-import { getRolesArray } from '../helperFunctions/get-roles-array-from-roles-dto';
 
 @Injectable()
 export class UsersService {

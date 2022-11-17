@@ -1,9 +1,10 @@
+import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+
 import { AppDataSource } from '../src/data-source';
 import { CreateLocalUserDto } from '../src/users/dto/user/create-local-user.dto';
+import { AppModule } from './../src/app.module';
 
 let fakeUsersDto: CreateLocalUserDto[] = [
   {
@@ -298,5 +299,12 @@ describe('Authentication system', () => {
       .expect(200);
 
     expect(deleteUserReq.body.email).toEqual(fakeUsersDto[0].email);
+  });
+
+  it('check login using google', async () => {
+    const loginReq = await request(app.getHttpServer()).get(
+      '/auth/google-logins',
+    );
+    expect(loginReq.header.location).toContain('https://accounts.google.com/o/oauth2/v2/auth')    
   });
 });

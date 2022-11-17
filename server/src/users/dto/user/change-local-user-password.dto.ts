@@ -1,5 +1,5 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsEmail, IsString } from 'class-validator';
+import { PickType } from '@nestjs/swagger';
+
 import { CreateLocalUserDto } from './create-local-user.dto';
 
 // export class ChangeLocalUserPasswordDto {

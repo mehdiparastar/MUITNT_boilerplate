@@ -1,37 +1,38 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
-  Query,
+  Get,
   NotFoundException,
+  Param,
+  Patch,
+  Post,
+  Query,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateLocalUserDto } from '../users/dto/user/create-local-user.dto';
-import { Serialize } from '../interceptors/serialize.interceptor';
-import { UserDto } from '../users/dto/user/user.dto';
-import { AuthService } from './auth.service';
-import { ApproveUserRolesDto } from '../users/dto/userRoles/approve-user-roles.dto';
-import { UsersService } from '../users/users.service';
-import { Roles } from '../authorization/roles.decorator';
-import { UserRoles } from '../enum/userRoles.enum';
-import { CurrentUser } from '../users/decorators/current-user.middleware';
-import { User } from '../users/entities/user.entity';
 import { ApiTags } from '@nestjs/swagger';
+import { Request, Response } from 'express';
+
+import { Roles } from '../authorization/roles.decorator';
+import { RolesGuard } from '../authorization/roles.guard';
+import { UserRoles } from '../enum/userRoles.enum';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { CurrentUser } from '../users/decorators/current-user.middleware';
+import { JWTTokenDto } from '../users/dto/jwt/token.dto';
 import { ChangeLocalUserEmailDto } from '../users/dto/user/change-local-user-email.dto';
 import { ChangeLocalUserPasswordDto } from '../users/dto/user/change-local-user-password.dto';
-import { Request, Response } from 'express';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import { JWTTokenDto } from '../users/dto/jwt/token.dto';
+import { CreateLocalUserDto } from '../users/dto/user/create-local-user.dto';
+import { UserDto } from '../users/dto/user/user.dto';
+import { ApproveUserRolesDto } from '../users/dto/userRoles/approve-user-roles.dto';
+import { User } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
+import { AuthService } from './auth.service';
 import { AccessTokenGuard } from './guards/accessToken.guard';
-import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { GoogleOauthGuard } from './guards/google-oauth.guard';
-import { RolesGuard } from '../authorization/roles.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { TestOrDevModeGuard } from './guards/test-or-dev-mode.guard';
 
 @ApiTags('users')

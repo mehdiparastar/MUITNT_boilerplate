@@ -1,13 +1,9 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
-import { UserRoles } from '../enum/userRoles.enum';
 import { Request } from 'express';
+import { Observable } from 'rxjs';
+
+import { UserRoles } from '../enum/userRoles.enum';
 import { getRolesExpand } from '../helperFunctions/get-roles-expand';
 
 @Injectable()

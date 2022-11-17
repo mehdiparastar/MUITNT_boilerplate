@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean } from 'class-validator';
+
 import { UserRoles } from '../../../enum/userRoles.enum';
 
 export class CreateUserRolesDto {

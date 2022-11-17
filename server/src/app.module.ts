@@ -1,13 +1,14 @@
 import { Module, ValidationPipe } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppDataSource } from './data-source';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
-import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
 import { AuthModule } from './authentication/auth.module';
+import { AppDataSource } from './data-source';
+import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
