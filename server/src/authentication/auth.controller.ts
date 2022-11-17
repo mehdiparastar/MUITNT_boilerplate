@@ -22,7 +22,7 @@ import { Roles } from '../authorization/roles.decorator';
 import { UserRoles } from '../enum/userRoles.enum';
 import { CurrentUser } from '../users/decorators/current-user.middleware';
 import { User } from '../users/entities/user.entity';
-import {  ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { ChangeLocalUserEmailDto } from '../users/dto/user/change-local-user-email.dto';
 import { ChangeLocalUserPasswordDto } from '../users/dto/user/change-local-user-password.dto';
 import { Request, Response } from 'express';
@@ -32,6 +32,7 @@ import { AccessTokenGuard } from './guards/accessToken.guard';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { GoogleOauthGuard } from './guards/google-oauth.guard';
 import { RolesGuard } from '../authorization/roles.guard';
+import { TestOrDevModeGuard } from './guards/test-or-dev-mode.guard';
 
 @ApiTags('users')
 @Controller('auth')
@@ -100,6 +101,15 @@ export class AuthController {
     @Body() body: ApproveUserRolesDto,
   ): Promise<User> {
     return this.usersService.changeUserRoles(parseInt(id), body);
+  }
+
+  @Patch('approve-role-as-superuser/:email')
+  @UseGuards(AccessTokenGuard, TestOrDevModeGuard)
+  @Serialize(UserDto)
+  approveSuperUser(
+    @Param('email') email: string,
+  ): Promise<User> {
+    return this.usersService.approveRoleAsSuperUser(email);
   }
 
   @Patch('change-email')

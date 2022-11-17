@@ -106,6 +106,19 @@ export class UsersService {
     return updateUserRoles;
   }
 
+  async approveRoleAsSuperUser(email: string): Promise<User> {
+    const [user] = await this.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+
+    const updateUserRoles = await this.update(user.id, {
+      roles: getRolesArray({ superUser: true }),
+    });
+
+    return updateUserRoles;
+  }
+
   async changeUserEmail(id: number, newEmail: string): Promise<User> {
     const isLocalUser =
       (await this.findOneById(id)).provider === authTypeEnum.local;

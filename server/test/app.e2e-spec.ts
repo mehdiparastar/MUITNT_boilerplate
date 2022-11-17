@@ -7,6 +7,7 @@ import { AppDataSource } from '../src/data-source';
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   jest.setTimeout(600000);
+  
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
