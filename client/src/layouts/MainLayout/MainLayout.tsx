@@ -37,7 +37,7 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
         sx={{
           flexGrow: 1,
           minHeight: 200,
-          pt: 0.5,
+          pt: 0,
           pb: 0,
         }}
       >

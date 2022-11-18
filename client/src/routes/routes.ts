@@ -1,11 +1,13 @@
 // pages
-import Home from '../pages/Home/Home';
-import About from '../pages/About/About';
 import { MainLayout } from 'layouts/MainLayout/MainLayout';
-import NotFound from 'pages/NotFound/NotFound';
-// import Maintenance from 'pages/Maintenance/Maintenance';
+import Login from 'pages/Auth/Login/Login';
 import ComingSoon from 'pages/ComingSoon/ComingSoon';
+import NotFound from 'pages/NotFound/NotFound';
 
+import About from '../pages/About/About';
+import Home from '../pages/Home/Home';
+
+// import Maintenance from 'pages/Maintenance/Maintenance';
 export const routes: Array<Route> = [
   {
     key: '*',
@@ -18,6 +20,15 @@ export const routes: Array<Route> = [
   },
 
   //#region PUBLIC PAGES
+  {
+    key: 'auth-route',
+    title: 'Auth',
+    path: '/auth',
+    enabled: true,
+    component: Login,
+    isProtected: false,
+    layout: MainLayout,
+  },
   {
     key: 'home-route',
     title: 'Home',
@@ -54,7 +65,7 @@ export const routes: Array<Route> = [
     path: '/crud',
     enabled: true,
     component: ComingSoon,
-    isProtected: true,
+    isProtected: false,
     layout: MainLayout,
   },
   {
@@ -63,7 +74,7 @@ export const routes: Array<Route> = [
     path: '/chat',
     enabled: true,
     component: ComingSoon,
-    isProtected: true,
+    isProtected: false,
     layout: MainLayout,
   },
   {

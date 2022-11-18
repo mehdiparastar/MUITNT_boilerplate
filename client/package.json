@@ -20,13 +20,16 @@
     "aos": "^2.3.4",
     "axios": "^0.27.2",
     "clsx": "^1.2.1",
+    "formik": "^2.2.9",
     "react": "^18.2.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "react-slick": "^0.29.0",
     "typescript": "^4.4.2",
-    "web-vitals": "^2.1.0"
+    "web-vitals": "^2.1.0",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -54,6 +57,7 @@
     ]
   },
   "devDependencies": {
+    "@types/yup": "^0",
     "prettier": "^2.7.1"
   },
   "packageManager": "yarn@3.2.4"

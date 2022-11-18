@@ -1,23 +1,29 @@
-import HomeIcon from '@mui/icons-material/Home';
-import InfoIcon from '@mui/icons-material/Info';
-import ResumeIcon from '@mui/icons-material/CoPresent';
 import CRUDIcon from '@mui/icons-material/AppRegistration';
 import ChatIcon from '@mui/icons-material/Chat';
+import ResumeIcon from '@mui/icons-material/CoPresent';
+import LoginIcon from '@mui/icons-material/Login';
+import ShareFileIcon from '@mui/icons-material/FilePresent';
+import HomeIcon from '@mui/icons-material/Home';
+import InfoIcon from '@mui/icons-material/Info';
+import MusicIcon from '@mui/icons-material/LibraryMusic';
+import MovieIcon from '@mui/icons-material/LocalMovies';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import MapIcon from '@mui/icons-material/MyLocation';
 import VideoCall from '@mui/icons-material/OndemandVideo';
 import VoiceCallIcon from '@mui/icons-material/RecordVoiceOver';
-import ShareFileIcon from '@mui/icons-material/FilePresent';
-import MovieIcon from '@mui/icons-material/LocalMovies';
-import MusicIcon from '@mui/icons-material/LibraryMusic';
-import MapIcon from '@mui/icons-material/MyLocation';
-import TradeBotIcon from '@mui/icons-material/SmartToy';
 import OnlineShopIcon from '@mui/icons-material/ShoppingCartCheckout';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import TradeBotIcon from '@mui/icons-material/SmartToy';
 
 export const navigationPages: navPage[] = [
   {
     title: 'public pages',
     key: 'public-pages',
     pages: [
+      {
+        title: 'Auth',
+        href: '/auth',
+        icon: <LoginIcon sx={{ pr: 0.5 }} />,
+      },
       { title: 'Home', href: '/', icon: <HomeIcon sx={{ pr: 0.5 }} /> },
       { title: 'About', href: '/about', icon: <InfoIcon sx={{ pr: 0.5 }} /> },
       {
