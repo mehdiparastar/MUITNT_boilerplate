@@ -41,12 +41,8 @@ const Login: FC<any> = (): ReactElement => {
           maxWidth="30%"
           width={'-webkit-fill-available'}
         >
-          <Grid xs={12}>
-            <Container
-              maxWidth={'lg'}
-            >
+          <Grid xs={12}>            
               <Side />
-            </Container>
           </Grid>
           {/* <LoginSVG
             width={'100%'}
