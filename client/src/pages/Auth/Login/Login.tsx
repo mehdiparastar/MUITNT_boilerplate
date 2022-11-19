@@ -9,6 +9,7 @@ import React, { FC, ReactElement } from 'react';
 import { LoginSVG } from 'svg/pages/loginSVG';
 
 import { LoginForm } from './components/LoginForm';
+import { Side } from './components/Side';
 
 const Login: FC<any> = (): ReactElement => {
   const theme = useTheme();
@@ -18,8 +19,10 @@ const Login: FC<any> = (): ReactElement => {
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    return () => {};
+    return () => { };
   }, []);
+
+  // return <Side />
 
   return (
     <Grid
@@ -32,35 +35,41 @@ const Login: FC<any> = (): ReactElement => {
         in={true}
       >
         <Grid
+          container
           bgcolor={theme.palette.alternate.main}
           sx={{ display: { xs: 'none', md: 'grid' }, alignContent: 'center' }}
           maxWidth="30%"
           width={'-webkit-fill-available'}
         >
-          <LoginSVG
+          <Grid xs={12}>
+            <Container
+              maxWidth={'lg'}
+            >
+              <Side />
+            </Container>
+          </Grid>
+          {/* <LoginSVG
             width={'100%'}
             height={'100%'}
-          />
+          /> */}
         </Grid>
       </Slide>
       <Grid
+        container
         maxWidth={{ xs: '100%', md: '70%' }}
         sx={{ display: 'grid', alignContent: 'center' }}
         width={'-webkit-fill-available'}
         data-aos={isMd ? 'fade-left' : 'fade-up'}
       >
-        <Container
-          maxWidth={'sm'}
-          sx={{
-            height: '100%',
-            px: 2,
-            py: { xs: 4, sm: 6, md: 8 },
-          }}
-        >
-          <LoginForm />
-        </Container>
+        <Grid xs={12}>
+          <Container
+            maxWidth={'sm'}
+          >
+            <LoginForm />
+          </Container>
+        </Grid>
       </Grid>
-    </Grid>    
+    </Grid>
   );
 };
 

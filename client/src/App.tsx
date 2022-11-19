@@ -5,6 +5,8 @@ import { routes as appRoutes } from './routes/routes';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { WithLayout } from 'WithLayout';
 import 'aos/dist/aos.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const App: React.FC = () => {
   return (
