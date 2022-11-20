@@ -9,19 +9,19 @@ import {
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
-import Auth0BannerSVG from 'svg/banners/Auth0/Auth0';
+import Oauth2BannerSVG from 'svg/banners/Oauth2/Oauth2';
 import MUIBannerSVG from 'svg/banners/MUI/MUI';
 import DockerBannerSVG from 'svg/banners/Docker/Docker';
 import GoogleBannerSVG from 'svg/banners/Google/Google';
 
 const featuresList = [
   {
-    title: 'Auth0 Authentication and Authorization',
+    title: 'Oauth2 Authentication and Authorization',
     description:
-      'Auth0 supports social providers such as Google, Facebook, and Twitter, along with Enterprise providers such as Microsoft Office 365, Google Apps, and Azure. You can also use any OAuth 2.0 Authorization Server.',
-    resourceUrl: 'https://auth0.com/docs/connections',
+      'Oauth2 supports social providers such as Google, Facebook, and Twitter, along with Enterprise providers such as Microsoft Office 365, Google Apps, and Azure. You can also use any OAuth 2.0 Authorization Server.',
+    resourceUrl: 'https://oauth.net/2/',
     banner: (
-      <Auth0BannerSVG
+      <Oauth2BannerSVG
         sx={{
           backgroundColor: 'background.level2',
         }}

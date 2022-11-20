@@ -74,7 +74,7 @@ const anim9 = keyframes`
         }
     `;
 
-const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
+const Oauth2BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
   const theme = useTheme();
   const colorPrimaryLight = theme.palette.primary.light;
   const colorPrimaryMain = theme.palette.primary.main;
@@ -452,7 +452,7 @@ const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
               }
             `}
           >
-            WITH AUTH0
+            WITH OAUTH2
           </text>
         </g>
       </g>
@@ -460,4 +460,4 @@ const Auth0BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
   );
 };
 
-export default Auth0BannerSVG;
+export default Oauth2BannerSVG;

@@ -12,6 +12,7 @@ import MUITNTSVG from 'svg/logos/MUITNT';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuth0 } from '@auth0/auth0-react';
 import { logoutService } from 'services/auth/logout.service';
+import Grid from '@mui/material/Unstable_Grid2';
 
 export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   onSidebarOpen,
@@ -27,14 +28,14 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   const { logout, isAuthenticated } = useAuth0();
 
   return (
-    <Box
-      display={'flex'}
+    <Grid
+      container
       justifyContent={'space-between'}
       alignItems={'center'}
-      width={'100%'}
     >
-      <Box
-        display={'flex'}
+      <Grid
+        container
+        justifyContent={'center'}
         alignItems={'center'}
       >
         <IconButton
@@ -42,7 +43,7 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
           aria-label="Menu"
           edge="start"
           onClick={onSidebarOpen}
-          sx={{ mr: { xs: 1, sm: 2 } }}
+          sx={{ mx: 1 }}
         >
           <MenuIcon />
         </IconButton>
@@ -66,26 +67,26 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
             <LogoutIcon />
           </IconButton>
         )}
-      </Box>
-      <Box
-        display="flex"
+      </Grid>
+      <Grid
+        container
         alignItems={'center'}
       >
-        <Box
-          display={'flex'}
+        <Grid
+          container
           padding={1}
           borderRadius={8}
           bgcolor={theme.palette.alternate.main}
         >
           {paletteTypes.map((item, i) => (
-            <Box
+            <Grid
+              container
               key={item}
               bgcolor={colors[item][700]}
               width={20}
               height={20}
               borderRadius={'100%'}
               marginRight={i === paletteTypes.length - 1 ? 0 : 1}
-              display={'flex'}
               justifyContent={'center'}
               alignItems={'center'}
               sx={{ cursor: 'pointer' }}
@@ -106,10 +107,13 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
                   />
                 </svg>
               )}
-            </Box>
+            </Grid>
           ))}
-        </Box>
-        <Box>
+        </Grid>
+        <Grid
+          container
+          justifyContent={'center'}
+          alignItems={'center'}>
           <IconButton
             onClick={() => themeToggler()}
             aria-label="Dark mode toggler"
@@ -119,8 +123,8 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
           >
             {themeMode === 'light' ? <Brightness4Icon /> : <Brightness7Icon />}
           </IconButton>
-        </Box>
-      </Box>
-    </Box>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };

@@ -28,22 +28,22 @@ const Login: FC<any> = (): ReactElement => {
     <Grid
       container
       width="100%"
-      height="100vh"
+      height={isMd ? "-webkit-calc(100vh - 302px)" : "-webkit-calc(100vh - 322px)"}
+      columns={100}
+      spacing={3}
     >
       <Slide
         direction="right"
         in={true}
       >
         <Grid
-          container
+          xs={0}
+          md={30}
           bgcolor={theme.palette.alternate.main}
-          sx={{ display: { xs: 'none', md: 'grid' }, alignContent: 'center' }}
-          maxWidth="30%"
-          width={'-webkit-fill-available'}
         >
-          <Grid xs={12}>            
-              <Side />
-          </Grid>
+          {/* <Side /> */}
+          {/* <Grid xs={12}>            
+          </Grid> */}
           {/* <LoginSVG
             width={'100%'}
             height={'100%'}
@@ -51,19 +51,20 @@ const Login: FC<any> = (): ReactElement => {
         </Grid>
       </Slide>
       <Grid
-        container
-        maxWidth={{ xs: '100%', md: '70%' }}
-        sx={{ display: 'grid', alignContent: 'center' }}
-        width={'-webkit-fill-available'}
+        xs={100}
+        md={70}
+        paddingY={4}
+        // container
+        // maxWidth={{ xs: '100%', md: '70%' }}
+        // sx={{ display: 'grid', alignContent: 'center' }}
+        // width={'-webkit-fill-available'}
         data-aos={isMd ? 'fade-left' : 'fade-up'}
       >
-        <Grid xs={12}>
-          <Container
-            maxWidth={'sm'}
-          >
-            <LoginForm />
-          </Container>
-        </Grid>
+        {/* <Container
+          maxWidth={'sm'}
+        >
+          <LoginForm />
+        </Container> */}
       </Grid>
     </Grid>
   );

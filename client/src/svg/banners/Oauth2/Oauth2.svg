@@ -100,7 +100,7 @@
                 SOLUTION
             </text>
             <text textLength="180" font-weight="600" font-size="28" x="383.1" y="221.9" fill="#021818">
-                WITH AUTH0
+                WITH OAUTH2
             </text>
         </g>
     </g>

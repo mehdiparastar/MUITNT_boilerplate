@@ -12,7 +12,7 @@ const App: React.FC = () => {
   return (
     <WithLayout>
       <CssBaseline enableColorScheme />
-      <Paper elevation={0}>
+      <Paper elevation={0} sx={{ minHeight: "100vh" }}>
         <Router>
           <Routes>
             {appRoutes.map((route) => (
