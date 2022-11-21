@@ -1,16 +1,31 @@
-import React from 'react';
-import { HidableAppBar } from 'components/HidableAppBar/HidableAppBar';
-import { TopbarContent } from './components/TopbarContent/TopbarContent';
-import { Sidebar } from 'components/Sidebar/Sidebar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import { SidebarContent } from './components/SidebarContent/SidebarContent';
 import Divider from '@mui/material/Divider';
-import { FooterContent } from './components/FooterContent/FooterContent';
+import Toolbar from '@mui/material/Toolbar';
 import Grid from '@mui/material/Unstable_Grid2';
+import { HidableAppBar } from 'components/HidableAppBar/HidableAppBar';
+import { Sidebar } from 'components/Sidebar/Sidebar';
+import React, { useEffect, useRef } from 'react';
+import { ThemeContext } from 'WithLayout';
+
+import { FooterContent } from './components/FooterContent/FooterContent';
+import { SidebarContent } from './components/SidebarContent/SidebarContent';
+import { TopbarContent } from './components/TopbarContent/TopbarContent';
+import { Theme, useTheme } from '@mui/material/styles';
+import { Box, useMediaQuery } from '@mui/material';
 
 export const MainLayout: React.FC<layoutProps> = ({ children }) => {
+  const theme = useTheme<Theme>();
+  const themeConfig = React.useContext(ThemeContext);
+  console.log(theme.layoutMainCompDimens);
+
   const [openSidebar, setOpenSidebar] = React.useState<boolean>(false);
+  const topBarRef = useRef<HTMLElement>(null);
+  const footerRef = useRef<HTMLElement>(null);
+
+  const updateThemeMainCompDimensions =
+    themeConfig.themeMainCompDimentions.updateThemeMainCompDimensions;
+  const isMd = useMediaQuery(theme.breakpoints.up('md'), {
+    defaultMatches: true,
+  });
 
   const handleSidebarOpen = () => {
     setOpenSidebar(true);
@@ -20,12 +35,21 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
     setOpenSidebar(false);
   };
 
+  useEffect(() => {
+    updateThemeMainCompDimensions(
+      (footerRef.current?.clientHeight || 0) +
+        (topBarRef.current?.clientHeight || 0),
+      0,
+    );
+  }, [footerRef.current?.clientHeight, topBarRef.current?.clientHeight]);
+
   return (
     <Grid
       container
       justifyContent="space-between"
       alignItems="center"
       minHeight={'100vh'}
+      direction="column"
     >
       <Grid xs={12}>
         <HidableAppBar>
@@ -38,26 +62,34 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
         >
           <SidebarContent onClose={handleSidebarClose} />
         </Sidebar>
-        <Toolbar />
+        <Box ref={topBarRef}>
+          <Toolbar />
+        </Box>
         <Grid
+          container
           component="main"
           justifyContent="center"
-          alignItems='center'
-          container
-          // width={1}
+          alignItems="center"
+          // minHeight={isMd ? "-webkit-calc(100vh - 302px)" : "-webkit-calc(100vh - 322px)"}
+          // minHeight={(window.innerHeight) - theme.layoutMainCompDimens.height}
+          minHeight={`-webkit-calc(100vh - ${theme.layoutMainCompDimens.height}px)`}
+          bgcolor={'red'}
           sx={{
-            // flexGrow: 1,
-            minHeight: 200,
             pt: 0,
             pb: 0,
           }}
         >
           {/* {children} */}
         </Grid>
-        <Divider />
       </Grid>
       <Grid xs={12}>
-        <Grid container component={'footer'}>
+        <Grid
+          ref={footerRef}
+          container
+          component={'footer'}
+          direction="column"
+        >
+          <Divider />
           <FooterContent />
         </Grid>
       </Grid>

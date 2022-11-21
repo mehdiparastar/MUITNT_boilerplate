@@ -6,12 +6,21 @@ import IransansXWoff2 from '../assets/fonts/IRANSansX-Regular.woff2';
 import IransansXBoldWoff from '../assets/fonts/IRANSansX-Bold.woff';
 import IransansXBoldWoff2 from '../assets/fonts/IRANSansX-Bold.woff2';
 
-const getTheme = (mode: themeMode, paletteType: themePaletteType) =>
+const getTheme = (
+  mode: themeMode,
+  paletteType: themePaletteType,
+  layoutMainCompHeight?: number,
+  layoutMainCompWidth?: number,
+) =>
   responsiveFontSizes(
     createTheme({
       palette: palette(mode, paletteType),
       layout: {
         contentWidth: 1236,
+      },
+      layoutMainCompDimens: {
+        height: layoutMainCompHeight || 0,
+        width: layoutMainCompWidth || 0,
       },
       shadows: shadows(mode),
       typography: {
@@ -65,10 +74,10 @@ const getTheme = (mode: themeMode, paletteType: themePaletteType) =>
             sx: { color: 'inherit' },
           },
         },
-        MuiListItemIcon: {          
-          defaultProps:{
-            sx:{color:'inherit'}
-          }
+        MuiListItemIcon: {
+          defaultProps: {
+            sx: { color: 'inherit' },
+          },
         },
       },
     }),

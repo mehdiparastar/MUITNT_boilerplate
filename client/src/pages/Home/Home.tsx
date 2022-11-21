@@ -1,9 +1,11 @@
-import React, { ReactElement, FC, useEffect } from 'react';
 import { Container } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import { Hero } from './components/Hero/Hero';
+import { useTheme } from '@mui/material/styles';
+import Grid from '@mui/material/Unstable_Grid2';
+import React, { FC, ReactElement, useEffect } from 'react';
+
 import { Features } from './components/Features/Features';
+import { Hero } from './components/Hero/Hero';
 import { Inspiration } from './components/Inspiration/Inspiration';
 
 const Home: FC<Props> = (Props): ReactElement => {
@@ -14,8 +16,13 @@ const Home: FC<Props> = (Props): ReactElement => {
   }, []);
 
   return (
-    <Box>
-      <Box
+    <Grid
+      container
+      justifyContent={'center'}
+      alignItems={'center'}
+    >
+      <Grid
+        xs={12}
         bgcolor={theme.palette.alternate.main}
         position="relative"
       >
@@ -30,17 +37,22 @@ const Home: FC<Props> = (Props): ReactElement => {
         >
           <Hero />
         </Container>
-      </Box>
-      <Container
-        maxWidth="lg"
-        sx={{
-          px: 2,
-          py: { xs: 4, sm: 6, md: 8 },
-        }}
+      </Grid>
+      <Grid xs={12}>
+        <Container
+          maxWidth="lg"
+          sx={{
+            px: 2,
+            py: { xs: 4, sm: 6, md: 8 },
+          }}
+        >
+          <Features />
+        </Container>
+      </Grid>
+      <Grid
+        xs={12}
+        bgcolor={theme.palette.alternate.main}
       >
-        <Features />
-      </Container>
-      <Box bgcolor={theme.palette.alternate.main}>
         <Container
           maxWidth="lg"
           sx={{
@@ -50,8 +62,8 @@ const Home: FC<Props> = (Props): ReactElement => {
         >
           <Inspiration />
         </Container>
-      </Box>
-    </Box>
+      </Grid>
+    </Grid>
   );
 };
 

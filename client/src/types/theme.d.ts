@@ -5,11 +5,19 @@ declare module '@mui/material/styles' {
     layout: {
       contentWidth: number;
     };
+    layoutMainCompDimens: {
+      height: number;
+      width: number;
+    };
   }
 
   interface ThemeOptions extends theme.ThemeOptions {
     layout?: {
       contentWidth: number;
+    };
+    layoutMainCompDimens?: {
+      height: number;
+      width: number;
     };
   }
 }

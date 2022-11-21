@@ -1,8 +1,4 @@
-import {
-  Container,
-  Slide,
-  useMediaQuery,
-} from '@mui/material';
+import { Container, Slide, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Unstable_Grid2';
 import React, { FC, ReactElement } from 'react';
@@ -19,7 +15,7 @@ const Login: FC<any> = (): ReactElement => {
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    return () => { };
+    return () => {};
   }, []);
 
   // return <Side />
@@ -27,10 +23,12 @@ const Login: FC<any> = (): ReactElement => {
   return (
     <Grid
       container
-      width="100%"
-      height={isMd ? "-webkit-calc(100vh - 302px)" : "-webkit-calc(100vh - 322px)"}
+      width={1}
+      height={
+        isMd ? '-webkit-calc(100vh - 302px)' : '-webkit-calc(100vh - 322px)'
+      }
       columns={100}
-      spacing={3}
+      justifyContent={'center'}
     >
       <Slide
         direction="right"
@@ -41,13 +39,18 @@ const Login: FC<any> = (): ReactElement => {
           md={30}
           bgcolor={theme.palette.alternate.main}
         >
-          {/* <Side /> */}
-          {/* <Grid xs={12}>            
+          <Grid
+            container
+            direction={'column'}
+          >
+            <Side />
+            {/* <Grid xs={12}>            
           </Grid> */}
-          {/* <LoginSVG
+            {/* <LoginSVG
             width={'100%'}
             height={'100%'}
           /> */}
+          </Grid>
         </Grid>
       </Slide>
       <Grid
