@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { ForwardedRef, Ref } from 'react';
 import {
   useScrollTrigger,
   Slide,
   AppBar,
   Toolbar,
   Container,
+  Box,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -26,19 +27,19 @@ function HideOnScroll(props: HideOnScrollProps) {
 export const HidableAppBar: React.FC<Props> = ({ children }) => {
   const theme = useTheme();
 
-  return (    
-      <HideOnScroll>
-        <AppBar
-          elevation={1}
-          sx={{
-            backgroundColor: theme.palette.background.paper,
-          }}
-        // enableColorOnDark
-        >
-          <Toolbar>
-            <Container maxWidth="lg">{children}</Container>
-          </Toolbar>
-        </AppBar>
-      </HideOnScroll>
+  return (
+    <HideOnScroll>
+      <AppBar
+        elevation={1}
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+        }}
+      // enableColorOnDark
+      >
+        <Toolbar>
+          <Container maxWidth="lg">{children}</Container>
+        </Toolbar>
+      </AppBar>
+    </HideOnScroll>
   );
 };

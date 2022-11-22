@@ -50,7 +50,7 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
         <MUITNTSVG
           sx={{
             width: 50,
-            height: { xs: 28, ms: 32 },
+            height: { xs: 28, md: 32 },
           }}
         />
         {isAuthenticated && (

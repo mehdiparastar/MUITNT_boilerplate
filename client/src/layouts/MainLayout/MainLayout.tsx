@@ -15,15 +15,15 @@ import { Box, useMediaQuery } from '@mui/material';
 export const MainLayout: React.FC<layoutProps> = ({ children }) => {
   const theme = useTheme<Theme>();
   const themeConfig = React.useContext(ThemeContext);
-  console.log(theme.layoutMainCompDimens);
 
   const [openSidebar, setOpenSidebar] = React.useState<boolean>(false);
   const topBarRef = useRef<HTMLElement>(null);
+  const topBarContentRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
 
   const updateThemeMainCompDimensions =
     themeConfig.themeMainCompDimentions.updateThemeMainCompDimensions;
-  const isMd = useMediaQuery(theme.breakpoints.up('md'), {
+  const isSm = useMediaQuery(theme.breakpoints.up('sm'), {
     defaultMatches: true,
   });
 
@@ -35,13 +35,51 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
     setOpenSidebar(false);
   };
 
-  useEffect(() => {
+  const handleResize = () => {
+    // console.log('header', Math.max((topBarRef.current?.clientHeight || 0), (topBarContentRef.current?.clientHeight || 0)), '|', 'footer', footerRef.current?.clientHeight)
     updateThemeMainCompDimensions(
       (footerRef.current?.clientHeight || 0) +
-        (topBarRef.current?.clientHeight || 0),
-      0,
+      Math.max((topBarRef.current?.clientHeight || 0), (topBarContentRef.current?.clientHeight || 0)),
+      (footerRef.current?.clientHeight || 0),
     );
-  }, [footerRef.current?.clientHeight, topBarRef.current?.clientHeight]);
+    resizeToMinimum()
+  }
+
+  function resizeToMinimum() {
+    var minimum = [640, 480];
+    var current = [window.outerWidth, window.outerHeight];
+    var restricted = [];
+    var i = 2;
+
+    while (i-- > 0) {
+      restricted[i] = minimum[i] > current[i] ? minimum[i] : current[i];
+    }
+    console.log(current[0], current[1])
+    window.resizeTo(current[0], current[1]);
+  }
+
+  React.useEffect(() => {
+    window.addEventListener('resize', handleResize)
+    // window.addEventListener('resize', resizeToMinimum, false)
+
+    updateThemeMainCompDimensions(
+      (footerRef.current?.clientHeight || 0) +
+      Math.max((topBarRef.current?.clientHeight || 0), (topBarContentRef.current?.clientHeight || 0)),
+      (footerRef.current?.clientHeight || 0),
+    );
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+
+
+  // useEffect(() => {
+  //   updateThemeMainCompDimensions(
+  //     (footerRef.current?.clientHeight || 0) +
+  //     Math.max((topBarRef.current?.clientHeight || 0), (topBarContentRef.current?.clientHeight || 0)),
+  //     (footerRef.current?.clientHeight || 0),
+  //   );
+  // }, [footerRef.current, topBarRef.current, topBarContentRef.current, isSm]);
 
   return (
     <Grid
@@ -52,8 +90,10 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
       direction="column"
     >
       <Grid xs={12}>
-        <HidableAppBar>
-          <TopbarContent onSidebarOpen={handleSidebarOpen} />
+        <HidableAppBar >
+          <Box ref={topBarContentRef}>
+            <TopbarContent onSidebarOpen={handleSidebarOpen} />
+          </Box>
         </HidableAppBar>
         <Sidebar
           onClose={handleSidebarClose}
@@ -63,7 +103,7 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
           <SidebarContent onClose={handleSidebarClose} />
         </Sidebar>
         <Box ref={topBarRef}>
-          <Toolbar />
+          <Toolbar sx={{ minHeight: topBarContentRef.current?.clientHeight || 0 }} />
         </Box>
         <Grid
           container
@@ -71,7 +111,7 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
           justifyContent="center"
           alignItems="center"
           // minHeight={isMd ? "-webkit-calc(100vh - 302px)" : "-webkit-calc(100vh - 322px)"}
-          // minHeight={(window.innerHeight) - theme.layoutMainCompDimens.height}
+          // // minHeight={(window.innerHeight) - theme.layoutMainCompDimens.height}
           minHeight={`-webkit-calc(100vh - ${theme.layoutMainCompDimens.height}px)`}
           bgcolor={'red'}
           sx={{

@@ -15,7 +15,7 @@ const Login: FC<any> = (): ReactElement => {
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    return () => {};
+    return () => { };
   }, []);
 
   // return <Side />
@@ -43,7 +43,7 @@ const Login: FC<any> = (): ReactElement => {
             container
             direction={'column'}
           >
-            <Side />
+            {isMd && <Side />}
             {/* <Grid xs={12}>            
           </Grid> */}
             {/* <LoginSVG
