@@ -22,100 +22,128 @@ export const Side: FC<any> = (): ReactElement => {
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: false,
-    autoplay: false,
+    autoplay: true,
     autoplaySpeed: 5000,
   };
 
-
   return (
-      <Grid xs
-        sx={{
-          '& .slick-dots li.slick-active button:before': {
-            color: themeMode === 'dark' ? 'white' : 'black',
+    <Grid
+      xs={12}
+      justifyContent={'center'}
+      alignItems={'center'}
+      sx={{
+        padding: 2,
+        '& .slick-dots li.slick-active button:before': {
+          color: themeMode === 'dark' ? 'white' : 'black',
+        },
+        '& .slick-dots li button:before': {
+          color: themeMode === 'dark' ? 'white' : 'black',
+        },
+      }}
+    >
+      <Slider {...settings}>
+        {[
+          {
+            feedback:
+              'This is great bundle. I can contruct anything in just 10 minuts. Absolutelly love it! 10 out of 10.',
+            image: 'statics/inspiration/n01.jpg',
+            name: 'Negin Khandan 💕',
+            title: 'UX/UI head',
           },
-          '& .slick-dots li button:before': {
-            color: themeMode === 'dark' ? 'white' : 'black',
+          {
+            feedback:
+              'Working with Materialist is fantastic! Simple, re-usable components all in one platform.',
+            image: 'statics/inspiration/m01.jpeg',
+            name: 'Mehdi Parastar 🚽',
+            title: 'SEO at MUITNT',
           },
-        }}
-      >
-        <Slider {...settings}>
-          {[
-            {
-              feedback:
-                'This is great bundle. I can contruct anything in just 10 minuts. Absolutelly love it! 10 out of 10.',
-              image: 'statics/inspiration/n01.jpg',
-              name: 'Negin Khandan 💕',
-              title: 'UX/UI head',
-            },
-            {
-              feedback:
-                'Working with Materialist is fantastic! Simple, re-usable components all in one platform.',
-              image: 'statics/inspiration/m01.jpeg',
-              name: 'Mehdi Parastar 🚽',
-              title: 'SEO at MUITNT',
-            },
-            {
-              feedback:
-                "Love the app for cash back, reward points and fraud protection – just like when you're swiping your card.",
-              image: 'statics/inspiration/n02.jpg',
-              name: 'Negin Khandan 💕',
-              title: 'Design Manager',
-            },
-          ].map((item, i) => (
+          {
+            feedback:
+              "Love the app for cash back, reward points and fraud protection – just like when you're swiping your card.",
+            image: 'statics/inspiration/n02.jpg',
+            name: 'Negin Khandan 💕',
+            title: 'Design Manager',
+          },
+        ].map((item, i) => (
+          <Grid
+            xs
+            padding={{ xs: 0, sm: 1, md: 2 }}
+            key={i}
+          >
+            <Grid xs>
+              {[1, 2, 3, 4, 5, 6].map((item) => (
+                <StarIcon
+                  key={item}
+                  sx={{
+                    color:
+                      item % 2 === 0
+                        ? theme.palette.primary.dark
+                        : theme.palette.primary.light,
+                  }}
+                />
+              ))}
+            </Grid>
             <Grid
               xs
-              padding={{ xs: 0, sm: 1, md: 2 }}
-              key={i}
+              component={Typography}
+              variant={'h6'}
+              fontWeight={400}
+              marginBottom={2}
             >
-              <Grid xs>
-                {[1, 2, 3, 4, 5, 6].map((item) => (
-                  <StarIcon
-                    key={item}
-                    sx={{
-                      color:
-                        item % 2 === 0
-                          ? theme.palette.primary.dark
-                          : theme.palette.primary.light,
-                    }}
-                  />
-                ))}
-              </Grid>
+              {item.feedback}
+            </Grid>
+            <Grid xs>
               <Grid
                 xs
-                component={Typography}
-                variant={'h6'}
-                fontWeight={400}
-                marginBottom={2}
+                component={ListItem}
+                disableGutters
+                width={'auto'}
+                padding={0}
               >
-                {item.feedback}
-              </Grid>
-              <Grid xs>
+                <ListItemAvatar>
+                  <Avatar src={item.image} />
+                </ListItemAvatar>
                 <Grid
-                  xs
-                  component={ListItem}
-                  disableGutters
-                  width={'auto'}
-                  padding={0}
-                >
-                  <ListItemAvatar>
-                    <Avatar src={item.image} />
-                  </ListItemAvatar>
-                  <Grid
-                    component={ListItemText}
-                    primary={item.name}
-                    secondary={item.title}
-                    margin={0}
-                  />
-                </Grid>
+                  component={ListItemText}
+                  primary={item.name}
+                  secondary={item.title}
+                  margin={0}
+                />
               </Grid>
             </Grid>
-          ))}
-        </Slider>
-      </Grid>      
+          </Grid>
+        ))}
+      </Slider>
+      <Grid
+        xs={12}
+        padding={4}
+        textAlign={'center'}
+      >
+        {[
+          'statics/svgs/google-original.svg',
+          'statics/svgs/amazon-original.svg',
+          'statics/svgs/paypal-original.svg',
+        ].map((item, i) => (
+          <Grid
+            xs={4}
+            key={i}
+            component="img"
+            src={item}
+            alt="..."
+            sx={{
+              filter: themeMode === 'dark' ? 'contrast(0)' : 'none',
+              padding: 2,
+            }}
+            maxWidth={120}
+          />
+        ))}
+      </Grid>
+    </Grid>
   );
 };
 
-{/* <br />
+{
+  /* <br />
       <br />
       <Grid xs>
         {[
@@ -134,4 +162,5 @@ export const Side: FC<any> = (): ReactElement => {
             }}
           />
         ))}
-      </Grid> */}
+      </Grid> */
+}

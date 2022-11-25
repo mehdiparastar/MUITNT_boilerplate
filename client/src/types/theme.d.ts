@@ -5,7 +5,11 @@ declare module '@mui/material/styles' {
     layout: {
       contentWidth: number;
     };
-    layoutMainCompDimens: {
+    layoutTopbarCompDimentions: {
+      height: number;
+      width: number;
+    };
+    layoutFooterCompDimentions: {
       height: number;
       width: number;
     };
@@ -15,7 +19,11 @@ declare module '@mui/material/styles' {
     layout?: {
       contentWidth: number;
     };
-    layoutMainCompDimens?: {
+    layoutTopbarCompDimentions?: {
+      height: number;
+      width: number;
+    };
+    layoutFooterCompDimentions?: {
       height: number;
       width: number;
     };

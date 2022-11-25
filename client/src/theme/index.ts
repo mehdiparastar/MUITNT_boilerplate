@@ -9,8 +9,10 @@ import IransansXBoldWoff2 from '../assets/fonts/IRANSansX-Bold.woff2';
 const getTheme = (
   mode: themeMode,
   paletteType: themePaletteType,
-  layoutMainCompHeight?: number,
-  layoutMainCompWidth?: number,
+  layoutTopbarCompHeight?: number,
+  layoutTopbarCompWidth?: number,
+  layoutFooterCompHeight?: number,
+  layoutFooterCompWidth?: number,
 ) =>
   responsiveFontSizes(
     createTheme({
@@ -18,9 +20,13 @@ const getTheme = (
       layout: {
         contentWidth: 1236,
       },
-      layoutMainCompDimens: {
-        height: layoutMainCompHeight || 0,
-        width: layoutMainCompWidth || 0,
+      layoutTopbarCompDimentions: {
+        height: layoutTopbarCompHeight || 0,
+        width: layoutTopbarCompWidth || 0,
+      },
+      layoutFooterCompDimentions: {
+        height: layoutFooterCompHeight || 0,
+        width: layoutFooterCompWidth || 0,
       },
       shadows: shadows(mode),
       typography: {

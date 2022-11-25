@@ -1,9 +1,3 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material/styles';
-import { Container, Icon, IconButton, Stack, Typography } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
-import MUITNTSVG from 'svg/logos/MUITNT';
 import {
   Facebook,
   Instagram,
@@ -11,7 +5,13 @@ import {
   Twitter,
   YouTube,
 } from '@mui/icons-material';
+import { Container, Icon, Stack, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
+import Grid from '@mui/material/Unstable_Grid2';
+import * as React from 'react';
 
+// import MUITNTSVG from 'svg/logos/MUITNT';
 export const FooterContent: React.FC = () => {
   const theme = useTheme();
   return (
@@ -44,33 +44,6 @@ export const FooterContent: React.FC = () => {
               justifyContent="space-between"
               height="100%"
             >
-              <Box>
-                <Grid xs={12}>
-                  <Box
-                    width="100%"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    flexDirection={{ xs: 'column', sm: 'row' }}
-                  >
-                    <IconButton
-                      onClick={() =>
-                        window.scrollTo({
-                          top: 0,
-                          behavior: 'smooth',
-                        })
-                      }
-                    >
-                      <MUITNTSVG
-                        sx={{
-                          width: 50,
-                          height: 50,
-                        }}
-                      />
-                    </IconButton>
-                  </Box>
-                </Grid>
-              </Box>
               <Box>
                 <Grid xs={12}>
                   <Typography
@@ -165,3 +138,33 @@ export const FooterContent: React.FC = () => {
     </Container>
   );
 };
+
+{
+  /* <Box>
+  <Grid xs={12}>
+    <Box
+      width="100%"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      flexDirection={{ xs: 'column', sm: 'row' }}
+    >
+      <IconButton
+        onClick={() =>
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          })
+        }
+      >
+        <MUITNTSVG
+          sx={{
+            width: 50,
+            height: 50,
+          }}
+        />
+      </IconButton>
+    </Box>
+  </Grid>
+</Box>; */
+}

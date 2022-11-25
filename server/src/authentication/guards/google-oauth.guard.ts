@@ -1,6 +1,10 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard, IAuthModuleOptions } from '@nestjs/passport';
 
 @Injectable()
 export class GoogleOauthGuard extends AuthGuard('google') {
@@ -11,8 +15,8 @@ export class GoogleOauthGuard extends AuthGuard('google') {
   }
 
   async canActivate(context: ExecutionContext) {
-    const activate = (await super.canActivate(context)) as boolean;
     const request = context.switchToHttp().getRequest();
+    const activate = (await super.canActivate(context)) as boolean;
     // await super.logIn(request); to enabling session / we dont need it
     return activate;
   }  

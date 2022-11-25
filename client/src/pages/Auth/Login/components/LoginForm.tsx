@@ -1,14 +1,24 @@
 /* eslint-disable react/no-unescaped-entities */
 import GoogleIcon from '@mui/icons-material/Google';
-import { Divider, Stack } from '@mui/material';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Stack,
+} from '@mui/material';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useFormik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
+import { googleLoginService } from 'services/auth/google.login.service';
+import { localLoginService } from 'services/auth/local.login.service';
 import * as yup from 'yup';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
+import { GoogleLogin } from './GoogleLogin';
 
 interface ILoginDto {
   email: string;
@@ -24,17 +34,29 @@ const validationSchema = yup.object({
   password: yup
     .string()
     .required('Please specify your password')
-    .min(8, 'The password should have at minimum length of 8'),
+    .min(5, 'The password should have at minimum length of 5'),
 });
 
 export const LoginForm = () => {
+  const [showGLogin, setShowGLogin] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const initialValues = {
     email: '',
     password: '',
   };
 
-  const onSubmit = (values: ILoginDto): any => {
-    return values;
+  const onSubmit = async (values: ILoginDto): Promise<any> => {
+    const response = await localLoginService(values.email, values.password);
+    console.warn(response.data);
+    return response;
+  };
+
+  const handleGoogleLogin = async () => {    
+    const response = await googleLoginService();
+    console.warn(location);
+    // return response;
   };
 
   const formik = useFormik({
@@ -42,6 +64,11 @@ export const LoginForm = () => {
     validationSchema: validationSchema,
     onSubmit,
   });
+
+  const google =
+    "<iframe width='100%' height='100%' scrolling='no' src='http://localhost:3001/auth/google-logins' sandbox='allow-modals allow-forms allow-popups allow-scripts allow-same-origin'></iframe>";
+
+  // return <GoogleLogin />;
 
   return (
     <Grid container>
@@ -81,9 +108,22 @@ export const LoginForm = () => {
           startIcon={<GoogleIcon />}
           fullWidth
           sx={{ marginY: 6 }}
+          onClick={handleGoogleLogin}
         >
           Login with Google
         </Button>
+        {showGLogin && (
+          <Dialog
+            maxWidth="md"
+            open={showGLogin}
+            onClose={() => setShowGLogin(false)}
+          >
+            <DialogTitle>Login with Google | Social Login</DialogTitle>
+            <DialogContent>
+              <GoogleLogin />
+            </DialogContent>
+          </Dialog>
+        )}
         <Stack
           direction={'row'}
           sx={{ width: '100%' }}

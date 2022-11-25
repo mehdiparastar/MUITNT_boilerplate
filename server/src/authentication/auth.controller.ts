@@ -53,17 +53,24 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Serialize(JWTTokenDto)
   async login(@Req() req: Request): Promise<IJWTTokensPair> {
+    console.log('login local');
     return this.authService.login(req.user);
   }
 
   @Get('google-logins')
   @UseGuards(GoogleOauthGuard)
-  async googleLogin(@Req() req: Request, @Res() res: Response) {}
+  async googleLogin(@Req() req: Request) {
+    console.log('google logins');
+  }
 
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
-  async googleLoginCallback(@Req() req: Request) {
-    return this.authService.login(req.user);
+  async googleLoginCallback(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const auth = await this.authService.login(req.user);
+    return auth;
   }
 
   @Get('profile')
@@ -107,9 +114,7 @@ export class AuthController {
   @Patch('approve-role-as-superuser/:email')
   @UseGuards(AccessTokenGuard, TestOrDevModeGuard)
   @Serialize(UserDto)
-  approveSuperUser(
-    @Param('email') email: string,
-  ): Promise<User> {
+  approveSuperUser(@Param('email') email: string): Promise<User> {
     return this.usersService.approveRoleAsSuperUser(email);
   }
 

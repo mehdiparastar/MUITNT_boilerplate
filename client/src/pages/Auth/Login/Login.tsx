@@ -15,7 +15,7 @@ const Login: FC<any> = (): ReactElement => {
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    return () => { };
+    return () => {};
   }, []);
 
   // return <Side />
@@ -24,9 +24,7 @@ const Login: FC<any> = (): ReactElement => {
     <Grid
       container
       width={1}
-      height={
-        isMd ? '-webkit-calc(100vh - 302px)' : '-webkit-calc(100vh - 322px)'
-      }
+      height={1}
       columns={100}
       justifyContent={'center'}
     >
@@ -42,14 +40,20 @@ const Login: FC<any> = (): ReactElement => {
           <Grid
             container
             direction={'column'}
+            justifyContent="center"
+            alignItems={'center'}
+            minHeight={`-webkit-calc(100vh - ${
+              theme.layoutTopbarCompDimentions.height +
+              theme.layoutFooterCompDimentions.height
+            }px)`}
           >
             {isMd && <Side />}
-            {/* <Grid xs={12}>            
-          </Grid> */}
-            {/* <LoginSVG
-            width={'100%'}
-            height={'100%'}
-          /> */}
+            {isMd && (
+              <LoginSVG
+                width={300}
+                height={'100%'}
+              />
+            )}
           </Grid>
         </Grid>
       </Slide>
@@ -57,17 +61,15 @@ const Login: FC<any> = (): ReactElement => {
         xs={100}
         md={70}
         paddingY={4}
-        // container
-        // maxWidth={{ xs: '100%', md: '70%' }}
-        // sx={{ display: 'grid', alignContent: 'center' }}
-        // width={'-webkit-fill-available'}
+        container
+        maxWidth={{ xs: '100%', md: '70%' }}
+        sx={{ display: 'grid', alignContent: 'center' }}
+        width={'-webkit-fill-available'}
         data-aos={isMd ? 'fade-left' : 'fade-up'}
       >
-        {/* <Container
-          maxWidth={'sm'}
-        >
+        <Container maxWidth={'sm'}>
           <LoginForm />
-        </Container> */}
+        </Container>
       </Grid>
     </Grid>
   );

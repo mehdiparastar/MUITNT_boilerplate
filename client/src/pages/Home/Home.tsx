@@ -20,6 +20,8 @@ const Home: FC<Props> = (Props): ReactElement => {
       container
       justifyContent={'center'}
       alignItems={'center'}
+      width={1}
+      height={1}
     >
       <Grid
         xs={12}

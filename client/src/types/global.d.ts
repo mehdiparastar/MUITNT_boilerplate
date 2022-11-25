@@ -59,4 +59,25 @@ declare global {
     email_verified: boolean;
     sub: string;
   }
+  interface IUser {
+    id?: number;
+    email?: string;
+    refreshToken?: string;
+    provider?: string;
+    providerId?: string;
+    name?: string;
+    photo?: string;
+    roles?: string[];
+  }
+
+  interface IAuthContext {
+    userCtx: {
+      profile: IUser | null | undefined;
+      update: (user: IUser) => void;
+    };
+    accessTokenCtx: {
+      token: string | null | undefined;
+      update: (token: string) => void;
+    };
+  }
 }
