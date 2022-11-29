@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import GoogleIcon from '@mui/icons-material/Google';
 import {
+  Box,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -18,7 +19,7 @@ import { googleLoginService } from 'services/auth/google.login.service';
 import { localLoginService } from 'services/auth/local.login.service';
 import * as yup from 'yup';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
-import { GoogleLogin } from './GoogleLogin';
+import { GoogleLogin } from '@react-oauth/google';
 
 interface ILoginDto {
   email: string;
@@ -53,8 +54,8 @@ export const LoginForm = () => {
     return response;
   };
 
-  const handleGoogleLogin = async () => {    
-    const response = await googleLoginService();
+  const handleGoogleLogin = async () => {
+    // const response = await googleLoginService();
     console.warn(location);
     // return response;
   };
@@ -65,10 +66,9 @@ export const LoginForm = () => {
     onSubmit,
   });
 
-  const google =
-    "<iframe width='100%' height='100%' scrolling='no' src='http://localhost:3001/auth/google-logins' sandbox='allow-modals allow-forms allow-popups allow-scripts allow-same-origin'></iframe>";
+  // const google =
+  //   "<iframe width='100%' height='100%' scrolling='no' src='http://localhost:3001/auth/google-logins' sandbox='allow-modals allow-forms allow-popups allow-scripts allow-same-origin'></iframe>";
 
-  // return <GoogleLogin />;
 
   return (
     <Grid container>
@@ -102,7 +102,30 @@ export const LoginForm = () => {
         <Typography color="text.secondary">
           Login to manage your account.
         </Typography>
-        <Button
+        <Box width={'100%'}
+          sx={{
+            marginY: 6, '& iframe .qJTHM div ': {
+              backgroundColor: 'red'
+            }
+          }}
+        >
+          <GoogleLogin
+            type='standard'
+            shape='circle'
+            theme='filled_blue'
+            width='100%'
+            size='large'
+            // component={GoogleLogin}
+            onSuccess={async credentialResponse => {
+              const response = await googleLoginService(credentialResponse.credential);
+              console.log(response.data);
+            }}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+          />
+        </Box>
+        {/* <Button
           size={'large'}
           variant={'outlined'}
           startIcon={<GoogleIcon />}
@@ -111,19 +134,7 @@ export const LoginForm = () => {
           onClick={handleGoogleLogin}
         >
           Login with Google
-        </Button>
-        {showGLogin && (
-          <Dialog
-            maxWidth="md"
-            open={showGLogin}
-            onClose={() => setShowGLogin(false)}
-          >
-            <DialogTitle>Login with Google | Social Login</DialogTitle>
-            <DialogContent>
-              <GoogleLogin />
-            </DialogContent>
-          </Dialog>
-        )}
+        </Button> */}
         <Stack
           direction={'row'}
           sx={{ width: '100%' }}

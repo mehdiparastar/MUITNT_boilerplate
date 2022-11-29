@@ -2615,6 +2615,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-oauth/google@npm:latest":
+  version: 0.5.0
+  resolution: "@react-oauth/google@npm:0.5.0"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 4224e1d61f238adfd1899ab18549c22d7e17e34f8c472fc8d978db88b7d3f4189f6174be8034136b110dd16d507c07631496414d14b56ef2dea4df2f6e92dd63
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-babel@npm:^5.2.0":
   version: 5.3.1
   resolution: "@rollup/plugin-babel@npm:5.3.1"
@@ -4827,6 +4837,7 @@ __metadata:
     "@emotion/styled": ^11.10.4
     "@mui/icons-material": ^5.10.3
     "@mui/material": ^5.10.3
+    "@react-oauth/google": latest
     "@testing-library/jest-dom": ^5.14.1
     "@testing-library/react": ^13.0.0
     "@testing-library/user-event": ^13.2.1

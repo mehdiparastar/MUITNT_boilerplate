@@ -31,6 +31,7 @@ import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { AccessTokenGuard } from './guards/accessToken.guard';
 import { GoogleOauthGuard } from './guards/google-oauth.guard';
+import { GoogleOauthV2Guard } from './guards/google-oauth.v2.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { TestOrDevModeGuard } from './guards/test-or-dev-mode.guard';
@@ -69,6 +70,13 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
+    const auth = await this.authService.login(req.user);
+    return auth;
+  }
+
+  @Post('google/login')
+  @UseGuards(GoogleOauthV2Guard)
+  async googleLoginV2(@Req() req: Request) {
     const auth = await this.authService.login(req.user);
     return auth;
   }

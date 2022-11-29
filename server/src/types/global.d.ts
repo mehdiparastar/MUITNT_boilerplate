@@ -17,8 +17,8 @@ declare global {
     name: string;
     email: string;
     photo: string;
-    accessToken: string;
-    refreshToken: string;
+    accessToken?: string;
+    refreshToken?: string;
   }
 
   namespace Express {
