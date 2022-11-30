@@ -22,10 +22,9 @@ export class GoogleOauthGuard extends AuthGuard('google') {
     const request = context.switchToHttp().getRequest() as Request;
     const response = context.switchToHttp().getResponse() as Response;
     
-    console.log(request.headers)
     response.setHeader('X-Frame-Options', 'SAMEORIGIN');
     const activate = (await super.canActivate(context)) as boolean;
-    // await super.logIn(request); to enabling session / we dont need it
+    // await super.logIn(request); //to enabling session / we dont need it
     return activate;
   }
 }

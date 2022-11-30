@@ -4,41 +4,33 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { routes as appRoutes } from './routes/routes';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { WithLayout } from 'WithLayout';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import 'aos/dist/aos.css';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+
 
 const App: React.FC = () => {
   return (
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}>
-      <WithLayout>
-        <CssBaseline enableColorScheme />
-        <Paper elevation={0} sx={{ minHeight: "100vh" }}>
-          <Router>
-            <Routes>
-              {appRoutes.map((route) => (
-                <Route
-                  key={route.key}
-                  path={route.path}
-                  element={
-                    route.isProtected ? (
-                      <route.layout>
-                        <ProtectedRoute component={route.component} />
-                      </route.layout>
-                    ) : (
-                      <route.layout>
-                        <route.component />
-                      </route.layout>
-                    )
-                  }
-                />
-              ))}
-            </Routes>
-          </Router>
-        </Paper>
-      </WithLayout>
-    </GoogleOAuthProvider>
+    <Paper elevation={0} sx={{ minHeight: "100vh" }}>
+      <Router>
+        <Routes>
+          {appRoutes.map((route) => (
+            <Route
+              key={route.key}
+              path={route.path}
+              element={
+                route.isProtected ? (
+                  <route.layout>
+                    <ProtectedRoute component={route.component} />
+                  </route.layout>
+                ) : (
+                  <route.layout>
+                    <route.component />
+                  </route.layout>
+                )
+              }
+            />
+          ))}
+        </Routes>
+      </Router>
+    </Paper>
   );
 };
 

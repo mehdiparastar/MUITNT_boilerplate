@@ -14,13 +14,15 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { googleLoginService } from 'services/auth/google.login.service';
 import { localLoginService } from 'services/auth/local.login.service';
 import * as yup from 'yup';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { GoogleLogin1 } from './GoogleLogin';
+import NewWindow from 'react-new-window'
+import { useTheme } from '@mui/material/styles';
 
 interface ILoginDto {
   email: string;
@@ -43,6 +45,8 @@ export const LoginForm = () => {
   const [showGLogin, setShowGLogin] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
+  const themeMode = theme.palette.mode;
 
   const initialValues = {
     email: '',
@@ -55,43 +59,13 @@ export const LoginForm = () => {
     return response;
   };
 
-  const handleGoogleLogin = async () => {
-    // const response = await googleLoginService();
-    console.warn(location);
-    // return response;
-  };
-
   const formik = useFormik({
     initialValues,
     validationSchema: validationSchema,
     onSubmit,
   });
 
-  // const google =
-  //   "<iframe width='100%' height='100%' scrolling='no' src='http://localhost:3001/auth/google-logins' sandbox='allow-modals allow-forms allow-popups allow-scripts allow-same-origin'></iframe>";
 
-  return (
-    <>
-      <GoogleLogin1 />
-      <GoogleLogin
-        type="standard"
-        shape="circle"
-        theme="filled_blue"
-        width="100%"
-        size="large"
-        // component={GoogleLogin}
-        onSuccess={async (credentialResponse) => {
-          const response = await googleLoginService(
-            credentialResponse.credential,
-          );
-          console.log(response.data);
-        }}
-        onError={() => {
-          console.log('Login Failed');
-        }}
-      />
-    </>
-  );
 
   return (
     <Grid container>
@@ -100,7 +74,6 @@ export const LoginForm = () => {
         width="100%"
         textAlign={'center'}
       >
-        <GoogleLogin1 />
         <Stack
           direction={'row'}
           justifyContent={'center'}
@@ -129,19 +102,21 @@ export const LoginForm = () => {
         <Box
           width={'100%'}
           sx={{
+            display: "flex",
             marginY: 6,
-            '& iframe .qJTHM div ': {
-              backgroundColor: 'red',
-            },
+            justifyContent: 'center',
           }}
         >
           <GoogleLogin
             type="standard"
-            shape="circle"
-            theme="filled_blue"
+            shape="rectangular"
+            theme={themeMode === 'dark' ? 'filled_blue' : 'outline'}
             width="100%"
             size="large"
-            // component={GoogleLogin}
+            context='signin'
+            auto_select={false}
+            useOneTap={false}
+            ux_mode="popup"
             onSuccess={async (credentialResponse) => {
               const response = await googleLoginService(
                 credentialResponse.credential,
@@ -153,16 +128,6 @@ export const LoginForm = () => {
             }}
           />
         </Box>
-        {/* <Button
-          size={'large'}
-          variant={'outlined'}
-          startIcon={<GoogleIcon />}
-          fullWidth
-          sx={{ marginY: 6 }}
-          onClick={handleGoogleLogin}
-        >
-          Login with Google
-        </Button> */}
         <Stack
           direction={'row'}
           sx={{ width: '100%' }}
