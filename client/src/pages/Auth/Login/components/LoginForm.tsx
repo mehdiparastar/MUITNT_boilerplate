@@ -81,58 +81,34 @@ export const LoginForm = () => {
       title,
       `width=${w},height=${h},left=${left},top=${top}`,
     );
+
     googleRef.current?.addEventListener('DOMContentLoaded', function () {
       console.log('location changed!');
     });
     setExternalPopup(googleRef.current);
   };
 
-  useEffect(() => {
+  const connectClick2 = (e: any) => {
+    const currentUrl = googleRef?.current?.location.href;
+    console.log(currentUrl);
+  }
 
-    // if (!googleRef.current) {
-    //   return;
-    // }
-
-    // const timer = setInterval(() => {
-    //   if (!googleRef.current) {
-    //     timer && clearInterval(timer);
-    //     return;
-    //   }
-    //   const currentUrl = googleRef.current.location.href;
-    //   console.log(currentUrl);
-    //   if (!currentUrl) {
-    //     return;
-    //   }
-    // const searchParams = new URL(currentUrl).searchParams;
-    // const code = searchParams.get('code');
-    // if (code) {
-    //   googleRef.current.close();
-    //   console.log(`The popup URL has URL code param = ${code}`);
-    // YourApi.endpoint(code)
-    //   .then(() => {
-    //     // change UI to show after the code was stored
-    //   })
-    //   .catch(() => {
-    //     // API error
-    //   })
-    //   .finally(() => {
-    //     // clear timer at the end
-    //     setExternalPopup(null);
-    //     timer && clearInterval(timer);
-    //   });
-    // }
-    // }, 500);
-  }, [googleRef.current]);
-
-  return (
-    <Link
-      component={Button}
-      onClick={connectClick}
-      target="googleoauth2"
-    >
-      Connect
-    </Link>
-  );
+  // return (
+  //   <>
+  //     <Link
+  //       component={Button}
+  //       onClick={connectClick}
+  //       target="googleoauth2"
+  //     >
+  //       Connect
+  //     </Link>
+  //     <Button
+  //       onClick={connectClick2}
+  //     >
+  //       Connect2
+  //     </Button>
+  //   </>
+  // );
 
   return (
     <Grid container>

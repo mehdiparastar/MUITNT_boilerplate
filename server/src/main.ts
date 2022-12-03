@@ -16,9 +16,13 @@ async function bootstrap() {
 
   const appPort = process.env.PORT || 3001;
   var whitelist = [
+    'http://localhost',
     'http://localhost:3000',
+    'http://localhost:3001',
     'https://accounts.google.com/o/oauth2/v2',
     'http://localhost:3001/auth/google-logins',
+    'http://localhost:3001/auth/google/callback',
+    'http://localhost:3001/auth/google/callback/last/:access/:refresh',
   ];
   app.enableCors({
     // credentials: true,

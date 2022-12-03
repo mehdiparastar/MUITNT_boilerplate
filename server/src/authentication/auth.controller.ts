@@ -70,6 +70,7 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
+    
     const auth = await this.authService.login(req.user);
     return auth;
   }
