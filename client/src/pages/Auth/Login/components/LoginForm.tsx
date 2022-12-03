@@ -14,14 +14,14 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useFormik } from 'formik';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { googleLoginService } from 'services/auth/google.login.service';
 import { localLoginService } from 'services/auth/local.login.service';
 import * as yup from 'yup';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { GoogleLogin1 } from './GoogleLogin';
-import NewWindow from 'react-new-window'
+import NewWindow from 'react-new-window';
 import { useTheme } from '@mui/material/styles';
 
 interface ILoginDto {
@@ -65,7 +65,74 @@ export const LoginForm = () => {
     onSubmit,
   });
 
+  const [externalPopup, setExternalPopup] = useState<Window | null>(null);
+  const googleRef = useRef<Window | null>(null);
 
+  const connectClick = (e: any /*: React.MouseEvent<HTMLAnchorElement>*/) => {
+    const w: number = 500;
+    const h: number = 400;
+    const left = window.screenX + (window.outerWidth - w) / 2;
+    const top = window.screenY + (window.outerHeight - h) / 2.5;
+    const title = `googleoauth2`;
+    const url = `http://localhost:3001/auth/google-logins`;
+    // const url = `http://localhost:3000`;
+    googleRef.current = window.open(
+      url,
+      title,
+      `width=${w},height=${h},left=${left},top=${top}`,
+    );
+    googleRef.current?.addEventListener('DOMContentLoaded', function () {
+      console.log('location changed!');
+    });
+    setExternalPopup(googleRef.current);
+  };
+
+  useEffect(() => {
+
+    // if (!googleRef.current) {
+    //   return;
+    // }
+
+    // const timer = setInterval(() => {
+    //   if (!googleRef.current) {
+    //     timer && clearInterval(timer);
+    //     return;
+    //   }
+    //   const currentUrl = googleRef.current.location.href;
+    //   console.log(currentUrl);
+    //   if (!currentUrl) {
+    //     return;
+    //   }
+    // const searchParams = new URL(currentUrl).searchParams;
+    // const code = searchParams.get('code');
+    // if (code) {
+    //   googleRef.current.close();
+    //   console.log(`The popup URL has URL code param = ${code}`);
+    // YourApi.endpoint(code)
+    //   .then(() => {
+    //     // change UI to show after the code was stored
+    //   })
+    //   .catch(() => {
+    //     // API error
+    //   })
+    //   .finally(() => {
+    //     // clear timer at the end
+    //     setExternalPopup(null);
+    //     timer && clearInterval(timer);
+    //   });
+    // }
+    // }, 500);
+  }, [googleRef.current]);
+
+  return (
+    <Link
+      component={Button}
+      onClick={connectClick}
+      target="googleoauth2"
+    >
+      Connect
+    </Link>
+  );
 
   return (
     <Grid container>
@@ -102,7 +169,7 @@ export const LoginForm = () => {
         <Box
           width={'100%'}
           sx={{
-            display: "flex",
+            display: 'flex',
             marginY: 6,
             justifyContent: 'center',
           }}
@@ -113,7 +180,7 @@ export const LoginForm = () => {
             theme={themeMode === 'dark' ? 'filled_blue' : 'outline'}
             width="100%"
             size="large"
-            context='signin'
+            context="signin"
             auto_select={false}
             useOneTap={false}
             ux_mode="popup"
