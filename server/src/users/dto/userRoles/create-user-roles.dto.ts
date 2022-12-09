@@ -5,45 +5,202 @@ import { UserRoles } from '../../../enum/userRoles.enum';
 
 export class CreateUserRolesDto {
   // @IsBoolean()
-  @ApiProperty({ default: false })
+  // @ApiProperty({ default: false })
   // [UserRoles.superUser]?: boolean;
+
   @IsBoolean()
   @ApiProperty({ default: false })
   [UserRoles.admin]?: boolean = false;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.adminSection1]?: boolean = false;
+  [UserRoles.crudAppAdmin]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.adminSection2]?: boolean = false;
+  [UserRoles.crudAppUserHL]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.adminSection3]?: boolean = false;
+  [UserRoles.crudAppUserML]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.section1ExpertL1]?: boolean = false;
+  [UserRoles.crudAppUserLL]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.section1ExpertL2]?: boolean = false;
+  [UserRoles.chatAppAdmin]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.section2ExpertL1]?: boolean = false;
+  [UserRoles.chatAppUserHL]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.section2ExpertL2]?: boolean = false;
+  [UserRoles.chatAppUserML]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.section3ExpertL1]?: boolean = false;
+  [UserRoles.chatAppUserLL]?: boolean;
 
   @IsBoolean()
-  @ApiProperty({ default: true })
-  [UserRoles.section3ExpertL2]?: boolean = true;
+  @ApiProperty({ default: false })
+  [UserRoles.videoCallAppAdmin]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.videoCallAppUserHL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.videoCallAppUserML]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.videoCallAppUserLL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.voiceCallAppAdmin]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.voiceCallAppUserHL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.voiceCallAppUserML]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.voiceCallAppUserLL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.shareFileAppAdmin]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.shareFileAppUserHL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.shareFileAppUserML]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.shareFileAppUserLL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.movieAppAdmin]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.movieAppUserHL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.movieAppUserML]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.movieAppUserLL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.musicAppAdmin]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.musicAppUserHL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.musicAppUserML]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.musicAppUserLL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.mapsAppAdmin]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.mapsAppUserHL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.mapsAppUserML]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.mapsAppUserLL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.tradeBotAppAdmin]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.tradeBotAppUserHL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.tradeBotAppUserML]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.tradeBotAppUserLL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.onlineShopAppAdmin]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.onlineShopAppUserHL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.onlineShopAppUserML]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.onlineShopAppUserLL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.userManagementAppAdmin]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.userManagementAppUserHL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.userManagementAppUserML]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.userManagementAppUserLL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.bingoAppAdmin]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.bingoAppUserHL]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.bingoAppUserML]?: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  [UserRoles.bingoAppUserLL]?: boolean;
 }

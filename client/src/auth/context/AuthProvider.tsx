@@ -9,6 +9,10 @@ const initAuthState: IAuthContext = {
     token: null,
     update: () => {},
   },
+  refreshTokenCtx: {
+    token: null,
+    update: () => {},
+  },
 };
 
 const AuthContext = createContext<IAuthContext>(initAuthState);
@@ -16,29 +20,37 @@ const AuthContext = createContext<IAuthContext>(initAuthState);
 export const AuthProvider: FC<Props> = ({ children }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
 
-  const userCtx = useMemo(
-    () => ({
+  const userCtx = useMemo(() => {
+    return {
       profile: user,
-      update: (user: IUser) => {
+      update: (user: IUser | null) => {
         setUser(user);
       },
-    }), // eslint-disable-next-line
-    [],
-  );
+    };
+  }, [user]);
 
-  const accessTokenCtx = useMemo(
-    () => ({
+  const accessTokenCtx = useMemo(() => {
+    return {
       token: accessToken,
-      update: (token: string) => {
+      update: (token: string | null) => {
         setAccessToken(token);
       },
-    }), // eslint-disable-next-line
-    [],
-  );
+    };
+  }, [accessToken]);
+
+  const refreshTokenCtx = useMemo(() => {
+    return {
+      token: refreshToken,
+      update: (token: string | null) => {
+        setRefreshToken(token);
+      },
+    };
+  }, [refreshToken]);
 
   return (
-    <AuthContext.Provider value={{ userCtx, accessTokenCtx }}>
+    <AuthContext.Provider value={{ userCtx, accessTokenCtx, refreshTokenCtx }}>
       {children}
     </AuthContext.Provider>
   );

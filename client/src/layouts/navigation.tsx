@@ -6,6 +6,9 @@ import ShareFileIcon from '@mui/icons-material/FilePresent';
 import HomeIcon from '@mui/icons-material/Home';
 import InfoIcon from '@mui/icons-material/Info';
 import MusicIcon from '@mui/icons-material/LibraryMusic';
+import NotAccessibleIcon from '@mui/icons-material/NotAccessible';
+import EngineeringIcon from '@mui/icons-material/Engineering';
+import NotFoundIcon from '@mui/icons-material/BrowserNotSupported';
 import MovieIcon from '@mui/icons-material/LocalMovies';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import MapIcon from '@mui/icons-material/MyLocation';
@@ -31,6 +34,9 @@ export const navigationPages: navPage[] = [
         href: '/resume',
         icon: <ResumeIcon sx={{ pr: 0.5 }} />,
       },
+      { title: 'NotFound', href: '/notfound', icon: <NotFoundIcon sx={{ pr: 0.5 }} /> },
+      { title: 'UnAuthorized', href: '/unauthorized', icon: <NotAccessibleIcon sx={{ pr: 0.5 }} /> },
+      { title: 'Maintenance', href: '/maintenance', icon: <EngineeringIcon sx={{ pr: 0.5 }} /> },
     ],
   },
   {

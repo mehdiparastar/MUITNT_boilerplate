@@ -6,9 +6,49 @@ import NotFound from 'pages/NotFound/NotFound';
 
 import About from '../pages/About/About';
 import Home from '../pages/Home/Home';
+import { Routes, Route } from 'react-router-dom';
+import RequireAuth from 'auth/components/RequireAuth';
+import Unauthorized from 'pages/Unauthorized/Unauthorized';
+import Maintenance from 'pages/Maintenance/Maintenance';
+import UsersManagement from 'apps/UsersManagement/UsersManagement';
+import { UserRoles } from 'enum/userRoles.enum';
 
+export const RoutesList: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<MainLayout />}>
+        {/* public routes */}
+        <Route path="" element={<Home />} />
+        <Route path="auth" element={<Login />} />
+        <Route path="unauthorized" element={<Unauthorized />} />
+        <Route path="notfound" element={<NotFound />} />
+        <Route path="maintenance" element={<Maintenance />} />
+        <Route path="resume" element={<ComingSoon />} />
+        <Route path="about" element={<About />} />
+
+        <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>
+          <Route path="crud" element={<ComingSoon />} />
+          <Route path="chat" element={<ComingSoon />} />
+          <Route path="video-call" element={<ComingSoon />} />
+          <Route path="voice-call" element={<ComingSoon />} />
+          <Route path="share-file" element={<ComingSoon />} />
+          <Route path="movie" element={<ComingSoon />} />
+          <Route path="music" element={<ComingSoon />} />
+          <Route path="maps" element={<ComingSoon />} />
+          <Route path="trade-bot" element={<ComingSoon />} />
+          <Route path="online-shop" element={<ComingSoon />} />
+          <Route path="user-management" element={<UsersManagement />} />
+          <Route path="bingo" element={<ComingSoon />} />
+        </Route>
+
+        {/* catch all */}
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  );
+};
 // import Maintenance from 'pages/Maintenance/Maintenance';
-export const routes: Array<Route> = [
+export const routes1: Array<IRoute> = [
   {
     key: '*',
     title: 'Not Found',

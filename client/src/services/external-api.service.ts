@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export const callExternalApi = async (options: {
   config: AxiosRequestConfig;
-}): Promise<ApiResponse> => {
+}): Promise<IApiResponse<any>> => {
   try {
     const response: AxiosResponse = await axios(options.config);
     const { data } = response;
@@ -27,8 +27,8 @@ export const callExternalApi = async (options: {
         message = axiosError.message;
       }
 
-      if (response && response.data && (response.data as AppError).message) {
-        message = (response.data as AppError).message;
+      if (response && response.data && (response.data as IAppError).message) {
+        message = (response.data as IAppError).message;
       }
 
       return {

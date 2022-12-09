@@ -4,10 +4,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { CookiesProvider } from 'react-cookie';
 import { AuthProvider } from 'auth/context/AuthProvider';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
-import { googleLoginService } from 'services/auth/google.login.service';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { WithLayout } from 'WithLayout';
-import { CssBaseline } from '@mui/material';
 import 'aos/dist/aos.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -17,17 +15,16 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <WithLayout>
-      <GoogleOAuthProvider clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}>
-        <AuthProvider>
-          {/* <CookiesProvider> */}
-          <App />
-          {/* </CookiesProvider> */}
-        </AuthProvider>
-      </GoogleOAuthProvider>
-    </WithLayout>
-  </React.StrictMode>
-  ,
+    <AuthProvider>
+      <WithLayout>
+        <GoogleOAuthProvider clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}>
+          <CookiesProvider>
+            <App />
+          </CookiesProvider>
+        </GoogleOAuthProvider>
+      </WithLayout>
+    </AuthProvider>
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

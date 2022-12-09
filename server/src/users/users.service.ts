@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -21,7 +26,7 @@ export class UsersService {
       throw new BadRequestException('User already exists');
     }
 
-    const defaultUserRoles = [UserRoles.section3ExpertL2];
+    const defaultUserRoles = [];
 
     // Create new User
     const user = this.usersRepo.create({
@@ -41,7 +46,7 @@ export class UsersService {
       throw new BadRequestException('User already exists');
     }
 
-    const defaultUserRoles = [UserRoles.section3ExpertL2];
+    const defaultUserRoles = [];
 
     // Create new User
     const user = this.usersRepo.create({
@@ -109,7 +114,7 @@ export class UsersService {
     }
 
     const updateUserRoles = await this.update(user.id, {
-      roles: getRolesArray({ superUser: true }),
+      roles: getRolesArray({ [UserRoles.superUser]: true }),
     });
 
     return updateUserRoles;

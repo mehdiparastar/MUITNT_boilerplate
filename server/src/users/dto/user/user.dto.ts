@@ -12,10 +12,6 @@ export class UserDto {
 
   @Expose()
   @ApiProperty()
-  refreshToken: string;
-
-  @Expose()
-  @ApiProperty()
   provider: string;
 
   @Expose()

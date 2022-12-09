@@ -13,6 +13,7 @@ import { ThemeContext } from 'WithLayout';
 import { FooterContent } from './components/FooterContent/FooterContent';
 import { SidebarContent } from './components/SidebarContent/SidebarContent';
 import { TopbarContent } from './components/TopbarContent/TopbarContent';
+import { Outlet } from 'react-router-dom';
 
 export const MainLayout: React.FC<layoutProps> = ({ children }) => {
   const theme = useTheme<Theme>();
@@ -53,6 +54,7 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
     );
 
     return () => window.removeEventListener('resize', handleResize);
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -85,26 +87,21 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
           container
           component="main"
           justifyContent="center"
-          alignItems="center"          
+          alignItems="center"
           minHeight={`-webkit-calc(100vh - ${
             theme.layoutTopbarCompDimentions.height +
             theme.layoutFooterCompDimentions.height
           }px)`}
           // bgcolor={'red'}
           sx={{
-            p:0
+            p: 0,
           }}
         >
-          {children}
+          <Outlet />
         </Grid>
       </Grid>
       <Grid xs={12}>
-        <Grid
-          ref={footerRef}
-          container
-          component={'footer'}
-          direction="column"
-        >
+        <Grid ref={footerRef} container component={'footer'} direction="column">
           <Divider />
           <FooterContent />
         </Grid>

@@ -1,30 +1,22 @@
 /* eslint-disable react/no-unescaped-entities */
-import GoogleIcon from '@mui/icons-material/Google';
-import {
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  Stack,
-} from '@mui/material';
+import { Box, Divider, Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useFormik } from 'formik';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { googleLoginService } from 'services/auth/google.login.service';
 import { localLoginService } from 'services/auth/local.login.service';
 import * as yup from 'yup';
-import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
-import { GoogleLogin1 } from './GoogleLogin';
-import NewWindow from 'react-new-window';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useTheme } from '@mui/material/styles';
+import useAuth from '../../../../auth/hooks/useAuth';
+import { useLocation, useNavigate } from 'react-router-dom';
+import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
+import { useEffect, useState } from 'react';
 
-interface ILoginDto {
+interface ILocalLoginDto {
   email: string;
   password: string;
 }
@@ -42,85 +34,60 @@ const validationSchema = yup.object({
 });
 
 export const LoginForm = () => {
-  const [showGLogin, setShowGLogin] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const axiosPrivate = useAxiosPrivate();
   const theme = useTheme();
   const themeMode = theme.palette.mode;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
+  const [loadProfile, setLoadProfile] = useState(false);
+
+  const { accessTokenCtx, refreshTokenCtx, userCtx } = useAuth();
 
   const initialValues = {
     email: '',
     password: '',
   };
 
-  const onSubmit = async (values: ILoginDto): Promise<any> => {
+  useEffect(() => {
+    const getProfile = async () => {
+      const response = await axiosPrivate.get('auth/profile');
+      userCtx.update(response.data);
+      navigate(from, { replace: true });
+      setLoadProfile(false);
+    };
+    if (loadProfile) {
+      getProfile();
+    }
+    return;
+  }, [loadProfile, axiosPrivate, from, navigate, userCtx]);
+
+  const handleLogin = async ({ accessToken, refreshToken }: IAuthResponse) => {
+    accessTokenCtx.update(accessToken);
+    refreshTokenCtx.update(refreshToken);
+    setLoadProfile(true);
+  };
+
+  const onLocalSubmit = async (values: ILocalLoginDto): Promise<any> => {
     const response = await localLoginService(values.email, values.password);
-    console.warn(response.data);
-    return response;
+    await handleLogin(response.data);
+  };
+
+  const onGoogleSubmit = async (credentialResponse: CredentialResponse) => {
+    const response = await googleLoginService(credentialResponse.credential);
+    await handleLogin(response.data);
   };
 
   const formik = useFormik({
     initialValues,
     validationSchema: validationSchema,
-    onSubmit,
+    onSubmit: onLocalSubmit,
   });
-
-  const [externalPopup, setExternalPopup] = useState<Window | null>(null);
-  const googleRef = useRef<Window | null>(null);
-
-  const connectClick = (e: any /*: React.MouseEvent<HTMLAnchorElement>*/) => {
-    const w: number = 500;
-    const h: number = 400;
-    const left = window.screenX + (window.outerWidth - w) / 2;
-    const top = window.screenY + (window.outerHeight - h) / 2.5;
-    const title = `googleoauth2`;
-    const url = `http://localhost:3001/auth/google-logins`;
-    // const url = `http://localhost:3000`;
-    googleRef.current = window.open(
-      url,
-      title,
-      `width=${w},height=${h},left=${left},top=${top}`,
-    );
-
-    googleRef.current?.addEventListener('DOMContentLoaded', function () {
-      console.log('location changed!');
-    });
-    setExternalPopup(googleRef.current);
-  };
-
-  const connectClick2 = (e: any) => {
-    const currentUrl = googleRef?.current?.location.href;
-    console.log(currentUrl);
-  }
-
-  // return (
-  //   <>
-  //     <Link
-  //       component={Button}
-  //       onClick={connectClick}
-  //       target="googleoauth2"
-  //     >
-  //       Connect
-  //     </Link>
-  //     <Button
-  //       onClick={connectClick2}
-  //     >
-  //       Connect2
-  //     </Button>
-  //   </>
-  // );
 
   return (
     <Grid container>
-      <Grid
-        marginBottom={4}
-        width="100%"
-        textAlign={'center'}
-      >
-        <Stack
-          direction={'row'}
-          justifyContent={'center'}
-        >
+      <Grid marginBottom={4} width="100%" textAlign={'center'}>
+        <Stack direction={'row'} justifyContent={'center'}>
           <Typography
             variant="h4"
             sx={{
@@ -160,12 +127,7 @@ export const LoginForm = () => {
             auto_select={false}
             useOneTap={false}
             ux_mode="popup"
-            onSuccess={async (credentialResponse) => {
-              const response = await googleLoginService(
-                credentialResponse.credential,
-              );
-              console.log(response.data);
-            }}
+            onSuccess={onGoogleSubmit}
             onError={() => {
               console.log('Login Failed');
             }}
@@ -184,10 +146,7 @@ export const LoginForm = () => {
       </Grid>
       <Grid marginTop={6}>
         <form onSubmit={formik.handleSubmit}>
-          <Grid
-            container
-            spacing={4}
-          >
+          <Grid container spacing={4}>
             <Grid xs={12}>
               <TextField
                 label="Email *"
@@ -225,11 +184,7 @@ export const LoginForm = () => {
                 </Link>
               </Typography>
             </Grid>
-            <Grid
-              xs={12}
-              marginTop={2}
-              textAlign={'center'}
-            >
+            <Grid xs={12} marginTop={2} textAlign={'center'}>
               <Button
                 size={'large'}
                 variant={'contained'}
@@ -239,10 +194,7 @@ export const LoginForm = () => {
                 Login
               </Button>
             </Grid>
-            <Grid
-              xs={12}
-              textAlign="center"
-            >
+            <Grid xs={12} textAlign="center">
               <Typography variant={'subtitle2'}>
                 Don't have an account yet?{' '}
                 <Link

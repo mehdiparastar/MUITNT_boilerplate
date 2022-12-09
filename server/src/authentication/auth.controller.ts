@@ -70,7 +70,6 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    
     const auth = await this.authService.login(req.user);
     return auth;
   }
@@ -83,12 +82,7 @@ export class AuthController {
   }
 
   @Get('profile')
-  @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(
-    UserRoles.section1ExpertL2,
-    UserRoles.section2ExpertL2,
-    UserRoles.section3ExpertL2,
-  )
+  @UseGuards(AccessTokenGuard)
   @Serialize(UserDto)
   getProfile(@Req() req: Request) {
     return req.user;
@@ -157,13 +151,7 @@ export class AuthController {
 
   @Get('find-by-email')
   @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(
-    UserRoles.superUser,
-    UserRoles.admin,
-    UserRoles.adminSection1,
-    UserRoles.adminSection2,
-    UserRoles.adminSection3,
-  )
+  @Roles(UserRoles.superUser, UserRoles.admin)
   @Serialize(UserDto)
   async findAllByEmail(@Query('email') email: string): Promise<User[]> {
     const users: User[] = await this.usersService.findByEmail(email);
@@ -175,13 +163,7 @@ export class AuthController {
 
   @Get('find-by-id')
   @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(
-    UserRoles.superUser,
-    UserRoles.admin,
-    UserRoles.adminSection1,
-    UserRoles.adminSection2,
-    UserRoles.adminSection3,
-  )
+  @Roles(UserRoles.superUser, UserRoles.admin)
   @Serialize(UserDto)
   async findOneById(@Query('id') id: string): Promise<User> {
     const user: User = await this.usersService.findOneById(parseInt(id));

@@ -16,10 +16,7 @@ const About: FC<any> = (): ReactElement => {
         alignItems: 'center',
       }}
     >
-      <Typography
-        fontFamily={'iransansx'}
-        variant="h3"
-      >
+      <Typography fontFamily={'iransansx'} variant="h3">
         مهدی پرستار
       </Typography>
     </Box>
