@@ -79,5 +79,9 @@ declare global {
       token: string | null | undefined;
       update: (token: string | null) => void;
     };
+    persistCtx: {
+      value: boolean;
+      update: (bool: boolean) => void;
+    };
   }
 }

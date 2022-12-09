@@ -12,6 +12,7 @@ const useRefreshToken = () => {
       },
     });
     accessTokenCtx.update(response.data.accessToken);
+    refreshTokenCtx.update(response.data.refreshToken);
     return response.data.accessToken;
   };
 

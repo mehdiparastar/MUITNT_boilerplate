@@ -23,19 +23,19 @@ import Grid from '@mui/material/Unstable_Grid2';
 import useAuth from 'auth/hooks/useAuth';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
-import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
+import useLogout from 'auth/hooks/useLogout';
 
 export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   onSidebarOpen,
 }) => {
   const theme = useTheme();
   const themeConfig = React.useContext(ThemeContext);
-  const { userCtx, accessTokenCtx, refreshTokenCtx } = useAuth();
+  const logout = useLogout();
+  const { userCtx } = useAuth();
   const themeMode = theme.palette.mode;
   const paletteType = theme.palette.paletteType;
   const themeToggler = themeConfig.themeMode.toggleThemeMode;
   const setThemePalette = themeConfig.themePaletteType.changeThemePaletteType;
-  const axiosPrivate = useAxiosPrivate();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -47,10 +47,7 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   };
 
   const handleLogOut = async () => {
-    await axiosPrivate.get('auth/logout');
-    userCtx.update(null);
-    accessTokenCtx.update(null);
-    refreshTokenCtx.update(null);
+    await logout();
   };
 
   const popupMenu = (

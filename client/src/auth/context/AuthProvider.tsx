@@ -1,4 +1,5 @@
 import { createContext, FC, useMemo, useState } from 'react';
+import { useCookies } from 'react-cookie';
 
 const initAuthState: IAuthContext = {
   userCtx: {
@@ -13,14 +14,20 @@ const initAuthState: IAuthContext = {
     token: null,
     update: () => {},
   },
+  persistCtx: {
+    value: false,
+    update: () => {},
+  },
 };
 
 const AuthContext = createContext<IAuthContext>(initAuthState);
 
 export const AuthProvider: FC<Props> = ({ children }) => {
+  const [cookies, setCookie] = useCookies(['persist']);
   const [user, setUser] = useState<IUser | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [persist, setPersist] = useState<boolean>(cookies.persist || false);
 
   const userCtx = useMemo(() => {
     return {
@@ -49,8 +56,19 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     };
   }, [refreshToken]);
 
+  const persistCtx = useMemo(() => {
+    return {
+      value: persist,
+      update: (bool: boolean) => {
+        setPersist(bool);
+      },
+    };
+  }, [persist]);
+
   return (
-    <AuthContext.Provider value={{ userCtx, accessTokenCtx, refreshTokenCtx }}>
+    <AuthContext.Provider
+      value={{ userCtx, accessTokenCtx, refreshTokenCtx, persistCtx }}
+    >
       {children}
     </AuthContext.Provider>
   );

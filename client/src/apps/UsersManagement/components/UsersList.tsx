@@ -1,33 +1,11 @@
 import { Box, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
+import usePrivateFetch from 'hooks/usePrivateFetch';
 
-type Props = {};
-
-const UsersList = (props: Props) => {
-  const [users, setUsers] = useState<IUser[]>([]);
-  const axiosPrivate = useAxiosPrivate();
-
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-    const getUsers = async () => {
-      try {
-        const response = await axiosPrivate.get('auth/all', {
-          signal: controller.signal,
-        });
-        isMounted && setUsers(response.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    getUsers();
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [axiosPrivate]);
+const UsersList = () => {
+  const { data: users } = usePrivateFetch<IUser[]>({
+    api: 'auth/all',
+    config: { method: 'get' },
+  });
 
   return (
     <Box component={'article'}>

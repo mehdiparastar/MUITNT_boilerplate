@@ -1,20 +1,28 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Box, Divider, Stack } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  FormGroup,
+  Stack,
+} from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useFormik } from 'formik';
-import { googleLoginService } from 'services/auth/google.login.service';
 import { localLoginService } from 'services/auth/local.login.service';
 import * as yup from 'yup';
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { useTheme } from '@mui/material/styles';
 import useAuth from '../../../../auth/hooks/useAuth';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
+import axios from 'api/axios';
 
 interface ILocalLoginDto {
   email: string;
@@ -41,8 +49,7 @@ export const LoginForm = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
   const [loadProfile, setLoadProfile] = useState(false);
-
-  const { accessTokenCtx, refreshTokenCtx, userCtx } = useAuth();
+  const { accessTokenCtx, refreshTokenCtx, userCtx, persistCtx } = useAuth();
 
   const initialValues = {
     email: '',
@@ -62,7 +69,10 @@ export const LoginForm = () => {
     return;
   }, [loadProfile, axiosPrivate, from, navigate, userCtx]);
 
-  const handleLogin = async ({ accessToken, refreshToken }: IAuthResponse) => {
+  const handleCompletingLoginFlow = async ({
+    accessToken,
+    refreshToken,
+  }: IAuthResponse) => {
     accessTokenCtx.update(accessToken);
     refreshTokenCtx.update(refreshToken);
     setLoadProfile(true);
@@ -70,12 +80,7 @@ export const LoginForm = () => {
 
   const onLocalSubmit = async (values: ILocalLoginDto): Promise<any> => {
     const response = await localLoginService(values.email, values.password);
-    await handleLogin(response.data);
-  };
-
-  const onGoogleSubmit = async (credentialResponse: CredentialResponse) => {
-    const response = await googleLoginService(credentialResponse.credential);
-    await handleLogin(response.data);
+    await handleCompletingLoginFlow(response.data);
   };
 
   const formik = useFormik({
@@ -84,72 +89,59 @@ export const LoginForm = () => {
     onSubmit: onLocalSubmit,
   });
 
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      const res = await axios.post('auth/google/login-custom-btn', {
+        code: tokenResponse.code,
+      });
+      await handleCompletingLoginFlow(res.data);
+    },
+    onError: (err) => console.error(err),
+    flow: 'auth-code',
+  });
+
+  const togglePersist = () => {
+    persistCtx.update(!persistCtx.value);
+  };
+
+  useEffect(() => {}, [persistCtx.value]);
+
   return (
     <Grid container>
-      <Grid marginBottom={4} width="100%" textAlign={'center'}>
+      <Grid xs={12}>
         <Stack direction={'row'} justifyContent={'center'}>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 700,
-            }}
-          >
+          <Typography variant="h4" sx={{ fontWeight: 700 }}>
             Welcome back to
           </Typography>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 700,
-            }}
-            color="secondary"
-          >
+          <Typography variant="h4" sx={{ fontWeight: 700 }} color="secondary">
             &nbsp; MUITNT
           </Typography>
         </Stack>
-        <Typography color="text.secondary">
-          Login to manage your account.
-        </Typography>
-        <Box
-          width={'100%'}
-          sx={{
-            display: 'flex',
-            marginY: 6,
-            justifyContent: 'center',
-          }}
-        >
-          <GoogleLogin
-            type="standard"
-            shape="rectangular"
-            theme={themeMode === 'dark' ? 'filled_blue' : 'outline'}
-            width="100%"
-            size="large"
-            context="signin"
-            auto_select={false}
-            useOneTap={false}
-            ux_mode="popup"
-            onSuccess={onGoogleSubmit}
-            onError={() => {
-              console.log('Login Failed');
-            }}
-          />
-        </Box>
-        <Stack
-          direction={'row'}
-          sx={{ width: '100%' }}
-          alignItems="center"
-          justifyContent={'center'}
-        >
-          <Divider sx={{ width: '40%' }} />
-          <Typography paddingX={2}>or</Typography>
-          <Divider sx={{ width: '40%' }} />
-        </Stack>
       </Grid>
-      <Grid marginTop={6}>
+      <Grid xs={12}>
+        <Divider variant="fullWidth" sx={{ mb: 4 }} />
+      </Grid>
+      <Grid xs={12}>
+        <FormGroup sx={{ mb: 4 }}>
+          <FormControlLabel
+            control={
+              <Checkbox onChange={togglePersist} checked={persistCtx.value} />
+            }
+            label="Trust This Device"
+          />
+        </FormGroup>
+      </Grid>
+      <Grid xs={12}>
+        <Divider variant="fullWidth" sx={{ mb: 4 }} />
+      </Grid>
+      <Grid xs={12}>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={4}>
             <Grid xs={12}>
               <TextField
-                label="Email *"
+                focused
+                required
+                label="Email"
                 variant="outlined"
                 name={'email'}
                 fullWidth
@@ -161,7 +153,9 @@ export const LoginForm = () => {
             </Grid>
             <Grid xs={12}>
               <TextField
-                label="Password *"
+                focused
+                required
+                label="Password"
                 variant="outlined"
                 name={'password'}
                 type={'password'}
@@ -184,31 +178,55 @@ export const LoginForm = () => {
                 </Link>
               </Typography>
             </Grid>
-            <Grid xs={12} marginTop={2} textAlign={'center'}>
+            <Grid xs={12} textAlign={'center'}>
               <Button
                 size={'large'}
                 variant={'contained'}
                 type={'submit'}
                 fullWidth
               >
-                Login
+                Local Login
               </Button>
             </Grid>
-            <Grid xs={12} textAlign="center">
-              <Typography variant={'subtitle2'}>
-                Don't have an account yet?{' '}
-                <Link
-                  component={'a'}
-                  color={'primary'}
-                  href={'/page-signup'}
-                  underline={'none'}
-                >
-                  Sign up here.
-                </Link>
-              </Typography>
-            </Grid>
+          </Grid>
+          <Grid xs={12} textAlign="left">
+            <Typography variant={'subtitle2'}>
+              Don't have an account yet?{' '}
+              <Link
+                component={'a'}
+                color={'primary'}
+                href={'/page-signup'}
+                underline={'none'}
+              >
+                Sign up here.
+              </Link>
+            </Typography>
           </Grid>
         </form>
+      </Grid>
+      <Grid xs={12}>
+        <Stack
+          direction={'row'}
+          sx={{ width: '100%', my: 3 }}
+          alignItems="center"
+          justifyContent={'center'}
+        >
+          <Divider sx={{ width: '45%' }} />
+          <Typography paddingX={2}>or</Typography>
+          <Divider sx={{ width: '45%' }} />
+        </Stack>
+      </Grid>
+      <Grid xs={12}>
+        <Button
+          color="secondary"
+          startIcon={<GoogleIcon />}
+          onClick={() => googleLogin()}
+          fullWidth
+          variant="outlined"
+          size="large"
+        >
+          Login with Google
+        </Button>
       </Grid>
     </Grid>
   );

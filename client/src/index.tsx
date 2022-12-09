@@ -15,15 +15,17 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <WithLayout>
-        <GoogleOAuthProvider clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}>
-          <CookiesProvider>
+    <CookiesProvider>
+      <AuthProvider>
+        <WithLayout>
+          <GoogleOAuthProvider
+            clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}
+          >
             <App />
-          </CookiesProvider>
-        </GoogleOAuthProvider>
-      </WithLayout>
-    </AuthProvider>
+          </GoogleOAuthProvider>
+        </WithLayout>
+      </AuthProvider>
+    </CookiesProvider>
   </React.StrictMode>,
 );
 

@@ -12,6 +12,7 @@ import Unauthorized from 'pages/Unauthorized/Unauthorized';
 import Maintenance from 'pages/Maintenance/Maintenance';
 import UsersManagement from 'apps/UsersManagement/UsersManagement';
 import { UserRoles } from 'enum/userRoles.enum';
+import PersistLogin from 'auth/components/PersistLogin';
 
 export const RoutesList: React.FC = () => {
   return (
@@ -26,21 +27,22 @@ export const RoutesList: React.FC = () => {
         <Route path="resume" element={<ComingSoon />} />
         <Route path="about" element={<About />} />
 
-        <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>
-          <Route path="crud" element={<ComingSoon />} />
-          <Route path="chat" element={<ComingSoon />} />
-          <Route path="video-call" element={<ComingSoon />} />
-          <Route path="voice-call" element={<ComingSoon />} />
-          <Route path="share-file" element={<ComingSoon />} />
-          <Route path="movie" element={<ComingSoon />} />
-          <Route path="music" element={<ComingSoon />} />
-          <Route path="maps" element={<ComingSoon />} />
-          <Route path="trade-bot" element={<ComingSoon />} />
-          <Route path="online-shop" element={<ComingSoon />} />
-          <Route path="user-management" element={<UsersManagement />} />
-          <Route path="bingo" element={<ComingSoon />} />
+        <Route element={<PersistLogin />}>
+          <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>
+            <Route path="crud" element={<ComingSoon />} />
+            <Route path="chat" element={<ComingSoon />} />
+            <Route path="video-call" element={<ComingSoon />} />
+            <Route path="voice-call" element={<ComingSoon />} />
+            <Route path="share-file" element={<ComingSoon />} />
+            <Route path="movie" element={<ComingSoon />} />
+            <Route path="music" element={<ComingSoon />} />
+            <Route path="maps" element={<ComingSoon />} />
+            <Route path="trade-bot" element={<ComingSoon />} />
+            <Route path="online-shop" element={<ComingSoon />} />
+            <Route path="user-management" element={<UsersManagement />} />
+            <Route path="bingo" element={<ComingSoon />} />
+          </Route>
         </Route>
-
         {/* catch all */}
         <Route path="*" element={<NotFound />} />
       </Route>
