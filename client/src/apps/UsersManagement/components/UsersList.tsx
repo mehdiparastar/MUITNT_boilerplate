@@ -1,8 +1,8 @@
 import { Box, Typography } from '@mui/material';
-import usePrivateFetch from 'hooks/usePrivateFetch';
+import usePrivateOnMountFetch from 'hooks/usePrivateOnMountFetch';
 
 const UsersList = () => {
-  const { data: users } = usePrivateFetch<IUser[]>({
+  const { data: users } = usePrivateOnMountFetch<IUser[]>({
     api: 'auth/all',
     config: { method: 'get' },
   });

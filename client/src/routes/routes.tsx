@@ -20,7 +20,6 @@ export const RoutesList: React.FC = () => {
       <Route path="/" element={<MainLayout />}>
         {/* public routes */}
         <Route path="" element={<Home />} />
-        <Route path="auth" element={<Login />} />
         <Route path="unauthorized" element={<Unauthorized />} />
         <Route path="notfound" element={<NotFound />} />
         <Route path="maintenance" element={<Maintenance />} />
@@ -28,6 +27,7 @@ export const RoutesList: React.FC = () => {
         <Route path="about" element={<About />} />
 
         <Route element={<PersistLogin />}>
+          <Route path="auth" element={<Login />} />
           <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>
             <Route path="crud" element={<ComingSoon />} />
             <Route path="chat" element={<ComingSoon />} />

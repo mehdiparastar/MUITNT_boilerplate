@@ -27,7 +27,13 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
-  const [persist, setPersist] = useState<boolean>(cookies.persist || false);
+  const [persist, setPersist] = useState<boolean>(
+    (cookies.persist === 'false'
+      ? false
+      : cookies.persist === 'true'
+      ? true
+      : cookies.persist) || false,
+  );
 
   const userCtx = useMemo(() => {
     return {

@@ -26,7 +26,9 @@ export class GoogleOauthV2CustomBTNGuard {
     );
 
     const res = await client.getToken(code);
-    
+    const x = await client.getTokenInfo(res.tokens.access_token);
+    console.log(res.tokens.expiry_date - new Date().getTime());
+    const xx= client.verifySignedJwtWithCerts()
     const ticket = await client.verifyIdToken({
       idToken: res.tokens.id_token,
       audience: this.configService.get<string>('OAUTH_GOOGLE_ID'),

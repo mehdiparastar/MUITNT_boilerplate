@@ -1,8 +1,9 @@
+import axios from 'api/axios';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import { AxiosRequestConfig } from 'axios';
 import { useEffect, useState } from 'react';
 
-function usePrivateFetch<T>({
+function usePrivateOnMountFetch<T>({
   api,
   config,
 }: {
@@ -42,4 +43,4 @@ function usePrivateFetch<T>({
   return { loading, data, error };
 }
 
-export default usePrivateFetch;
+export default usePrivateOnMountFetch;

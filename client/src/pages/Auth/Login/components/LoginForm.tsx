@@ -17,12 +17,11 @@ import { useFormik } from 'formik';
 import { localLoginService } from 'services/auth/local.login.service';
 import * as yup from 'yup';
 import { useGoogleLogin } from '@react-oauth/google';
-import { useTheme } from '@mui/material/styles';
 import useAuth from '../../../../auth/hooks/useAuth';
 import { useLocation, useNavigate } from 'react-router-dom';
-import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import axios from 'api/axios';
+import { useCookies } from 'react-cookie';
 
 interface ILocalLoginDto {
   email: string;
@@ -42,32 +41,16 @@ const validationSchema = yup.object({
 });
 
 export const LoginForm = () => {
-  const axiosPrivate = useAxiosPrivate();
-  const theme = useTheme();
-  const themeMode = theme.palette.mode;
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
-  const [loadProfile, setLoadProfile] = useState(false);
   const { accessTokenCtx, refreshTokenCtx, userCtx, persistCtx } = useAuth();
+  const [cookies, setCookie] = useCookies(['persist', 'aT']);
 
   const initialValues = {
     email: '',
     password: '',
   };
-
-  useEffect(() => {
-    const getProfile = async () => {
-      const response = await axiosPrivate.get('auth/profile');
-      userCtx.update(response.data);
-      navigate(from, { replace: true });
-      setLoadProfile(false);
-    };
-    if (loadProfile) {
-      getProfile();
-    }
-    return;
-  }, [loadProfile, axiosPrivate, from, navigate, userCtx]);
 
   const handleCompletingLoginFlow = async ({
     accessToken,
@@ -75,7 +58,17 @@ export const LoginForm = () => {
   }: IAuthResponse) => {
     accessTokenCtx.update(accessToken);
     refreshTokenCtx.update(refreshToken);
-    setLoadProfile(true);
+    const response = await axios.get('auth/profile', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    userCtx.update(response.data);
+    if (persistCtx.value) {
+      setCookie('aT', accessToken);
+    }
+    navigate(from, { replace: true });
   };
 
   const onLocalSubmit = async (values: ILocalLoginDto): Promise<any> => {
@@ -104,7 +97,9 @@ export const LoginForm = () => {
     persistCtx.update(!persistCtx.value);
   };
 
-  useEffect(() => {}, [persistCtx.value]);
+  useEffect(() => {
+    setCookie('persist', persistCtx.value);
+  }, [persistCtx.value]);
 
   return (
     <Grid container>
@@ -125,7 +120,16 @@ export const LoginForm = () => {
         <FormGroup sx={{ mb: 4 }}>
           <FormControlLabel
             control={
-              <Checkbox onChange={togglePersist} checked={persistCtx.value} />
+              <Checkbox
+                onChange={togglePersist}
+                checked={
+                  (cookies.persist === 'false'
+                    ? false
+                    : cookies.persist === 'true'
+                    ? true
+                    : cookies.persist) || false
+                }
+              />
             }
             label="Trust This Device"
           />

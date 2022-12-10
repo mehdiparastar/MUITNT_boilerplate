@@ -1,4 +1,10 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { QueryFailedError } from 'typeorm';
 
@@ -7,7 +13,7 @@ export class AllExceptionFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: unknown & { message?: string }, host: ArgumentsHost): void {
-    // console.log(exception)
+    // console.log(exception);
 
     const { httpAdapter } = this.httpAdapterHost;
 
