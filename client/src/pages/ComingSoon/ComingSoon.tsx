@@ -25,7 +25,8 @@ const ComingSoon: FC<any> = (): ReactElement => {
 
   return (
     <Box
-      minHeight={'calc(100vh - 64px - 183px)'}
+      width={1}
+      minHeight={'100vh'}
       height={'100%'}
       display={'flex'}
       alignItems={'center'}

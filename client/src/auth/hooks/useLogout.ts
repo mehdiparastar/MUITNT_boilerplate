@@ -6,7 +6,7 @@ import { assess } from 'helperFunctions/componentAssess';
 const useLogout = () => {
   const { userCtx, accessTokenCtx, refreshTokenCtx, persistCtx } = useAuth();
   const axiosPrivate = useAxiosPrivate();
-  const [, setCookie] = useCookies(['rT']);
+  const [, setCookie] = useCookies(['rT', 'persist']);
 
   const logout = async () => {
     assess && console.log('assess');
@@ -17,6 +17,7 @@ const useLogout = () => {
       refreshTokenCtx.update(null);
       persistCtx.update(false);
       setCookie('rT', null);
+      setCookie('persist', false);
     } catch (err) {
       console.error(err);
     }

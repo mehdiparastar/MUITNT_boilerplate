@@ -16,10 +16,7 @@ const UsersManagement: FC<Props> = (props: Props) => {
   }, []);
 
   return (
-    <Box
-      minHeight={`-webkit-calc(100vh - ${theme.layoutTopbarCompDimentions.height +
-        theme.layoutFooterCompDimentions.height
-        }px)`}
+    <Box      
       height={1}
       width={1}
       display={'flex'}

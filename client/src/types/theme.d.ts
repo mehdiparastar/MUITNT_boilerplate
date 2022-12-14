@@ -5,27 +5,11 @@ declare module '@mui/material/styles' {
     layout: {
       contentWidth: number;
     };
-    layoutTopbarCompDimentions: {
-      height: number;
-      width: number;
-    };
-    layoutFooterCompDimentions: {
-      height: number;
-      width: number;
-    };
   }
 
   interface ThemeOptions extends theme.ThemeOptions {
     layout?: {
       contentWidth: number;
-    };
-    layoutTopbarCompDimentions?: {
-      height: number;
-      width: number;
-    };
-    layoutFooterCompDimentions?: {
-      height: number;
-      width: number;
     };
   }
 }

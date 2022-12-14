@@ -42,10 +42,7 @@ const Register: FC<any> = (): ReactElement => {
             container
             direction={'column'}
             justifyContent="center"
-            alignItems={'center'}
-            minHeight={`-webkit-calc(100vh - ${theme.layoutTopbarCompDimentions.height +
-              theme.layoutFooterCompDimentions.height
-              }px)`}
+            alignItems={'center'}           
           >
             {isMd && <Side />}
             {isMd && (

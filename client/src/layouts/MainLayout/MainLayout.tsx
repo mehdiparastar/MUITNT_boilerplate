@@ -1,14 +1,10 @@
-import { Box, LinearProgress } from '@mui/material';
+import { LinearProgress } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import { Theme, useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Grid from '@mui/material/Unstable_Grid2';
 import { HidableAppBar } from 'components/HidableAppBar/HidableAppBar';
 import { Sidebar } from 'components/Sidebar/Sidebar';
-import { resizeToMinimum } from 'helperFunctions/resizeToMinimum';
-import { updateThemeTopbarFooterDimentions } from 'helperFunctions/updateThemeTopbarFooterDimentions';
-import React, { useEffect, useRef } from 'react';
-import { ThemeContext } from 'WithLayout';
+import React from 'react';
 
 import { FooterContent } from './components/FooterContent/FooterContent';
 import { SidebarContent } from './components/SidebarContent/SidebarContent';
@@ -19,13 +15,8 @@ import { assess } from 'helperFunctions/componentAssess';
 
 export const MainLayout: React.FC<layoutProps> = ({ children }) => {
   assess && console.log('assess')
-  const theme = useTheme<Theme>();
-  const themeConfig = React.useContext(ThemeContext);
   const { loadingPersistCtx, loadingFetchCtx } = useAuth()
   const [openSidebar, setOpenSidebar] = React.useState<boolean>(false);
-  const topBarRef = useRef<HTMLElement>(null);
-  const topBarContentRef = useRef<HTMLElement>(null);
-  const footerRef = useRef<HTMLElement>(null);
 
   const handleSidebarOpen = () => {
     setOpenSidebar(true);
@@ -35,30 +26,6 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
     setOpenSidebar(false);
   };
 
-  const handleResize = () => {
-    updateThemeTopbarFooterDimentions(
-      themeConfig,
-      topBarRef,
-      topBarContentRef,
-      footerRef,
-    );
-
-    resizeToMinimum();
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-
-    updateThemeTopbarFooterDimentions(
-      themeConfig,
-      topBarRef,
-      topBarContentRef,
-      footerRef,
-    );
-
-    return () => window.removeEventListener('resize', handleResize);
-    // eslint-disable-next-line
-  }, []);
 
   return (
     <Grid
@@ -70,9 +37,7 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
     >
       <Grid xs={12}>
         <HidableAppBar>
-          <Box ref={topBarContentRef}>
-            <TopbarContent onSidebarOpen={handleSidebarOpen} />
-          </Box>
+          <TopbarContent onSidebarOpen={handleSidebarOpen} />
         </HidableAppBar>
         <Sidebar
           onClose={handleSidebarClose}
@@ -81,21 +46,13 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
         >
           <SidebarContent onClose={handleSidebarClose} />
         </Sidebar>
-        <Box ref={topBarRef}>
-          <Toolbar
-            sx={{ minHeight: topBarContentRef.current?.clientHeight || 0 }}
-          />
-          {(loadingPersistCtx.value || loadingFetchCtx.value) && <LinearProgress />}
-        </Box>
+        <Toolbar />
+        {(loadingPersistCtx.value || loadingFetchCtx.value) && <LinearProgress />}
         <Grid
           container
           component="main"
           justifyContent="center"
           alignItems="center"
-          minHeight={`-webkit-calc(100vh - ${theme.layoutTopbarCompDimentions.height +
-            theme.layoutFooterCompDimentions.height
-            }px)`}
-          // bgcolor={'red'}
           sx={{
             p: 0,
           }}
@@ -104,10 +61,8 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
         </Grid>
       </Grid>
       <Grid xs={12}>
-        <Grid ref={footerRef} container component={'footer'} direction="column">
-          <Divider />
-          <FooterContent />
-        </Grid>
+        <Divider />
+        <FooterContent />
       </Grid>
     </Grid>
   );

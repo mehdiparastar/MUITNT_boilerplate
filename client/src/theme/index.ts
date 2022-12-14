@@ -20,14 +20,6 @@ const getTheme = (
       layout: {
         contentWidth: 1236,
       },
-      layoutTopbarCompDimentions: {
-        height: layoutTopbarCompHeight || 0,
-        width: layoutTopbarCompWidth || 0,
-      },
-      layoutFooterCompDimentions: {
-        height: layoutFooterCompHeight || 0,
-        width: layoutFooterCompWidth || 0,
-      },
       shadows: shadows(mode),
       typography: {
         fontFamily: '"Inter", sans-serif',
