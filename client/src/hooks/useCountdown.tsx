@@ -1,6 +1,8 @@
+import { assess } from 'helperFunctions/componentAssess';
 import { useEffect, useState } from 'react';
 
 export const useCountdown = (targetDate: number): number[] => {
+  assess && console.log('assess')
   const countDownDate = new Date(targetDate).getTime();
 
   const [countDown, setCountDown] = useState<number>(

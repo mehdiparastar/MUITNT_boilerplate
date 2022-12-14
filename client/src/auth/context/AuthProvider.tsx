@@ -1,39 +1,46 @@
+import { assess } from 'helperFunctions/componentAssess';
+import { strToBool } from 'helperFunctions/strToBool';
 import { createContext, FC, useMemo, useState } from 'react';
 import { useCookies } from 'react-cookie';
 
 const initAuthState: IAuthContext = {
   userCtx: {
     profile: null,
-    update: () => {},
+    update: () => { },
   },
   accessTokenCtx: {
     token: null,
-    update: () => {},
+    update: () => { },
   },
   refreshTokenCtx: {
     token: null,
-    update: () => {},
+    update: () => { },
   },
   persistCtx: {
     value: false,
-    update: () => {},
+    update: () => { },
   },
+  loadingPersistCtx: {
+    value: false,
+    update: () => { },
+  },
+  loadingFetchCtx: {
+    value: false,
+    update: () => { },
+  }
 };
 
 const AuthContext = createContext<IAuthContext>(initAuthState);
 
 export const AuthProvider: FC<Props> = ({ children }) => {
-  const [cookies, setCookie] = useCookies(['persist']);
+  assess && console.log('assess')
+  const [cookies] = useCookies(['persist']);
   const [user, setUser] = useState<IUser | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
-  const [persist, setPersist] = useState<boolean>(
-    (cookies.persist === 'false'
-      ? false
-      : cookies.persist === 'true'
-      ? true
-      : cookies.persist) || false,
-  );
+  const [persist, setPersist] = useState<boolean>(strToBool(cookies.persist));
+  const [loadingPersist, setLoadingPersist] = useState<boolean>(true)
+  const [loadingFetch, setLoadingFetch] = useState<boolean>(false)
 
   const userCtx = useMemo(() => {
     return {
@@ -71,9 +78,27 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     };
   }, [persist]);
 
+  const loadingPersistCtx = useMemo(() => {
+    return {
+      value: loadingPersist,
+      update: (bool: boolean) => {
+        setLoadingPersist(bool);
+      },
+    };
+  }, [loadingPersist]);
+
+  const loadingFetchCtx = useMemo(() => {
+    return {
+      value: loadingFetch,
+      update: (bool: boolean) => {
+        setLoadingFetch(bool);
+      },
+    };
+  }, [loadingFetch]);
+
   return (
     <AuthContext.Provider
-      value={{ userCtx, accessTokenCtx, refreshTokenCtx, persistCtx }}
+      value={{ userCtx, accessTokenCtx, refreshTokenCtx, persistCtx, loadingPersistCtx, loadingFetchCtx }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,7 +1,7 @@
 import { Container } from '@mui/material';
-import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Unstable_Grid2';
+import { assess } from 'helperFunctions/componentAssess';
 import React, { FC, ReactElement, useEffect } from 'react';
 
 import { Features } from './components/Features/Features';
@@ -9,10 +9,11 @@ import { Hero } from './components/Hero/Hero';
 import { Inspiration } from './components/Inspiration/Inspiration';
 
 const Home: FC<Props> = (Props): ReactElement => {
+  assess && console.log('assess')
   const theme = useTheme();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    return () => {};
+    return () => { };
   }, []);
 
   return (

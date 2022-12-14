@@ -19,7 +19,12 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(@InjectRepository(User) private usersRepo: Repository<User>) {}
 
-  async createUserWithUserPass(email: string, password: string): Promise<User> {
+  async createUserWithUserPass(
+    email: string,
+    password: string,
+    name: string,
+    photo?: string,
+  ): Promise<User> {
     // Check if user exists
     const [userExists] = await this.findByEmail(email);
     if (userExists) {
@@ -32,8 +37,10 @@ export class UsersService {
     const user = this.usersRepo.create({
       email: email,
       password: password,
+      name: name,
       roles: defaultUserRoles,
       provider: authTypeEnum.local,
+      photo: photo,
     });
 
     return this.usersRepo.save(user);

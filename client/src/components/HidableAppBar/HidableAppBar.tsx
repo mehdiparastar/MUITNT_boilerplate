@@ -1,16 +1,16 @@
-import React, { ForwardedRef, Ref } from 'react';
+import React from 'react';
 import {
   useScrollTrigger,
   Slide,
   AppBar,
   Toolbar,
   Container,
-  Box,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import Grid from '@mui/material/Unstable_Grid2';
+import { assess } from 'helperFunctions/componentAssess';
 
 function HideOnScroll(props: HideOnScrollProps) {
+  assess && console.log('assess')
   const { children } = props;
   const trigger = useScrollTrigger({});
   return (

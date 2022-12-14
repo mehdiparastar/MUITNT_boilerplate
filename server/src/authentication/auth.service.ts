@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable, NotAcceptableException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
@@ -65,6 +69,8 @@ export class AuthService {
   async createNewLocalUser(
     email: string,
     password: string,
+    name: string,
+    photo?: string,
   ): Promise<IJWTTokensPair> {
     // Hash password
     const hashedPassword = await hashData(password);
@@ -73,6 +79,8 @@ export class AuthService {
     const newUser = await this.usersService.createUserWithUserPass(
       email,
       hashedPassword,
+      name,
+      photo,
     );
 
     const tokens = await this.getTokens(newUser.id, newUser.email);
@@ -98,11 +106,11 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: '5m',
+        expiresIn: '300s',
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        expiresIn: '10h',
+        expiresIn: '1800s',
       }),
     ]);
 

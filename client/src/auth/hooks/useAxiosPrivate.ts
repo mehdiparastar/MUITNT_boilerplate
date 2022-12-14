@@ -4,9 +4,11 @@ import useRefreshToken from './useRefresh';
 import useAuth from './useAuth';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { assess } from 'helperFunctions/componentAssess';
 
 const useAxiosPrivate = () => {
-  const { accessTokenCtx } = useAuth();
+  assess && console.log('assess');
+  const { accessTokenCtx, userCtx } = useAuth();
   const refresh = useRefreshToken();
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,7 +34,7 @@ const useAxiosPrivate = () => {
         if (err.response?.status === 401 && prevReq && !prevReq.sent) {
           prevReq.sent = true;
           try {
-            const newAccessToken = await refresh();
+            const { aT: newAccessToken } = await refresh();
             prevReq.headers = {
               ...prevReq.headers,
               Authorization: `Bearer ${newAccessToken}`,
@@ -46,6 +48,7 @@ const useAxiosPrivate = () => {
               !!prevReq.sent
             ) {
               navigate('/auth', { state: { from: location }, replace: true });
+              userCtx.update(null);
             }
             return Promise.reject(exception);
           }

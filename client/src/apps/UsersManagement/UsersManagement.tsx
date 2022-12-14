@@ -1,28 +1,25 @@
 import React, { FC, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import UsersList from './components/UsersList';
+import { assess } from 'helperFunctions/componentAssess';
 
 type Props = {};
 
 const UsersManagement: FC<Props> = (props: Props) => {
+  assess && console.log('assess')
   const theme = useTheme();
-  const isMd = useMediaQuery(theme.breakpoints.up('md'), {
-    defaultMatches: true,
-  });
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    return () => {};
+    return () => { };
   }, []);
 
   return (
     <Box
-      minHeight={`-webkit-calc(100vh - ${
-        theme.layoutTopbarCompDimentions.height +
+      minHeight={`-webkit-calc(100vh - ${theme.layoutTopbarCompDimentions.height +
         theme.layoutFooterCompDimentions.height
-      }px)`}
+        }px)`}
       height={1}
       width={1}
       display={'flex'}

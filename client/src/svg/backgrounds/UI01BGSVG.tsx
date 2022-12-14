@@ -2,8 +2,10 @@ import { SvgIconProps } from '@mui/material';
 import { ReactComponent as UI01SVG } from './UI01.svg';
 import { css } from '@emotion/css';
 import { useTheme } from '@mui/material/styles';
+import { assess } from 'helperFunctions/componentAssess';
 
 export const UI01BGSVG: React.FC<SvgIconProps> = (props) => {
+  assess && console.log('assess')
   const theme = useTheme();
   return (
     <UI01SVG

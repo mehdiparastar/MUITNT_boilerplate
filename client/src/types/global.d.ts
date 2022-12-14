@@ -66,6 +66,13 @@ declare global {
     roles?: string[];
   }
 
+  interface ILocalRegisterDto {
+    email: string;
+    password: string;
+    name: string;
+    photo?: string;
+  }
+
   interface IAuthContext {
     userCtx: {
       profile: IUser | null | undefined;
@@ -80,6 +87,14 @@ declare global {
       update: (token: string | null) => void;
     };
     persistCtx: {
+      value: boolean;
+      update: (bool: boolean) => void;
+    };
+    loadingPersistCtx: {
+      value: boolean;
+      update: (bool: boolean) => void;
+    };
+    loadingFetchCtx: {
       value: boolean;
       update: (bool: boolean) => void;
     };

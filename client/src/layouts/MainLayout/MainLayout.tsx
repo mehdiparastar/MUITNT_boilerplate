@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, LinearProgress } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { Theme, useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,11 +14,14 @@ import { FooterContent } from './components/FooterContent/FooterContent';
 import { SidebarContent } from './components/SidebarContent/SidebarContent';
 import { TopbarContent } from './components/TopbarContent/TopbarContent';
 import { Outlet } from 'react-router-dom';
+import useAuth from 'auth/hooks/useAuth';
+import { assess } from 'helperFunctions/componentAssess';
 
 export const MainLayout: React.FC<layoutProps> = ({ children }) => {
+  assess && console.log('assess')
   const theme = useTheme<Theme>();
   const themeConfig = React.useContext(ThemeContext);
-
+  const { loadingPersistCtx, loadingFetchCtx } = useAuth()
   const [openSidebar, setOpenSidebar] = React.useState<boolean>(false);
   const topBarRef = useRef<HTMLElement>(null);
   const topBarContentRef = useRef<HTMLElement>(null);
@@ -82,16 +85,16 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
           <Toolbar
             sx={{ minHeight: topBarContentRef.current?.clientHeight || 0 }}
           />
+          {(loadingPersistCtx.value || loadingFetchCtx.value) && <LinearProgress />}
         </Box>
         <Grid
           container
           component="main"
           justifyContent="center"
           alignItems="center"
-          minHeight={`-webkit-calc(100vh - ${
-            theme.layoutTopbarCompDimentions.height +
+          minHeight={`-webkit-calc(100vh - ${theme.layoutTopbarCompDimentions.height +
             theme.layoutFooterCompDimentions.height
-          }px)`}
+            }px)`}
           // bgcolor={'red'}
           sx={{
             p: 0,

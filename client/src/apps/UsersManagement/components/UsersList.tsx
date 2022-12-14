@@ -1,11 +1,41 @@
 import { Box, Typography } from '@mui/material';
-import usePrivateOnMountFetch from 'hooks/usePrivateOnMountFetch';
+import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
+import { useEffect, useState } from 'react';
+import useAuth from 'auth/hooks/useAuth';
+import { assess } from 'helperFunctions/componentAssess';
 
 const UsersList = () => {
-  const { data: users } = usePrivateOnMountFetch<IUser[]>({
-    api: 'auth/all',
-    config: { method: 'get' },
-  });
+  assess && console.log('assess')
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [error, setError] = useState<any>(null);
+  const axiosPrivate = useAxiosPrivate();
+  const { loadingFetchCtx } = useAuth()
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    loadingFetchCtx.update(true);
+    const getData = async () => {
+      try {
+        const response = await axiosPrivate.get('auth/all', {
+          signal: controller.signal,
+        });
+        isMounted && setUsers(response.data);
+      } catch (err) {
+        isMounted && setError(err);
+      } finally {
+        isMounted && loadingFetchCtx.update(false);
+        isMounted = false
+      }
+    };
+    getData();
+
+    return () => {
+      isMounted = false;
+      loadingFetchCtx.update(false);
+      controller.abort();
+    };
+  }, [axiosPrivate]);
 
   return (
     <Box component={'article'}>

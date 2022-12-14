@@ -26,30 +26,32 @@ export class GoogleOauthV2CustomBTNGuard {
     );
 
     const res = await client.getToken(code);
-    const x = await client.getTokenInfo(res.tokens.access_token);
-    console.log(res.tokens.expiry_date - new Date().getTime());
-    const xx= client.verifySignedJwtWithCerts()
-    const ticket = await client.verifyIdToken({
-      idToken: res.tokens.id_token,
-      audience: this.configService.get<string>('OAUTH_GOOGLE_ID'),
-    });
+    try {      
+      const ticket = await client.verifyIdToken({
+        idToken: res.res.data.id_token,
+        audience: this.configService.get<string>('OAUTH_GOOGLE_ID'),
+      });
+      const googleUser: IGoogleUser = {
+        provider: authTypeEnum.google,
+        providerId: ticket.getPayload()?.sub,
+        name: ticket.getPayload()?.name,
+        email: ticket.getPayload()?.email,
+        photo: ticket.getPayload()?.picture,
+      };
 
-    const googleUser: IGoogleUser = {
-      provider: authTypeEnum.google,
-      providerId: ticket.getPayload()?.sub,
-      name: ticket.getPayload()?.name,
-      email: ticket.getPayload()?.email,
-      photo: ticket.getPayload()?.picture,
-    };
+      const user = await this.authService.googleUserValidate(googleUser);
 
-    const user = await this.authService.googleUserValidate(googleUser);
+      request.user = {
+        ...user,
+        ...googleUser,
+      };
 
-    request.user = {
-      ...user,
-      ...googleUser,
-    };
+      return true;
+    } catch (ex) {
+      console.log('ticket', ex);
+      return false;
+    }
 
-    return true;
     // const activate = (await super.canActivate(context)) as boolean;
     // await super.logIn(request); to enabling session / we dont need it
     // return activate;

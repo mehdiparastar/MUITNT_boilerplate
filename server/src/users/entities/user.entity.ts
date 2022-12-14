@@ -42,7 +42,7 @@ export class User {
   @ApiProperty()
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'longtext', nullable: true })
   @ApiProperty()
   photo: string;
 

@@ -1,17 +1,20 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
-import { css } from '@emotion/css';
 import { useTheme } from '@mui/material/styles';
 import { navigationPages } from 'layouts/navigation';
 import { Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import Link from '@mui/material/Link';
+import { assess } from 'helperFunctions/componentAssess';
+import { useLocation } from 'react-router-dom';
 
 export const SidebarContent: React.FC<Props & { onClose: () => void }> = ({
   onClose,
 }) => {
+  assess && console.log('assess')
   const theme = useTheme();
+  const location = useLocation()
 
   return (
     <Box
@@ -65,14 +68,11 @@ export const SidebarContent: React.FC<Props & { onClose: () => void }> = ({
                       <Link
                         variant="body2"
                         component={MUINavLink}
-                        to={page.href}
-                        activeClassName={css`
-                          color: ${theme.palette.info.light};
-                          font-weight: 600;
-                        `}
-                        color={theme.palette.text.primary}
+                        to={page.href}                        
                         underline={'none'}
                         sx={{
+                          color: location.pathname === page.href ? theme.palette.info.light : theme.palette.text.primary,
+                          fontWeight: location.pathname === page.href ? 600 : 400,
                           '&:hover': {
                             textDecoration: 'none',
                             color: theme.palette.primary.dark,
@@ -88,51 +88,7 @@ export const SidebarContent: React.FC<Props & { onClose: () => void }> = ({
             </Box>
           ))}
         </Box>
-        {/* <Box>
-          <Button
-            variant="outlined"
-            fullWidth
-            component="a"
-            href="/docs-introduction"
-          >
-            Documentation
-          </Button>
-        </Box> */}
-        {/* <Box marginTop={1}>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            component="a"
-            target="blank"
-            href="https://material-ui.com/store/items/webbee-landing-page/"
-          >
-            Purchase now
-          </Button>
-        </Box> */}
       </Box>
-      {/* <List>
-        {navigationPages.map((navPage, index) => (
-          <ListItem
-            key={navPage.key}
-            disablePadding
-          >
-            <ListItemButton
-              component={MUINavLink}
-              to={navPage.path}
-              activeClassName={css`
-                color: ${theme.palette.info.light};
-              `}
-            >
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={navPage.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List> */}
-      {/* <SidebarNav pages={pages} onClose={onClose} /> */}
     </Box>
   );
 };

@@ -13,9 +13,8 @@ import { AuthService } from '../auth.service';
 export class GoogleOauthV2Guard {
   constructor(
     protected configService: ConfigService<IconfigService>,
-    private readonly authService: AuthService,
-  ) // protected client: OAuth2Client,
-  {}
+    private readonly authService: AuthService, // protected client: OAuth2Client,
+  ) {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
@@ -25,27 +24,31 @@ export class GoogleOauthV2Guard {
       this.configService.get<string>('OAUTH_GOOGLE_SECRET'),
     );
 
-    const ticket = await client.verifyIdToken({
-      idToken: credential,
-      audience: this.configService.get<string>('OAUTH_GOOGLE_ID'),
-    });
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken: credential,
+        audience: this.configService.get<string>('OAUTH_GOOGLE_ID'),
+      });
+      const googleUser: IGoogleUser = {
+        provider: authTypeEnum.google,
+        providerId: ticket.getPayload()?.sub,
+        name: ticket.getPayload()?.name,
+        email: ticket.getPayload()?.email,
+        photo: ticket.getPayload()?.picture,
+      };
 
-    const googleUser: IGoogleUser = {
-      provider: authTypeEnum.google,
-      providerId: ticket.getPayload()?.sub,
-      name: ticket.getPayload()?.name,
-      email: ticket.getPayload()?.email,
-      photo: ticket.getPayload()?.picture,
-    };
+      const user = await this.authService.googleUserValidate(googleUser);
 
-    const user = await this.authService.googleUserValidate(googleUser);
+      request.user = {
+        ...user,
+        ...googleUser,
+      };
 
-    request.user= {
-      ...user,
-      ...googleUser,
-    };
-    
-    return true;
+      return true;
+    } catch (ex) {
+      console.log('ticket', ex);
+      return false;
+    }
     // const activate = (await super.canActivate(context)) as boolean;
     // await super.logIn(request); to enabling session / we dont need it
     // return activate;

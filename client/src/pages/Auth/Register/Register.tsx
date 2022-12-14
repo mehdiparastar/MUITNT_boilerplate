@@ -4,11 +4,10 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { assess } from 'helperFunctions/componentAssess';
 import React, { FC, ReactElement } from 'react';
 import { LoginSVG } from 'svg/pages/loginSVG';
-
-import { LoginForm } from './components/LoginForm';
+import { RegisterForm } from './components/RegisterForm';
 import { Side } from './components/Side';
 
-const Login: FC<any> = (): ReactElement => {
+const Register: FC<any> = (): ReactElement => {
   assess && console.log('assess')
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'), {
@@ -17,7 +16,7 @@ const Login: FC<any> = (): ReactElement => {
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    return () => {};
+    return () => { };
   }, []);
 
   // return <Side />
@@ -44,10 +43,9 @@ const Login: FC<any> = (): ReactElement => {
             direction={'column'}
             justifyContent="center"
             alignItems={'center'}
-            minHeight={`-webkit-calc(100vh - ${
-              theme.layoutTopbarCompDimentions.height +
+            minHeight={`-webkit-calc(100vh - ${theme.layoutTopbarCompDimentions.height +
               theme.layoutFooterCompDimentions.height
-            }px)`}
+              }px)`}
           >
             {isMd && <Side />}
             {isMd && (
@@ -70,11 +68,11 @@ const Login: FC<any> = (): ReactElement => {
         data-aos={isMd ? 'fade-left' : 'fade-up'}
       >
         <Container maxWidth={'sm'}>
-          <LoginForm />
+          <RegisterForm />
         </Container>
       </Grid>
     </Grid>
   );
 };
 
-export default Login;
+export default Register;

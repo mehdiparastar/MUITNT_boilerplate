@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import {
   Avatar,
+  Badge,
   colors,
   Divider,
   ListItemIcon,
@@ -24,21 +25,44 @@ import useAuth from 'auth/hooks/useAuth';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import useLogout from 'auth/hooks/useLogout';
+import jwt_decode, { JwtPayload } from "jwt-decode";
+import { strToBool } from 'helperFunctions/strToBool';
+import { assess } from 'helperFunctions/componentAssess';
 
 export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   onSidebarOpen,
 }) => {
+  assess && console.log('assess')
   const theme = useTheme();
   const themeConfig = React.useContext(ThemeContext);
   const logout = useLogout();
-  const { userCtx } = useAuth();
+  const { userCtx, refreshTokenCtx } = useAuth();
   const themeMode = theme.palette.mode;
   const paletteType = theme.palette.paletteType;
   const themeToggler = themeConfig.themeMode.toggleThemeMode;
   const setThemePalette = themeConfig.themePaletteType.changeThemePaletteType;
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [countDown, setCountDown] = useState<number>(0)
+
+
+  const decodedAT: JwtPayload = (strToBool(refreshTokenCtx.token) && jwt_decode(refreshTokenCtx.token as string)) || {} as JwtPayload
+
+  useEffect(() => {
+
+    const interval = setInterval(() => {
+      if (decodedAT.exp !== undefined && ((decodedAT.exp * 1000) - new Date().getTime()) > 0) {
+        setCountDown((decodedAT.exp * 1000) - new Date().getTime())
+      }
+      if (decodedAT.exp !== undefined && ((decodedAT.exp * 1000) - new Date().getTime()) <= 0) {
+        clearInterval(interval)
+        logout()
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [decodedAT.exp, logout]);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -118,7 +142,17 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
           <MenuIcon />
         </IconButton>
         {userCtx.profile?.email ? (
-          <>
+          <Badge
+            sx={{
+              '.MuiBadge-anchorOriginTopRight': { mt: 1 }
+            }}
+            invisible={Math.floor(countDown / 1000) > 90}
+            color="secondary"
+            badgeContent={Math.floor(countDown / 1000) || 0}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}>
             <Tooltip title="Account settings">
               <IconButton
                 sx={{
@@ -134,20 +168,18 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
               >
                 <Avatar
                   alt={userCtx.profile.name}
-                  sx={{ width: 32, height: 32 }}
+                  sx={{ width: 45, height: 45 }}
                 >
                   <Box
                     component={'img'}
                     width={'100%'}
-                    src={
-                      'https://lh3.googleusercontent.com/a/AEdFTp4Xf60FIP-Tgm_rWlPwL09Lzpr2fsYKiYAelARSlQ=s96-c'
-                    }
+                    src={userCtx.profile.photo}
                   />
                 </Avatar>
               </IconButton>
             </Tooltip>
             {popupMenu}
-          </>
+          </Badge>
         ) : (
           <MUITNTSVG
             sx={{

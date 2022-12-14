@@ -5,8 +5,10 @@ import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import { UnauthorizedSVG } from 'svg/pages/UnauthorizedSVG';
+import { assess } from 'helperFunctions/componentAssess';
 
 const Unauthorized: FC<any> = (): ReactElement => {
+  assess && console.log('assess')
   const theme = useTheme();
 
   React.useEffect(() => {

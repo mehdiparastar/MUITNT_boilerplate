@@ -3,6 +3,7 @@ import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@emotion/react';
 import { css } from '@emotion/css';
 import { ReactComponent as Svg } from './Google.svg';
+import { assess } from 'helperFunctions/componentAssess';
 
 interface IpxToMove {
   x: number;
@@ -15,19 +16,20 @@ interface IobjectsPXToMove {
 
 const createTranslator =
   (svgViewBox: SVGRect | null, svgDimension: DOMRect | null) =>
-  (a: number, b: number): [x: number, y: number] => {
-    if (!svgViewBox || !svgDimension) {
-      return [a, b];
-    }
-    const { width: viewBoxWidth, height: viewBoxHeight } = svgViewBox;
-    const { top, left, width: svgWidth, height: svgHeight } = svgDimension;
+    (a: number, b: number): [x: number, y: number] => {
+      if (!svgViewBox || !svgDimension) {
+        return [a, b];
+      }
+      const { width: viewBoxWidth, height: viewBoxHeight } = svgViewBox;
+      const { top, left, width: svgWidth, height: svgHeight } = svgDimension;
 
-    const x = ((a - left) * viewBoxWidth) / svgWidth;
-    const y = ((b - top) * viewBoxHeight) / svgHeight;
-    return [x, y];
-  };
+      const x = ((a - left) * viewBoxWidth) / svgWidth;
+      const y = ((b - top) * viewBoxHeight) / svgHeight;
+      return [x, y];
+    };
 
 const GoogleBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
+  assess && console.log('assess')
   const svgRef = useRef<SVGSVGElement>(null);
   const [svgObjectsPXtoCursor, setSvgObjectsPXtoCursor] =
     useState<IobjectsPXToMove>({

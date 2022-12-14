@@ -9,10 +9,12 @@ import { Container, Icon, Stack, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Unstable_Grid2';
+import { assess } from 'helperFunctions/componentAssess';
 import * as React from 'react';
 
 // import MUITNTSVG from 'svg/logos/MUITNT';
 export const FooterContent: React.FC = () => {
+  assess && console.log('assess')
   const theme = useTheme();
   return (
     <Container
@@ -138,33 +140,3 @@ export const FooterContent: React.FC = () => {
     </Container>
   );
 };
-
-{
-  /* <Box>
-  <Grid xs={12}>
-    <Box
-      width="100%"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      flexDirection={{ xs: 'column', sm: 'row' }}
-    >
-      <IconButton
-        onClick={() =>
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-          })
-        }
-      >
-        <MUITNTSVG
-          sx={{
-            width: 50,
-            height: 50,
-          }}
-        />
-      </IconButton>
-    </Box>
-  </Grid>
-</Box>; */
-}

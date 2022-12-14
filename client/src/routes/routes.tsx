@@ -13,21 +13,25 @@ import Maintenance from 'pages/Maintenance/Maintenance';
 import UsersManagement from 'apps/UsersManagement/UsersManagement';
 import { UserRoles } from 'enum/userRoles.enum';
 import PersistLogin from 'auth/components/PersistLogin';
+import { assess } from 'helperFunctions/componentAssess';
+import Register from 'pages/Auth/Register/Register';
 
 export const RoutesList: React.FC = () => {
+  assess && console.log('assess')
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
-        {/* public routes */}
-        <Route path="" element={<Home />} />
-        <Route path="unauthorized" element={<Unauthorized />} />
-        <Route path="notfound" element={<NotFound />} />
-        <Route path="maintenance" element={<Maintenance />} />
-        <Route path="resume" element={<ComingSoon />} />
-        <Route path="about" element={<About />} />
-
         <Route element={<PersistLogin />}>
+          {/* public routes */}
+          <Route path="" element={<Home />} />
+          <Route path="unauthorized" element={<Unauthorized />} />
+          <Route path="notfound" element={<NotFound />} />
+          <Route path="maintenance" element={<Maintenance />} />
+          <Route path="resume" element={<ComingSoon />} />
+          <Route path="about" element={<About />} />
           <Route path="auth" element={<Login />} />
+          <Route path="register" element={<Register />} />
+
           <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>
             <Route path="crud" element={<ComingSoon />} />
             <Route path="chat" element={<ComingSoon />} />

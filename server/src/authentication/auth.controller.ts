@@ -45,10 +45,15 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
-  @Post('create')
+  @Post('local-create')
   @Serialize(JWTTokenDto)
   async create(@Body() body: CreateLocalUserDto): Promise<IJWTTokensPair> {
-    return this.authService.createNewLocalUser(body.email, body.password);
+    return this.authService.createNewLocalUser(
+      body.email,
+      body.password,
+      body.name,
+      body.photo,
+    );
   }
 
   @Post('login')
@@ -155,7 +160,8 @@ export class AuthController {
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Roles(UserRoles.superUser, UserRoles.admin)
   @Serialize(UserDto)
-  findAll(): Promise<User[]> {
+  async findAll(): Promise<User[]> {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     return this.usersService.findAll();
   }
 

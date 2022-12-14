@@ -2,6 +2,7 @@ import CRUDIcon from '@mui/icons-material/AppRegistration';
 import ChatIcon from '@mui/icons-material/Chat';
 import ResumeIcon from '@mui/icons-material/CoPresent';
 import LoginIcon from '@mui/icons-material/Login';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ShareFileIcon from '@mui/icons-material/FilePresent';
 import HomeIcon from '@mui/icons-material/Home';
 import InfoIcon from '@mui/icons-material/Info';
@@ -26,6 +27,11 @@ export const navigationPages: navPage[] = [
         title: 'Auth',
         href: '/auth',
         icon: <LoginIcon sx={{ pr: 0.5 }} />,
+      },
+      {
+        title: 'Register',
+        href: '/register',
+        icon: <PersonAddIcon sx={{ pr: 0.5 }} />,
       },
       { title: 'Home', href: '/', icon: <HomeIcon sx={{ pr: 0.5 }} /> },
       { title: 'About', href: '/about', icon: <InfoIcon sx={{ pr: 0.5 }} /> },

@@ -1,29 +1,22 @@
 import { Outlet } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import useRefreshToken from 'auth/hooks/useRefresh';
 import useAuth from 'auth/hooks/useAuth';
 import axios from 'api/axios';
 import { useCookies } from 'react-cookie';
+import { strToBool } from 'helperFunctions/strToBool';
+import { assess } from 'helperFunctions/componentAssess';
 
 const PersistLogin = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  assess && console.log('assess')
   const refresh = useRefreshToken();
-  const { accessTokenCtx, userCtx, persistCtx } = useAuth();
-  const [cookies, setCookie] = useCookies(['aT']);
+  const { refreshTokenCtx, userCtx, persistCtx, loadingPersistCtx: loadingCtx } = useAuth();
+  const [cookies, setCookie] = useCookies(['rT']);
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
       try {
-        console.log(persistCtx.value);
-        if (
-          persistCtx.value &&
-          (accessTokenCtx.token !== 'Bearer ' ||
-            accessTokenCtx.token !== null ||
-            accessTokenCtx.token !== undefined)
-        ) {
-          accessTokenCtx.update(cookies.aT);
-        }
-        const aT = await refresh();
+        const { aT } = await refresh(cookies.rT);
         const response = await axios.get('auth/profile', {
           headers: {
             Authorization: `Bearer ${aT}`,
@@ -34,22 +27,20 @@ const PersistLogin = () => {
       } catch (err) {
         console.log(err);
       } finally {
-        setIsLoading(false);
+        loadingCtx.update(false);
       }
     };
-    !accessTokenCtx.token ? verifyRefreshToken() : setIsLoading(false);
-  }, [accessTokenCtx.token, refresh]);
 
-  useEffect(() => {
-    console.log(`isLoading: ${isLoading}`);
-    console.log(`aT: ${JSON.stringify(accessTokenCtx.token)}`);
-  }, [isLoading]);
+    (!refreshTokenCtx.token && strToBool(cookies.rT)) ? verifyRefreshToken() : loadingCtx.update(false);
+    persistCtx.value && refreshTokenCtx.token && setCookie('rT', refreshTokenCtx.token)
+
+  }, [refreshTokenCtx.token, refresh, cookies.rT, persistCtx.value, setCookie, userCtx, loadingCtx]);
 
   return (
     <>
       {!persistCtx.value ? (
         <Outlet />
-      ) : isLoading ? (
+      ) : loadingCtx.value ? (
         <p>loading...</p>
       ) : (
         <Outlet />

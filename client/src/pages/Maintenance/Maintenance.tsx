@@ -5,13 +5,15 @@ import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import { MaintenanceSVG } from 'svg/pages/MaintenanceSVG';
+import { assess } from 'helperFunctions/componentAssess';
 
 const Maintenance: FC<any> = (): ReactElement => {
-  const theme = useTheme();  
+  assess && console.log('assess')
+  const theme = useTheme();
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    return () => {};
+    return () => { };
   }, []);
 
   return (

@@ -9,6 +9,7 @@ import { WithLayout } from 'WithLayout';
 import 'aos/dist/aos.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { SnackbarProvider } from 'notistack';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -18,11 +19,13 @@ root.render(
     <CookiesProvider>
       <AuthProvider>
         <WithLayout>
-          <GoogleOAuthProvider
-            clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}
-          >
-            <App />
-          </GoogleOAuthProvider>
+          <SnackbarProvider maxSnack={3}>
+            <GoogleOAuthProvider
+              clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}
+            >
+              <App />
+            </GoogleOAuthProvider>
+          </SnackbarProvider>
         </WithLayout>
       </AuthProvider>
     </CookiesProvider>
