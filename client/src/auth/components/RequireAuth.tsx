@@ -13,14 +13,14 @@ const RequireAuth: React.FC<{ allowedRoles: string[] }> = ({
     ? getRolesExpand(userCtx.profile.roles)
     : userCtx.profile?.roles;
 
-  return !loadingPersistCtx.value &&
-    inDBRoles?.find((role) => allowedRoles?.includes(role)) ? (
-    <Outlet />
-  ) : userCtx.profile?.email ? (
-    <Navigate to="/unauthorized" state={{ from: location }} replace />
-  ) : (
-    <Navigate to="/auth" state={{ from: location }} replace />
-  );
+  return (!loadingPersistCtx.value) ? (
+    !!(inDBRoles?.find((role) => allowedRoles?.includes(role))) ? (
+      <Outlet />
+    ) : userCtx.profile?.email ? (
+      <Navigate to="/unauthorized" state={{ from: location }} replace />
+    ) : (
+      <Navigate to="/auth" state={{ from: location }} replace />
+    )) : <p>loading...</p>;
 };
 
 export default RequireAuth;

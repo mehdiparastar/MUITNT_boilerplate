@@ -11,10 +11,11 @@ import RequireAuth from 'auth/components/RequireAuth';
 import Unauthorized from 'pages/Unauthorized/Unauthorized';
 import Maintenance from 'pages/Maintenance/Maintenance';
 import UsersManagement from 'apps/UsersManagement/UsersManagement';
-import { UserRoles } from 'enum/userRoles.enum';
+import { allRolesList, UserRoles } from 'enum/userRoles.enum';
 import PersistLogin from 'auth/components/PersistLogin';
 import { assess } from 'helperFunctions/componentAssess';
 import Register from 'pages/Auth/Register/Register';
+import MyAccount from 'auth/components/MyAccount';
 
 export const RoutesList: React.FC = () => {
   assess && console.log('assess')
@@ -32,6 +33,9 @@ export const RoutesList: React.FC = () => {
           <Route path="auth" element={<Login />} />
           <Route path="register" element={<Register />} />
 
+          <Route element={<RequireAuth allowedRoles={allRolesList} />}>
+            <Route path='my-account' element={<MyAccount />} />
+          </Route>
           <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>
             <Route path="crud" element={<ComingSoon />} />
             <Route path="chat" element={<ComingSoon />} />

@@ -6,6 +6,7 @@ import {
   Badge,
   colors,
   Divider,
+  Link,
   ListItemIcon,
   ListItemText,
   Menu,
@@ -28,6 +29,7 @@ import useLogout from 'auth/hooks/useLogout';
 import jwt_decode, { JwtPayload } from "jwt-decode";
 import { strToBool } from 'helperFunctions/strToBool';
 import { assess } from 'helperFunctions/componentAssess';
+import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 
 export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   onSidebarOpen,
@@ -114,11 +116,13 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
         <Typography variant="h6">{`Hi, dear ${userCtx.profile?.name}`}</Typography>
       </MenuItem>
       <Divider />
-      <MenuItem>
+      <MenuItem component={MUINavLink} to='/my-account'>
         <ListItemIcon>
           <PersonIcon fontSize="small" />
         </ListItemIcon>
-        <ListItemText>My account</ListItemText>
+        <ListItemText>
+          My Account
+        </ListItemText>
       </MenuItem>
       <MenuItem onClick={handleLogOut}>
         <ListItemIcon>

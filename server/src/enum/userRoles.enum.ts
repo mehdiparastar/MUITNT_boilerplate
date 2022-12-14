@@ -62,3 +62,5 @@ export enum UserRoles {
   bingoAppUserML = '3123',
   bingoAppUserLL = '3124',
 }
+
+export const allRolesList = Object.values(UserRoles);

@@ -46,7 +46,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     return {
       profile: user,
       update: (user: IUser | null) => {
-        setUser(user);
+        setUser(user);        
       },
     };
   }, [user]);

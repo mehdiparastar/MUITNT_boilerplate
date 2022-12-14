@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useRefreshToken from 'auth/hooks/useRefresh';
 import useAuth from 'auth/hooks/useAuth';
 import axios from 'api/axios';
@@ -10,7 +10,7 @@ import { assess } from 'helperFunctions/componentAssess';
 const PersistLogin = () => {
   assess && console.log('assess')
   const refresh = useRefreshToken();
-  const { refreshTokenCtx, userCtx, persistCtx, loadingPersistCtx: loadingCtx } = useAuth();
+  const { refreshTokenCtx, userCtx, persistCtx, loadingPersistCtx } = useAuth();
   const [cookies, setCookie] = useCookies(['rT']);
 
   useEffect(() => {
@@ -27,20 +27,24 @@ const PersistLogin = () => {
       } catch (err) {
         console.log(err);
       } finally {
-        loadingCtx.update(false);
+        loadingPersistCtx.update(false)
       }
     };
-
-    (!refreshTokenCtx.token && strToBool(cookies.rT)) ? verifyRefreshToken() : loadingCtx.update(false);
+    if (persistCtx.value) {
+      (!refreshTokenCtx.token && strToBool(cookies.rT)) && verifyRefreshToken();
+    } else {
+      loadingPersistCtx.update(false)
+    }
     persistCtx.value && refreshTokenCtx.token && setCookie('rT', refreshTokenCtx.token)
 
-  }, [refreshTokenCtx.token, refresh, cookies.rT, persistCtx.value, setCookie, userCtx, loadingCtx]);
+  }, [refreshTokenCtx.token, refresh, cookies.rT, persistCtx.value, setCookie, userCtx, loadingPersistCtx]);
+
 
   return (
     <>
       {!persistCtx.value ? (
         <Outlet />
-      ) : loadingCtx.value ? (
+      ) : loadingPersistCtx.value ? (
         <p>loading...</p>
       ) : (
         <Outlet />

@@ -4,7 +4,7 @@ interface IMyAccountProps {
 }
 
 const MyAccount: React.FunctionComponent<IMyAccountProps> = (props) => {
-    return <>my account</>;
+    return <p>my account</p>;
 };
 
 export default MyAccount;

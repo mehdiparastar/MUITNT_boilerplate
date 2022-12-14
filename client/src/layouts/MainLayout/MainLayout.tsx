@@ -26,7 +26,6 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
     setOpenSidebar(false);
   };
 
-
   return (
     <Grid
       container
