@@ -1,9 +1,6 @@
-import { SvgIconComponent } from '@mui/icons-material';
-import { IconTypeMap, ListItemIconProps } from '@mui/material';
-import { AxiosError } from 'axios';
-import { FC, ReactSVGElement } from 'react';
+import { FC } from 'react';
 
-export {};
+export { };
 
 declare global {
   type themeMode = 'light' | 'dark';
@@ -74,29 +71,17 @@ declare global {
   }
 
   interface IAuthContext {
-    userCtx: {
-      profile: IUser | null | undefined;
-      update: (user: IUser | null) => void;
-    };
-    accessTokenCtx: {
-      token: string | null | undefined;
-      update: (token: string | null) => void;
-    };
-    refreshTokenCtx: {
-      token: string | null | undefined;
-      update: (token: string | null) => void;
-    };
-    persistCtx: {
-      value: boolean;
-      update: (bool: boolean) => void;
-    };
-    loadingPersistCtx: {
-      value: boolean;
-      update: (bool: boolean) => void;
-    };
-    loadingFetchCtx: {
-      value: boolean;
-      update: (bool: boolean) => void;
-    };
+    userProfile: IUser | null | undefined;
+    setUserProfile: (user: IUser | null) => void;
+    accessToken: string | null | undefined;
+    setAccessToken: (token: string | null | undefined) => void;
+    refreshToken: string | null | undefined;
+    setRefreshToken: (token: string | null | undefined) => void;
+    persist: boolean;
+    setPersist: (bool: boolean) => void;
+    loadingPersist: boolean;
+    setLoadingPersist: (bool: boolean) => void;
+    loadingFetch: boolean;
+    setLoadingFetch: (bool: boolean) => void;
   }
 }

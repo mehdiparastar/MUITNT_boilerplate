@@ -4,7 +4,6 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { assess } from 'helperFunctions/componentAssess';
 import React, { FC, ReactElement } from 'react';
 import { LoginSVG } from 'svg/pages/loginSVG';
-
 import { LoginForm } from './components/LoginForm';
 import { Side } from './components/Side';
 
@@ -17,7 +16,7 @@ const Login: FC<any> = (): ReactElement => {
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    return () => {};
+    return () => { };
   }, []);
 
   // return <Side />
@@ -29,6 +28,7 @@ const Login: FC<any> = (): ReactElement => {
       height={1}
       columns={100}
       justifyContent={'center'}
+      minHeight="90vh"
     >
       <Slide
         direction="right"
@@ -43,7 +43,7 @@ const Login: FC<any> = (): ReactElement => {
             container
             direction={'column'}
             justifyContent="center"
-            alignItems={'center'}            
+            alignItems={'center'}
           >
             {isMd && <Side />}
             {isMd && (

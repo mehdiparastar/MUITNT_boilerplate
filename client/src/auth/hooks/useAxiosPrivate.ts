@@ -1,14 +1,14 @@
 import { axiosPrivate } from 'api/axios';
-import { useEffect } from 'react';
-import useRefreshToken from './useRefresh';
-import useAuth from './useAuth';
 import { AxiosError, AxiosRequestConfig } from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { assess } from 'helperFunctions/componentAssess';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import useAuth from './useAuth';
+import useRefreshToken from './useRefresh';
 
 const useAxiosPrivate = () => {
   assess && console.log('assess');
-  const { accessTokenCtx, userCtx } = useAuth();
+  const { accessToken, setUserProfile } = useAuth();
   const refresh = useRefreshToken();
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,7 +17,7 @@ const useAxiosPrivate = () => {
     const requestIntercept = axiosPrivate.interceptors.request.use(
       (config) => {
         if (config.headers!.Authorization === 'Bearer ') {
-          config.headers!.Authorization = `Bearer ${accessTokenCtx.token}`;
+          config.headers!.Authorization = `Bearer ${accessToken}`;
         }
         return config;
       },
@@ -48,7 +48,7 @@ const useAxiosPrivate = () => {
               !!prevReq.sent
             ) {
               navigate('/auth', { state: { from: location }, replace: true });
-              userCtx.update(null);
+              setUserProfile(null);
             }
             return Promise.reject(exception);
           }
@@ -61,7 +61,7 @@ const useAxiosPrivate = () => {
       axiosPrivate.interceptors.request.eject(requestIntercept);
       axiosPrivate.interceptors.response.eject(responseIntercept);
     };
-  }, [accessTokenCtx, refresh, location, navigate]);
+  }, [accessToken, setUserProfile, refresh, location, navigate]);
 
   return axiosPrivate;
 };

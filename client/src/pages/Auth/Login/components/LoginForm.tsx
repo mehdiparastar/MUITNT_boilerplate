@@ -1,30 +1,30 @@
 /* eslint-disable react/no-unescaped-entities */
+import GoogleIcon from '@mui/icons-material/Google';
 import {
   Checkbox,
   Divider,
   FormControlLabel,
   FormGroup,
-  Stack,
+  Stack
 } from '@mui/material';
-import GoogleIcon from '@mui/icons-material/Google';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import { useFormik } from 'formik';
-import { localLoginService } from 'services/auth/local.login.service';
-import * as yup from 'yup';
 import { CredentialResponse, GoogleLogin, useGoogleLogin } from '@react-oauth/google';
-import useAuth from '../../../../auth/hooks/useAuth';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 import axios from 'api/axios';
-import { useCookies } from 'react-cookie';
-import { googleLoginService } from 'services/auth/google.login.service';
+import { MUINavLink } from 'components/MUINavLink/MUINavLink';
+import { useFormik } from 'formik';
 import { assess } from 'helperFunctions/componentAssess';
 import { useSnackbar } from 'notistack';
-import { MUINavLink } from 'components/MUINavLink/MUINavLink';
+import { useEffect } from 'react';
+import { useCookies } from 'react-cookie';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { googleLoginService } from 'services/auth/google.login.service';
+import { localLoginService } from 'services/auth/local.login.service';
+import * as yup from 'yup';
+import useAuth from '../../../../auth/hooks/useAuth';
 
 interface ILocalLoginDto {
   email: string;
@@ -47,8 +47,13 @@ export const LoginForm = () => {
   assess && console.log('assess')
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || '/';
-  const { accessTokenCtx, refreshTokenCtx, userCtx, persistCtx } = useAuth();
+  const from = (location.state?.from?.pathname === '/auth' ? '/' : location.state?.from?.pathname) || '/';
+  const {
+    setAccessToken,
+    setRefreshToken,
+    setUserProfile,
+    persist, setPersist
+  } = useAuth();
   const [, setCookie] = useCookies(['persist']);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -61,15 +66,15 @@ export const LoginForm = () => {
     accessToken,
     refreshToken,
   }: IAuthResponse) => {
-    accessTokenCtx.update(accessToken);
-    refreshTokenCtx.update(refreshToken);
+    setAccessToken(accessToken);
+    setRefreshToken(refreshToken);
     const response = await axios.get('auth/profile', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
     });
-    userCtx.update(response.data);
+    setUserProfile(response.data);
     navigate(from, { replace: true });
     enqueueSnackbar('successfully login', { variant: 'success' });
   };
@@ -110,12 +115,12 @@ export const LoginForm = () => {
   });
 
   const togglePersist = () => {
-    persistCtx.update(!persistCtx.value);
+    setPersist(!persist);
   };
 
   useEffect(() => {
-    setCookie('persist', persistCtx.value);
-  }, [persistCtx.value, setCookie]);
+    setCookie('persist', persist);
+  }, [persist, setCookie]);
 
   return (
     <Grid container>
@@ -138,7 +143,7 @@ export const LoginForm = () => {
             control={
               <Checkbox
                 onChange={togglePersist}
-                checked={persistCtx.value}
+                checked={persist}
               />
             }
             label="Trust This Device"
@@ -153,8 +158,8 @@ export const LoginForm = () => {
           <Grid container spacing={4}>
             <Grid xs={12}>
               <TextField
-                focused
                 required
+                autoComplete='email'
                 label="Email"
                 variant="outlined"
                 name={'email'}
@@ -167,8 +172,8 @@ export const LoginForm = () => {
             </Grid>
             <Grid xs={12}>
               <TextField
-                focused
                 required
+                autoComplete='current-password'
                 label="Password"
                 variant="outlined"
                 name={'password'}

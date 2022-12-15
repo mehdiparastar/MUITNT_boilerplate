@@ -2,20 +2,19 @@ import { LinearProgress } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Toolbar from '@mui/material/Toolbar';
 import Grid from '@mui/material/Unstable_Grid2';
+import useAuth from 'auth/hooks/useAuth';
 import { HidableAppBar } from 'components/HidableAppBar/HidableAppBar';
 import { Sidebar } from 'components/Sidebar/Sidebar';
+import { assess } from 'helperFunctions/componentAssess';
 import React from 'react';
-
+import { Outlet } from 'react-router-dom';
 import { FooterContent } from './components/FooterContent/FooterContent';
 import { SidebarContent } from './components/SidebarContent/SidebarContent';
 import { TopbarContent } from './components/TopbarContent/TopbarContent';
-import { Outlet } from 'react-router-dom';
-import useAuth from 'auth/hooks/useAuth';
-import { assess } from 'helperFunctions/componentAssess';
 
 export const MainLayout: React.FC<layoutProps> = ({ children }) => {
   assess && console.log('assess')
-  const { loadingPersistCtx, loadingFetchCtx } = useAuth()
+  const { loadingPersist, loadingFetch } = useAuth()
   const [openSidebar, setOpenSidebar] = React.useState<boolean>(false);
 
   const handleSidebarOpen = () => {
@@ -46,7 +45,7 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
           <SidebarContent onClose={handleSidebarClose} />
         </Sidebar>
         <Toolbar />
-        {(loadingPersistCtx.value || loadingFetchCtx.value) && <LinearProgress />}
+        {(loadingPersist || loadingFetch) && <LinearProgress />}
         <Grid
           container
           component="main"

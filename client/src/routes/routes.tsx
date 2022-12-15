@@ -1,21 +1,20 @@
 // pages
+import UsersManagement from 'apps/UsersManagement/UsersManagement';
+import MyAccount from 'auth/components/MyAccount';
+import PersistLogin from 'auth/components/PersistLogin';
+import RequireAuth from 'auth/components/RequireAuth';
+import { allRolesList, UserRoles } from 'enum/userRoles.enum';
+import { assess } from 'helperFunctions/componentAssess';
 import { MainLayout } from 'layouts/MainLayout/MainLayout';
 import Login from 'pages/Auth/Login/Login';
+import Register from 'pages/Auth/Register/Register';
 import ComingSoon from 'pages/ComingSoon/ComingSoon';
+import Maintenance from 'pages/Maintenance/Maintenance';
 import NotFound from 'pages/NotFound/NotFound';
-
+import Unauthorized from 'pages/Unauthorized/Unauthorized';
+import { Route, Routes } from 'react-router-dom';
 import About from '../pages/About/About';
 import Home from '../pages/Home/Home';
-import { Routes, Route } from 'react-router-dom';
-import RequireAuth from 'auth/components/RequireAuth';
-import Unauthorized from 'pages/Unauthorized/Unauthorized';
-import Maintenance from 'pages/Maintenance/Maintenance';
-import UsersManagement from 'apps/UsersManagement/UsersManagement';
-import { allRolesList, UserRoles } from 'enum/userRoles.enum';
-import PersistLogin from 'auth/components/PersistLogin';
-import { assess } from 'helperFunctions/componentAssess';
-import Register from 'pages/Auth/Register/Register';
-import MyAccount from 'auth/components/MyAccount';
 
 export const RoutesList: React.FC = () => {
   assess && console.log('assess')

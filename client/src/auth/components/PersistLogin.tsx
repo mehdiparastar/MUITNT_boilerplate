@@ -1,17 +1,23 @@
-import { Outlet } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import useRefreshToken from 'auth/hooks/useRefresh';
-import useAuth from 'auth/hooks/useAuth';
 import axios from 'api/axios';
-import { useCookies } from 'react-cookie';
-import { strToBool } from 'helperFunctions/strToBool';
+import useAuth from 'auth/hooks/useAuth';
+import useRefreshToken from 'auth/hooks/useRefresh';
 import { assess } from 'helperFunctions/componentAssess';
+import { strToBool } from 'helperFunctions/strToBool';
+import { useEffect } from 'react';
+import { useCookies } from 'react-cookie';
+import { Outlet } from 'react-router-dom';
 
 const PersistLogin = () => {
   assess && console.log('assess')
-  const refresh = useRefreshToken();
-  const { refreshTokenCtx, userCtx, persistCtx, loadingPersistCtx } = useAuth();
+  const {
+    setUserProfile,
+    refreshToken,
+    loadingPersist,
+    setLoadingPersist,
+    persist
+  } = useAuth();
   const [cookies, setCookie] = useCookies(['rT']);
+  const refresh = useRefreshToken();
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
@@ -23,28 +29,27 @@ const PersistLogin = () => {
             'Content-Type': 'application/json',
           },
         });
-        userCtx.update(response.data);
+        setUserProfile(response.data);
       } catch (err) {
         console.log(err);
       } finally {
-        loadingPersistCtx.update(false)
+        setLoadingPersist(false)
       }
     };
-    if (persistCtx.value) {
-      (!refreshTokenCtx.token && strToBool(cookies.rT)) && verifyRefreshToken();
+    if (persist) {
+      (!refreshToken && strToBool(cookies.rT)) && verifyRefreshToken();
     } else {
-      loadingPersistCtx.update(false)
+      setLoadingPersist(false)
     }
-    persistCtx.value && refreshTokenCtx.token && setCookie('rT', refreshTokenCtx.token)
+    persist && refreshToken && setCookie('rT', refreshToken)
 
-  }, [refreshTokenCtx.token, refresh, cookies.rT, persistCtx.value, setCookie, userCtx, loadingPersistCtx]);
-
+  }, [refreshToken, cookies.rT, persist, refresh, setCookie, setLoadingPersist, setUserProfile]);
 
   return (
     <>
-      {!persistCtx.value ? (
+      {!persist ? (
         <Outlet />
-      ) : loadingPersistCtx.value ? (
+      ) : loadingPersist ? (
         <p>loading...</p>
       ) : (
         <Outlet />

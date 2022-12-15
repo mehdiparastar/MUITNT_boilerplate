@@ -161,6 +161,7 @@ export class AuthController {
   @Roles(UserRoles.superUser, UserRoles.admin)
   @Serialize(UserDto)
   async findAll(): Promise<User[]> {
+    console.log('all')
     await new Promise((resolve) => setTimeout(resolve, 2000));
     return this.usersService.findAll();
   }

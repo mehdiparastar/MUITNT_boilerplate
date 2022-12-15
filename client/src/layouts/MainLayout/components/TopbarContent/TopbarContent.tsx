@@ -1,35 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material/styles';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from '@mui/icons-material/Menu';
+import PersonIcon from '@mui/icons-material/Person';
 import {
   Avatar,
   Badge,
   colors,
   Divider,
-  Link,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
   Tooltip,
-  Typography,
+  Typography
 } from '@mui/material';
+import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import { paletteTypes } from 'theme/paletteTypes';
-import { ThemeContext } from 'WithLayout';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import MUITNTSVG from 'svg/logos/MUITNT';
+import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Unstable_Grid2';
 import useAuth from 'auth/hooks/useAuth';
-import PersonIcon from '@mui/icons-material/Person';
-import LogoutIcon from '@mui/icons-material/Logout';
 import useLogout from 'auth/hooks/useLogout';
-import jwt_decode, { JwtPayload } from "jwt-decode";
-import { strToBool } from 'helperFunctions/strToBool';
-import { assess } from 'helperFunctions/componentAssess';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
+import { assess } from 'helperFunctions/componentAssess';
+import { strToBool } from 'helperFunctions/strToBool';
+import jwt_decode, { JwtPayload } from "jwt-decode";
+import React, { useEffect, useState } from 'react';
+import MUITNTSVG from 'svg/logos/MUITNT';
+import { paletteTypes } from 'theme/paletteTypes';
+import { ThemeContext } from 'WithLayout';
 
 export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   onSidebarOpen,
@@ -38,7 +37,7 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   const theme = useTheme();
   const themeConfig = React.useContext(ThemeContext);
   const logout = useLogout();
-  const { userCtx, refreshTokenCtx } = useAuth();
+  const { userProfile, refreshToken } = useAuth();
   const themeMode = theme.palette.mode;
   const paletteType = theme.palette.paletteType;
   const themeToggler = themeConfig.themeMode.toggleThemeMode;
@@ -48,10 +47,9 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   const [countDown, setCountDown] = useState<number>(0)
 
 
-  const decodedAT: JwtPayload = (strToBool(refreshTokenCtx.token) && jwt_decode(refreshTokenCtx.token as string)) || {} as JwtPayload
+  const decodedAT: JwtPayload = (strToBool(refreshToken) && jwt_decode(refreshToken as string)) || {} as JwtPayload
 
   useEffect(() => {
-
     const interval = setInterval(() => {
       if (decodedAT.exp !== undefined && ((decodedAT.exp * 1000) - new Date().getTime()) > 0) {
         setCountDown((decodedAT.exp * 1000) - new Date().getTime())
@@ -113,7 +111,7 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
     >
       <MenuItem>
-        <Typography variant="h6">{`Hi, dear ${userCtx.profile?.name}`}</Typography>
+        <Typography variant="h6">{`Hi, dear ${userProfile?.name}`}</Typography>
       </MenuItem>
       <Divider />
       <MenuItem component={MUINavLink} to='/my-account'>
@@ -145,7 +143,7 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
         >
           <MenuIcon />
         </IconButton>
-        {userCtx.profile?.email ? (
+        {userProfile?.email ? (
           <Badge
             sx={{
               '.MuiBadge-anchorOriginTopRight': { mt: 1 }
@@ -171,13 +169,13 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
                 aria-expanded={open ? 'true' : undefined}
               >
                 <Avatar
-                  alt={userCtx.profile.name}
+                  alt={userProfile.name}
                   sx={{ width: 45, height: 45 }}
                 >
                   <Box
                     component={'img'}
                     width={'100%'}
-                    src={userCtx.profile.photo}
+                    src={userProfile.photo}
                   />
                 </Avatar>
               </IconButton>

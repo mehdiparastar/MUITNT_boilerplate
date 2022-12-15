@@ -1,4 +1,4 @@
-import { Button, Slider, Stack, Typography } from '@mui/material'
+import { Alert, AlertTitle, Button, Slider, Stack, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
 import Item from 'components/Item/Item'
 import { useRef, useState } from 'react'
@@ -6,7 +6,7 @@ import AvatarEditor from 'react-avatar-editor'
 import Dropzone from 'react-dropzone'
 
 const ProfilePicEditor = (props: { formik?: any }) => {
-    const [image, setImage] = useState<File | string>('')
+    const [image, setImage] = useState<File | string>(props.formik.values.photo || '')
     const [rotate, setRotate] = useState<number>(0)
     const [zoom, setZoom] = useState<number>(100)
     const editor = useRef<any>(null)
@@ -65,7 +65,7 @@ const ProfilePicEditor = (props: { formik?: any }) => {
                         </Item>
                     </Grid>
                     {
-                        image instanceof File &&
+                        (image instanceof File || image !== '') &&
                         <>
                             <Grid xs={12}>
                                 <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
@@ -105,6 +105,13 @@ const ProfilePicEditor = (props: { formik?: any }) => {
                                 >
                                     Remove Profile Pic
                                 </Button>
+                            </Grid>
+                            <Grid xs={12}>
+                                <Alert severity="info">
+                                    <AlertTitle>
+                                        This save is temporarily, to complete the flow, finalize your changes.
+                                    </AlertTitle>
+                                </Alert>
                             </Grid>
                         </>
                     }

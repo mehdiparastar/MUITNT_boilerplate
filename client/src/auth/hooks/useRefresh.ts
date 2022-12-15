@@ -4,25 +4,22 @@ import { strToBool } from 'helperFunctions/strToBool';
 import useAuth from './useAuth';
 
 const useRefreshToken = () => {
-  const { accessTokenCtx, refreshTokenCtx, persistCtx } = useAuth();
+  const { setAccessToken, refreshToken, setRefreshToken, persist } = useAuth();
 
   const refresh = async (persistRT?: string | null) => {
     assess && console.log('assess');
     const rT =
-      persistCtx.value &&
-      !strToBool(refreshTokenCtx.token) &&
-      strToBool(persistRT)
+      persist && !strToBool(refreshToken) && strToBool(persistRT)
         ? persistRT
-        : refreshTokenCtx.token;
-
+        : refreshToken;
     const response = await axios.get('auth/refresh', {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${rT}`,
       },
     });
-    accessTokenCtx.update(response.data.accessToken);
-    refreshTokenCtx.update(response.data.refreshToken);
+    setAccessToken(response.data.accessToken);
+    setRefreshToken(response.data.refreshToken);
     return { aT: response.data.accessToken, rT: response.data.refreshToken };
   };
 

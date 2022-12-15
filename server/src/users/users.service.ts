@@ -31,7 +31,7 @@ export class UsersService {
       throw new BadRequestException('User already exists');
     }
 
-    const defaultUserRoles = [];
+    const defaultUserRoles = [UserRoles.userManagementAppUserLL];
 
     // Create new User
     const user = this.usersRepo.create({
@@ -53,7 +53,7 @@ export class UsersService {
       throw new BadRequestException('User already exists');
     }
 
-    const defaultUserRoles = [];
+    const defaultUserRoles = [UserRoles.userManagementAppUserLL];
 
     // Create new User
     const user = this.usersRepo.create({

@@ -64,3 +64,7 @@ export enum UserRoles {
 }
 
 export const allRolesList = Object.values(UserRoles);
+
+export const getRoleName = (role: string) => {
+  return Object.entries(UserRoles).filter((item) => item.includes(role))[0][0];
+};

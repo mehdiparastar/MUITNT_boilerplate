@@ -1,20 +1,20 @@
 import { Box, Typography } from '@mui/material';
-import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import { useEffect, useState } from 'react';
 import useAuth from 'auth/hooks/useAuth';
+import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import { assess } from 'helperFunctions/componentAssess';
+import { useEffect, useState } from 'react';
 
 const UsersList = () => {
   assess && console.log('assess')
   const [users, setUsers] = useState<IUser[]>([]);
-  const [error, setError] = useState<any>(null);
+  const [, setError] = useState<any>(null);
   const axiosPrivate = useAxiosPrivate();
-  const { loadingFetchCtx } = useAuth()
+  const { setLoadingFetch } = useAuth()
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
-    loadingFetchCtx.update(true);
+    setLoadingFetch(true);
     const getData = async () => {
       try {
         const response = await axiosPrivate.get('auth/all', {
@@ -24,7 +24,7 @@ const UsersList = () => {
       } catch (err) {
         isMounted && setError(err);
       } finally {
-        isMounted && loadingFetchCtx.update(false);
+        isMounted && setLoadingFetch(false);
         isMounted = false
       }
     };
@@ -32,10 +32,10 @@ const UsersList = () => {
 
     return () => {
       isMounted = false;
-      loadingFetchCtx.update(false);
+      setLoadingFetch(false);
       controller.abort();
     };
-  }, [axiosPrivate]);
+  }, [axiosPrivate, setLoadingFetch]);
 
   return (
     <Box component={'article'}>

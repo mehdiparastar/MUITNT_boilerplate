@@ -1,24 +1,24 @@
 /* eslint-disable react/no-unescaped-entities */
 import {
   Divider,
-  Stack,
+  Stack
 } from '@mui/material';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import useAuth from '../../../../auth/hooks/useAuth';
-import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'api/axios';
-import { assess } from 'helperFunctions/componentAssess';
-import { useSnackbar } from 'notistack';
+import { AxiosError } from 'axios';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';
+import { useFormik } from 'formik';
+import { assess } from 'helperFunctions/componentAssess';
+import { useSnackbar } from 'notistack';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { localRegisterService } from 'services/auth/local.signup.service';
-import { AxiosError } from 'axios';
+import * as yup from 'yup';
+import useAuth from '../../../../auth/hooks/useAuth';
 
 
 const validationSchema = yup.object({
@@ -42,7 +42,11 @@ export const RegisterForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
-  const { accessTokenCtx, refreshTokenCtx, userCtx } = useAuth();
+  const {
+    setAccessToken,
+    setRefreshToken,
+    setUserProfile
+  } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
 
   const initialValues = {
@@ -55,15 +59,15 @@ export const RegisterForm = () => {
     accessToken,
     refreshToken,
   }: IAuthResponse) => {
-    accessTokenCtx.update(accessToken);
-    refreshTokenCtx.update(refreshToken);
+    setAccessToken(accessToken);
+    setRefreshToken(refreshToken);
     const response = await axios.get('auth/profile', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
     });
-    userCtx.update(response.data);
+    setUserProfile(response.data);
     // navigate('/auth', { replace: true });
     navigate(from, { replace: true });
     enqueueSnackbar('successfully login', { variant: 'success' });
@@ -108,6 +112,7 @@ export const RegisterForm = () => {
             <Grid xs={12} sm={6}>
               <TextField
                 required
+                autoComplete='email'
                 label="Email"
                 variant="outlined"
                 name={'email'}
@@ -122,6 +127,7 @@ export const RegisterForm = () => {
             <Grid xs={12} sm={6}>
               <TextField
                 required
+                autoComplete='current-password'
                 label="Password"
                 variant="outlined"
                 name={'password'}
