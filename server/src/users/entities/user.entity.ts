@@ -4,11 +4,13 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { authTypeEnum } from '../../enum/authType.enum';
+import { PermissionRequest } from './permission-requests.entity';
 
 @Entity()
 export class User {
@@ -57,4 +59,11 @@ export class User {
   @UpdateDateColumn()
   @ApiProperty()
   updatedAt?: Date;
+
+  @OneToMany(
+    () => PermissionRequest,
+    (permissionRequest) => permissionRequest.user,
+    { cascade: true },
+  )
+  permissionRequests: PermissionRequest[];
 }

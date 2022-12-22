@@ -2,7 +2,8 @@ import { Avatar, Chip, Paper, Stack, styled, TextField, Typography, useTheme } f
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import useAuth from "auth/hooks/useAuth";
 import Item from "components/Item/Item";
-import { getRoleName } from "enum/userRoles.enum";
+import { getRoleName, UserRoles, UserRolesFliped } from "enum/userRoles.enum";
+import { getRolesClassified, getRolesExpand } from "helperFunctions/get-roles-expand";
 import EditUserProfile from "./components/EditUserProfile";
 
 export interface IUpdateProfileDetailProps {
@@ -25,7 +26,7 @@ export function UpdateProfileDetail(props: IUpdateProfileDetailProps) {
                         <Avatar
                             src={userProfile?.photo}
                             alt="user profile pic"
-                            sx={{ width: 1, height: 1 }}
+                            sx={{ width: 1, height: 1, minHeight: 200 }}
                         />
                         <Paper
                             sx={{
@@ -40,7 +41,7 @@ export function UpdateProfileDetail(props: IUpdateProfileDetailProps) {
                         </Paper>
                         <TextField
                             label="your email"
-                            defaultValue={userProfile?.email}
+                            value={userProfile?.email}
                             InputProps={{
                                 readOnly: true,
                             }}
@@ -48,7 +49,7 @@ export function UpdateProfileDetail(props: IUpdateProfileDetailProps) {
                         />
                         <TextField
                             label="your name"
-                            defaultValue={userProfile?.name}
+                            value={userProfile?.name}
                             InputProps={{
                                 readOnly: true,
                             }}

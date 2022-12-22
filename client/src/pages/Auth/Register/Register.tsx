@@ -64,7 +64,7 @@ const Register: FC<any> = (): ReactElement => {
         width={'-webkit-fill-available'}
         data-aos={isMd ? 'fade-left' : 'fade-up'}
       >
-        <Container maxWidth={'sm'}>
+        <Container maxWidth={'md'}>
           <RegisterForm />
         </Container>
       </Grid>

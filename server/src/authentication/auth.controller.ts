@@ -14,6 +14,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
+import { strToBool } from 'src/helperFunctions/strToBool';
+import { CreatePermissionRequestDto } from 'src/users/dto/permissionRequest/create-permission-request.dto';
+import { ChangeLocalUserProfileDetailDto } from 'src/users/dto/user/change-local-user-profile-detail.dto';
+import { PermissionRequest } from 'src/users/entities/permission-requests.entity';
+import { PermissionRequestsService } from 'src/users/permissionRequests.service';
 
 import { Roles } from '../authorization/roles.decorator';
 import { RolesGuard } from '../authorization/roles.guard';
@@ -43,6 +48,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
+    private readonly permissionRequestService: PermissionRequestsService,
   ) {}
 
   @Post('local-create')
@@ -146,6 +152,21 @@ export class AuthController {
     return this.usersService.changeUserEmail(user.id, body.email);
   }
 
+  @Patch('change-profile-detail')
+  @UseGuards(AccessTokenGuard)
+  @Serialize(UserDto)
+  changeProfileDetail(
+    @CurrentUser() user: User,
+    @Body() body: ChangeLocalUserProfileDetailDto,
+  ): Promise<User> {
+    console.log('edit');
+    return this.usersService.changeLocalUserProfileDetail(
+      user.id,
+      body.name,
+      body.photo,
+    );
+  }
+
   @Patch('change-password')
   @UseGuards(AccessTokenGuard)
   @Serialize(UserDto)
@@ -161,7 +182,7 @@ export class AuthController {
   @Roles(UserRoles.superUser, UserRoles.admin)
   @Serialize(UserDto)
   async findAll(): Promise<User[]> {
-    console.log('all')
+    console.log('all');
     await new Promise((resolve) => setTimeout(resolve, 2000));
     return this.usersService.findAll();
   }
@@ -196,5 +217,37 @@ export class AuthController {
   @Serialize(UserDto)
   remove(@Param('id') id: string): Promise<User> {
     return this.usersService.remove(parseInt(id));
+  }
+
+  @Post('create-permission-request')
+  @UseGuards(AccessTokenGuard)
+  async createPermissionRequest(
+    @CurrentUser() user: User,
+    @Body() body: CreatePermissionRequestDto,
+  ): Promise<PermissionRequest> {
+    return this.permissionRequestService.create(user, body.role);
+  }
+
+  @Get('get-my-all-permission-requests')
+  @UseGuards(AccessTokenGuard)
+  async getMyAllPReqs(
+    @CurrentUser() user: User,
+    @Query('accepted') accepted: boolean = false,
+    @Query('rejected') rejected: boolean = false,
+    @Query('unSeen') unSeen: boolean = false,
+    @Query('seen') seen: boolean = false,
+    @Query('skip') skip: number = 0,
+    @Query('limit') limit: number = 3,
+  ) {
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    return await this.permissionRequestService.findMyAll(
+      user,
+      limit,
+      skip,
+      strToBool(accepted),
+      strToBool(rejected),
+      strToBool(unSeen),
+      strToBool(seen),
+    );
   }
 }

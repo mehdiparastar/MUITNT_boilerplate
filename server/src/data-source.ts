@@ -1,4 +1,5 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { PermissionRequest } from './users/entities/permission-requests.entity';
 
 import { User } from './users/entities/user.entity';
 
@@ -16,7 +17,7 @@ const dbConfig: IDBConfig = {
     username: 'admin',
     password: 'admin',
     database: 'dev_db',
-    entities: [User],
+    entities: [User, PermissionRequest],
     synchronize: true,
     // synchronize: false,
     // migrations: ['src/migration_dev/*.js'],
@@ -29,7 +30,7 @@ const dbConfig: IDBConfig = {
     username: 'admin',
     password: 'admin',
     database: 'test_db',
-    entities: [User],
+    entities: [User, PermissionRequest],
     synchronize: true,
     // synchronize: false,
     // migrations: ['src/migration_test/*.js'],

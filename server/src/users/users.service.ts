@@ -140,6 +140,23 @@ export class UsersService {
     return update;
   }
 
+  async changeLocalUserProfileDetail(
+    id: number,
+    newName: string,
+    newPhoto: string,
+  ): Promise<User> {
+    const isLocalUser =
+      (await this.findOneById(id)).provider === authTypeEnum.local;
+    if (!isLocalUser) {
+      throw new NotAcceptableException(
+        "you can change mail of only users that have been registered as 'local'!",
+      );
+    }
+    const update = await this.update(id, { name: newName, photo: newPhoto });
+
+    return update;
+  }
+
   async changeUserPassword(id: number, newPassword: string): Promise<User> {
     const isLocalUser =
       (await this.findOneById(id)).provider === authTypeEnum.local;

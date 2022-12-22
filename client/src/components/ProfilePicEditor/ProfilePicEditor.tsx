@@ -1,12 +1,14 @@
-import { Alert, AlertTitle, Button, Slider, Stack, Typography } from '@mui/material'
+import { Alert, AlertTitle, Avatar, Button, Paper, Slider, Stack, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
 import Item from 'components/Item/Item'
 import { useRef, useState } from 'react'
 import AvatarEditor from 'react-avatar-editor'
 import Dropzone from 'react-dropzone'
+import DoubleRightArrowSVG from 'svg/signs/DoubleRightArrow'
 
 const ProfilePicEditor = (props: { formik?: any }) => {
     const [image, setImage] = useState<File | string>(props.formik.values.photo || '')
+    const [cropedImg, setCropedImg] = useState<string>('')
     const [rotate, setRotate] = useState<number>(0)
     const [zoom, setZoom] = useState<number>(100)
     const editor = useRef<any>(null)
@@ -27,6 +29,7 @@ const ProfilePicEditor = (props: { formik?: any }) => {
             // If you want the image resized to the canvas size (also a HTMLCanvasElement)
             const canvasScaled = editor.current.getImageScaledToCanvas().toDataURL()
             props.formik.setFieldValue('photo', canvasScaled)
+            setCropedImg(canvasScaled)
         }
     }
 
@@ -34,8 +37,8 @@ const ProfilePicEditor = (props: { formik?: any }) => {
         <Dropzone
             accept={{ 'image/png': ['.png', '.jpg', '.jpeg'] }}
             onDrop={(dropped) => setImage(dropped[0])}
-            noClick={image instanceof File}
-            noKeyboard={image instanceof File}
+            noClick={image instanceof File || image !== ''}
+            noKeyboard={image instanceof File || image !== ''}
             multiple={false}
         >
             {({ getRootProps, getInputProps }) => (
@@ -52,17 +55,34 @@ const ProfilePicEditor = (props: { formik?: any }) => {
                     <Grid xs={12}>
                         <Typography textAlign={'center'} variant='body1'>Select your profile picture</Typography>
                         <input {...getInputProps()} />
-                        <Item>
-                            <AvatarEditor
-                                ref={editor}
-                                width={200}
-                                height={200}
-                                image={image}
-                                rotate={rotate}
-                                scale={zoom / 100}
-                                borderRadius={200 / 2}
-                            />
-                        </Item>
+                        <Paper
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-evenly',
+                                flexWrap: 'wrap',
+                                p: 0.5,
+                                m: 0,
+                            }}
+                        >
+                            <Item>
+                                <AvatarEditor
+                                    ref={editor}
+                                    width={200}
+                                    height={200}
+                                    image={image}
+                                    rotate={rotate}
+                                    scale={zoom / 100}
+                                    borderRadius={200 / 2}
+                                />
+                            </Item>
+                            <Item>
+                                <DoubleRightArrowSVG width={50} height={50} />
+                            </Item>
+                            <Item>
+                                <Avatar alt="result Image" src={cropedImg} sx={{ width: 200, height: 200 }} />
+                            </Item>
+                        </Paper>
                     </Grid>
                     {
                         (image instanceof File || image !== '') &&
@@ -101,6 +121,7 @@ const ProfilePicEditor = (props: { formik?: any }) => {
                                     onClick={() => {
                                         setImage('')
                                         props.formik.setFieldValue('photo', undefined)
+                                        setCropedImg('')
                                     }}
                                 >
                                     Remove Profile Pic

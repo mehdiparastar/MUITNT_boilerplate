@@ -10,6 +10,8 @@ import { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
 import { useEffect } from 'react';
+import ChangePassword from './components/components/ChangePassword';
+import PermissionRequest from './components/components/PermissionRequest';
 import { UpdateProfileDetail } from './components/UpdateProfileDetail';
 
 interface TabPanelProps {
@@ -53,10 +55,8 @@ function FullWidthTabs() {
         setValue(newValue);
     };
 
-
-
     return (
-        <Box sx={{ bgcolor: 'background.paper', width: 1, height: 1 }}>
+        <Box sx={{ bgcolor: 'background.paper', width: 1, height: 1, my: 4 }}>
             <AppBar position="static">
                 <Tabs
                     value={value}
@@ -77,10 +77,10 @@ function FullWidthTabs() {
                     <UpdateProfileDetail />
                 </TabPanel>
                 <TabPanel data-aos={isSm ? 'fade-left' : 'fade-up'} value={value} index={1} dir={theme.direction}>
-                    Item Two
+                    <ChangePassword />
                 </TabPanel>
                 <TabPanel data-aos={isSm ? 'fade-left' : 'fade-up'} value={value} index={2} dir={theme.direction}>
-                    Item Three
+                    <PermissionRequest />
                 </TabPanel>
             </Box>
         </Box>

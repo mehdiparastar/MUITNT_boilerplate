@@ -1,9 +1,10 @@
-import { LinearProgress } from '@mui/material';
+import { Box, CircularProgress, LinearProgress } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Toolbar from '@mui/material/Toolbar';
 import Grid from '@mui/material/Unstable_Grid2';
 import useAuth from 'auth/hooks/useAuth';
 import { HidableAppBar } from 'components/HidableAppBar/HidableAppBar';
+import Item from 'components/Item/Item';
 import { Sidebar } from 'components/Sidebar/Sidebar';
 import { assess } from 'helperFunctions/componentAssess';
 import React from 'react';
@@ -45,7 +46,10 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
           <SidebarContent onClose={handleSidebarClose} />
         </Sidebar>
         <Toolbar />
-        {(loadingPersist || loadingFetch) && <LinearProgress />}
+        <Box position={'fixed'} top={'30vh'} left={'50vw'} zIndex={1000000}>
+          {(loadingPersist || loadingFetch) && <CircularProgress />}
+        </Box>
+        {/* {(loadingPersist || loadingFetch) && <LinearProgress />} */}
         <Grid
           container
           component="main"
@@ -59,8 +63,10 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
         </Grid>
       </Grid>
       <Grid xs={12}>
-        <Divider />
-        <FooterContent />
+        <Item width={1} height={1}>
+          <Divider />
+          <FooterContent />
+        </Item>
       </Grid>
     </Grid>
   );

@@ -1,3 +1,6 @@
+export const flipObject = (data: Object) =>
+  Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]));
+
 export enum UserRoles {
   superUser = '1000',
   admin = '2000',
@@ -63,8 +66,17 @@ export enum UserRoles {
   bingoAppUserLL = '3124',
 }
 
+export const UserRolesFliped = flipObject(UserRoles);
+
+export const UserRolesObj = flipObject(UserRolesFliped);
+
+export const splitOnCapitalLetters = (str: string) =>
+  str.split(/(?=[A-Z])/).join(' ');
+
 export const allRolesList = Object.values(UserRoles);
 
 export const getRoleName = (role: string) => {
-  return Object.entries(UserRoles).filter((item) => item.includes(role))[0][0];
+  return splitOnCapitalLetters(
+    Object.entries(UserRoles).filter((item) => item.includes(role))[0][0],
+  );
 };
