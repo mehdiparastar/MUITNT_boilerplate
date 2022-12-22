@@ -46,10 +46,10 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
           <SidebarContent onClose={handleSidebarClose} />
         </Sidebar>
         <Toolbar />
-        <Box position={'fixed'} top={'30vh'} left={'50vw'} zIndex={1000000}>
+        {/* <Box position={'fixed'} top={'30vh'} left={'50vw'} zIndex={1000000}>
           {(loadingPersist || loadingFetch) && <CircularProgress />}
-        </Box>
-        {/* {(loadingPersist || loadingFetch) && <LinearProgress />} */}
+        </Box> */}
+        {(loadingPersist || loadingFetch) && <LinearProgress />}
         <Grid
           container
           component="main"

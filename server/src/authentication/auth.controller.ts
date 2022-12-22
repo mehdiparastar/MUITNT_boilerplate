@@ -239,7 +239,7 @@ export class AuthController {
     @Query('skip') skip: number = 0,
     @Query('limit') limit: number = 3,
   ) {
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     return await this.permissionRequestService.findMyAll(
       user,
       limit,
