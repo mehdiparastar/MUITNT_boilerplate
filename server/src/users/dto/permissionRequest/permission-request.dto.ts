@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Transform } from 'class-transformer';
-import { User } from 'src/users/entities/user.entity';
+import { Expose, Type } from 'class-transformer';
+import { UserDto } from '../user/user.dto';
 
 export class PermissionRequestDto {
   @Expose()
@@ -28,6 +28,7 @@ export class PermissionRequestDto {
   updatedAt?: Date;
 
   @Expose()
+  @Type(() => UserDto)
   @ApiProperty()
-  user: User;
+  user: UserDto;
 }

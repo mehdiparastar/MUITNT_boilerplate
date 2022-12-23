@@ -4,8 +4,8 @@ import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import { AxiosError } from 'axios';
 import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';
 import { useFormik } from 'formik';
-import * as yup from 'yup';
 import { useSnackbar } from 'notistack';
+import * as yup from 'yup';
 
 interface IEditUserProfileProps {
 }

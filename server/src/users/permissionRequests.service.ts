@@ -52,7 +52,7 @@ export class PermissionRequestsService {
 
   async findByUser(user: User): Promise<PermissionRequest[]> {
     const find = await this.permissionRequestsRepo.find({
-      relations: ['users'],
+      relations: ['user'],
       where: { user: { id: user.id } },
     });
     return find;
@@ -63,6 +63,7 @@ export class PermissionRequestsService {
       throw new NotFoundException('user not found');
     }
     const find = await this.permissionRequestsRepo.findOne({
+      relations: ['user'],
       where: { id },
     });
     if (!find) {
@@ -127,11 +128,22 @@ export class PermissionRequestsService {
     };
   }
 
-  async remove(id: number): Promise<PermissionRequest> {
+  async remove(user: User, id: number): Promise<PermissionRequest> {
     const pReq = await this.findOneById(id);
     if (!pReq) {
-      throw new NotFoundException('user not found');
+      throw new NotFoundException('permission request not found');
     }
+    if (pReq.user.id !== user.id) {
+      throw new NotAcceptableException(
+        'You only could remove requests that are your own!',
+      );
+    }
+    if (pReq.result !== permissionRequestResultEnum.unseen) {
+      throw new NotAcceptableException(
+        'You can only remove requests that have an unseen tag!',
+      );
+    }
+
     return this.permissionRequestsRepo.remove(pReq);
   }
 }

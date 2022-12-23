@@ -1,14 +1,13 @@
 import { AlertTitle, Button, Card, CardMedia, Divider, Stack, TextField } from '@mui/material';
-import useAuth from 'auth/hooks/useAuth';
-import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import { AxiosError } from 'axios';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { useSnackbar } from 'notistack';
-import useLogout from 'auth/hooks/useLogout';
-import PasswordSVG from 'svg/banners/Password/Password';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
+import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
+import useLogout from 'auth/hooks/useLogout';
+import { AxiosError } from 'axios';
 import Item from 'components/Item/Item';
+import { useFormik } from 'formik';
+import { useSnackbar } from 'notistack';
+import PasswordSVG from 'svg/banners/Password/Password';
+import * as yup from 'yup';
 
 interface IChangePasswordProps {
 }
@@ -36,7 +35,7 @@ const ChangePassword: React.FunctionComponent<IChangePasswordProps> = (props) =>
 
     const onLocalSubmit = async (values: IChangePasswordDto): Promise<any> => {
         try {
-            const response = await axiosPrivate.patch('auth/change-password', values)
+            await axiosPrivate.patch('auth/change-password', values)
             logout()
         }
         catch (ex) {

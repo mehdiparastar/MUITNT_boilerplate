@@ -2,8 +2,7 @@ import { Avatar, Chip, Paper, Stack, styled, TextField, Typography, useTheme } f
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import useAuth from "auth/hooks/useAuth";
 import Item from "components/Item/Item";
-import { getRoleName, UserRoles, UserRolesFliped } from "enum/userRoles.enum";
-import { getRolesClassified, getRolesExpand } from "helperFunctions/get-roles-expand";
+import { getRoleName } from "enum/userRoles.enum";
 import EditUserProfile from "./components/EditUserProfile";
 
 export interface IUpdateProfileDetailProps {

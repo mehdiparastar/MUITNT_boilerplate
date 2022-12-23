@@ -16,6 +16,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { strToBool } from 'src/helperFunctions/strToBool';
 import { CreatePermissionRequestDto } from 'src/users/dto/permissionRequest/create-permission-request.dto';
+import { PaginationPermissionRequestDto } from 'src/users/dto/permissionRequest/pagination-permission-request.dto';
+import { PermissionRequestDto } from 'src/users/dto/permissionRequest/permission-request.dto';
 import { ChangeLocalUserProfileDetailDto } from 'src/users/dto/user/change-local-user-profile-detail.dto';
 import { PermissionRequest } from 'src/users/entities/permission-requests.entity';
 import { PermissionRequestsService } from 'src/users/permissionRequests.service';
@@ -221,6 +223,7 @@ export class AuthController {
 
   @Post('create-permission-request')
   @UseGuards(AccessTokenGuard)
+  @Serialize(PermissionRequestDto)
   async createPermissionRequest(
     @CurrentUser() user: User,
     @Body() body: CreatePermissionRequestDto,
@@ -230,6 +233,7 @@ export class AuthController {
 
   @Get('get-my-all-permission-requests')
   @UseGuards(AccessTokenGuard)
+  @Serialize(PaginationPermissionRequestDto)
   async getMyAllPReqs(
     @CurrentUser() user: User,
     @Query('accepted') accepted: boolean = false,
@@ -239,7 +243,7 @@ export class AuthController {
     @Query('skip') skip: number = 0,
     @Query('limit') limit: number = 3,
   ) {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
     return await this.permissionRequestService.findMyAll(
       user,
       limit,
@@ -249,5 +253,12 @@ export class AuthController {
       strToBool(unSeen),
       strToBool(seen),
     );
+  }
+
+  @Delete('delete-permission-request/:id')
+  @UseGuards(AccessTokenGuard)
+  @Serialize(PermissionRequestDto)
+  removePReq(@CurrentUser() user: User, @Param('id') id: string) {
+    return this.permissionRequestService.remove(user, parseInt(id));
   }
 }

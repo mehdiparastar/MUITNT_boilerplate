@@ -1,9 +1,9 @@
-import React from 'react';
+import { css } from '@emotion/css';
+import { keyframes } from '@emotion/react';
 import { useTheme } from '@mui/material/styles';
 import { SvgIconProps } from '@mui/material/SvgIcon';
-import { keyframes } from '@emotion/react';
-import { css } from '@emotion/css';
 import { assess } from 'helperFunctions/componentAssess';
+import React from 'react';
 import { ReactComponent as PASSWORD } from './Password.svg';
 
 const anim1 = keyframes`

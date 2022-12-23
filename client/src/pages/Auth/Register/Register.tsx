@@ -42,7 +42,7 @@ const Register: FC<any> = (): ReactElement => {
             container
             direction={'column'}
             justifyContent="center"
-            alignItems={'center'}           
+            alignItems={'center'}
           >
             {isMd && <Side />}
             {isMd && (

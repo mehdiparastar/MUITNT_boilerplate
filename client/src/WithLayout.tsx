@@ -1,28 +1,28 @@
+import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
+import AOS from 'aos';
+import { assess } from 'helperFunctions/componentAssess';
 import * as React from 'react';
 import getTheme from 'theme';
 import { paletteTypes } from 'theme/paletteTypes';
-import AOS from 'aos';
-import { CssBaseline } from '@mui/material';
-import { assess } from 'helperFunctions/componentAssess';
 
 export const ThemeContext = React.createContext({
   themeMode: {
-    toggleThemeMode: () => { },
+    toggleThemeMode: () => {},
   },
   themePaletteType: {
-    changeThemePaletteType: (type: themePaletteType) => { },
+    changeThemePaletteType: (type: themePaletteType) => {},
   },
   themeTopbarCompDimentions: {
-    updateThemeTopbarCompDimensions: (height: number, width: number) => { },
+    updateThemeTopbarCompDimensions: (height: number, width: number) => {},
   },
   themeFooterCompDimentions: {
-    updateThemeFooterCompDimensions: (height: number, width: number) => { },
+    updateThemeFooterCompDimensions: (height: number, width: number) => {},
   },
 });
 
 export const WithLayout: React.FC<Props> = ({ children }) => {
-  assess && console.log('assess')
+  assess && console.log('assess');
   const [mode, setMode] = React.useState<themeMode>('dark');
   const [palleteType, setPaletteType] = React.useState<themePaletteType>(
     paletteTypes[0],
