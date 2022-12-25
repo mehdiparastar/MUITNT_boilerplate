@@ -1,5 +1,6 @@
 // pages
 import UsersManagement from 'apps/UsersManagement/UsersManagement';
+import ApprovePReqs from 'auth/components/ApprovePReqs';
 import MyAccount from 'auth/components/MyAccount';
 import PersistLogin from 'auth/components/PersistLogin';
 import RequireAuth from 'auth/components/RequireAuth';
@@ -34,6 +35,9 @@ export const RoutesList: React.FC = () => {
 
           <Route element={<RequireAuth allowedRoles={allRolesList} />}>
             <Route path='my-account' element={<MyAccount />} />
+          </Route>
+          <Route element={<RequireAuth allowedRoles={[UserRoles.superUser]} />}>
+            <Route path='approve-permission-requests' element={<ApprovePReqs />} />
           </Route>
           <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>
             <Route path="crud" element={<ComingSoon />} />

@@ -51,21 +51,6 @@ import { forwardRef, useEffect, useState } from 'react';
 import NoDataFoundSVG from 'svg/banners/NoDataFound/NoDataFound';
 
 interface IPermissionRequestProps { }
-enum pReqResultENUM {
-    accepted = 'accepted',
-    rejected = 'rejected',
-    unSeen = 'unSeen',
-    seen = 'seen',
-}
-interface IPermissionRequest {
-    id: number;
-    user: IUser;
-    adminMsg: string;
-    role: UserRoles;
-    result: pReqResultENUM;
-    createdAt: Date;
-    updatedAt: Date;
-}
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
@@ -223,7 +208,9 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
 
     return (
         <>
-            <Grid container>
+            <Grid
+                container
+            >
                 <Grid xs={12}>
                     <Item
                         p={3}

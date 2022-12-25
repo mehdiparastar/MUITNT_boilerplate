@@ -128,6 +128,43 @@ export class PermissionRequestsService {
     };
   }
 
+  async findAllToApprove(
+    user: User,
+    take?: number,
+    skip?: number,
+    accepted?: boolean,
+    rejected?: boolean,
+    unSeen?: boolean,
+    seen?: boolean,
+  ): Promise<{ data: PermissionRequest[]; count: number }> {
+    const query = [
+      accepted === true ? permissionRequestResultEnum.accepted : null,
+      rejected === true ? permissionRequestResultEnum.rejected : null,
+      unSeen === true ? permissionRequestResultEnum.unseen : null,
+      seen === true ? permissionRequestResultEnum.seen : null,
+    ].filter((item) => item !== null);
+
+    const [result, total] = await this.permissionRequestsRepo.findAndCount({
+      relations: ['user'],
+      where: {
+        user: { id: user.id },
+        result: In(
+          JSON.stringify(query) === JSON.stringify([])
+            ? Object.values(permissionRequestResultEnum)
+            : query,
+        ),
+      },
+      order: { updatedAt: 'DESC' },
+      take: take,
+      skip: skip,
+    });
+
+    return {
+      data: result,
+      count: total,
+    };
+  }
+
   async remove(user: User, id: number): Promise<PermissionRequest> {
     const pReq = await this.findOneById(id);
     if (!pReq) {

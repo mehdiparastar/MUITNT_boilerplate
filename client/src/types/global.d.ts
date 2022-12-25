@@ -1,6 +1,7 @@
+import { pReqResultENUM } from 'enum/pReqResult.enum';
 import { FC } from 'react';
 
-export { };
+export {};
 
 declare global {
   type themeMode = 'light' | 'dark';
@@ -83,5 +84,15 @@ declare global {
     setLoadingPersist: (bool: boolean) => void;
     loadingFetch: boolean;
     setLoadingFetch: (bool: boolean) => void;
+  }
+
+  interface IPermissionRequest {
+    id: number;
+    user: IUser;
+    adminMsg: string;
+    role: UserRoles;
+    result: pReqResultENUM;
+    createdAt: Date;
+    updatedAt: Date;
   }
 }

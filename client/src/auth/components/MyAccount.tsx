@@ -4,12 +4,7 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import useAuth from 'auth/hooks/useAuth';
-import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import { AxiosError } from 'axios';
-import { useSnackbar } from 'notistack';
 import * as React from 'react';
-import { useEffect } from 'react';
 import ChangePassword from './components/components/ChangePassword';
 import PermissionRequest from './components/components/PermissionRequest';
 import { UpdateProfileDetail } from './components/UpdateProfileDetail';
@@ -91,57 +86,47 @@ interface IMyAccountProps {
 }
 
 const MyAccount: React.FunctionComponent<IMyAccountProps> = (props) => {
-    const axiosPrivate = useAxiosPrivate()
-    const { enqueueSnackbar } = useSnackbar()
-    const { setLoadingFetch, setUserProfile } = useAuth()
     const theme = useTheme();
 
-    useEffect(() => {
-        let isMounted = true;
-        const controller = new AbortController();
-        const getData = async () => {
-            try {
-                const response = await axiosPrivate.get('auth/profile', {
-                    signal: controller.signal,
-                });
-                isMounted && setUserProfile(response.data)
-            } catch (err) {
-                const ex = err as AxiosError<{ msg: string }>
-                isMounted && enqueueSnackbar(ex.response?.data?.msg || 'Unknown Error', { variant: 'error' });
-            } finally {
-                isMounted && setLoadingFetch(false);
-                isMounted = false
-            }
-        };
-
-        getData()
-
-        return () => {
-            isMounted = false;
-            setLoadingFetch(false);
-            controller.abort();
-        };
-    }, [axiosPrivate, setLoadingFetch, enqueueSnackbar, setUserProfile]);
-
-    return <Box
-        height={1}
-        width={1}
-        display={'flex'}
-        alignItems={'center'}
-        bgcolor={theme.palette.alternate.main}
-        component={'section'}
-    >
-        <Container
-            maxWidth="lg"
+    return (
+        <Box
+            height={1}
+            width={1}
+            minHeight={{ xs: 'auto', md: 'calc(100vh - 64px)' }}
+            display={'flex'}
+            alignItems={'flex-start'}
+            bgcolor={theme.palette.alternate.main}
+            component={'section'}
             sx={{
-                textAlign: 'center',
-                px: 2,
-                py: { xs: 2 },
+                position: 'relative',
+                backgroundColor: theme.palette.alternate.main,
+                '&::after': {
+                    position: 'absolute',
+                    content: '""',
+                    width: '30%',
+                    zIndex: 1,
+                    top: 0,
+                    right: 0,
+                    height: '100%',
+                    backgroundSize: '18px 18px',
+                    backgroundImage: `radial-gradient(${theme.palette.primary.light} 20%, transparent 20%)`,
+                    opacity: 0.2,
+                },
             }}
         >
-            <FullWidthTabs />
-        </Container>
-    </Box>;
+            <Container
+                maxWidth="lg"
+                sx={{
+                    textAlign: 'center',
+                    px: 2,
+                    py: { xs: 2 },
+                    zIndex: 2
+                }}
+            >
+                <FullWidthTabs />
+            </Container>
+        </Box>
+    )
 };
 
 export default MyAccount;

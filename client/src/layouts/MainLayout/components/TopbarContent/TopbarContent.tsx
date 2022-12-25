@@ -3,6 +3,7 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import PersonIcon from '@mui/icons-material/Person';
+import ListAllIcon from '@mui/icons-material/ListAlt';
 import {
   Avatar,
   Badge,
@@ -22,6 +23,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import useAuth from 'auth/hooks/useAuth';
 import useLogout from 'auth/hooks/useLogout';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
+import { UserRoles } from 'enum/userRoles.enum';
 import { assess } from 'helperFunctions/componentAssess';
 import { strToBool } from 'helperFunctions/strToBool';
 import jwt_decode, { JwtPayload } from "jwt-decode";
@@ -114,6 +116,16 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
         <Typography variant="h6">{`Hi, dear ${userProfile?.name}`}</Typography>
       </MenuItem>
       <Divider />
+      {
+        userProfile?.roles?.includes(UserRoles.superUser) && <MenuItem component={MUINavLink} to='/approve-permission-requests'>
+          <ListItemIcon>
+            <ListAllIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>
+            Permission Requests
+          </ListItemText>
+        </MenuItem>
+      }
       <MenuItem component={MUINavLink} to='/my-account'>
         <ListItemIcon>
           <PersonIcon fontSize="small" />
@@ -170,7 +182,11 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
               >
                 <Avatar
                   alt={userProfile.name}
-                  sx={{ width: 45, height: 45 }}
+                  sx={{
+                    width: 45,
+                    height: 45,
+                    boxShadow: `0 0 0 4px ${theme.palette.background.paper}`,
+                  }}
                 >
                   <Box
                     component={'img'}

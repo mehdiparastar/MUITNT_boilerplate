@@ -185,7 +185,7 @@ export class AuthController {
   @Serialize(UserDto)
   async findAll(): Promise<User[]> {
     console.log('all');
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
     return this.usersService.findAll();
   }
 
@@ -260,5 +260,30 @@ export class AuthController {
   @Serialize(PermissionRequestDto)
   removePReq(@CurrentUser() user: User, @Param('id') id: string) {
     return this.permissionRequestService.remove(user, parseInt(id));
+  }
+
+  @Get('get-all-permission-requests-to-approve')
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(UserRoles.superUser)
+  @Serialize(PaginationPermissionRequestDto)
+  async getAllPReqsToApprove(
+    @CurrentUser() user: User,
+    @Query('accepted') accepted: boolean = false,
+    @Query('rejected') rejected: boolean = false,
+    @Query('unSeen') unSeen: boolean = false,
+    @Query('seen') seen: boolean = false,
+    @Query('skip') skip: number = 0,
+    @Query('limit') limit: number = 3,
+  ) {
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    return await this.permissionRequestService.findAllToApprove(
+      user,
+      limit,
+      skip,
+      strToBool(accepted),
+      strToBool(rejected),
+      strToBool(unSeen),
+      strToBool(seen),
+    );
   }
 }
