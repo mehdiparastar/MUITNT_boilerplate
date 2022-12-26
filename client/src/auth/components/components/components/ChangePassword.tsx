@@ -52,16 +52,16 @@ const ChangePassword: React.FunctionComponent<IChangePasswordProps> = (props) =>
 
     return (
         <Grid container>
-            <Grid xs={3}>
+            <Grid xs={0} sm={3}>
                 <Item height={1} alignItems={'center'} p={2} justifyContent="center" display="flex">
                     <PasswordSVG width={'100%'} height={'100%'} />
                 </Item>
             </Grid>
-            <Grid xs={9}>
+            <Grid xs={12} sm={9}>
                 <Item>
                     <form onSubmit={formik.handleSubmit}>
                         <Stack direction={'column'} spacing={2} p={4}>
-                            <AlertTitle sx={{ textAlign: 'left' }}><strong>☉</strong> Please enter your new password</AlertTitle>
+                            <AlertTitle sx={{ textAlign: 'left' }}><strong>☉</strong> Enter new password</AlertTitle>
                             <TextField
                                 required
                                 autoComplete='new-password'

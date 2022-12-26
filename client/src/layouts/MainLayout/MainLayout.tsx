@@ -27,47 +27,46 @@ export const MainLayout: React.FC<layoutProps> = ({ children }) => {
   };
 
   return (
-    <Grid
-      container
-      justifyContent="space-between"
-      alignItems="center"
-      minHeight={'100vh'}
-      direction="column"
-    >
-      <Grid xs={12}>
-        <HidableAppBar>
-          <TopbarContent onSidebarOpen={handleSidebarOpen} />
-        </HidableAppBar>
-        <Sidebar
-          onClose={handleSidebarClose}
-          open={openSidebar}
-          variant="temporary"
-        >
-          <SidebarContent onClose={handleSidebarClose} />
-        </Sidebar>
-        <Toolbar />
-        {/* <Box position={'fixed'} top={'30vh'} left={'50vw'} zIndex={1000000}>
-          {(loadingPersist || loadingFetch) && <CircularProgress />}
-        </Box> */}
-        {(loadingPersist || loadingFetch) && <LinearProgress />}
-        <Grid
-          container
-          component="main"
-          justifyContent="center"
-          alignItems="center"
-          sx={{
-            p: 0,
-          }}
-        >
-          <Outlet />
+    <>
+      {(loadingPersist || loadingFetch) && <LinearProgress id='loader' sx={{ position: 'fixed', zIndex: 1000000000, top: 0, width: '100%' }} />}
+      <Grid
+        container
+        justifyContent="space-between"
+        alignItems="center"
+        minHeight={'100vh'}
+        direction="column"
+      >
+        <Grid xs={12}>
+          <HidableAppBar>
+            <TopbarContent onSidebarOpen={handleSidebarOpen} />
+          </HidableAppBar>
+          <Sidebar
+            onClose={handleSidebarClose}
+            open={openSidebar}
+            variant="temporary"
+          >
+            <SidebarContent onClose={handleSidebarClose} />
+          </Sidebar>
+          <Toolbar />
+          <Grid
+            container
+            component="main"
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              p: 0,
+            }}
+          >
+            <Outlet />
+          </Grid>
+        </Grid>
+        <Grid xs={12}>
+          <Item width={1} height={1}>
+            <Divider />
+            <FooterContent />
+          </Item>
         </Grid>
       </Grid>
-      <Grid xs={12}>
-        <Item width={1} height={1}>
-          <Divider />
-          <FooterContent />
-        </Item>
-      </Grid>
-    </Grid>
+    </>
   );
 };

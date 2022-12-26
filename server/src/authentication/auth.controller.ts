@@ -184,7 +184,6 @@ export class AuthController {
   @Roles(UserRoles.superUser, UserRoles.admin)
   @Serialize(UserDto)
   async findAll(): Promise<User[]> {
-    console.log('all');
     // await new Promise((resolve) => setTimeout(resolve, 2000));
     return this.usersService.findAll();
   }
@@ -274,6 +273,7 @@ export class AuthController {
     @Query('seen') seen: boolean = false,
     @Query('skip') skip: number = 0,
     @Query('limit') limit: number = 3,
+    @Query('selectedUserId') selectedUserId: string | null | undefined = null,
   ) {
     // await new Promise((resolve) => setTimeout(resolve, 2000));
     return await this.permissionRequestService.findAllToApprove(
@@ -284,6 +284,45 @@ export class AuthController {
       strToBool(rejected),
       strToBool(unSeen),
       strToBool(seen),
+      selectedUserId,
     );
+  }
+
+  @Patch('set-seen-preq')
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(UserRoles.superUser)
+  pReqSetToSeen(
+    @CurrentUser() user: User,
+    @Body('pReqId') pReqId: number,
+  ): Promise<PermissionRequest> {
+    return this.permissionRequestService.pReqSetToSeen(user, pReqId);
+  }
+
+  @Patch('set-approve-preq')
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(UserRoles.superUser)
+  async approvePReq(
+    @CurrentUser() user: User,
+    @Body('pReqId') pReqId: number,
+  ): Promise<PermissionRequest> {
+    const pReq = await this.permissionRequestService.findOneById(pReqId);
+    const updatePermission = await this.usersService.update(pReq.user.id, {
+      roles: [...new Set([...pReq.user.roles, pReq.role])],
+    });
+    return this.permissionRequestService.approvePReq(user, pReqId);
+  }
+
+  @Patch('set-reject-preq')
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(UserRoles.superUser)
+  async rejectPReq(
+    @CurrentUser() user: User,
+    @Body('pReqId') pReqId: number,
+  ): Promise<PermissionRequest> {
+    const pReq = await this.permissionRequestService.findOneById(pReqId);
+    const updatePermission = await this.usersService.update(pReq.user.id, {
+      roles: pReq.user.roles.filter((item) => item !== pReq.role),
+    });
+    return this.permissionRequestService.rejectPReq(user, pReqId);
   }
 }

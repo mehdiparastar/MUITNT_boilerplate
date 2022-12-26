@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { permissionRequestResultEnum } from 'src/enum/permissionRequestResult.enum';
+import { strToBool } from 'src/helperFunctions/strToBool';
 import { In, Repository } from 'typeorm';
 
 import { authTypeEnum } from '../enum/authType.enum';
@@ -39,7 +40,6 @@ export class PermissionRequestsService {
     if (pRExists) {
       throw new BadRequestException('This request already exists');
     }
-    console.log('create pReq');
 
     // Create new User
     const pReq = this.permissionRequestsRepo.create({
@@ -136,8 +136,9 @@ export class PermissionRequestsService {
     rejected?: boolean,
     unSeen?: boolean,
     seen?: boolean,
+    selectedUserId?: string | null | undefined,
   ): Promise<{ data: PermissionRequest[]; count: number }> {
-    const query = [
+    const resultQuery = [
       accepted === true ? permissionRequestResultEnum.accepted : null,
       rejected === true ? permissionRequestResultEnum.rejected : null,
       unSeen === true ? permissionRequestResultEnum.unseen : null,
@@ -147,11 +148,13 @@ export class PermissionRequestsService {
     const [result, total] = await this.permissionRequestsRepo.findAndCount({
       relations: ['user'],
       where: {
-        user: { id: user.id },
+        ...(strToBool(selectedUserId) && {
+          user: { id: Number(selectedUserId) },
+        }),
         result: In(
-          JSON.stringify(query) === JSON.stringify([])
+          JSON.stringify(resultQuery) === JSON.stringify([])
             ? Object.values(permissionRequestResultEnum)
-            : query,
+            : resultQuery,
         ),
       },
       order: { updatedAt: 'DESC' },
@@ -182,5 +185,29 @@ export class PermissionRequestsService {
     }
 
     return this.permissionRequestsRepo.remove(pReq);
+  }
+
+  async pReqSetToSeen(user: User, pReqId: number): Promise<PermissionRequest> {
+    const update = await this.update(pReqId, {
+      approver: user,
+      result: permissionRequestResultEnum.seen,
+    });
+    return update;
+  }
+
+  async approvePReq(user: User, pReqId: number): Promise<PermissionRequest> {
+    const update = await this.update(pReqId, {
+      approver: user,
+      result: permissionRequestResultEnum.accepted,
+    });
+    return update;
+  }
+
+  async rejectPReq(user: User, pReqId: number): Promise<PermissionRequest> {
+    const update = await this.update(pReqId, {
+      approver: user,
+      result: permissionRequestResultEnum.rejected,
+    });
+    return update;
   }
 }

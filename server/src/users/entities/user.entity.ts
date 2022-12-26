@@ -66,4 +66,11 @@ export class User {
     { cascade: true },
   )
   permissionRequests: PermissionRequest[];
+
+  @OneToMany(
+    () => PermissionRequest,
+    (permissionRequest) => permissionRequest.user,
+    { cascade: true },
+  )
+  approves: PermissionRequest[];
 }

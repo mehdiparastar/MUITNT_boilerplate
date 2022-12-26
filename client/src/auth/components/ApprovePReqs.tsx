@@ -1,24 +1,49 @@
 import DeleteIcon from '@mui/icons-material/DeleteForever';
-import { Box, Card, CardActionArea, CardActions, CardContent, CardHeader, Checkbox, Chip, Container, FormControlLabel, FormGroup, Grow, IconButton, Pagination, Paper, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, Checkbox, Chip, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grow, IconButton, Pagination, Paper, Radio, RadioGroup, Skeleton, Slide, Stack, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { TransitionProps } from '@mui/material/transitions';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import useAuth from 'auth/hooks/useAuth';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
+import { AxiosError } from 'axios';
 import Item from 'components/Item/Item';
 import { MUIAsyncAutocomplete } from 'components/MUIAsyncAutocomplete/MUIAsyncAutocomplete';
+import { pReqResultENUM } from 'enum/pReqResult.enum';
 import { getRoleName } from 'enum/userRoles.enum';
 import moment from 'moment';
+import { useSnackbar } from 'notistack';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import NoDataFoundSVG from 'svg/banners/NoDataFound/NoDataFound';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
 
 interface IApprovePReqsProps {
 }
+
+const Transition = forwardRef(function Transition(
+    props: TransitionProps & {
+        children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>,
+) {
+    return (
+        <Slide
+            direction="up"
+            ref={ref}
+            {...props}
+        />
+    );
+});
 
 const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
     const { loadingFetch, setLoadingFetch } = useAuth();
     const theme = useTheme();
     const axiosPrivate = useAxiosPrivate();
+    const { enqueueSnackbar } = useSnackbar();
+    const isSm = useMediaQuery(theme.breakpoints.up('sm'), {
+        defaultMatches: true,
+    });
 
     const [, setError] = useState<any>(null);
     const [accepted, setAccepted] = useState<boolean>(false);
@@ -34,6 +59,61 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
     const [reload, setReload] = useState<boolean>(false);
     const [selectedUser, setSelectedUser] = useState<IUser | null>(null)
 
+    const [selectedApprovePReq, setSelectedApprovePReq] = useState<IPermissionRequest | null>(null);
+    const [showApprovePReqAlert, setShowApprovePReqAlert] = useState<boolean>(false);
+
+    const [approveType, setApproveType] = React.useState<string | null>(null);
+
+    const handleCloseApprovePReq = () => {
+        setShowApprovePReqAlert(false);
+        setSelectedApprovePReq(null);
+        setApproveType(null)
+    };
+
+    const handleOpenApprovePReq = (pReq: IPermissionRequest) => {
+        if (pReq.result === pReqResultENUM.accepted) {
+            setApproveType(pReqResultENUM.accepted)
+        }
+        if (pReq.result === pReqResultENUM.rejected) {
+            setApproveType(pReqResultENUM.rejected)
+        }
+        setShowApprovePReqAlert(true);
+        setSelectedApprovePReq(pReq);
+        if (pReq.result !== pReqResultENUM.seen) {
+            axiosPrivate.patch('auth/set-seen-preq', { pReqId: pReq.id })
+            // setReload(true)
+        }
+    };
+
+    const handleApprovingPReq = async () => {
+        try {
+            handleCloseApprovePReq();
+            if (approveType === pReqResultENUM.accepted) {
+                await axiosPrivate.patch(
+                    `auth/set-approve-preq`, { pReqId: selectedApprovePReq?.id }
+                );
+            }
+            if (approveType === pReqResultENUM.rejected) {
+                await axiosPrivate.patch(
+                    `auth/set-reject-preq`, { pReqId: selectedApprovePReq?.id }
+                );
+            }
+            setReload(true)
+            enqueueSnackbar(
+                `your request approvement changed successfully. (id=${selectedApprovePReq?.id})`,
+                { variant: 'success' },
+            );
+        } catch (err) {
+            const ex = err as AxiosError<{ msg: string }>;
+            enqueueSnackbar(ex.response?.data?.msg || 'Unknown Error', {
+                variant: 'error',
+            });
+        } finally {
+            setReload(true)
+            setSelectedApprovePReq(null);
+        }
+    };
+
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
@@ -41,11 +121,11 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
 
         const getData = async () => {
             try {
-                const query = `accepted=${accepted}&&rejected=${rejected}&&unSeen=${unSeen}&&seen=${seen}&&skip=${skip}&&limit=${limit}`;
+                const query = `accepted=${accepted}&&rejected=${rejected}&&unSeen=${unSeen}&&seen=${seen}&&skip=${skip}&&limit=${limit}&&selectedUserId=${selectedUser?.id}`;
                 const response: {
                     data: { data: IPermissionRequest[]; count: number };
                 } = await axiosPrivate.get(
-                    `auth/get-my-all-permission-requests?${query}`,
+                    `auth/get-all-permission-requests-to-approve?${query}`,
                     {
                         signal: controller.signal,
                     },
@@ -79,6 +159,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
         skip,
         limit,
         reload,
+        selectedUser
     ]);
 
     const handleChangePage = (
@@ -92,6 +173,10 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
     const hangleGetUsersList = async () => {
         return axiosPrivate.get<(IUser)[]>('auth/all')
     }
+
+    const handleChangeApproveType = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setApproveType((event.target as HTMLInputElement).value);
+    };
 
     return (
         <Box
@@ -150,9 +235,9 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                                     fontWeight={'bold'}
                                     textAlign={'left'}
                                 >
-                                    Filter By Current Status Tag:
+                                    Tag Filter:
                                 </Typography>
-                                <FormGroup row>
+                                <FormGroup row={isSm}>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -191,6 +276,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                                     />
                                 </FormGroup>
                             </Stack>
+                            <Divider sx={{ my: 2 }} />
                             <Stack
                                 justifyContent={'space-between'}
                                 direction={'row'}
@@ -201,7 +287,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                                     fontWeight={'bold'}
                                     textAlign={'left'}
                                 >
-                                    Filter By User:
+                                    User Filter:
                                 </Typography>
                                 <MUIAsyncAutocomplete
                                     value={selectedUser}
@@ -402,21 +488,16 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                                                                 display="flex"
                                                                 justifyContent={'space-between'}
                                                             >
-                                                                <IconButton>
-                                                                    <Skeleton
-                                                                        variant="rounded"
-                                                                        animation="wave"
-                                                                        width={18}
-                                                                        height={26}
-                                                                    />
-                                                                </IconButton>
-                                                                <IconButton disableRipple>
-                                                                    <Skeleton
-                                                                        variant="text"
-                                                                        animation="wave"
-                                                                        width={50}
-                                                                    />
-                                                                </IconButton>
+                                                                <Skeleton
+                                                                    variant="text"
+                                                                    animation="wave"
+                                                                    width={70}
+                                                                />
+                                                                <Skeleton
+                                                                    variant="rectangular"
+                                                                    animation="wave"
+                                                                    width={50}
+                                                                />
                                                             </Stack>
                                                         ) : (
                                                             <Stack
@@ -426,16 +507,18 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                                                                 display="flex"
                                                                 justifyContent={'space-between'}
                                                             >
-                                                                <IconButton
-                                                                // onClick={() => handleOpenDeletePReq(item)}
-                                                                >
-                                                                    <DeleteIcon color="error" />
-                                                                </IconButton>
                                                                 <Chip
                                                                     label={item.result}
-                                                                    color="primary"
-                                                                    variant="outlined"
+                                                                    color={item.result === pReqResultENUM.accepted ? 'success' : item.result === pReqResultENUM.rejected ? 'error' : item.result === pReqResultENUM.seen ? 'warning' : 'secondary'}
+                                                                    variant="filled"
                                                                 />
+                                                                <Button
+                                                                    color='secondary'
+                                                                    size="small"
+                                                                    onClick={() => handleOpenApprovePReq(item)}
+                                                                >
+                                                                    APPROVE
+                                                                </Button>
                                                             </Stack>
                                                         )}
                                                     </CardActions>
@@ -487,6 +570,35 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                     )}
                 </Grid>
             </Container>
+            <Dialog
+                open={showApprovePReqAlert}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleCloseApprovePReq}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle>{`Approving Permission Request With the if of ${selectedApprovePReq?.id}.`}</DialogTitle>
+                <DialogContent dividers>
+                    <FormControl>
+                        <FormLabel id="demo-controlled-radio-buttons-group">
+                            Approving Type:
+                        </FormLabel>
+                        <RadioGroup
+                            aria-labelledby="demo-controlled-radio-buttons-group"
+                            name="controlled-radio-buttons-group"
+                            value={approveType}
+                            onChange={handleChangeApproveType}
+                        >
+                            <Stack direction={'row'} alignItems={'center'} display={'flex'}><FormControlLabel value={pReqResultENUM.accepted} control={<Radio />} label="Accept" /><DoneAllIcon color='success' /></Stack>
+                            <Stack direction={'row'} alignItems={'center'} display={'flex'}><FormControlLabel value={pReqResultENUM.rejected} control={<Radio />} label="Reject" /><RemoveDoneIcon color='error' /></Stack>
+                        </RadioGroup>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseApprovePReq}>Cancel</Button>
+                    <Button onClick={handleApprovingPReq}>Confirm</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

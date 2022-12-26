@@ -23,6 +23,7 @@ import {
     Grow,
     IconButton,
     Pagination,
+    Paper,
     Radio,
     Skeleton,
     Slide,
@@ -37,6 +38,7 @@ import useAuth from 'auth/hooks/useAuth';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import { AxiosError } from 'axios';
 import Item from 'components/Item/Item';
+import { pReqResultENUM } from 'enum/pReqResult.enum';
 import {
     getRoleName,
     splitOnCapitalLetters,
@@ -218,17 +220,11 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
                         width={1}
                     >
                         <Stack
-                            justifyContent={'space-between'}
+                            justifyContent={'flex-end'}
                             direction={'row'}
                             alignItems="center"
+                            spacing={1}
                         >
-                            <Typography
-                                variant="body1"
-                                fontWeight={'bold'}
-                                textAlign={'left'}
-                            >
-                                Your Requests History:
-                            </Typography>
                             <FormGroup row>
                                 <FormControlLabel
                                     control={
@@ -323,27 +319,26 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
                                                         }
                                                         action={
                                                             loadingFetch ? (
-                                                                <IconButton disableRipple>
-                                                                    <Skeleton
-                                                                        variant="text"
-                                                                        animation="wave"
-                                                                        width={130}
-                                                                    />
-                                                                </IconButton>
+                                                                <Skeleton
+                                                                    variant="rectangular"
+                                                                    animation="wave"
+                                                                    width={130}
+                                                                />
                                                             ) : (
-                                                                <Tooltip
-                                                                    title="This Request Type"
-                                                                    arrow
-                                                                >
-                                                                    <IconButton disableRipple>
+                                                                <Paper sx={{ p: 0.5 }}>
+                                                                    <Tooltip
+                                                                        title="This Request Type"
+                                                                        arrow
+                                                                    >
                                                                         <Typography
                                                                             variant="body1"
                                                                             sx={{ fontWeight: 'bold' }}
                                                                         >
                                                                             {getRoleName(item.role)}
                                                                         </Typography>
-                                                                    </IconButton>
-                                                                </Tooltip>
+                                                                        {/* </IconButton> */}
+                                                                    </Tooltip>
+                                                                </Paper>
                                                             )
                                                         }
                                                     />
@@ -446,21 +441,17 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
                                                             display="flex"
                                                             justifyContent={'space-between'}
                                                         >
-                                                            <IconButton>
-                                                                <Skeleton
-                                                                    variant="rounded"
-                                                                    animation="wave"
-                                                                    width={18}
-                                                                    height={26}
-                                                                />
-                                                            </IconButton>
-                                                            <IconButton disableRipple>
-                                                                <Skeleton
-                                                                    variant="text"
-                                                                    animation="wave"
-                                                                    width={50}
-                                                                />
-                                                            </IconButton>
+                                                            <Skeleton
+                                                                variant="rounded"
+                                                                animation="wave"
+                                                                width={18}
+                                                                height={26}
+                                                            />
+                                                            <Skeleton
+                                                                variant="text"
+                                                                animation="wave"
+                                                                width={50}
+                                                            />
                                                         </Stack>
                                                     ) : (
                                                         <Stack
@@ -477,7 +468,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
                                                             </IconButton>
                                                             <Chip
                                                                 label={item.result}
-                                                                color="primary"
+                                                                color={item.result === pReqResultENUM.accepted ? 'success' : item.result === pReqResultENUM.rejected ? 'error' : item.result === pReqResultENUM.seen ? 'warning' : 'secondary'}
                                                                 variant="outlined"
                                                             />
                                                         </Stack>

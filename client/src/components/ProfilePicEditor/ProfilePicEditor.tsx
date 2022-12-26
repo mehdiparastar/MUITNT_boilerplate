@@ -63,6 +63,7 @@ const ProfilePicEditor = (props: { formik?: any }) => {
                                 flexWrap: 'wrap',
                                 p: 0.5,
                                 m: 0,
+                                flexDirection: { xs: 'column', md: 'row' }
                             }}
                         >
                             <Item>
@@ -76,7 +77,7 @@ const ProfilePicEditor = (props: { formik?: any }) => {
                                     borderRadius={200 / 2}
                                 />
                             </Item>
-                            <Item>
+                            <Item sx={{ transform: { xs: 'rotate(90deg)', md: 'rotate(0deg)' } }}>
                                 <DoubleRightArrowSVG width={50} height={50} />
                             </Item>
                             <Item>
@@ -124,7 +125,7 @@ const ProfilePicEditor = (props: { formik?: any }) => {
                                         setCropedImg('')
                                     }}
                                 >
-                                    Remove Profile Pic
+                                    Remove Pic
                                 </Button>
                             </Grid>
                             <Grid xs={12}>

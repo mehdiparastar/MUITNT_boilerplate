@@ -22,6 +22,9 @@ export class PermissionRequest {
   @ManyToOne(() => User, (user) => user.permissionRequests)
   user: User;
 
+  @ManyToOne(() => User, (user) => user.approves)
+  approver: User;
+
   @Column({ type: 'longtext', nullable: true })
   @ApiProperty({ default: 'desc' })
   adminMsg: string;
