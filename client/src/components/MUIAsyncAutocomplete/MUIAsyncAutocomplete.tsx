@@ -1,10 +1,10 @@
-import * as React from 'react';
-import TextField from '@mui/material/TextField';
+import { SxProps } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
-import { SxProps } from '@mui/material';
+import TextField from '@mui/material/TextField';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useSnackbar } from 'notistack';
+import * as React from 'react';
 
 
 export interface ICustomAutoCompleteProps<T> {
@@ -14,6 +14,12 @@ export interface ICustomAutoCompleteProps<T> {
     value: T | null,
     setValue: (arg0: T | null) => void,
     getOptions: () => Promise<AxiosResponse<T[], any>>
+    onBlur?: {
+        (e: React.FocusEvent<any>): void;
+        <T = any>(fieldOrEvent: T): T extends string ? (e: any) => void : void;
+    },
+    error?: boolean,
+    helperText?: string | boolean
 }
 
 
@@ -84,6 +90,11 @@ export const MUIAsyncAutocomplete = <T,>(props: ICustomAutoCompleteProps<T>) => 
                             </React.Fragment>
                         ),
                     }}
+                    error={props.error}
+                    helperText={props.helperText && props.helperText}
+                    onBlur={props.onBlur}
+
+
                 />
             )}
             value={props.value}

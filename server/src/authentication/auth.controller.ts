@@ -285,7 +285,7 @@ export class AuthController {
       strToBool(unSeen),
       strToBool(seen),
       selectedUserId,
-    );
+    );    
   }
 
   @Patch('set-seen-preq')

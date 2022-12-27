@@ -38,6 +38,7 @@ import useAuth from 'auth/hooks/useAuth';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import { AxiosError } from 'axios';
 import Item from 'components/Item/Item';
+import { formatDistanceToNow } from 'date-fns';
 import { pReqResultENUM } from 'enum/pReqResult.enum';
 import {
     getRoleName,
@@ -47,7 +48,6 @@ import {
     UserRolesObj
 } from 'enum/userRoles.enum';
 import { getRolesClassified } from 'helperFunctions/get-roles-expand';
-import moment from 'moment';
 import { useSnackbar } from 'notistack';
 import { forwardRef, useEffect, useState } from 'react';
 import NoDataFoundSVG from 'svg/banners/NoDataFound/NoDataFound';
@@ -395,9 +395,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
                                                                         Created At:
                                                                     </Typography>
                                                                     <Typography variant="body1">
-                                                                        {moment(item.createdAt).format(
-                                                                            'DD-MMM-YYYY HH:mm:ss',
-                                                                        )}
+                                                                        {formatDistanceToNow(item.createdAt)} ago
                                                                     </Typography>
                                                                 </Stack>
                                                                 <Stack
@@ -410,9 +408,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
                                                                         Last Update At:
                                                                     </Typography>
                                                                     <Typography variant="body1">
-                                                                        {moment(item.updatedAt).format(
-                                                                            'DD-MMM-YYYY HH:mm:ss',
-                                                                        )}
+                                                                        {formatDistanceToNow(item.updatedAt)} ago
                                                                     </Typography>
                                                                 </Stack>
                                                                 <Stack

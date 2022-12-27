@@ -45,11 +45,11 @@ export class PermissionRequest {
   @ApiProperty()
   result: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'datetime' })
   @ApiProperty()
   createdAt?: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'datetime' })
   @ApiProperty()
   updatedAt?: Date;
 }

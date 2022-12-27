@@ -101,6 +101,7 @@ const ChangePassword: React.FunctionComponent<IChangePasswordProps> = (props) =>
                             height={'100%'}
                             image="/statics/images/security2.jpg"
                             alt="security"
+                            loading='lazy'
                         />
                     </Card>
                 </Item>

@@ -17,6 +17,7 @@ import { forwardRef, useEffect, useState } from 'react';
 import NoDataFoundSVG from 'svg/banners/NoDataFound/NoDataFound';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
 interface IApprovePReqsProps {
 }
@@ -442,9 +443,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                                                                             Created At:
                                                                         </Typography>
                                                                         <Typography variant="body1">
-                                                                            {moment(item.createdAt).format(
-                                                                                'DD-MMM-YYYY HH:mm:ss',
-                                                                            )}
+                                                                            {formatDistanceToNow(item.createdAt)} ago
                                                                         </Typography>
                                                                     </Stack>
                                                                     <Stack
@@ -457,9 +456,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                                                                             Last Update At:
                                                                         </Typography>
                                                                         <Typography variant="body1">
-                                                                            {moment(item.updatedAt).format(
-                                                                                'DD-MMM-YYYY HH:mm:ss',
-                                                                            )}
+                                                                            {formatDistanceToNow(item.updatedAt)} ago
                                                                         </Typography>
                                                                     </Stack>
                                                                     <Stack

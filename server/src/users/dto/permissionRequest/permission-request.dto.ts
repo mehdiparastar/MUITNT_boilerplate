@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
+import { IsDate } from 'class-validator';
 import { UserDto } from '../user/user.dto';
 
 export class PermissionRequestDto {
@@ -21,10 +22,12 @@ export class PermissionRequestDto {
 
   @Expose()
   @ApiProperty()
+  @IsDate()
   createdAt?: Date;
 
   @Expose()
   @ApiProperty()
+  @IsDate()
   updatedAt?: Date;
 
   @Expose()

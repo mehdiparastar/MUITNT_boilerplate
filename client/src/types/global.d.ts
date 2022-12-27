@@ -1,5 +1,6 @@
 import { pReqResultENUM } from 'enum/pReqResult.enum';
 import { FC } from 'react';
+import * as yup from 'yup';
 
 export {};
 
@@ -18,6 +19,22 @@ declare global {
 
   type HideOnScrollProps = {
     children: React.ReactElement;
+  };
+
+  type ConditionalSchema<T> = T extends string
+    ? yup.StringSchema
+    : T extends number
+    ? yup.NumberSchema
+    : T extends boolean
+    ? yup.BooleanSchema
+    : T extends Record<any, any>
+    ? yup.AnyObjectSchema
+    : T extends Array<any>
+    ? yup.ArraySchema<any, any>
+    : yup.AnySchema;
+
+  type Shape<Fields> = {
+    [Key in keyof Fields]: ConditionalSchema<Fields[Key]>;
   };
 
   interface IRoute {
