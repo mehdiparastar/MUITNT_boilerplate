@@ -1,10 +1,13 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { Post } from 'src/apps/CRUD/components/posts/entities/post.entity';
+import { Reaction } from 'src/apps/CRUD/components/posts/entities/reaction.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   Index,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -73,4 +76,10 @@ export class User {
     { cascade: true },
   )
   approves: PermissionRequest[];
+
+  @OneToMany(() => Post, (post) => post.author, { cascade: true })
+  posts: Post[];
+
+  @OneToMany(() => Reaction, (reaction) => reaction.creator, { cascade: true })
+  reactions: Reaction[];
 }

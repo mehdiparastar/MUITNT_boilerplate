@@ -161,7 +161,6 @@ export class AuthController {
     @CurrentUser() user: User,
     @Body() body: ChangeLocalUserProfileDetailDto,
   ): Promise<User> {
-    console.log('edit');
     return this.usersService.changeLocalUserProfileDetail(
       user.id,
       body.name,

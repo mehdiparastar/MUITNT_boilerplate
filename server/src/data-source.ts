@@ -1,4 +1,6 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { Post } from './apps/CRUD/components/posts/entities/post.entity';
+import { Reaction } from './apps/CRUD/components/posts/entities/reaction.entity';
 import { PermissionRequest } from './users/entities/permission-requests.entity';
 
 import { User } from './users/entities/user.entity';
@@ -17,7 +19,7 @@ const dbConfig: IDBConfig = {
     username: 'admin',
     password: 'admin',
     database: 'dev_db',
-    entities: [User, PermissionRequest],
+    entities: [User, PermissionRequest, Post, Reaction],
     synchronize: true,
     // synchronize: false,
     // migrations: ['src/migration_dev/*.js'],
@@ -30,7 +32,7 @@ const dbConfig: IDBConfig = {
     username: 'admin',
     password: 'admin',
     database: 'test_db',
-    entities: [User, PermissionRequest],
+    entities: [User, PermissionRequest, Post, Reaction],
     synchronize: true,
     // synchronize: false,
     // migrations: ['src/migration_test/*.js'],

@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CrudModule } from './apps/CRUD/crud.module';
 import { AuthModule } from './authentication/auth.module';
 import { AppDataSource } from './data-source';
 import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
@@ -19,6 +20,7 @@ import { UsersModule } from './users/users.module';
     TypeOrmModule.forRoot(AppDataSource.options),
     UsersModule,
     AuthModule,
+    CrudModule
   ],
   controllers: [AppController],
   providers: [
