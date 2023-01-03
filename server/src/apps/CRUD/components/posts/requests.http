@@ -34,8 +34,8 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-    "title":"Nisi dolore sit Lorem magna occaecat exercitation excepteur proident ipsum sit velit sint.",
-    "caption":"Nulla eu ullamco aliqua tempor dolore. Commodo occaecat aute mollit aliqua consectetur cillum pariatur consectetur. Cillum dolore culpa veniam anim dolore reprehenderit occaecat amet dolor ex do reprehenderit nisi. Labore nisi nostrud ex amet do velit ea sint commodo aliqua dolor. Adipisicing eu aliqua occaecat consectetur elit qui qui non qui anim officia commodo sint. Aliqua fugiat proident consectetur deserunt fugiat."
+    "title":"Sit occaecat cillum culpa quis irure velit non esse aliquip voluptate Lorem minim elit.",
+    "caption":"Do sit consectetur proident velit laborum mollit dolor nostrud anim quis magna officia duis. Enim labore quis sint consequat quis adipisicing nostrud mollit nisi commodo nulla. Commodo nulla ullamco reprehenderit sint. Et in laboris amet sunt amet mollit laboris commodo. Adipisicing veniam cillum nisi adipisicing do qui mollit. Exercitation ut esse consectetur id. Ad dolore ullamco cillum cupidatat ad officia aliqua anim elit fugiat magna labore laboris nostrud."
 }
 
 
@@ -46,13 +46,13 @@ Authorization: Bearer {{accessToken}}
 
 
 ### Delete post by id
-DELETE http://[::1]:3001/posts/delete-post/3
+DELETE http://[::1]:3001/posts/delete-post/40
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 
 ### Update post by id
-PATCH  http://[::1]:3001/posts/update-post/15
+PATCH  http://[::1]:3001/posts/update-post/4
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -63,12 +63,12 @@ Authorization: Bearer {{accessToken}}
 
 
 ### like post by id
-PATCH  http://[::1]:3001/posts/like-post/15
+PATCH  http://[::1]:3001/posts/like-post/3
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 
 ### dislike post by id
-PATCH  http://[::1]:3001/posts/dislike-post/4
+PATCH  http://[::1]:3001/posts/dislike-post/3
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}

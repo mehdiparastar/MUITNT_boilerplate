@@ -1,15 +1,14 @@
 import { Box, Card, CardActionArea, CardActions, CardContent, CardHeader, Pagination, Typography, useTheme } from '@mui/material';
-import { Stack } from '@mui/system';
-import { formatDistanceToNow } from 'date-fns';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { selectAllPosts, getPostsStatus, fetchPosts, getPostsError } from './postsSlice';
-import { ReactionButtons } from './ReactionButtons';
-import { useEffect, useState } from 'react';
-import { thunkStatus } from 'enum/reduxThunkStatus.enum';
-import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
-import Item from 'components/Item/Item';
+import { Stack } from '@mui/system';
 import useAuth from 'auth/hooks/useAuth';
+import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
+import Item from 'components/Item/Item';
+import { formatDistanceToNow } from 'date-fns';
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { fetchPosts, selectAllPosts } from './postsSlice';
+import { ReactionButtons } from './ReactionButtons';
 
 export function PostsList() {
     const axiosPrivate = useAxiosPrivate();
@@ -18,18 +17,21 @@ export function PostsList() {
     const { setLoadingFetch } = useAuth()
 
     // The `state` arg is correctly typed as `RootState` already
-    const { count: postsAllCount, data: posts } = useAppSelector(selectAllPosts)//.slice().sort((b, a) => a.createdAt.getTime() - b.createdAt.getTime(),)
-    const postsStatus = useAppSelector(getPostsStatus)
-    const error = useAppSelector(getPostsError)
-
-    const [skip, setSkip] = useState<number>(0);
-    const [page, setPage] = useState<number>(1);
     const limit = 6
+    const [page, setPage] = useState<number>(1);
+    const [skip, setSkip] = useState<number>(0);
+
+    const paginatePosts = useAppSelector(selectAllPosts)//.slice().sort((b, a) => a.createdAt.getTime() - b.createdAt.getTime(),)
+    const postsAllCount = paginatePosts.count
+    const posts = paginatePosts.data.slice(0, limit)
+    // const postsStatus = useAppSelector(getPostsStatus)
+    // const error = useAppSelector(getPostsError)
+
     const count = Math.ceil(postsAllCount / limit)
 
     useEffect(() => {
         dispatch(fetchPosts({ axiosPrivate, setLoadingFetch, skip, limit }))
-    }, [dispatch, axiosPrivate, limit, skip])
+    }, [dispatch, setLoadingFetch, axiosPrivate, limit, skip])
 
 
     const handleChangePage = (

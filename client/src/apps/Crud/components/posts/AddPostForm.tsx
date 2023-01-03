@@ -1,10 +1,11 @@
 import { Box, Button, Stack, TextField } from '@mui/material';
-import { AxiosError } from 'axios';
+import useAuth from 'auth/hooks/useAuth';
+import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack';
 import * as yup from 'yup';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-// import { postAdded } from './postsSlice';
+import { useAppDispatch } from '../../redux/hooks';
+import { createPost } from './postsSlice';
 
 interface IAddPostFormProps {
 }
@@ -30,21 +31,22 @@ export function AddPostForm(props: IAddPostFormProps) {
         title: '',
         caption: '',
     };
+    const axiosPrivate = useAxiosPrivate();
+    const { setLoadingFetch } = useAuth()
     const dispatch = useAppDispatch()
     const { enqueueSnackbar } = useSnackbar()
 
     const onSubmit = async (values: IAddPostFormDto): Promise<any> => {
-        try {
-            // dispatch(postAdded({
-            //     title: formik.values.title,
-            //     caption: formik.values.caption,
-            // }))
-            formik.resetForm()
-        }
-        catch (ex) {
-            const err = ex as AxiosError<{ msg: string }>
-            enqueueSnackbar(err.response?.data?.msg || 'Unknown Error', { variant: 'error' });
-        }
+        dispatch(createPost({
+            axiosPrivate,
+            setLoadingFetch,
+            enqueueSnackbar,
+            data: {
+                title: formik.values.title,
+                caption: formik.values.caption
+            }
+        }))
+        formik.resetForm()
     };
 
     const formik = useFormik({

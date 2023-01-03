@@ -16,15 +16,14 @@ export class ReactionsService {
   constructor(
     @InjectRepository(Reaction)
     private reactionsRepo: Repository<Reaction>,
-  ) {}
+  ) { }
 
   async create(
     user: User,
     type: reactionTypeEnum,
     post: Post,
   ): Promise<Reaction> {
-    // Create new Reaction
-
+    // Create new Reaction    
     const newReaction = this.reactionsRepo.create({
       creator: user,
       type,
@@ -53,9 +52,6 @@ export class ReactionsService {
       relations: { creator: true },
       where: { id },
     });
-    if (!find) {
-      throw new NotFoundException('reaction not found');
-    }
     return find;
   }
 
@@ -70,9 +66,6 @@ export class ReactionsService {
       relations: { creator: true, post: true },
       where: { post: { id: postId }, creator: { id: creatorId } },
     });
-    if (!find) {
-      throw new NotFoundException('reaction not found');
-    }
     return find;
   }
 
@@ -101,6 +94,20 @@ export class ReactionsService {
       );
     }
     return this.reactionsRepo.remove(reaction);
+  }
+
+  async update(user: User, id: number, newType: reactionTypeEnum): Promise<Reaction> {
+    const reaction = await this.findOneById(id);
+    if (!reaction) {
+      throw new NotFoundException('reaction not found');
+    }
+    if (reaction.creator.id !== user.id) {
+      throw new NotAcceptableException(
+        'You only could update reactions that are your own!',
+      );
+    }
+    Object.assign(reaction, { type: newType });
+    return this.reactionsRepo.save(reaction);
   }
 
   whereRU(): string {

@@ -1,9 +1,13 @@
-import { Button, ButtonGroup } from '@mui/material';
+import DeleteForever from '@mui/icons-material/DeleteForever';
+import { Button, ButtonGroup, IconButton, Stack } from '@mui/material';
+import useAuth from 'auth/hooks/useAuth';
+import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import { reactionTypeEnum } from 'enum/reactionType.enum';
-import { useAppDispatch } from '../../redux/hooks';
-import { IPostsState, IReactionState, } from './postsSlice';
+import { useSnackbar } from 'notistack';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { deletePost, dislikePost, IPostsState, likePost, selectAllPosts } from './postsSlice';
 
-const reactionEmoji = {
+const reactionEmoji: { [key in reactionTypeEnum]: string } = {
     [reactionTypeEnum.like]: '👍',
     [reactionTypeEnum.dislike]: '👎',
 }
@@ -14,20 +18,44 @@ interface IReactionButtonsProps {
 
 export function ReactionButtons(props: IReactionButtonsProps) {
     const dispatch = useAppDispatch()
+    const { enqueueSnackbar } = useSnackbar()
+    const axiosPrivate = useAxiosPrivate();
+    const { setLoadingFetch } = useAuth()
+    const { data: posts } = useAppSelector(selectAllPosts)
+
     const reactionButtons = Object.entries(reactionEmoji).map(([name, emoji]) => {
         return (
             <Button
                 key={name}
-            // onClick={() => dispatch(reactionAdded({ postId: props.post.id, reaction: name as keyof IReactionState }))}
+                onClick={
+                    () => {
+                        return name === reactionTypeEnum.like ?
+                            dispatch(likePost({ axiosPrivate, setLoadingFetch, postId: props.post.id })) :
+                            name === reactionTypeEnum.dislike ?
+                                dispatch(dislikePost({ axiosPrivate, setLoadingFetch, postId: props.post.id })) :
+                                null
+                    }
+                }
             >
-                {emoji}
-                {/* {props.post.reactions[name as keyof IReactionState]} */}
+                {emoji} {props && posts && (posts.find((post: IPostsState) => post.id === props.post.id)?.reactions[name as reactionTypeEnum])}
             </Button>
         )
     })
     return (
-        <ButtonGroup variant='outlined' size='small' >
-            {reactionButtons}
-        </ButtonGroup>
+        <Stack direction={'row'} spacing={1}>
+            <ButtonGroup variant='outlined' size='small' >
+                {reactionButtons}
+            </ButtonGroup>
+            <IconButton size='small' onClick={
+                () => dispatch(
+                    deletePost({
+                        axiosPrivate,
+                        setLoadingFetch,
+                        enqueueSnackbar,
+                        postId: props.post.id
+                    }))}>
+                <DeleteForever color='error' />
+            </IconButton>
+        </Stack>
     )
 }

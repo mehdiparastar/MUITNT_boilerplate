@@ -64,12 +64,12 @@ sleep 2
 sed -i 's/\t/  /g' ./server/docker_mysql_init/docker-compose-mysql-only.yml
 sleep 2
 
-docker-compose -f ./server/docker_mysql_init/docker-compose-mysql-only.yml down
+docker compose -f ./server/docker_mysql_init/docker-compose-mysql-only.yml down
 docker container prune -f
 docker volume prune -f
 docker system prune -f
 sleep 2
-docker-compose -f ./server/docker_mysql_init/docker-compose-mysql-only.yml up --build -d
+docker compose -f ./server/docker_mysql_init/docker-compose-mysql-only.yml up --build -d
 
 echo bye
 sleep 2

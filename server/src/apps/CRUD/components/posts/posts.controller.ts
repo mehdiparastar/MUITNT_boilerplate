@@ -24,7 +24,7 @@ import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private readonly postsService: PostsService) { }
 
   @AxiosPost('create-post')
   @UseGuards(AccessTokenGuard)
@@ -66,21 +66,19 @@ export class PostsController {
 
   @Patch('like-post/:id')
   @UseGuards(AccessTokenGuard)
-  @Serialize(ReactionDto)
   likePost(
     @CurrentUser() user: User,
     @Param('id') id: string,
-  ): Promise<Reaction> {
+  ) {
     return this.postsService.like(user, parseInt(id));
   }
 
   @Patch('dislike-post/:id')
   @UseGuards(AccessTokenGuard)
-  @Serialize(ReactionDto)
   dislikePost(
     @CurrentUser() user: User,
     @Param('id') id: string,
-  ): Promise<Reaction> {
+  ) {
     return this.postsService.dislike(user, parseInt(id));
   }
 

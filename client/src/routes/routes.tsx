@@ -42,7 +42,7 @@ export const RoutesList: React.FC = () => {
             <Route path='approve-permission-requests' element={<ApprovePReqs />} />
           </Route>
 
-          <Route element={<RequireAuth allowedRoles={[UserRoles.chatAppUserLL]} />}>
+          <Route element={<RequireAuth allowedRoles={[UserRoles.crudAppUserLL]} />}>
             <Route path="crud" element={<Crud />} />
           </Route>
 

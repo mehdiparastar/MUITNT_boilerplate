@@ -1,11 +1,11 @@
-import { useTheme } from '@mui/material/styles';
 import { Box, Container } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { assess } from 'helperFunctions/componentAssess';
-import React, { useEffect } from 'react'
+import { useEffect } from 'react';
 import { Provider } from 'react-redux';
-import { store } from './redux/store';
 import { AddPostForm } from './components/posts/AddPostForm';
 import { PostsList } from './components/posts/PostsList';
+import { store } from './redux/store';
 
 type Props = {}
 

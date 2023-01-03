@@ -44,5 +44,5 @@ export class Post {
     (reaction) => reaction.post,
     { cascade: true },
   )
-  reactions: Reaction[];  
+  reactions: Reaction[];
 }

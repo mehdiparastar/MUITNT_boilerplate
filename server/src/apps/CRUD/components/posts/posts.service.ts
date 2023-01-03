@@ -18,7 +18,7 @@ export class PostsService {
     @InjectRepository(Post)
     private postsRepo: Repository<Post>,
     private readonly reactionsService: ReactionsService,
-  ) {}
+  ) { }
 
   async create(user: User, title: string, caption: string): Promise<Post> {
     // Create new Post
@@ -92,41 +92,62 @@ export class PostsService {
     return this.postsRepo.save(post);
   }
 
-  async like(user: User, postId: number): Promise<Reaction> {
+  async like(user: User, postId: number): Promise<Partial<{ [key in reactionTypeEnum]: number }>> {
     const post = await this.findOneById(postId);
     if (!post) {
       throw new NotFoundException('post not found');
     }
-    if (post.reactions.map((react) => react.creator.id).includes(user.id)) {
-      const tempReaction =
-        await this.reactionsService.findOneByCreatorIdandPostId(
-          user.id,
-          post.id,
-        );
-      await this.reactionsService.removeReaction(user, tempReaction.id);
+
+    const reaction = await this.reactionsService.findOneByCreatorIdandPostId(user.id, postId)
+
+    if (!reaction) {
+      await this.reactionsService.create(
+        user,
+        reactionTypeEnum.like,
+        post,
+      );
+    }
+    else {
+      if (reaction.type === reactionTypeEnum.like) {
+        await this.reactionsService.removeReaction(user, reaction.id)
+      }
+      else {
+        await this.reactionsService.update(user, reaction.id, reactionTypeEnum.like)
+      }
     }
 
-    return await this.reactionsService.create(
-      user,
-      reactionTypeEnum.like,
-      post,
-    );
+    const reactions = (await this.findOneById(postId)).reactions
+
+    return reactions.reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {})
   }
 
-  async dislike(user: User, postId: number): Promise<Reaction> {
+  async dislike(user: User, postId: number): Promise<Partial<{ [key in reactionTypeEnum]: number }>> {
     const post = await this.findOneById(postId);
     if (!post) {
       throw new NotFoundException('post not found');
     }
-    if (post.reactions.map((react) => react.creator.id).includes(user.id)) {
-      const tempReaction =
-        await this.reactionsService.findOneByCreatorIdandPostId(
-          user.id,
-          post.id,
-        );
-      await this.reactionsService.removeReaction(user, tempReaction.id);
+
+    const reaction = await this.reactionsService.findOneByCreatorIdandPostId(user.id, postId)
+
+    if (!reaction) {
+      await this.reactionsService.create(
+        user,
+        reactionTypeEnum.dislike,
+        post,
+      );
     }
-    return this.reactionsService.create(user, reactionTypeEnum.dislike, post);
+    else {
+      if (reaction.type === reactionTypeEnum.dislike) {
+        await this.reactionsService.removeReaction(user, reaction.id)
+      }
+      else {
+        await this.reactionsService.update(user, reaction.id, reactionTypeEnum.dislike)
+      }
+    }
+
+    const reactions = (await this.findOneById(postId)).reactions
+
+    return reactions.reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {})
   }
 
   whereRU(): string {

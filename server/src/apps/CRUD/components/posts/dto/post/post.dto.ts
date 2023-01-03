@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { IsDate } from 'class-validator';
 import { UserDto } from 'src/users/dto/user/user.dto';
 import { Reaction } from '../../entities/reaction.entity';
@@ -21,6 +21,7 @@ export class PostDto {
   @Expose()
   @Type(() => ReactionDto)
   @ApiProperty()
+  @Transform(({ value }) => value?.reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {}) || {})
   reactions: ReactionDto[];
 
   @Expose()
