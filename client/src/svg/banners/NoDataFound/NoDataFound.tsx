@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@emotion/react';
 import { css } from '@emotion/css';
-import { assess } from 'helperFunctions/componentAssess';
+
 import { ReactComponent as NODATAFOUND } from './NoDataFound.svg';
 
 const anim1 = keyframes`
@@ -21,7 +21,7 @@ const anim2 = keyframes`
   `;
 
 const NoDataFoundSVG: React.FC<SvgIconProps> = (props) => {
-  assess && console.log('assess')
+  
   const theme = useTheme();
 
   return (

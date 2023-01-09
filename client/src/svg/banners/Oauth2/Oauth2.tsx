@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@emotion/react';
 import { css } from '@emotion/css';
-import { assess } from 'helperFunctions/componentAssess';
+
 
 const anim1 = keyframes`
         0%    { transform: translateY(-48%); }
@@ -76,7 +76,7 @@ const anim9 = keyframes`
     `;
 
 const Oauth2BannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
-  assess && console.log('assess')
+  
   const theme = useTheme();
   const colorPrimaryLight = theme.palette.primary.light;
   const colorPrimaryMain = theme.palette.primary.main;

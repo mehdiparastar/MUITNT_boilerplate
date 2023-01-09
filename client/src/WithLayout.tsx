@@ -1,36 +1,25 @@
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import AOS from 'aos';
-import { assess } from 'helperFunctions/componentAssess';
 import * as React from 'react';
 import getTheme from 'theme';
 import { paletteTypes } from 'theme/paletteTypes';
 
 export const ThemeContext = React.createContext({
   themeMode: {
-    toggleThemeMode: () => {},
+    toggleThemeMode: () => { },
   },
   themePaletteType: {
-    changeThemePaletteType: (type: themePaletteType) => {},
-  },
-  themeTopbarCompDimentions: {
-    updateThemeTopbarCompDimensions: (height: number, width: number) => {},
-  },
-  themeFooterCompDimentions: {
-    updateThemeFooterCompDimensions: (height: number, width: number) => {},
+    changeThemePaletteType: (type: themePaletteType) => { },
   },
 });
 
 export const WithLayout: React.FC<Props> = ({ children }) => {
-  assess && console.log('assess');
+
   const [mode, setMode] = React.useState<themeMode>('dark');
   const [palleteType, setPaletteType] = React.useState<themePaletteType>(
     paletteTypes[0],
   );
-  const [topbarCompHeight, setTopbarCompHeight] = React.useState<number>(0);
-  const [topbarCompWidth, setTopbarCompWidth] = React.useState<number>(0);
-  const [footerCompHeight, setFooterCompHeight] = React.useState<number>(0);
-  const [footerCompWidth, setFooterCompWidth] = React.useState<number>(0);
 
   const themeMode = React.useMemo(() => {
     // Remove the server-side injected CSS.
@@ -68,49 +57,16 @@ export const WithLayout: React.FC<Props> = ({ children }) => {
     [],
   );
 
-  const themeTopbarCompDimentions = React.useMemo(
-    () => ({
-      updateThemeTopbarCompDimensions: (
-        height: number = 0,
-        width: number = 0,
-      ) => {
-        if (topbarCompHeight !== height) setTopbarCompHeight(height);
-        if (topbarCompWidth !== width) setTopbarCompWidth(width);
-      },
-    }),
-    [topbarCompHeight, topbarCompWidth],
-  );
-
-  const themeFooterCompDimentions = React.useMemo(
-    () => ({
-      updateThemeFooterCompDimensions: (
-        height: number = 0,
-        width: number = 0,
-      ) => {
-        if (footerCompHeight !== height) setFooterCompHeight(height);
-        if (footerCompWidth !== width) setFooterCompWidth(width);
-      },
-    }),
-    [footerCompHeight, footerCompWidth],
-  );
 
   const theme = React.useMemo(() => {
     AOS.refresh();
     return getTheme(
       mode,
       palleteType,
-      topbarCompHeight,
-      topbarCompWidth,
-      footerCompHeight,
-      footerCompWidth,
     );
   }, [
     mode,
     palleteType,
-    topbarCompHeight,
-    topbarCompWidth,
-    footerCompHeight,
-    footerCompWidth,
   ]);
 
   return (
@@ -118,8 +74,6 @@ export const WithLayout: React.FC<Props> = ({ children }) => {
       value={{
         themeMode,
         themePaletteType,
-        themeTopbarCompDimentions,
-        themeFooterCompDimentions,
       }}
     >
       <ThemeProvider theme={theme}>

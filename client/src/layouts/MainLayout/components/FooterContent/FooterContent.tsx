@@ -9,12 +9,12 @@ import { Container, Icon, Stack, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Unstable_Grid2';
-import { assess } from 'helperFunctions/componentAssess';
+
 import * as React from 'react';
 
 // import MUITNTSVG from 'svg/logos/MUITNT';
 export const FooterContent: React.FC = () => {
-  assess && console.log('assess')
+  
   const theme = useTheme();
   return (
     <Container

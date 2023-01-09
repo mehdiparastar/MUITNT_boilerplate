@@ -3,7 +3,7 @@ import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@emotion/react';
 import { css } from '@emotion/css';
 import { ReactComponent as Svg } from './Docker1.svg';
-import { assess } from 'helperFunctions/componentAssess';
+
 
 const hook_arm_anim = keyframes`
   0% {transform: scaleY(0);}
@@ -146,7 +146,7 @@ const seaWaves_anim = keyframes`
   `;
 
 const DockerBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
-  assess && console.log('assess')
+  
   return (
     <SvgIcon
       viewBox="0 0 800 310"

@@ -1,13 +1,13 @@
 import { axiosPrivate } from 'api/axios';
 import { AxiosError, AxiosRequestConfig } from 'axios';
-import { assess } from 'helperFunctions/componentAssess';
+
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from './useAuth';
 import useRefreshToken from './useRefresh';
 
 const useAxiosPrivate = () => {
-  assess && console.log('assess');
+  
   const { accessToken, setUserProfile } = useAuth();
   const refresh = useRefreshToken();
   const navigate = useNavigate();

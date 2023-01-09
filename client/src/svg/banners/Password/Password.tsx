@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { keyframes } from '@emotion/react';
 import { useTheme } from '@mui/material/styles';
 import { SvgIconProps } from '@mui/material/SvgIcon';
-import { assess } from 'helperFunctions/componentAssess';
+
 import React from 'react';
 import { ReactComponent as PASSWORD } from './Password.svg';
 
@@ -21,7 +21,7 @@ const anim2 = keyframes`
   `;
 
 const PasswordSVG: React.FC<SvgIconProps> = (props) => {
-  assess && console.log('assess')
+  
   const theme = useTheme();
 
   return (

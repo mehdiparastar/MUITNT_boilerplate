@@ -16,7 +16,7 @@ import { CredentialResponse, GoogleLogin, useGoogleLogin } from '@react-oauth/go
 import axios from 'api/axios';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { useFormik } from 'formik';
-import { assess } from 'helperFunctions/componentAssess';
+
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
@@ -44,7 +44,7 @@ const validationSchema = yup.object({
 });
 
 export const LoginForm = () => {
-  assess && console.log('assess')
+  
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state?.from?.pathname === '/auth' ? '/' : location.state?.from?.pathname) || '/';

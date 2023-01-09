@@ -1,4 +1,4 @@
-import { assess } from 'helperFunctions/componentAssess';
+
 import { getRolesExpand } from 'helperFunctions/get-roles-expand';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
@@ -6,7 +6,7 @@ import useAuth from '../hooks/useAuth';
 const RequireAuth: React.FC<{ allowedRoles: string[] }> = ({
   allowedRoles,
 }) => {
-  assess && console.log('assess')
+  
   const { userProfile, loadingPersist } = useAuth();
   const location = useLocation();
   const inDBRoles = userProfile?.roles

@@ -1,14 +1,14 @@
 import { Container, Slide, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Unstable_Grid2';
-import { assess } from 'helperFunctions/componentAssess';
+
 import React, { FC, ReactElement } from 'react';
 import { LoginSVG } from 'svg/pages/loginSVG';
 import { RegisterForm } from './components/RegisterForm';
 import { Side } from './components/Side';
 
 const Register: FC<any> = (): ReactElement => {
-  assess && console.log('assess')
+  
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'), {
     defaultMatches: true,

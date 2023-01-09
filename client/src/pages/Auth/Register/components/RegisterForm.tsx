@@ -13,7 +13,7 @@ import { AxiosError } from 'axios';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';
 import { useFormik } from 'formik';
-import { assess } from 'helperFunctions/componentAssess';
+
 import { useSnackbar } from 'notistack';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { localRegisterService } from 'services/auth/local.signup.service';
@@ -38,7 +38,7 @@ const validationSchema = yup.object({
 });
 
 export const RegisterForm = () => {
-  assess && console.log('assess')
+  
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';

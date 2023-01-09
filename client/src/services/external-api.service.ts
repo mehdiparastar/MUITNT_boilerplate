@@ -1,10 +1,10 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { assess } from 'helperFunctions/componentAssess';
+
 
 export const callExternalApi = async (options: {
   config: AxiosRequestConfig;
 }): Promise<IApiResponse<any>> => {
-  assess && console.log('assess');
+  
   try {
     const response: AxiosResponse = await axios(options.config);
     const { data } = response;

@@ -3,7 +3,7 @@ import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@emotion/react';
 import { css } from '@emotion/css';
 import { ReactComponent as MUISvg } from './MUI.svg';
-import { assess } from 'helperFunctions/componentAssess';
+
 
 const anim1 = keyframes`
         0% {transform: rotate(0deg);}
@@ -22,7 +22,7 @@ const anim3 = keyframes`
     `;
 
 const MUIBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
-  assess && console.log('assess')
+  
   return (
     <SvgIcon
       viewBox="0 0 800 310"

@@ -1,6 +1,6 @@
 import { Box, Container, Divider, Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { assess } from 'helperFunctions/componentAssess';
+
 import { FC, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { Counter } from './components/counter/Counter';
@@ -12,7 +12,7 @@ import { store } from './redux/store';
 type Props = {};
 
 const UsersManagement: FC<Props> = (props: Props) => {
-  assess && console.log('assess')
+  
   const theme = useTheme();
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import axios from 'api/axios';
-import { assess } from 'helperFunctions/componentAssess';
+
 import { strToBool } from 'helperFunctions/strToBool';
 import useAuth from './useAuth';
 
@@ -7,7 +7,7 @@ const useRefreshToken = () => {
   const { setAccessToken, refreshToken, setRefreshToken, persist } = useAuth();
 
   const refresh = async (persistRT?: string | null) => {
-    assess && console.log('assess');
+    
     const rT =
       persist && !strToBool(refreshToken) && strToBool(persistRT)
         ? persistRT

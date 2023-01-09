@@ -1,4 +1,4 @@
-import { assess } from 'helperFunctions/componentAssess';
+
 import { useCookies } from 'react-cookie';
 import useAuth from './useAuth';
 import useAxiosPrivate from './useAxiosPrivate';
@@ -10,7 +10,7 @@ const useLogout = () => {
   const [, setCookie] = useCookies(['rT', 'persist']);
 
   const logout = async () => {
-    assess && console.log('assess');
+    
     try {
       setUserProfile(null);
       setAccessToken(null);

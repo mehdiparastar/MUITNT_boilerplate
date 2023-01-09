@@ -6,13 +6,13 @@ import { navigationPages } from 'layouts/navigation';
 import { Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import Link from '@mui/material/Link';
-import { assess } from 'helperFunctions/componentAssess';
+
 import { useLocation } from 'react-router-dom';
 
 export const SidebarContent: React.FC<Props & { onClose: () => void }> = ({
   onClose,
 }) => {
-  assess && console.log('assess')
+  
   const theme = useTheme();
   const location = useLocation()
 

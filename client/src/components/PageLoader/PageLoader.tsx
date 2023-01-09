@@ -4,7 +4,7 @@ import React from "react";
 import { assess } from "helperFunctions/componentAssess";
 
 export const PageLoader: React.FC = () => {
-    assess && console.log('assess')
+    
     const loadingImg = "https://cdn.auth0.com/blog/hello-auth0/loader.svg";
     const spin = keyframes`
         from {

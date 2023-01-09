@@ -7,10 +7,10 @@ import {
   Container,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { assess } from 'helperFunctions/componentAssess';
+
 
 function HideOnScroll(props: HideOnScrollProps) {
-  assess && console.log('assess')
+  
   const { children } = props;
   const trigger = useScrollTrigger({});
   return (

@@ -1,14 +1,14 @@
 import axios from 'api/axios';
 import useAuth from 'auth/hooks/useAuth';
 import useRefreshToken from 'auth/hooks/useRefresh';
-import { assess } from 'helperFunctions/componentAssess';
+
 import { strToBool } from 'helperFunctions/strToBool';
 import { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { Outlet } from 'react-router-dom';
 
 const PersistLogin = () => {
-  assess && console.log('assess')
+  
   const {
     setUserProfile,
     refreshToken,

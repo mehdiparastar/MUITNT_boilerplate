@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
 import { AxiosError, AxiosInstance } from 'axios';
 import { reactionTypeEnum } from 'enum/reactionType.enum';
 import { thunkStatus } from 'enum/reduxThunkStatus.enum';
@@ -203,7 +203,7 @@ export const postsSlice = createSlice({
       })
       .addCase(likePost.fulfilled, (state, action) => {
         state.status = thunkStatus.succeeded;
-        state.posts.data = state.posts.data.map(post => post.id === action.payload.postId ? ({ ...post, reactions: action.payload.reaction }) : post)
+        state.posts.data.find(post => post.id === action.payload.postId)!.reactions = action.payload.reaction
       })
       .addCase(likePost.rejected, (state, action) => {
         state.status = thunkStatus.failed;
@@ -214,7 +214,7 @@ export const postsSlice = createSlice({
       })
       .addCase(dislikePost.fulfilled, (state, action) => {
         state.status = thunkStatus.succeeded;
-        state.posts.data = state.posts.data.map(post => post.id === action.payload.postId ? ({ ...post, reactions: action.payload.reaction }) : post)
+        state.posts.data.find(post => post.id === action.payload.postId)!.reactions = action.payload.reaction
       })
       .addCase(dislikePost.rejected, (state, action) => {
         state.status = thunkStatus.failed;
@@ -251,5 +251,14 @@ export const postsSlice = createSlice({
 export const selectAllPosts = (state: RootState) => state.posts.posts;
 export const getPostsStatus = (state: RootState) => state.posts.status;
 export const getPostsError = (state: RootState) => state.posts.error;
-
+export const selectPostReactionsCoundByPostIdAndReactionName =
+  createSelector(
+    [
+      selectAllPosts,
+      (selectAllPosts, postId: number, name: reactionTypeEnum) => ({ postId, name })
+    ],
+    (selectAllPosts, { postId, name }) => {
+      // console.log(postId, name)
+      return selectAllPosts.data.find(post => post.id === postId)?.reactions[name]
+    })
 export default postsSlice.reducer;

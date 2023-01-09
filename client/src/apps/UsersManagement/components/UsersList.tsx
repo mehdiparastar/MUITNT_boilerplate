@@ -1,11 +1,11 @@
 import { Box, Typography } from '@mui/material';
 import useAuth from 'auth/hooks/useAuth';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import { assess } from 'helperFunctions/componentAssess';
+
 import { useEffect, useState } from 'react';
 
 const UsersList = () => {
-  assess && console.log('assess')
+  
   const [users, setUsers] = useState<IUser[]>([]);
   const [, setError] = useState<any>(null);
   const axiosPrivate = useAxiosPrivate();

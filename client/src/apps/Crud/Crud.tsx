@@ -1,6 +1,5 @@
 import { Box, Container } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { assess } from 'helperFunctions/componentAssess';
 import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { AddPostForm } from './components/posts/AddPostForm';
@@ -10,7 +9,6 @@ import { store } from './redux/store';
 type Props = {}
 
 const Crud = (props: Props) => {
-    assess && console.log('assess')
     const theme = useTheme();
 
     useEffect(() => {

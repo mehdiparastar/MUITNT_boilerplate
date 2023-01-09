@@ -6,10 +6,10 @@ import Button from '@mui/material/Button';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grid from '@mui/material/Unstable_Grid2';
 import { NotFoundSVG } from 'svg/pages/NotFoundSVG';
-import { assess } from 'helperFunctions/componentAssess';
+
 
 const NotFound: FC<any> = (): ReactElement => {
-  assess && console.log('assess')
+  
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'), {
     defaultMatches: true,

@@ -6,7 +6,7 @@ import useAuth from 'auth/hooks/useAuth';
 import { HidableAppBar } from 'components/HidableAppBar/HidableAppBar';
 import Item from 'components/Item/Item';
 import { Sidebar } from 'components/Sidebar/Sidebar';
-import { assess } from 'helperFunctions/componentAssess';
+
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { FooterContent } from './components/FooterContent/FooterContent';
@@ -14,7 +14,7 @@ import { SidebarContent } from './components/SidebarContent/SidebarContent';
 import { TopbarContent } from './components/TopbarContent/TopbarContent';
 
 export const MainLayout: React.FC<layoutProps> = ({ children }) => {
-  assess && console.log('assess')
+  
   const { loadingPersist, loadingFetch } = useAuth()
   const [openSidebar, setOpenSidebar] = React.useState<boolean>(false);
 

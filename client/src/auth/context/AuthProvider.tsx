@@ -1,4 +1,4 @@
-import { assess } from 'helperFunctions/componentAssess';
+
 import { strToBool } from 'helperFunctions/strToBool';
 import { createContext, FC, useState } from 'react';
 import { useCookies } from 'react-cookie';
@@ -21,7 +21,7 @@ const initAuthState: IAuthContext = {
 const AuthContext = createContext<IAuthContext>(initAuthState);
 
 export const AuthProvider: FC<Props> = ({ children }) => {
-  assess && console.log('assess')
+  
   const [cookies] = useCookies(['persist']);
   const [userProfile, setUserProfile] = useState<IUser | null | undefined>(initAuthState.userProfile);
   const [accessToken, setAccessToken] = useState<string | null | undefined>(initAuthState.accessToken);

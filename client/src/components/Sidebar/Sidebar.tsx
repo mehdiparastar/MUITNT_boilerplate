@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import CloseIcon from '@mui/icons-material/Close';
 import MUITNTSVG from 'svg/logos/MUITNT';
-import { assess } from 'helperFunctions/componentAssess';
+
 
 type SidebarProps = Props & {
   onClose: () => void;
@@ -16,7 +16,7 @@ type SidebarProps = Props & {
 const drawerWidth: number = 400;
 
 export const Sidebar: React.FC<SidebarProps> = (props) => {
-  assess && console.log('assess')
+  
   const { children, onClose, open, variant } = props;
 
   return (

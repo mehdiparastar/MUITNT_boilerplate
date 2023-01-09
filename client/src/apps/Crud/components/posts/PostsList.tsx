@@ -1,19 +1,16 @@
-import { Box, Card, CardActionArea, CardActions, CardContent, CardHeader, Pagination, Typography, useTheme } from '@mui/material';
+import { Box, Pagination, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Stack } from '@mui/system';
 import useAuth from 'auth/hooks/useAuth';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import Item from 'components/Item/Item';
-import { formatDistanceToNow } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { fetchPosts, selectAllPosts } from './postsSlice';
-import { ReactionButtons } from './ReactionButtons';
+import PostsExcerpt from './PostsExcerpt';
+import { fetchPosts, IPostsState, selectAllPosts } from './postsSlice';
 
 export function PostsList() {
     const axiosPrivate = useAxiosPrivate();
     const dispatch = useAppDispatch()
-    const theme = useTheme();
     const { setLoadingFetch } = useAuth()
 
     // The `state` arg is correctly typed as `RootState` already
@@ -23,7 +20,7 @@ export function PostsList() {
 
     const paginatePosts = useAppSelector(selectAllPosts)//.slice().sort((b, a) => a.createdAt.getTime() - b.createdAt.getTime(),)
     const postsAllCount = paginatePosts.count
-    const posts = paginatePosts.data.slice(0, limit)
+    const posts = paginatePosts.data//.slice(0, limit)
     // const postsStatus = useAppSelector(getPostsStatus)
     // const error = useAppSelector(getPostsError)
 
@@ -42,33 +39,7 @@ export function PostsList() {
         setSkip((value - 1) * limit);
     };
 
-    const renderedPosts = posts.map(post => (
-        <Grid key={post.id} xs={12} sm={6} md={4} >
-            <Item
-                width={1}
-                height={1}
-                sx={{
-                    textAlign: 'left',
-                    transition: 'all .2s ease-in-out',
-                    '&:hover': {
-                        transform: `translateY(-${theme.spacing(0.5)})`,
-                    },
-                }}>
-                <Card sx={{ width: 1, height: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} >
-                    <CardActionArea>
-                        <CardHeader title={post.title.substring(0, 20)} subheader={`by ${post.author?.name || 'UNKNOWN AUTHOR'}`} />
-                        <CardContent>{post.caption.substring(0, 200)} ...</CardContent>
-                    </CardActionArea>
-                    <CardActions>
-                        <Stack width={'100%'} direction={'row'} display={'flex'} justifyContent='space-between' alignItems={'center'}>
-                            {formatDistanceToNow(post.createdAt)} ago
-                            <ReactionButtons post={post} />
-                        </Stack>
-                    </CardActions>
-                </Card >
-            </Item>
-        </Grid>
-    ))
+    const renderedPosts = posts.map((post: IPostsState) => <PostsExcerpt key={post.id} post={post} />)
 
     return (
         <Box component={'section'} >

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { SvgIcon, SvgIconProps } from '@mui/material';
-import { assess } from 'helperFunctions/componentAssess';
+
 
 
 const MUITNTSVG: React.FC<SvgIconProps> = ({
@@ -9,7 +9,7 @@ const MUITNTSVG: React.FC<SvgIconProps> = ({
   height = 70,
   ...rest
 }) => {
-  assess && console.log('assess')
+  
   const theme = useTheme();
   return (
     <SvgIcon

@@ -3,7 +3,7 @@ import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@emotion/react';
 import { css } from '@emotion/css';
 import { ReactComponent as Svg } from './Google.svg';
-import { assess } from 'helperFunctions/componentAssess';
+
 
 interface IpxToMove {
   x: number;
@@ -29,7 +29,7 @@ const createTranslator =
     };
 
 const GoogleBannerSVG: React.FC<SvgIconProps> = ({ sx, ...rest }) => {
-  assess && console.log('assess')
+  
   const svgRef = useRef<SVGSVGElement>(null);
   const [svgObjectsPXtoCursor, setSvgObjectsPXtoCursor] =
     useState<IobjectsPXToMove>({

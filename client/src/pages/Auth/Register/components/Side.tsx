@@ -10,10 +10,10 @@ import Slider, { Settings } from 'react-slick';
 import { useTheme } from '@mui/material/styles';
 import StarIcon from '@mui/icons-material/Star';
 import Grid from '@mui/material/Unstable_Grid2';
-import { assess } from 'helperFunctions/componentAssess';
+
 
 export const Side: FC<any> = (): ReactElement => {
-  assess && console.log('assess')
+  
   const theme = useTheme();
   const themeMode = theme.palette.mode;
 
