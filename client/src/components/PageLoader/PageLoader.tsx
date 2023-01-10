@@ -1,7 +1,9 @@
 import { Box } from "@mui/material";
 import { keyframes } from '@emotion/react'
 import React from "react";
-import { assess } from "helperFunctions/componentAssess";
+
+
+
 
 export const PageLoader: React.FC = () => {
     
@@ -13,6 +15,7 @@ export const PageLoader: React.FC = () => {
         to {
             transform: rotate(360deg);
         }`
+
     return (
         <Box
             component="div"

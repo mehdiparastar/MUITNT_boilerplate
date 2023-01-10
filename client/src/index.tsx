@@ -15,7 +15,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 root.render(
-  // <React.StrictMode>
+  <React.StrictMode>
     <CookiesProvider>
       <AuthProvider>
         <WithLayout>
@@ -29,7 +29,7 @@ root.render(
         </WithLayout>
       </AuthProvider>
     </CookiesProvider>
-  // </React.StrictMode>,
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,6 +1,7 @@
 
+import { LinearProgress } from '@mui/material';
 import { strToBool } from 'helperFunctions/strToBool';
-import { createContext, FC, useState } from 'react';
+import React, { createContext, FC, useState } from 'react';
 import { useCookies } from 'react-cookie';
 
 const initAuthState: IAuthContext = {
@@ -21,7 +22,7 @@ const initAuthState: IAuthContext = {
 const AuthContext = createContext<IAuthContext>(initAuthState);
 
 export const AuthProvider: FC<Props> = ({ children }) => {
-  
+
   const [cookies] = useCookies(['persist']);
   const [userProfile, setUserProfile] = useState<IUser | null | undefined>(initAuthState.userProfile);
   const [accessToken, setAccessToken] = useState<string | null | undefined>(initAuthState.accessToken);
@@ -30,17 +31,28 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   const [loadingPersist, setLoadingPersist] = useState<boolean>(initAuthState.loadingPersist)
   const [loadingFetch, setLoadingFetch] = useState<boolean>(initAuthState.loadingFetch)
 
+  const value = React.useMemo(() => ({
+    userProfile, setUserProfile,
+    accessToken, setAccessToken,
+    refreshToken, setRefreshToken,
+    persist, setPersist,
+    loadingPersist, setLoadingPersist,
+    loadingFetch, setLoadingFetch
+  }), [
+    userProfile,
+    accessToken,
+    refreshToken,
+    persist,
+    loadingPersist,
+    loadingFetch,
+  ])
+
+
   return (
     <AuthContext.Provider
-      value={{
-        userProfile, setUserProfile,
-        accessToken, setAccessToken,
-        refreshToken, setRefreshToken,
-        persist, setPersist,
-        loadingPersist, setLoadingPersist,
-        loadingFetch, setLoadingFetch
-      }}
+      value={value}
     >
+      {(loadingPersist || loadingFetch) && <LinearProgress id='loader' sx={{ position: 'fixed', zIndex: 1000000000, top: 0, width: '100%' }} />}
       {children}
     </AuthContext.Provider>
   );
