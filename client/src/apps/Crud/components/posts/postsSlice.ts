@@ -49,25 +49,25 @@ export const fetchPosts = createAsyncThunk<
   },
   {
     axiosPrivate: AxiosInstance;
-    setLoadingFetch: (bool: boolean) => void;
+    handleLoading: (bool: boolean) => void;
     skip: number;
     limit: number;
   },
   { rejectValue: AxiosError }
 >(
   'posts/fetchPosts',
-  async ({ axiosPrivate, setLoadingFetch, skip, limit }, thunkApi) => {
+  async ({ axiosPrivate, handleLoading, skip, limit }, thunkApi) => {
     try {
-      setLoadingFetch(true);
+      handleLoading(true);
       const response = await axiosPrivate.get<{
         count: number;
         data: IPostsState[];
       }>(`posts/all-posts?skip=${skip}&&limit=${limit}`);
-      setLoadingFetch(false);
+      handleLoading(false);
       return response.data;
     } catch (ex) {
       const err = ex as AxiosError;
-      setLoadingFetch(false);
+      handleLoading(false);
       return thunkApi.rejectWithValue(err);
     }
   },
@@ -77,21 +77,21 @@ export const likePost = createAsyncThunk<
   { reaction: Partial<{ [key in reactionTypeEnum]: number }>, postId?: number },
   {
     axiosPrivate: AxiosInstance;
-    setLoadingFetch: (bool: boolean) => void;
+    handleLoading: (bool: boolean) => void;
     postId: number;
   },
   { rejectValue: AxiosError }
 >(
   'posts/likePost',
-  async ({ axiosPrivate, setLoadingFetch, postId }, thunkApi) => {
+  async ({ axiosPrivate, handleLoading, postId }, thunkApi) => {
     try {
-      setLoadingFetch(true);
+      handleLoading(true);
       const response = await axiosPrivate.patch<Partial<{ [key in reactionTypeEnum]: number }>>(`posts/like-post/${postId}`);
-      setLoadingFetch(false);
+      handleLoading(false);
       return { reaction: response.data, postId };
     } catch (ex) {
       const err = ex as AxiosError;
-      setLoadingFetch(false);
+      handleLoading(false);
       return thunkApi.rejectWithValue(err);
     }
   },
@@ -102,21 +102,21 @@ export const dislikePost = createAsyncThunk<
   { reaction: Partial<{ [key in reactionTypeEnum]: number }>, postId?: number },
   {
     axiosPrivate: AxiosInstance;
-    setLoadingFetch: (bool: boolean) => void;
+    handleLoading: (bool: boolean) => void;
     postId: number;
   },
   { rejectValue: AxiosError }
 >(
   'posts/dislikePost',
-  async ({ axiosPrivate, setLoadingFetch, postId }, thunkApi) => {
+  async ({ axiosPrivate, handleLoading, postId }, thunkApi) => {
     try {
-      setLoadingFetch(true);
+      handleLoading(true);
       const response = await axiosPrivate.patch<Partial<{ [key in reactionTypeEnum]: number }>>(`posts/dislike-post/${postId}`);
-      setLoadingFetch(false);
+      handleLoading(false);
       return { reaction: response.data, postId };
     } catch (ex) {
       const err = ex as AxiosError;
-      setLoadingFetch(false);
+      handleLoading(false);
       return thunkApi.rejectWithValue(err);
     }
   },
@@ -127,23 +127,23 @@ export const deletePost = createAsyncThunk<
   { postId: number },
   {
     axiosPrivate: AxiosInstance;
-    setLoadingFetch: (bool: boolean) => void;
+    handleLoading: (bool: boolean) => void;
     enqueueSnackbar: (message: SnackbarMessage, options?: OptionsObject | undefined) => SnackbarKey;
     postId: number;
   },
   { rejectValue: AxiosError }
 >(
   'posts/deletePost',
-  async ({ axiosPrivate, setLoadingFetch, enqueueSnackbar, postId }, thunkApi) => {
+  async ({ axiosPrivate, handleLoading, enqueueSnackbar, postId }, thunkApi) => {
     try {
-      setLoadingFetch(true);
+      handleLoading(true);
       await axiosPrivate.delete<Partial<IPostsState>>(`posts/delete-post/${postId}`);
-      setLoadingFetch(false);
+      handleLoading(false);
       enqueueSnackbar('successfully deleted', { variant: 'success' });
       return { postId, };
     } catch (ex) {
       const err = ex as AxiosError<{ msg?: string }>;
-      setLoadingFetch(false);
+      handleLoading(false);
       enqueueSnackbar(err.response?.data?.msg || 'Unknown Error', { variant: 'error' });
       return thunkApi.rejectWithValue(err);
     }
@@ -155,23 +155,23 @@ export const createPost = createAsyncThunk<
   IPostsState,
   {
     axiosPrivate: AxiosInstance;
-    setLoadingFetch: (bool: boolean) => void;
+    handleLoading: (bool: boolean) => void;
     enqueueSnackbar: (message: SnackbarMessage, options?: OptionsObject | undefined) => SnackbarKey;
     data: ICreatePostDto
   },
   { rejectValue: AxiosError }
 >(
   'posts/createPost',
-  async ({ axiosPrivate, setLoadingFetch, enqueueSnackbar, data }, thunkApi) => {
+  async ({ axiosPrivate, handleLoading, enqueueSnackbar, data }, thunkApi) => {
     try {
-      setLoadingFetch(true);
+      handleLoading(true);
       const response = await axiosPrivate.post<IPostsState>(`posts/create-post`, data);
-      setLoadingFetch(false);
+      handleLoading(false);
       enqueueSnackbar('successfully added', { variant: 'success' });
       return response.data
     } catch (ex) {
       const err = ex as AxiosError<{ msg?: string }>;
-      setLoadingFetch(false);
+      handleLoading(false);
       enqueueSnackbar(err.response?.data?.msg || 'Unknown Error', { variant: 'error' });
       return thunkApi.rejectWithValue(err);
     }

@@ -1,6 +1,6 @@
 import { Box, Button, Stack, TextField } from '@mui/material';
-import useAuth from 'auth/hooks/useAuth';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
+import useLoadingFetch from 'auth/hooks/useLoadingFetch';
 import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack';
 import * as yup from 'yup';
@@ -32,14 +32,14 @@ export function AddPostForm(props: IAddPostFormProps) {
         caption: '',
     };
     const axiosPrivate = useAxiosPrivate();
-    const { setLoadingFetch } = useAuth()
+    const { handleLoading } = useLoadingFetch()
     const dispatch = useAppDispatch()
     const { enqueueSnackbar } = useSnackbar()
 
     const onSubmit = async (values: IAddPostFormDto): Promise<any> => {
         dispatch(createPost({
             axiosPrivate,
-            setLoadingFetch,
+            handleLoading,
             enqueueSnackbar,
             data: {
                 title: formik.values.title,

@@ -1,23 +1,22 @@
-import DeleteIcon from '@mui/icons-material/DeleteForever';
-import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, Checkbox, Chip, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grow, IconButton, Pagination, Paper, Radio, RadioGroup, Skeleton, Slide, Stack, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, Checkbox, Chip, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grow, Pagination, Paper, Radio, RadioGroup, Skeleton, Slide, Stack, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import useAuth from 'auth/hooks/useAuth';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
+import useLoadingFetch from 'auth/hooks/useLoadingFetch';
 import { AxiosError } from 'axios';
 import Item from 'components/Item/Item';
 import { MUIAsyncAutocomplete } from 'components/MUIAsyncAutocomplete/MUIAsyncAutocomplete';
+import { formatDistanceToNow } from 'date-fns';
 import { pReqResultENUM } from 'enum/pReqResult.enum';
 import { getRoleName } from 'enum/userRoles.enum';
-import moment from 'moment';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
 import { forwardRef, useEffect, useState } from 'react';
 import NoDataFoundSVG from 'svg/banners/NoDataFound/NoDataFound';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
-import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
-import { formatDistanceToNow, parseISO } from 'date-fns';
 
 interface IApprovePReqsProps {
 }
@@ -38,7 +37,8 @@ const Transition = forwardRef(function Transition(
 });
 
 const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
-    const { loadingFetch, setLoadingFetch } = useAuth();
+    const { loadingFetch } = useAuth();
+    const { handleLoading } = useLoadingFetch()
     const theme = useTheme();
     const axiosPrivate = useAxiosPrivate();
     const { enqueueSnackbar } = useSnackbar();
@@ -118,7 +118,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
-        setLoadingFetch(true);
+        handleLoading(true);
 
         const getData = async () => {
             try {
@@ -137,7 +137,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
             } catch (err) {
                 isMounted && setError(err);
             } finally {
-                isMounted && setLoadingFetch(false);
+                isMounted && handleLoading(false);
                 isMounted && setReload(false);
                 isMounted = false;
             }
@@ -146,13 +146,13 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
 
         return () => {
             isMounted = false;
-            setLoadingFetch(false);
+            handleLoading(false);
             setReload(false);
             controller.abort();
         };
     }, [
         axiosPrivate,
-        setLoadingFetch,
+        handleLoading,
         accepted,
         rejected,
         unSeen,

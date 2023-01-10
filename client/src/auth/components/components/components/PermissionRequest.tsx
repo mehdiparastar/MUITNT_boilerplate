@@ -36,6 +36,7 @@ import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Stack } from '@mui/system';
 import useAuth from 'auth/hooks/useAuth';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
+import useLoadingFetch from 'auth/hooks/useLoadingFetch';
 import { AxiosError } from 'axios';
 import Item from 'components/Item/Item';
 import { formatDistanceToNow } from 'date-fns';
@@ -73,7 +74,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
     props,
 ) => {
     const { enqueueSnackbar } = useSnackbar();
-    const { loadingFetch, setLoadingFetch } = useAuth();
+    const { loading, handleLoading } = useLoadingFetch();
     const theme = useTheme();
     const axiosPrivate = useAxiosPrivate();
 
@@ -105,7 +106,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
-        setLoadingFetch(true);
+        handleLoading(true);
 
         const getData = async () => {
             try {
@@ -124,7 +125,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
             } catch (err) {
                 isMounted && setError(err);
             } finally {
-                isMounted && setLoadingFetch(false);
+                isMounted && handleLoading(false);
                 isMounted && setReload(false);
                 isMounted = false;
             }
@@ -133,13 +134,13 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
 
         return () => {
             isMounted = false;
-            setLoadingFetch(false);
+            handleLoading(false);
             setReload(false);
             controller.abort();
         };
     }, [
         axiosPrivate,
-        setLoadingFetch,
+        handleLoading,
         accepted,
         rejected,
         unSeen,
@@ -298,7 +299,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
                                                 <CardActionArea>
                                                     <CardHeader
                                                         avatar={
-                                                            loadingFetch ? (
+                                                            loading ? (
                                                                 <Skeleton
                                                                     variant="circular"
                                                                     animation="wave"
@@ -318,7 +319,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
                                                             )
                                                         }
                                                         action={
-                                                            loadingFetch ? (
+                                                            loading ? (
                                                                 <Skeleton
                                                                     variant="rectangular"
                                                                     animation="wave"
@@ -343,7 +344,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
                                                         }
                                                     />
                                                     <CardContent>
-                                                        {loadingFetch ? (
+                                                        {loading ? (
                                                             <>
                                                                 <Skeleton
                                                                     sx={{ my: 1 }}
@@ -429,7 +430,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
                                                     </CardContent>
                                                 </CardActionArea>
                                                 <CardActions>
-                                                    {loadingFetch ? (
+                                                    {loading ? (
                                                         <Stack
                                                             width={1}
                                                             direction={'row'}
