@@ -2,7 +2,7 @@ import { Box, Pagination, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Stack } from '@mui/system';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import useLoadingFetch from 'auth/hooks/useLoadingFetch';
+import { useLoading } from 'loading/hooks/useLoading';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import PostsExcerpt from './PostsExcerpt';
@@ -11,7 +11,7 @@ import { fetchPosts, IPostsState, selectAllPosts } from './postsSlice';
 export function PostsList() {
     const axiosPrivate = useAxiosPrivate();
     const dispatch = useAppDispatch()
-    const { handleLoading } = useLoadingFetch()
+    const { enableLoading, disableLoading } = useLoading()
 
     // The `state` arg is correctly typed as `RootState` already
     const limit = 6
@@ -27,8 +27,8 @@ export function PostsList() {
     const count = Math.ceil(postsAllCount / limit)
 
     useEffect(() => {
-        dispatch(fetchPosts({ axiosPrivate, handleLoading, skip, limit }))
-    }, [dispatch, handleLoading, axiosPrivate, limit, skip])
+        dispatch(fetchPosts({ axiosPrivate, enableLoading, disableLoading, skip, limit }))
+    }, [dispatch, axiosPrivate, enableLoading, disableLoading, limit, skip])
 
 
     const handleChangePage = (

@@ -1,8 +1,8 @@
 import DeleteForever from '@mui/icons-material/DeleteForever';
 import { Button, ButtonGroup, IconButton, Stack } from '@mui/material';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import useLoadingFetch from 'auth/hooks/useLoadingFetch';
 import { reactionTypeEnum } from 'enum/reactionType.enum';
+import { useLoading } from 'loading/hooks/useLoading';
 import { useSnackbar } from 'notistack';
 import React, { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -22,24 +22,24 @@ const ReactionButtons =
         const dispatch = useAppDispatch()
         const { enqueueSnackbar } = useSnackbar()
         const axiosPrivate = useAxiosPrivate();
-        const { handleLoading } = useLoadingFetch()
+        const { enableLoading, disableLoading } = useLoading()
         const postLikesCount = useAppSelector((state) => selectPostReactionsCoundByPostIdAndReactionName(state, postId, reactionTypeEnum.like))
         const postDislikesCount = useAppSelector((state) => selectPostReactionsCoundByPostIdAndReactionName(state, postId, reactionTypeEnum.dislike))
 
         const handleLikeClick =
             useCallback(
-                () => dispatch(likePost({ axiosPrivate, handleLoading: handleLoading, postId: postId }))
-                , [axiosPrivate, dispatch, postId, handleLoading])
+                () => dispatch(likePost({ axiosPrivate, enableLoading, disableLoading, postId: postId }))
+                , [axiosPrivate, dispatch, enableLoading, disableLoading, postId])
 
         const handleDislikeClick =
             useCallback(
-                () => dispatch(dislikePost({ axiosPrivate, handleLoading: handleLoading, postId: postId }))
-                , [axiosPrivate, dispatch, postId, handleLoading])
+                () => dispatch(dislikePost({ axiosPrivate, enableLoading, disableLoading, postId: postId }))
+                , [axiosPrivate, enableLoading, disableLoading, dispatch, postId])
 
         const handleDeletePostClick =
             useCallback(
-                () => dispatch(deletePost({ axiosPrivate, handleLoading: handleLoading, enqueueSnackbar, postId: postId }))
-                , [axiosPrivate, dispatch, postId, handleLoading, enqueueSnackbar])
+                () => dispatch(deletePost({ axiosPrivate, enableLoading, disableLoading, enqueueSnackbar, postId: postId }))
+                , [axiosPrivate, dispatch, enableLoading, disableLoading, postId, enqueueSnackbar])
 
 
         const reactionButtons = Object.entries(reactionEmoji).map(([name, emoji]) => {

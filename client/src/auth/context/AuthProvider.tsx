@@ -15,8 +15,6 @@ const initAuthState: IAuthContext = {
   setPersist: () => { },
   loadingPersist: true,
   setLoadingPersist: () => { },
-  loadingFetch: false,
-  setLoadingFetch: () => { }
 };
 
 const AuthContext = createContext<IAuthContext>(initAuthState);
@@ -29,7 +27,6 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   const [refreshToken, setRefreshToken] = useState<string | null | undefined>(initAuthState.refreshToken);
   const [persist, setPersist] = useState<boolean>(strToBool(cookies.persist) || initAuthState.persist);
   const [loadingPersist, setLoadingPersist] = useState<boolean>(initAuthState.loadingPersist)
-  const [loadingFetch, setLoadingFetch] = useState<boolean>(initAuthState.loadingFetch)
 
   const value = React.useMemo(() => ({
     userProfile, setUserProfile,
@@ -37,14 +34,12 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     refreshToken, setRefreshToken,
     persist, setPersist,
     loadingPersist, setLoadingPersist,
-    loadingFetch, setLoadingFetch
   }), [
     userProfile,
     accessToken,
     refreshToken,
     persist,
     loadingPersist,
-    loadingFetch,
   ])
 
 
@@ -52,7 +47,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     <AuthContext.Provider
       value={value}
     >
-      {(loadingPersist || loadingFetch) && <LinearProgress id='loader' sx={{ position: 'fixed', zIndex: 1000000000, top: 0, width: '100%' }} />}
+      {loadingPersist && <LinearProgress id='loader' sx={{ position: 'fixed', zIndex: 1000000000, top: 0, width: '100%' }} />}
       {children}
     </AuthContext.Provider>
   );

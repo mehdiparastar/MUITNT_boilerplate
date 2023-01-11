@@ -4,15 +4,14 @@ import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardHeader
 import { useTheme } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
-import useAuth from 'auth/hooks/useAuth';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import useLoadingFetch from 'auth/hooks/useLoadingFetch';
 import { AxiosError } from 'axios';
 import Item from 'components/Item/Item';
 import { MUIAsyncAutocomplete } from 'components/MUIAsyncAutocomplete/MUIAsyncAutocomplete';
 import { formatDistanceToNow } from 'date-fns';
 import { pReqResultENUM } from 'enum/pReqResult.enum';
 import { getRoleName } from 'enum/userRoles.enum';
+import { useLoading } from 'loading/hooks/useLoading';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
 import { forwardRef, useEffect, useState } from 'react';
@@ -37,8 +36,7 @@ const Transition = forwardRef(function Transition(
 });
 
 const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
-    const { loadingFetch } = useAuth();
-    const { handleLoading } = useLoadingFetch()
+    const { loading, enableLoading, disableLoading } = useLoading()
     const theme = useTheme();
     const axiosPrivate = useAxiosPrivate();
     const { enqueueSnackbar } = useSnackbar();
@@ -118,7 +116,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
-        handleLoading(true);
+        enableLoading();
 
         const getData = async () => {
             try {
@@ -137,7 +135,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
             } catch (err) {
                 isMounted && setError(err);
             } finally {
-                isMounted && handleLoading(false);
+                isMounted && disableLoading();
                 isMounted && setReload(false);
                 isMounted = false;
             }
@@ -146,13 +144,14 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
 
         return () => {
             isMounted = false;
-            handleLoading(false);
+            disableLoading();
             setReload(false);
             controller.abort();
         };
     }, [
         axiosPrivate,
-        handleLoading,
+        enableLoading,
+        disableLoading,
         accepted,
         rejected,
         unSeen,
@@ -330,7 +329,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                                                     <CardActionArea>
                                                         <CardHeader
                                                             avatar={
-                                                                loadingFetch ? (
+                                                                loading ? (
                                                                     <Skeleton
                                                                         variant="circular"
                                                                         animation="wave"
@@ -350,7 +349,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                                                                 )
                                                             }
                                                             title={
-                                                                loadingFetch ? (
+                                                                loading ? (
                                                                     <Skeleton
                                                                         variant="text"
                                                                         animation="wave"
@@ -372,7 +371,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                                                             }
                                                         />
                                                         <CardContent>
-                                                            {loadingFetch ? (
+                                                            {loading ? (
                                                                 <>
                                                                     <Skeleton
                                                                         sx={{ my: 1 }}
@@ -477,7 +476,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
                                                         </CardContent>
                                                     </CardActionArea>
                                                     <CardActions>
-                                                        {loadingFetch ? (
+                                                        {loading ? (
                                                             <Stack
                                                                 width={1}
                                                                 direction={'row'}

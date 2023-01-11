@@ -1,7 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import useLoadingFetch from 'auth/hooks/useLoadingFetch';
-
+import { useLoading } from 'loading/hooks/useLoading';
 import { useEffect, useState } from 'react';
 
 const UsersList = () => {
@@ -9,12 +8,12 @@ const UsersList = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [, setError] = useState<any>(null);
   const axiosPrivate = useAxiosPrivate();
-  const { handleLoading } = useLoadingFetch()
+  const { enableLoading, disableLoading } = useLoading()
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
-    handleLoading(true);
+    enableLoading();
     const getData = async () => {
       try {
         const response = await axiosPrivate.get('auth/all', {
@@ -24,7 +23,7 @@ const UsersList = () => {
       } catch (err) {
         isMounted && setError(err);
       } finally {
-        isMounted && handleLoading(false);
+        isMounted && disableLoading();
         isMounted = false
       }
     };
@@ -32,10 +31,10 @@ const UsersList = () => {
 
     return () => {
       isMounted = false;
-      handleLoading(false);
+      disableLoading();
       controller.abort();
     };
-  }, [axiosPrivate, handleLoading]);
+  }, [axiosPrivate, enableLoading, disableLoading]);
 
   return (
     <Box component={'article'}>

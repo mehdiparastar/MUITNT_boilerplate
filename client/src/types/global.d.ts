@@ -2,7 +2,7 @@ import { pReqResultENUM } from 'enum/pReqResult.enum';
 import { FC } from 'react';
 import * as yup from 'yup';
 
-export {};
+export { };
 
 declare global {
   type themeMode = 'light' | 'dark';
@@ -99,8 +99,11 @@ declare global {
     setPersist: (bool: boolean) => void;
     loadingPersist: boolean;
     setLoadingPersist: (bool: boolean) => void;
-    loadingFetch: boolean;
-    setLoadingFetch: (bool: boolean) => void;
+  }
+
+  interface ILoadingContext {
+    loading: boolean;
+    setLoading: (bool: boolean) => void;
   }
 
   interface IPermissionRequest {

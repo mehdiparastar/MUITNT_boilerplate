@@ -34,9 +34,7 @@ import { useTheme } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Stack } from '@mui/system';
-import useAuth from 'auth/hooks/useAuth';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import useLoadingFetch from 'auth/hooks/useLoadingFetch';
 import { AxiosError } from 'axios';
 import Item from 'components/Item/Item';
 import { formatDistanceToNow } from 'date-fns';
@@ -49,6 +47,7 @@ import {
     UserRolesObj
 } from 'enum/userRoles.enum';
 import { getRolesClassified } from 'helperFunctions/get-roles-expand';
+import { useLoading } from 'loading/hooks/useLoading';
 import { useSnackbar } from 'notistack';
 import { forwardRef, useEffect, useState } from 'react';
 import NoDataFoundSVG from 'svg/banners/NoDataFound/NoDataFound';
@@ -74,7 +73,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
     props,
 ) => {
     const { enqueueSnackbar } = useSnackbar();
-    const { loading, handleLoading } = useLoadingFetch();
+    const { loading, enableLoading, disableLoading } = useLoading();
     const theme = useTheme();
     const axiosPrivate = useAxiosPrivate();
 
@@ -106,7 +105,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
-        handleLoading(true);
+        enableLoading();
 
         const getData = async () => {
             try {
@@ -125,7 +124,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
             } catch (err) {
                 isMounted && setError(err);
             } finally {
-                isMounted && handleLoading(false);
+                isMounted && disableLoading();
                 isMounted && setReload(false);
                 isMounted = false;
             }
@@ -134,13 +133,14 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
 
         return () => {
             isMounted = false;
-            handleLoading(false);
+            disableLoading();
             setReload(false);
             controller.abort();
         };
     }, [
         axiosPrivate,
-        handleLoading,
+        enableLoading,
+        disableLoading,
         accepted,
         rejected,
         unSeen,

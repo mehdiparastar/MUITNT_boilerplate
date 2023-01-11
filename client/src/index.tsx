@@ -10,6 +10,7 @@ import 'aos/dist/aos.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { SnackbarProvider } from 'notistack';
+import { LoadingProvider } from 'loading/context/LoadingProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -23,7 +24,9 @@ root.render(
             <GoogleOAuthProvider
               clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}
             >
-              <App />
+              <LoadingProvider>
+                <App />
+              </LoadingProvider>
             </GoogleOAuthProvider>
           </SnackbarProvider>
         </WithLayout>
