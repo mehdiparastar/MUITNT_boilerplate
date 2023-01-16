@@ -5,8 +5,7 @@ import { colors } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Unstable_Grid2';
-import useAuth from 'auth/hooks/useAuth';
-
+import { useAuth } from 'auth/hooks/useAuth';
 import React from 'react';
 import MUITNTSVG from 'svg/logos/MUITNT';
 import { paletteTypes } from 'theme/paletteTypes';
@@ -16,7 +15,7 @@ import LogOutCountDownBadge from './components/LogOutCountDownBadge';
 export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
   onSidebarOpen,
 }) => {
-  
+
   const theme = useTheme();
   const themeConfig = React.useContext(ThemeContext);
   const { userProfile } = useAuth();

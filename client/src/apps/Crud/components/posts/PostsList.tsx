@@ -2,16 +2,16 @@ import { Box, Pagination, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Stack } from '@mui/system';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import { useLoading } from 'loading/hooks/useLoading';
+import { PageLoader } from 'components/PageLoader/PageLoader';
+import { thunkStatus } from 'enum/reduxThunkStatus.enum';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import PostsExcerpt from './PostsExcerpt';
-import { fetchPosts, IPostsState, selectAllPosts } from './postsSlice';
+import { fetchPosts, getPostsStatus, IPostsState, selectAllPosts } from './postsSlice';
 
 export function PostsList() {
     const axiosPrivate = useAxiosPrivate();
     const dispatch = useAppDispatch()
-    const { enableLoading, disableLoading } = useLoading()
 
     // The `state` arg is correctly typed as `RootState` already
     const limit = 6
@@ -21,14 +21,14 @@ export function PostsList() {
     const paginatePosts = useAppSelector(selectAllPosts)//.slice().sort((b, a) => a.createdAt.getTime() - b.createdAt.getTime(),)
     const postsAllCount = paginatePosts.count
     const posts = paginatePosts.data//.slice(0, limit)
-    // const postsStatus = useAppSelector(getPostsStatus)
+    const postsStatus = useAppSelector(getPostsStatus)
     // const error = useAppSelector(getPostsError)
 
     const count = Math.ceil(postsAllCount / limit)
 
     useEffect(() => {
-        dispatch(fetchPosts({ axiosPrivate, enableLoading, disableLoading, skip, limit }))
-    }, [dispatch, axiosPrivate, enableLoading, disableLoading, limit, skip])
+        dispatch(fetchPosts({ axiosPrivate, skip, limit }))
+    }, [dispatch, axiosPrivate, limit, skip])
 
 
     const handleChangePage = (
@@ -40,9 +40,9 @@ export function PostsList() {
     };
 
     const renderedPosts = posts.map((post: IPostsState) => <PostsExcerpt key={post.id} post={post} />)
-
     return (
         <Box component={'section'} >
+            {postsStatus === thunkStatus.loading && <PageLoader />}
             <Stack spacing={1}>
                 <Typography variant='h6' sx={{ textAlign: 'right', textDecoration: 'underline' }}>All: {postsAllCount}</Typography>
                 <Grid container spacing={2}>

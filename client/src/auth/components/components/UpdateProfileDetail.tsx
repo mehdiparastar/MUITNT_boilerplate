@@ -1,6 +1,6 @@
 import { Avatar, Chip, Paper, Stack, styled, TextField, Typography, useTheme } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
-import useAuth from "auth/hooks/useAuth";
+import { useAuth } from "auth/hooks/useAuth";
 import Item from "components/Item/Item";
 import { getRoleName } from "enum/userRoles.enum";
 import EditUserProfile from "./components/EditUserProfile";

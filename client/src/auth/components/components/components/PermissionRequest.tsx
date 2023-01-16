@@ -37,6 +37,7 @@ import { Stack } from '@mui/system';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import { AxiosError } from 'axios';
 import Item from 'components/Item/Item';
+import { PageLoader } from 'components/PageLoader/PageLoader';
 import { formatDistanceToNow } from 'date-fns';
 import { pReqResultENUM } from 'enum/pReqResult.enum';
 import {
@@ -47,7 +48,6 @@ import {
     UserRolesObj
 } from 'enum/userRoles.enum';
 import { getRolesClassified } from 'helperFunctions/get-roles-expand';
-import { useLoading } from 'loading/hooks/useLoading';
 import { useSnackbar } from 'notistack';
 import { forwardRef, useEffect, useState } from 'react';
 import NoDataFoundSVG from 'svg/banners/NoDataFound/NoDataFound';
@@ -73,10 +73,9 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
     props,
 ) => {
     const { enqueueSnackbar } = useSnackbar();
-    const { loading, enableLoading, disableLoading } = useLoading();
     const theme = useTheme();
     const axiosPrivate = useAxiosPrivate();
-
+    const [loading, setLoading] = useState(false)
     const [, setError] = useState<any>(null);
     const [accepted, setAccepted] = useState<boolean>(false);
     const [rejected, setRejected] = useState<boolean>(false);
@@ -105,7 +104,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
-        enableLoading();
+        setLoading(true)
 
         const getData = async () => {
             try {
@@ -124,7 +123,7 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
             } catch (err) {
                 isMounted && setError(err);
             } finally {
-                isMounted && disableLoading();
+                isMounted && setLoading(false)
                 isMounted && setReload(false);
                 isMounted = false;
             }
@@ -133,14 +132,13 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
 
         return () => {
             isMounted = false;
-            disableLoading();
+            setLoading(false)
             setReload(false);
             controller.abort();
         };
     }, [
         axiosPrivate,
-        enableLoading,
-        disableLoading,
+        setLoading,
         accepted,
         rejected,
         unSeen,
@@ -210,412 +208,413 @@ const PermissionRequest: React.FunctionComponent<IPermissionRequestProps> = (
     };
 
     return (
-        <>
-            <Grid
-                container
-            >
-                <Grid xs={12}>
-                    <Item
-                        p={3}
-                        height={1}
-                        width={1}
-                    >
-                        <Stack
-                            justifyContent={'flex-end'}
-                            direction={'row'}
-                            alignItems="center"
-                            spacing={1}
+        loading ? <PageLoader /> :
+            <>
+                <Grid
+                    container
+                >
+                    <Grid xs={12}>
+                        <Item
+                            p={3}
+                            height={1}
+                            width={1}
                         >
-                            <FormGroup row>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={accepted}
-                                            onChange={(event) => setAccepted(event.target.checked)}
-                                        />
-                                    }
-                                    label="Accepted"
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={rejected}
-                                            onChange={(event) => setRejected(event.target.checked)}
-                                        />
-                                    }
-                                    label="Rejected"
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={unSeen}
-                                            onChange={(event) => setUnSeen(event.target.checked)}
-                                        />
-                                    }
-                                    label="Unseen"
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={seen}
-                                            onChange={(event) => setSeen(event.target.checked)}
-                                        />
-                                    }
-                                    label="seen"
-                                />
-                            </FormGroup>
-                        </Stack>
-                    </Item>
-                </Grid>
-                <Grid xs={12}>
-                    <Item>Total Count:{allCount}</Item>
-                </Grid>
-                <Grid xs={12}>
-                    <Item m={2}>
-                        <Grid
-                            container
-                            spacing={2}
-                        >
-                            {inDbPReqs.map((item, index) => (
-                                <Grid
-                                    xs={12}
-                                    sm={6}
-                                    md={4}
-                                    key={index}
-                                >
-                                    <Item
-                                        sx={{
-                                            transition: 'all .2s ease-in-out',
-                                            '&:hover': {
-                                                transform: `translateY(-${theme.spacing(0.5)})`,
-                                            },
-                                        }}
+                            <Stack
+                                justifyContent={'flex-end'}
+                                direction={'row'}
+                                alignItems="center"
+                                spacing={1}
+                            >
+                                <FormGroup row>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={accepted}
+                                                onChange={(event) => setAccepted(event.target.checked)}
+                                            />
+                                        }
+                                        label="Accepted"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={rejected}
+                                                onChange={(event) => setRejected(event.target.checked)}
+                                            />
+                                        }
+                                        label="Rejected"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={unSeen}
+                                                onChange={(event) => setUnSeen(event.target.checked)}
+                                            />
+                                        }
+                                        label="Unseen"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={seen}
+                                                onChange={(event) => setSeen(event.target.checked)}
+                                            />
+                                        }
+                                        label="seen"
+                                    />
+                                </FormGroup>
+                            </Stack>
+                        </Item>
+                    </Grid>
+                    <Grid xs={12}>
+                        <Item>Total Count:{allCount}</Item>
+                    </Grid>
+                    <Grid xs={12}>
+                        <Item m={2}>
+                            <Grid
+                                container
+                                spacing={2}
+                            >
+                                {inDbPReqs.map((item, index) => (
+                                    <Grid
+                                        xs={12}
+                                        sm={6}
+                                        md={4}
+                                        key={index}
                                     >
-                                        <Grow
-                                            in={true}
-                                            timeout={(index + 1) * 200}
+                                        <Item
+                                            sx={{
+                                                transition: 'all .2s ease-in-out',
+                                                '&:hover': {
+                                                    transform: `translateY(-${theme.spacing(0.5)})`,
+                                                },
+                                            }}
                                         >
-                                            <Card variant="elevation">
-                                                <CardActionArea>
-                                                    <CardHeader
-                                                        avatar={
-                                                            loading ? (
-                                                                <Skeleton
-                                                                    variant="circular"
-                                                                    animation="wave"
-                                                                    width={32}
-                                                                    height={32}
-                                                                />
-                                                            ) : (
-                                                                <Tooltip
-                                                                    title="This Request Unique Id"
-                                                                    arrow
-                                                                >
-                                                                    <Chip
-                                                                        label={item.id}
-                                                                        color="primary"
+                                            <Grow
+                                                in={true}
+                                                timeout={(index + 1) * 200}
+                                            >
+                                                <Card variant="elevation">
+                                                    <CardActionArea>
+                                                        <CardHeader
+                                                            avatar={
+                                                                loading ? (
+                                                                    <Skeleton
+                                                                        variant="circular"
+                                                                        animation="wave"
+                                                                        width={32}
+                                                                        height={32}
                                                                     />
-                                                                </Tooltip>
-                                                            )
-                                                        }
-                                                        action={
-                                                            loading ? (
-                                                                <Skeleton
-                                                                    variant="rectangular"
-                                                                    animation="wave"
-                                                                    width={130}
-                                                                />
-                                                            ) : (
-                                                                <Paper sx={{ p: 0.5 }}>
+                                                                ) : (
                                                                     <Tooltip
-                                                                        title="This Request Type"
+                                                                        title="This Request Unique Id"
                                                                         arrow
                                                                     >
-                                                                        <Typography
-                                                                            variant="body1"
-                                                                            sx={{ fontWeight: 'bold' }}
-                                                                        >
-                                                                            {getRoleName(item.role)}
-                                                                        </Typography>
-                                                                        {/* </IconButton> */}
+                                                                        <Chip
+                                                                            label={item.id}
+                                                                            color="primary"
+                                                                        />
                                                                     </Tooltip>
-                                                                </Paper>
-                                                            )
-                                                        }
-                                                    />
-                                                    <CardContent>
+                                                                )
+                                                            }
+                                                            action={
+                                                                loading ? (
+                                                                    <Skeleton
+                                                                        variant="rectangular"
+                                                                        animation="wave"
+                                                                        width={130}
+                                                                    />
+                                                                ) : (
+                                                                    <Paper sx={{ p: 0.5 }}>
+                                                                        <Tooltip
+                                                                            title="This Request Type"
+                                                                            arrow
+                                                                        >
+                                                                            <Typography
+                                                                                variant="body1"
+                                                                                sx={{ fontWeight: 'bold' }}
+                                                                            >
+                                                                                {getRoleName(item.role)}
+                                                                            </Typography>
+                                                                            {/* </IconButton> */}
+                                                                        </Tooltip>
+                                                                    </Paper>
+                                                                )
+                                                            }
+                                                        />
+                                                        <CardContent>
+                                                            {loading ? (
+                                                                <>
+                                                                    <Skeleton
+                                                                        sx={{ my: 1 }}
+                                                                        variant="text"
+                                                                        animation="wave"
+                                                                        width={'100%'}
+                                                                    />
+                                                                    <Skeleton
+                                                                        sx={{ my: 1 }}
+                                                                        variant="text"
+                                                                        animation="wave"
+                                                                        width={'100%'}
+                                                                    />
+                                                                    <Skeleton
+                                                                        sx={{ my: 1 }}
+                                                                        variant="text"
+                                                                        animation="wave"
+                                                                        width={'100%'}
+                                                                    />
+                                                                    <Skeleton
+                                                                        sx={{ my: 1 }}
+                                                                        variant="text"
+                                                                        animation="wave"
+                                                                        width={'100%'}
+                                                                    />
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <Stack
+                                                                        direction={'row'}
+                                                                        display="flex"
+                                                                        alignItems={'center'}
+                                                                        justifyContent="space-between"
+                                                                    >
+                                                                        <Typography variant="caption">
+                                                                            Email:
+                                                                        </Typography>
+                                                                        <Typography variant="body1">
+                                                                            {item.user.email}
+                                                                        </Typography>
+                                                                    </Stack>
+                                                                    <Stack
+                                                                        direction={'row'}
+                                                                        display="flex"
+                                                                        alignItems={'center'}
+                                                                        justifyContent="space-between"
+                                                                    >
+                                                                        <Typography variant="caption">
+                                                                            Created At:
+                                                                        </Typography>
+                                                                        <Typography variant="body1">
+                                                                            {formatDistanceToNow(item.createdAt)} ago
+                                                                        </Typography>
+                                                                    </Stack>
+                                                                    <Stack
+                                                                        direction={'row'}
+                                                                        display="flex"
+                                                                        alignItems={'center'}
+                                                                        justifyContent="space-between"
+                                                                    >
+                                                                        <Typography variant="caption">
+                                                                            Last Update At:
+                                                                        </Typography>
+                                                                        <Typography variant="body1">
+                                                                            {formatDistanceToNow(item.updatedAt)} ago
+                                                                        </Typography>
+                                                                    </Stack>
+                                                                    <Stack
+                                                                        direction={'row'}
+                                                                        display="flex"
+                                                                        alignItems={'center'}
+                                                                        justifyContent="space-between"
+                                                                    >
+                                                                        <Typography variant="caption">
+                                                                            Message:
+                                                                        </Typography>
+                                                                        {item.adminMsg
+                                                                            ? item.adminMsg
+                                                                            : 'There is no message yet!'}
+                                                                    </Stack>
+                                                                </>
+                                                            )}
+                                                        </CardContent>
+                                                    </CardActionArea>
+                                                    <CardActions>
                                                         {loading ? (
-                                                            <>
-                                                                <Skeleton
-                                                                    sx={{ my: 1 }}
-                                                                    variant="text"
-                                                                    animation="wave"
-                                                                    width={'100%'}
-                                                                />
-                                                                <Skeleton
-                                                                    sx={{ my: 1 }}
-                                                                    variant="text"
-                                                                    animation="wave"
-                                                                    width={'100%'}
-                                                                />
-                                                                <Skeleton
-                                                                    sx={{ my: 1 }}
-                                                                    variant="text"
-                                                                    animation="wave"
-                                                                    width={'100%'}
-                                                                />
-                                                                <Skeleton
-                                                                    sx={{ my: 1 }}
-                                                                    variant="text"
-                                                                    animation="wave"
-                                                                    width={'100%'}
-                                                                />
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <Stack
-                                                                    direction={'row'}
-                                                                    display="flex"
-                                                                    alignItems={'center'}
-                                                                    justifyContent="space-between"
-                                                                >
-                                                                    <Typography variant="caption">
-                                                                        Email:
-                                                                    </Typography>
-                                                                    <Typography variant="body1">
-                                                                        {item.user.email}
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction={'row'}
-                                                                    display="flex"
-                                                                    alignItems={'center'}
-                                                                    justifyContent="space-between"
-                                                                >
-                                                                    <Typography variant="caption">
-                                                                        Created At:
-                                                                    </Typography>
-                                                                    <Typography variant="body1">
-                                                                        {formatDistanceToNow(item.createdAt)} ago
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction={'row'}
-                                                                    display="flex"
-                                                                    alignItems={'center'}
-                                                                    justifyContent="space-between"
-                                                                >
-                                                                    <Typography variant="caption">
-                                                                        Last Update At:
-                                                                    </Typography>
-                                                                    <Typography variant="body1">
-                                                                        {formatDistanceToNow(item.updatedAt)} ago
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction={'row'}
-                                                                    display="flex"
-                                                                    alignItems={'center'}
-                                                                    justifyContent="space-between"
-                                                                >
-                                                                    <Typography variant="caption">
-                                                                        Message:
-                                                                    </Typography>
-                                                                    {item.adminMsg
-                                                                        ? item.adminMsg
-                                                                        : 'There is no message yet!'}
-                                                                </Stack>
-                                                            </>
-                                                        )}
-                                                    </CardContent>
-                                                </CardActionArea>
-                                                <CardActions>
-                                                    {loading ? (
-                                                        <Stack
-                                                            width={1}
-                                                            direction={'row'}
-                                                            alignItems="center"
-                                                            display="flex"
-                                                            justifyContent={'space-between'}
-                                                        >
-                                                            <Skeleton
-                                                                variant="rounded"
-                                                                animation="wave"
-                                                                width={18}
-                                                                height={26}
-                                                            />
-                                                            <Skeleton
-                                                                variant="text"
-                                                                animation="wave"
-                                                                width={50}
-                                                            />
-                                                        </Stack>
-                                                    ) : (
-                                                        <Stack
-                                                            width={1}
-                                                            direction={'row'}
-                                                            alignItems="center"
-                                                            display="flex"
-                                                            justifyContent={'space-between'}
-                                                        >
-                                                            <IconButton
-                                                                onClick={() => handleOpenDeletePReq(item)}
+                                                            <Stack
+                                                                width={1}
+                                                                direction={'row'}
+                                                                alignItems="center"
+                                                                display="flex"
+                                                                justifyContent={'space-between'}
                                                             >
-                                                                <DeleteIcon color="error" />
-                                                            </IconButton>
-                                                            <Chip
-                                                                label={item.result}
-                                                                color={item.result === pReqResultENUM.accepted ? 'success' : item.result === pReqResultENUM.rejected ? 'error' : item.result === pReqResultENUM.seen ? 'warning' : 'secondary'}
-                                                                variant="outlined"
-                                                            />
-                                                        </Stack>
-                                                    )}
-                                                </CardActions>
-                                            </Card>
-                                        </Grow>
-                                    </Item>
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Item>
-                </Grid>
-                {count > 1 && (
-                    <Grid xs={12}>
-                        <Item
-                            justifyContent={'center'}
-                            display="flex"
-                            m={1}
-                        >
-                            <Pagination
-                                variant="outlined"
-                                shape="rounded"
-                                count={count}
-                                page={page}
-                                onChange={handleChangePage}
-                            />
+                                                                <Skeleton
+                                                                    variant="rounded"
+                                                                    animation="wave"
+                                                                    width={18}
+                                                                    height={26}
+                                                                />
+                                                                <Skeleton
+                                                                    variant="text"
+                                                                    animation="wave"
+                                                                    width={50}
+                                                                />
+                                                            </Stack>
+                                                        ) : (
+                                                            <Stack
+                                                                width={1}
+                                                                direction={'row'}
+                                                                alignItems="center"
+                                                                display="flex"
+                                                                justifyContent={'space-between'}
+                                                            >
+                                                                <IconButton
+                                                                    onClick={() => handleOpenDeletePReq(item)}
+                                                                >
+                                                                    <DeleteIcon color="error" />
+                                                                </IconButton>
+                                                                <Chip
+                                                                    label={item.result}
+                                                                    color={item.result === pReqResultENUM.accepted ? 'success' : item.result === pReqResultENUM.rejected ? 'error' : item.result === pReqResultENUM.seen ? 'warning' : 'secondary'}
+                                                                    variant="outlined"
+                                                                />
+                                                            </Stack>
+                                                        )}
+                                                    </CardActions>
+                                                </Card>
+                                            </Grow>
+                                        </Item>
+                                    </Grid>
+                                ))}
+                            </Grid>
                         </Item>
                     </Grid>
-                )}
-                {count === 0 && (
-                    <Grid xs={12}>
-                        <Item
-                            data-aos="flip-left"
-                            justifyContent={'center'}
-                            display="flex"
-                            m={1}
-                        >
-                            <NoDataFoundSVG width={450} />
-                        </Item>
-                        <Typography
-                            m={1}
-                            variant="h5"
-                        >
-                            No Data Found
-                        </Typography>
-                    </Grid>
-                )}
-                <Grid xs={12}>
-                    <Divider sx={{ my: 4 }} />
-                </Grid>
-                <Grid xs={12}>
-                    <Item
-                        p={3}
-                        height={1}
-                        width={1}
-                    >
-                        <Accordion>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
+                    {count > 1 && (
+                        <Grid xs={12}>
+                            <Item
+                                justifyContent={'center'}
+                                display="flex"
+                                m={1}
                             >
-                                <Typography
-                                    variant="body1"
-                                    fontWeight={'bold'}
-                                    textAlign={'left'}
+                                <Pagination
+                                    variant="outlined"
+                                    shape="rounded"
+                                    count={count}
+                                    page={page}
+                                    onChange={handleChangePage}
+                                />
+                            </Item>
+                        </Grid>
+                    )}
+                    {count === 0 && (
+                        <Grid xs={12}>
+                            <Item
+                                data-aos="flip-left"
+                                justifyContent={'center'}
+                                display="flex"
+                                m={1}
+                            >
+                                <NoDataFoundSVG width={450} />
+                            </Item>
+                            <Typography
+                                m={1}
+                                variant="h5"
+                            >
+                                No Data Found
+                            </Typography>
+                        </Grid>
+                    )}
+                    <Grid xs={12}>
+                        <Divider sx={{ my: 4 }} />
+                    </Grid>
+                    <Grid xs={12}>
+                        <Item
+                            p={3}
+                            height={1}
+                            width={1}
+                        >
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
                                 >
-                                    Specify your new permission requests:
-                                </Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <FormGroup>
-                                    {classifiedRoles.map((roles, index) => (
-                                        <Grid
-                                            container
-                                            key={index}
-                                            display={'flex'}
-                                            alignContent="center"
-                                            justifyContent={'left'}
-                                            textAlign={'left'}
-                                            spacing={1}
-                                        >
-                                            {roles.map((role, i) => (
-                                                <Grid
-                                                    key={`${index}-${i}`}
-                                                    xs={6}
-                                                    sm={4}
-                                                    md={3}
-                                                >
-                                                    <FormControlLabel
-                                                        control={
-                                                            <Radio
-                                                                name={UserRolesObj[role]}
-                                                                checked={permissionReq === UserRolesObj[role]}
-                                                                onChange={(event) =>
-                                                                    setPermissionReq(event.target.name)
-                                                                }
-                                                            />
-                                                        }
-                                                        label={splitOnCapitalLetters(role)}
-                                                    />
-                                                </Grid>
-                                            ))}
-                                            {index + 1 !== classifiedRoles.length && (
-                                                <Grid xs={12}>
-                                                    <Divider
-                                                        variant="fullWidth"
-                                                        sx={{ p: -1 }}
-                                                    />
-                                                </Grid>
-                                            )}
-                                        </Grid>
-                                    ))}
-                                </FormGroup>
-                                <Button
-                                    onClick={handleSendReq}
-                                    disabled={permissionReq === ''}
-                                    size="large"
-                                    sx={{ mt: 4, fontWeight: 'bold' }}
-                                    variant="contained"
-                                    fullWidth
-                                >
-                                    send request
-                                </Button>
-                            </AccordionDetails>
-                        </Accordion>
-                    </Item>
+                                    <Typography
+                                        variant="body1"
+                                        fontWeight={'bold'}
+                                        textAlign={'left'}
+                                    >
+                                        Specify your new permission requests:
+                                    </Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <FormGroup>
+                                        {classifiedRoles.map((roles, index) => (
+                                            <Grid
+                                                container
+                                                key={index}
+                                                display={'flex'}
+                                                alignContent="center"
+                                                justifyContent={'left'}
+                                                textAlign={'left'}
+                                                spacing={1}
+                                            >
+                                                {roles.map((role, i) => (
+                                                    <Grid
+                                                        key={`${index}-${i}`}
+                                                        xs={6}
+                                                        sm={4}
+                                                        md={3}
+                                                    >
+                                                        <FormControlLabel
+                                                            control={
+                                                                <Radio
+                                                                    name={UserRolesObj[role]}
+                                                                    checked={permissionReq === UserRolesObj[role]}
+                                                                    onChange={(event) =>
+                                                                        setPermissionReq(event.target.name)
+                                                                    }
+                                                                />
+                                                            }
+                                                            label={splitOnCapitalLetters(role)}
+                                                        />
+                                                    </Grid>
+                                                ))}
+                                                {index + 1 !== classifiedRoles.length && (
+                                                    <Grid xs={12}>
+                                                        <Divider
+                                                            variant="fullWidth"
+                                                            sx={{ p: -1 }}
+                                                        />
+                                                    </Grid>
+                                                )}
+                                            </Grid>
+                                        ))}
+                                    </FormGroup>
+                                    <Button
+                                        onClick={handleSendReq}
+                                        disabled={permissionReq === ''}
+                                        size="large"
+                                        sx={{ mt: 4, fontWeight: 'bold' }}
+                                        variant="contained"
+                                        fullWidth
+                                    >
+                                        send request
+                                    </Button>
+                                </AccordionDetails>
+                            </Accordion>
+                        </Item>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Dialog
-                open={showDeletePReqAlert}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={handleCloseDeletePReq}
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogTitle>{`Permission Request Deleting`}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        {`Are you sure about deleting the permission request with the id of `}
-                        <strong>{selectedDeletePReq?.id}</strong>?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDeletePReq}>No, Not Sure</Button>
-                    <Button onClick={handleDeletingPReq}>Yes, Sure</Button>
-                </DialogActions>
-            </Dialog>
-        </>
+                <Dialog
+                    open={showDeletePReqAlert}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={handleCloseDeletePReq}
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle>{`Permission Request Deleting`}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            {`Are you sure about deleting the permission request with the id of `}
+                            <strong>{selectedDeletePReq?.id}</strong>?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseDeletePReq}>No, Not Sure</Button>
+                        <Button onClick={handleDeletingPReq}>Yes, Sure</Button>
+                    </DialogActions>
+                </Dialog>
+            </>
     );
 };
 

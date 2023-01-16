@@ -2,7 +2,7 @@ import ListAllIcon from '@mui/icons-material/ListAlt';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import { Avatar, Badge, Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, Typography, useTheme } from '@mui/material';
-import useAuth from 'auth/hooks/useAuth';
+import { useAuth } from 'auth/hooks/useAuth';
 import useLogout from 'auth/hooks/useLogout';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { UserRoles } from 'enum/userRoles.enum';

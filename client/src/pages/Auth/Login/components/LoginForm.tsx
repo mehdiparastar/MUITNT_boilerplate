@@ -16,15 +16,14 @@ import { CredentialResponse, GoogleLogin, useGoogleLogin } from '@react-oauth/go
 import axios from 'api/axios';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { useFormik } from 'formik';
-
+import { strToBool } from 'helperFunctions/strToBool';
 import { useSnackbar } from 'notistack';
-import { useEffect } from 'react';
-import { useCookies } from 'react-cookie';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { googleLoginService } from 'services/auth/google.login.service';
 import { localLoginService } from 'services/auth/local.login.service';
 import * as yup from 'yup';
-import useAuth from '../../../../auth/hooks/useAuth';
+import { useAuth } from '../../../../auth/hooks/useAuth';
 
 interface ILocalLoginDto {
   email: string;
@@ -44,7 +43,7 @@ const validationSchema = yup.object({
 });
 
 export const LoginForm = () => {
-  
+  const [persistCheck, setPersistCheck] = useState<boolean>(strToBool(localStorage.getItem('persist')) || false)
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state?.from?.pathname === '/auth' ? '/' : location.state?.from?.pathname) || '/';
@@ -52,9 +51,8 @@ export const LoginForm = () => {
     setAccessToken,
     setRefreshToken,
     setUserProfile,
-    persist, setPersist
+    setPersist
   } = useAuth();
-  const [, setCookie] = useCookies(['persist']);
   const { enqueueSnackbar } = useSnackbar();
 
   const initialValues = {
@@ -77,6 +75,9 @@ export const LoginForm = () => {
     setUserProfile(response.data);
     navigate(from, { replace: true });
     enqueueSnackbar('successfully login', { variant: 'success' });
+    localStorage.setItem('persist', String(persistCheck))
+    persistCheck && localStorage.setItem('rT', String(refreshToken))
+    setPersist(persistCheck)
   };
 
   const onLocalSubmit = async (values: ILocalLoginDto): Promise<any> => {
@@ -114,13 +115,9 @@ export const LoginForm = () => {
     },
   });
 
-  const togglePersist = () => {
-    setPersist(!persist);
+  const togglePersist = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPersistCheck(event.target.checked);
   };
-
-  useEffect(() => {
-    setCookie('persist', persist);
-  }, [persist, setCookie]);
 
   return (
     <Grid container>
@@ -143,7 +140,7 @@ export const LoginForm = () => {
             control={
               <Checkbox
                 onChange={togglePersist}
-                checked={persist}
+                checked={persistCheck}
               />
             }
             label="Trust This Device"

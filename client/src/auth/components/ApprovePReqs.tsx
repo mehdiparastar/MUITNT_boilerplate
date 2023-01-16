@@ -11,7 +11,6 @@ import { MUIAsyncAutocomplete } from 'components/MUIAsyncAutocomplete/MUIAsyncAu
 import { formatDistanceToNow } from 'date-fns';
 import { pReqResultENUM } from 'enum/pReqResult.enum';
 import { getRoleName } from 'enum/userRoles.enum';
-import { useLoading } from 'loading/hooks/useLoading';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
 import { forwardRef, useEffect, useState } from 'react';
@@ -36,7 +35,7 @@ const Transition = forwardRef(function Transition(
 });
 
 const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
-    const { loading, enableLoading, disableLoading } = useLoading()
+    const [loading, setLoading] = useState<boolean>(false)
     const theme = useTheme();
     const axiosPrivate = useAxiosPrivate();
     const { enqueueSnackbar } = useSnackbar();
@@ -116,7 +115,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
-        enableLoading();
+        setLoading(true);
 
         const getData = async () => {
             try {
@@ -135,7 +134,7 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
             } catch (err) {
                 isMounted && setError(err);
             } finally {
-                isMounted && disableLoading();
+                isMounted && setLoading(false);
                 isMounted && setReload(false);
                 isMounted = false;
             }
@@ -144,14 +143,13 @@ const ApprovePReqs: React.FunctionComponent<IApprovePReqsProps> = (props) => {
 
         return () => {
             isMounted = false;
-            disableLoading();
+            setLoading(false);
             setReload(false);
             controller.abort();
         };
     }, [
         axiosPrivate,
-        enableLoading,
-        disableLoading,
+        setLoading,
         accepted,
         rejected,
         unSeen,

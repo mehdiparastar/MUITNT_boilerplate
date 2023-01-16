@@ -9,7 +9,7 @@ import { Hero } from './components/Hero/Hero';
 import { Inspiration } from './components/Inspiration/Inspiration';
 
 const Home: FC<Props> = (Props): ReactElement => {
-  
+
   const theme = useTheme();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -6,7 +6,6 @@ import MyAccount from 'auth/components/MyAccount';
 import PersistLogin from 'auth/components/PersistLogin';
 import RequireAuth from 'auth/components/RequireAuth';
 import { allRolesList, UserRoles } from 'enum/userRoles.enum';
-
 import { MainLayout } from 'layouts/MainLayout/MainLayout';
 import Login from 'pages/Auth/Login/Login';
 import Register from 'pages/Auth/Register/Register';
@@ -19,7 +18,6 @@ import About from '../pages/About/About';
 import Home from '../pages/Home/Home';
 
 export const RoutesList: React.FC = () => {
-  
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
@@ -66,6 +64,7 @@ export const RoutesList: React.FC = () => {
     </Routes>
   );
 };
+
 // import Maintenance from 'pages/Maintenance/Maintenance';
 export const routes1: Array<IRoute> = [
   {

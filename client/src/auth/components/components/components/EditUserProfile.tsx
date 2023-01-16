@@ -1,5 +1,5 @@
 import { AlertTitle, Button, Stack, TextField } from '@mui/material';
-import useAuth from 'auth/hooks/useAuth';
+import { useAuth } from 'auth/hooks/useAuth';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import { AxiosError } from 'axios';
 import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';

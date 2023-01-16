@@ -1,56 +1,107 @@
-
-import { LinearProgress } from '@mui/material';
 import { strToBool } from 'helperFunctions/strToBool';
-import React, { createContext, FC, useState } from 'react';
-import { useCookies } from 'react-cookie';
+import { createContext, ReactElement, useCallback, useReducer } from 'react';
 
-const initAuthState: IAuthContext = {
+type StateType = {
+  userProfile: IUser | null;
+  accessToken: string | null;
+  refreshToken: string | null;
+  persist: boolean;
+}
+
+const initState: StateType = {
   userProfile: null,
-  setUserProfile: () => { },
   accessToken: null,
-  setAccessToken: () => { },
-  refreshToken: null,
-  setRefreshToken: () => { },
-  persist: false,
-  setPersist: () => { },
-  loadingPersist: true,
-  setLoadingPersist: () => { },
-};
+  refreshToken:
+    strToBool(localStorage.getItem('persist')) ?
+      localStorage.getItem('rT') === 'null' ? null : localStorage.getItem('rT') :
+      null,
+  persist: strToBool(localStorage.getItem('persist')) || false,
+}
 
-const AuthContext = createContext<IAuthContext>(initAuthState);
+const enum REDUCER_ACTION_TYPE {
+  setUserProfile,
+  setAccessToken,
+  setRefreshToken,
+  setPersist,
+}
 
-export const AuthProvider: FC<Props> = ({ children }) => {
+type ReducerAction = {
+  type: REDUCER_ACTION_TYPE
+  payload?: IUser | string | boolean | null
+}
 
-  const [cookies] = useCookies(['persist']);
-  const [userProfile, setUserProfile] = useState<IUser | null | undefined>(initAuthState.userProfile);
-  const [accessToken, setAccessToken] = useState<string | null | undefined>(initAuthState.accessToken);
-  const [refreshToken, setRefreshToken] = useState<string | null | undefined>(initAuthState.refreshToken);
-  const [persist, setPersist] = useState<boolean>(strToBool(cookies.persist) || initAuthState.persist);
-  const [loadingPersist, setLoadingPersist] = useState<boolean>(initAuthState.loadingPersist)
+const reducer = (state: StateType, action: ReducerAction): StateType => {
 
-  const value = React.useMemo(() => ({
-    userProfile, setUserProfile,
-    accessToken, setAccessToken,
-    refreshToken, setRefreshToken,
-    persist, setPersist,
-    loadingPersist, setLoadingPersist,
-  }), [
-    userProfile,
-    accessToken,
-    refreshToken,
-    persist,
-    loadingPersist,
-  ])
+  switch (action.type) {
+    case REDUCER_ACTION_TYPE.setUserProfile:
+      return { ...state, userProfile: action.payload as IUser | null }
+    case REDUCER_ACTION_TYPE.setAccessToken:
+      return { ...state, accessToken: action.payload as string | null }
+    case REDUCER_ACTION_TYPE.setRefreshToken:
+      return { ...state, refreshToken: action.payload as string | null }
+    case REDUCER_ACTION_TYPE.setPersist:
+      return { ...state, persist: action.payload as boolean }
+    default:
+      throw new Error('Unidentified reducer action type')
+  }
+}
 
+const useAuthContext = (initState: StateType) => {
+  const [state, dispatch] = useReducer(reducer, initState)
+
+  const setUserProfile = useCallback(
+    (userProfile: IUser | null) =>
+      dispatch({ type: REDUCER_ACTION_TYPE.setUserProfile, payload: userProfile })
+    , []
+  )
+
+  const setAccessToken = useCallback(
+    (accessToken: string | null) =>
+      dispatch({ type: REDUCER_ACTION_TYPE.setAccessToken, payload: accessToken })
+    , []
+  )
+
+  const setRefreshToken = useCallback(
+    (refreshToken: string | null) => {
+      dispatch({ type: REDUCER_ACTION_TYPE.setRefreshToken, payload: refreshToken })
+      if (strToBool(localStorage.getItem('persist'))) {
+        localStorage.setItem('rT', String(refreshToken))
+      }
+    }
+    , []
+  )
+
+  const setPersist = useCallback(
+    (persist: boolean) =>
+      dispatch({ type: REDUCER_ACTION_TYPE.setPersist, payload: persist })
+    , []
+  )
+
+  return { state, setUserProfile, setAccessToken, setRefreshToken, setPersist }
+}
+
+type UseAuthContextType = ReturnType<typeof useAuthContext>
+
+const initContextState: UseAuthContextType = {
+  state: initState,
+  setUserProfile: (userProfile: IUser | null) => { },
+  setAccessToken: (accessToken: string | null) => { },
+  setRefreshToken: (refreshToken: string | null) => { },
+  setPersist: (persist: boolean) => { },
+}
+
+export const AuthContext = createContext<UseAuthContextType>(initContextState)
+
+type ChildrenType = {
+  children?: ReactElement | ReactElement[]
+}
+
+export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
+  const value = useAuthContext({ ...initState })
 
   return (
-    <AuthContext.Provider
-      value={value}
-    >
-      {loadingPersist && <LinearProgress id='loader' sx={{ position: 'fixed', zIndex: 1000000000, top: 0, width: '100%' }} />}
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
-  );
-};
-
-export default AuthContext;
+  )
+}

@@ -1,7 +1,6 @@
 import { Box, Button, Stack, TextField } from '@mui/material';
 import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
 import { useFormik } from 'formik';
-import { useLoading } from 'loading/hooks/useLoading';
 import { useSnackbar } from 'notistack';
 import * as yup from 'yup';
 import { useAppDispatch } from '../../redux/hooks';
@@ -32,15 +31,13 @@ export function AddPostForm(props: IAddPostFormProps) {
         caption: '',
     };
     const axiosPrivate = useAxiosPrivate();
-    const { enableLoading, disableLoading } = useLoading()
+
     const dispatch = useAppDispatch()
     const { enqueueSnackbar } = useSnackbar()
 
     const onSubmit = async (values: IAddPostFormDto): Promise<any> => {
         dispatch(createPost({
             axiosPrivate,
-            enableLoading,
-            disableLoading,
             enqueueSnackbar,
             data: {
                 title: formik.values.title,

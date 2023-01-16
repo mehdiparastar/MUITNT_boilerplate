@@ -9,16 +9,15 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import axios from 'api/axios';
+import { useAuth } from 'auth/hooks/useAuth';
 import { AxiosError } from 'axios';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';
 import { useFormik } from 'formik';
-
 import { useSnackbar } from 'notistack';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { localRegisterService } from 'services/auth/local.signup.service';
 import * as yup from 'yup';
-import useAuth from '../../../../auth/hooks/useAuth';
 
 
 const validationSchema = yup.object({
@@ -187,3 +186,5 @@ export const RegisterForm = () => {
     </Grid>
   );
 };
+
+

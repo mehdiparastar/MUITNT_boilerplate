@@ -1,28 +1,28 @@
 import axios from 'api/axios';
-import useAuth from 'auth/hooks/useAuth';
+import { useAuth } from 'auth/hooks/useAuth';
 import useRefreshToken from 'auth/hooks/useRefresh';
-
 import { strToBool } from 'helperFunctions/strToBool';
-import { useEffect } from 'react';
-import { useCookies } from 'react-cookie';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import { PageLoader } from 'components/PageLoader/PageLoader'
 
 const PersistLogin = () => {
-  
+
   const {
+    userProfile,
     setUserProfile,
     refreshToken,
-    loadingPersist,
-    setLoadingPersist,
-    persist
+    setRefreshToken,
+    persist,
   } = useAuth();
-  const [cookies, setCookie] = useCookies(['rT']);
   const refresh = useRefreshToken();
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
       try {
-        const { aT } = await refresh(cookies.rT);
+        setLoading(true)
+        const { aT } = await refresh(refreshToken);
         const response = await axios.get('auth/profile', {
           headers: {
             Authorization: `Bearer ${aT}`,
@@ -30,30 +30,40 @@ const PersistLogin = () => {
           },
         });
         setUserProfile(response.data);
+        setLoading(false)
       } catch (err) {
-        console.log(err);
-      } finally {
-        setLoadingPersist(false)
+        setRefreshToken(null)
+        setLoading(false)
+        throw err
       }
     };
-    if (persist) {
-      (!refreshToken && strToBool(cookies.rT)) && verifyRefreshToken();
-    } else {
-      setLoadingPersist(false)
-    }
-    persist && refreshToken && setCookie('rT', refreshToken)
 
-  }, [refreshToken, cookies.rT, persist, refresh, setCookie, setLoadingPersist, setUserProfile]);
+    if (persist && strToBool(refreshToken) && userProfile === null) {
+      verifyRefreshToken();
+    }
+
+  }, [refreshToken, persist, userProfile, refresh, setUserProfile, setRefreshToken]);
+
+  if (persist === true && loading === false && userProfile !== null) {
+    return <Outlet />
+  }
+
+  if (persist === true && loading === false && refreshToken === null) {
+    return <Outlet />
+  }
 
   return (
     <>
-      {!persist ? (
+      {persist
+        ?
+        !loading && userProfile
+          ?
+          <Outlet />
+          :
+          <PageLoader />
+        :
         <Outlet />
-      ) : loadingPersist ? (
-        <p>loading...</p>
-      ) : (
-        <Outlet />
-      )}
+      }
     </>
   );
 };
