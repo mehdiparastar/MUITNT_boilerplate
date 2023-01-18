@@ -22,8 +22,8 @@ POST http://localhost:3001/auth/login
 Content-Type: application/json
 
 {
-    "email":"parastar.azkco@gmail.com",
-    "password":"mehdi"
+    "email":"m.parastar@udb.ir",
+    "password":"123456789"
 }
 
 

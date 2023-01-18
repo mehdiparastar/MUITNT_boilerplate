@@ -8,11 +8,12 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import axios from 'api/axios';
-import { useAuth } from 'auth/hooks/useAuth';
+import { useAppDispatch } from 'apps/hooks';
 import { AxiosError } from 'axios';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';
+import { useGetUserProfileMutation, useLocalRegisterMutation } from 'features/auth/authApiSlice';
+import { setAuthTokens, setAuthUserProfile } from 'features/auth/authSlice';
 import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -37,15 +38,16 @@ const validationSchema = yup.object({
 });
 
 export const RegisterForm = () => {
-  
+
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
-  const {
-    setAccessToken,
-    setRefreshToken,
-    setUserProfile
-  } = useAuth();
+
+  const [localRegister, { isLoading: localRegisterIsLoading }] = useLocalRegisterMutation()
+  const [getUserProfile, { isLoading: getUserProfileIsLoading }] = useGetUserProfileMutation()
+
+  const dispatch = useAppDispatch()
+
   const { enqueueSnackbar } = useSnackbar();
 
   const initialValues = {
@@ -54,28 +56,31 @@ export const RegisterForm = () => {
     name: ''
   };
 
-  const handleCompletingLoginFlow = async ({
+  const handleCompletingRegisteringFlow = async ({
     accessToken,
     refreshToken,
   }: IAuthResponse) => {
-    setAccessToken(accessToken);
-    setRefreshToken(refreshToken);
-    const response = await axios.get('auth/profile', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    setUserProfile(response.data);
-    // navigate('/auth', { replace: true });
+
+    dispatch(setAuthTokens({ accessToken, refreshToken }))
+
+    const response = await getUserProfile().unwrap();
+    dispatch(setAuthUserProfile(response))
+
     navigate(from, { replace: true });
-    enqueueSnackbar('successfully login', { variant: 'success' });
+    enqueueSnackbar('successfully registered.', { variant: 'success' });
   };
 
   const onLocalSubmit = async (values: ILocalRegisterDto): Promise<any> => {
     try {
+      const response = await localRegister({ email: values.email, password: values.password }).unwrap();
+      await handleCompletingRegisteringFlow(response);
+    }
+    catch (ex) {
+      enqueueSnackbar('Login Failed! try again', { variant: 'error' });
+    }
+    try {
       const response = await localRegisterService(values);
-      await handleCompletingLoginFlow(response.data);
+      await handleCompletingRegisteringFlow(response.data);
     }
     catch (ex) {
       const err = ex as AxiosError<{ msg: string }>

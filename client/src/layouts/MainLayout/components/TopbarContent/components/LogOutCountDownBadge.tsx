@@ -2,10 +2,12 @@ import ListAllIcon from '@mui/icons-material/ListAlt';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import { Avatar, Badge, Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, Typography, useTheme } from '@mui/material';
+import { useAppSelector } from 'apps/hooks';
 import { useAuth } from 'auth/hooks/useAuth';
 import useLogout from 'auth/hooks/useLogout';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { UserRoles } from 'enum/userRoles.enum';
+import { selectAuthUser } from 'features/auth/authSlice';
 import { strToBool } from 'helperFunctions/strToBool';
 import jwt_decode, { JwtPayload } from "jwt-decode";
 import React, { useEffect, useState } from 'react';
@@ -16,7 +18,7 @@ interface MyBadgeProps {
 function MyBadge(props: MyBadgeProps) {
     const { children } = props;
     const [countDown, setCountDown] = useState<number>(0)
-    const { refreshToken } = useAuth();
+    const { refreshToken } = useAppSelector(selectAuthUser)
     const logout = useLogout();
     const decodedAT: JwtPayload = (strToBool(refreshToken) && jwt_decode(refreshToken as string)) || {} as JwtPayload
 
@@ -55,7 +57,7 @@ function MyBadge(props: MyBadgeProps) {
 function Children() {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-    const { userProfile } = useAuth();
+    const { userProfile } = useAppSelector(selectAuthUser)
     const logout = useLogout();
     const theme = useTheme();
 

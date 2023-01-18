@@ -20,8 +20,8 @@ import Home from '../pages/Home/Home';
 export const RoutesList: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<MainLayout />}>
-        <Route element={<PersistLogin />}>
+      <Route element={<PersistLogin />}>
+        <Route path="/" element={<MainLayout />}>
           {/* public routes */}
           <Route path="" element={<Home />} />
           <Route path="unauthorized" element={<Unauthorized />} />
@@ -57,9 +57,9 @@ export const RoutesList: React.FC = () => {
             <Route path="user-management" element={<UsersManagement />} />
             <Route path="bingo" element={<ComingSoon />} />
           </Route>
+          {/* catch all */}
+          <Route path="*" element={<NotFound />} />
         </Route>
-        {/* catch all */}
-        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

@@ -1,14 +1,15 @@
 
+import { useAppSelector } from 'apps/hooks';
 import { PageLoader } from 'components/PageLoader/PageLoader';
+import { selectAuthUser } from 'features/auth/authSlice';
 import { getRolesExpand } from 'helperFunctions/get-roles-expand';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
 
 const RequireAuth: React.FC<{ allowedRoles: string[] }> = ({
   allowedRoles,
 }) => {
 
-  const { userProfile } = useAuth();
+  const { userProfile } = useAppSelector(selectAuthUser)
   const location = useLocation();
   const inDBRoles = userProfile?.roles
     ? getRolesExpand(userProfile.roles)

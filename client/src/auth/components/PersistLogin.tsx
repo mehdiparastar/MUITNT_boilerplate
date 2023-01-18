@@ -1,54 +1,38 @@
-import axios from 'api/axios';
-import { useAuth } from 'auth/hooks/useAuth';
-import useRefreshToken from 'auth/hooks/useRefresh';
+import { useAppDispatch, useAppSelector } from 'apps/hooks';
+import { PageLoader } from 'components/PageLoader/PageLoader';
+import { useGetUserProfileMutation } from 'features/auth/authApiSlice';
+import { selectAuthUser, setAuthUserProfile } from 'features/auth/authSlice';
 import { strToBool } from 'helperFunctions/strToBool';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { PageLoader } from 'components/PageLoader/PageLoader'
 
 const PersistLogin = () => {
+  const { userProfile, refreshToken, persist } = useAppSelector(selectAuthUser)
 
-  const {
-    userProfile,
-    setUserProfile,
-    refreshToken,
-    setRefreshToken,
-    persist,
-  } = useAuth();
-  const refresh = useRefreshToken();
-  const [loading, setLoading] = useState(false)
+  const [getUserProfile, { isLoading }] = useGetUserProfileMutation()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
       try {
-        setLoading(true)
-        const { aT } = await refresh(refreshToken);
-        const response = await axios.get('auth/profile', {
-          headers: {
-            Authorization: `Bearer ${aT}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        setUserProfile(response.data);
-        setLoading(false)
+        const response = await getUserProfile().unwrap();
+        dispatch(setAuthUserProfile(response))
       } catch (err) {
-        setRefreshToken(null)
-        setLoading(false)
         throw err
       }
     };
 
-    if (persist && strToBool(refreshToken) && userProfile === null) {
+    if (persist && isLoading === false && strToBool(refreshToken) && userProfile === null) {
       verifyRefreshToken();
     }
 
-  }, [refreshToken, persist, userProfile, refresh, setUserProfile, setRefreshToken]);
+  }, [refreshToken, persist, userProfile]);
 
-  if (persist === true && loading === false && userProfile !== null) {
+  if (persist === true && isLoading === false && userProfile !== null) {
     return <Outlet />
   }
 
-  if (persist === true && loading === false && refreshToken === null) {
+  if (persist === true && isLoading === false && refreshToken === null) {
     return <Outlet />
   }
 
@@ -56,7 +40,7 @@ const PersistLogin = () => {
     <>
       {persist
         ?
-        !loading && userProfile
+        !isLoading && userProfile
           ?
           <Outlet />
           :

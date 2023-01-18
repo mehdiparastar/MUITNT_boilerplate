@@ -1,8 +1,9 @@
 import { Avatar, Chip, Paper, Stack, styled, TextField, Typography, useTheme } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
-import { useAuth } from "auth/hooks/useAuth";
+import { useAppSelector } from "apps/hooks";
 import Item from "components/Item/Item";
 import { getRoleName } from "enum/userRoles.enum";
+import { selectAuthUser } from "features/auth/authSlice";
 import EditUserProfile from "./components/EditUserProfile";
 
 export interface IUpdateProfileDetailProps {
@@ -14,7 +15,8 @@ const ListItem = styled('li')(({ theme }) => ({
 }));
 
 export function UpdateProfileDetail(props: IUpdateProfileDetailProps) {
-    const { userProfile } = useAuth()
+    const { userProfile } = useAppSelector(selectAuthUser)
+
     const theme = useTheme()
 
     return (

@@ -12,25 +12,30 @@ import 'slick-carousel/slick/slick-theme.css';
 import { SnackbarProvider } from 'notistack';
 // import AppTest from 'AppTest';
 
+import { store } from './apps/store'
+import { Provider } from 'react-redux';
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 root.render(
   <React.StrictMode>
-    <CookiesProvider>
-      <AuthProvider>
-        <WithLayout>
-          <SnackbarProvider maxSnack={3}>
-            <GoogleOAuthProvider
-              clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}
-            >
-              <App />
-              {/* <AppTest /> */}
-            </GoogleOAuthProvider>
-          </SnackbarProvider>
-        </WithLayout>
-      </AuthProvider>
-    </CookiesProvider>
+    <Provider store={store}>
+      <CookiesProvider>
+        <AuthProvider>
+          <WithLayout>
+            <SnackbarProvider maxSnack={3}>
+              <GoogleOAuthProvider
+                clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}
+              >
+                <App />
+                {/* <AppTest /> */}
+              </GoogleOAuthProvider>
+            </SnackbarProvider>
+          </WithLayout>
+        </AuthProvider>
+      </CookiesProvider>
+    </Provider>
   </React.StrictMode>,
 );
 
