@@ -51,7 +51,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
     private readonly permissionRequestService: PermissionRequestsService,
-  ) {}
+  ) { }
 
   @Post('local-create')
   @Serialize(JWTTokenDto)
@@ -68,14 +68,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Serialize(JWTTokenDto)
   async login(@Req() req: Request): Promise<IJWTTokensPair> {
-    console.log('login local');
     return this.authService.login(req.user);
   }
 
   @Get('google-logins')
   @UseGuards(GoogleOauthGuard)
   async googleLogin(@Req() req: Request) {
-    console.log('google logins');
   }
 
   @Get('google/callback')
@@ -284,7 +282,7 @@ export class AuthController {
       strToBool(unSeen),
       strToBool(seen),
       selectedUserId,
-    );    
+    );
   }
 
   @Patch('set-seen-preq')

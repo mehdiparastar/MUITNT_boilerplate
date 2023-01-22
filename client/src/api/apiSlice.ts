@@ -1,14 +1,13 @@
-import { BaseQueryFn, FetchArgs, fetchBaseQuery, FetchBaseQueryError, createApi } from '@reduxjs/toolkit/query/react'
-import { Mutex } from 'async-mutex'
-import { logOut, setAuthTokens } from 'features/auth/authSlice'
-import { RootState } from 'apps/store'
+import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { RootState } from 'redux/store'
+import { setAuthTokens } from 'redux/features/auth/authSlice'
 import { baseURL } from './baseUrl'
 
-const mutex = new Mutex()
+const baseQuery_login = fetchBaseQuery({ baseUrl: baseURL })
 
 const baseQuery_access = fetchBaseQuery({
     baseUrl: baseURL,
-    prepareHeaders: (headers, { getState }) => {
+    prepareHeaders: (headers, { getState, endpoint }) => {
         const accessToken = (getState() as RootState).auth.accessToken
         if (accessToken) {
             headers.set('authorization', `Bearer ${accessToken}`)
@@ -25,51 +24,41 @@ const baseQuery_refresh = fetchBaseQuery({
             headers.set('authorization', `Bearer ${refreshToken}`)
         }
         return headers
-    }
+    },
+
 })
 
-const baseQueryWithReauth: BaseQueryFn<
-    string | FetchArgs,
-    unknown,
-    FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-    // wait until the mutex is available without locking it
-    await mutex.waitForUnlock()
+const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
+    async (args, api, extraOptions) => {
+        if (api.endpoint === 'authLocalLogin') {
+            const login = await baseQuery_login(args, api, extraOptions)
+            api.dispatch(setAuthTokens(login.data as IAuthResponse))
+            return login
+        }
+        else {
 
-    let result = await baseQuery_access(args, api, extraOptions)
-    if (result.error && result.error.status === 401) {
-        // checking whether the mutex is locked
-        if (!mutex.isLocked()) {
-            const release = await mutex.acquire()
-            try {
+            let result = await baseQuery_access(args, api, extraOptions)
+
+            if (result.error?.status === 401) {
+                // send refresh token to get new access token 
                 const refreshResult = await baseQuery_refresh('auth/refresh', api, extraOptions)
                 if (refreshResult.data) {
-                    api.dispatch(setAuthTokens(refreshResult.data as IAuthResponse))
-                    localStorage.setItem('rT', String((refreshResult.data as IAuthResponse).refreshToken))
+                    // store the new token 
+                    api.dispatch(setAuthTokens({ ...refreshResult.data } as IAuthResponse))
+                    // retry the original query with new access token 
                     result = await baseQuery_access(args, api, extraOptions)
                 } else {
-                    const logoutResult = await baseQuery_access('auth/logout', api, extraOptions)
-                    if (logoutResult.data) {
-                        api.dispatch(logOut(logoutResult.data as IUser))
-                    } else {
-                        api.dispatch(logOut({} as IUser))
-                    }
+                    api.dispatch(setAuthTokens({ accessToken: null, refreshToken: null }))
                 }
-            } finally {
-                // release must be called once the mutex should be released again.
-                release()
             }
-        } else {
-            // wait until the mutex is available without locking it
-            await mutex.waitForUnlock()
-            result = await baseQuery_access(args, api, extraOptions)
+
+            return result
         }
     }
-    return result
-}
 
 export const apiSlice = createApi({
     reducerPath: 'apiSlice',
     baseQuery: baseQueryWithReauth,
+    tagTypes: ['CurrentUser', 'PermissionRequest', 'User'],
     endpoints: builder => ({})
 })

@@ -1,19 +1,14 @@
+import 'aos/dist/aos.css';
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { CookiesProvider } from 'react-cookie';
-import { AuthProvider } from 'auth/context/AuthProvider';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { WithLayout } from 'WithLayout';
-import 'aos/dist/aos.css';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import { SnackbarProvider } from 'notistack';
-// import AppTest from 'AppTest';
-
-import { store } from './apps/store'
 import { Provider } from 'react-redux';
+import 'slick-carousel/slick/slick-theme.css';
+import 'slick-carousel/slick/slick.css';
+import { WithLayout } from 'WithLayout';
+import App from './App';
+import { store } from './redux/store';
+import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -21,20 +16,17 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <CookiesProvider>
-        <AuthProvider>
-          <WithLayout>
-            <SnackbarProvider maxSnack={3}>
-              <GoogleOAuthProvider
-                clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}
-              >
-                <App />
-                {/* <AppTest /> */}
-              </GoogleOAuthProvider>
-            </SnackbarProvider>
-          </WithLayout>
-        </AuthProvider>
-      </CookiesProvider>
+      {/* <CookiesProvider> */}
+      <WithLayout>
+        <SnackbarProvider maxSnack={3}>
+          {/* <GoogleOAuthProvider
+            clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}
+          > */}
+          <App />
+          {/* </GoogleOAuthProvider> */}
+        </SnackbarProvider>
+      </WithLayout>
+      {/* </CookiesProvider> */}
     </Provider>
   </React.StrictMode>,
 );

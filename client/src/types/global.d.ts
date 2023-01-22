@@ -37,16 +37,6 @@ declare global {
     [Key in keyof Fields]: ConditionalSchema<Fields[Key]>;
   };
 
-  interface IRoute {
-    key: string;
-    title: string;
-    path: string;
-    enabled: boolean;
-    component: FC<{}>;
-    layout: FC<Props>;
-    isProtected: boolean;
-  }
-
   type navPage = {
     title: string;
     key: string;
@@ -56,15 +46,6 @@ declare global {
       icon?: JSX.Element;
     }[];
   };
-
-  interface IAppError {
-    message: string;
-  }
-
-  interface IApiResponse<T> {
-    data: T;
-    error: IAppError | null;
-  }
 
   interface IAuthResponse {
     accessToken: string;
@@ -81,38 +62,4 @@ declare global {
     roles?: string[];
   }
 
-  interface ILocalRegisterDto {
-    email: string;
-    password: string;
-    name: string;
-    photo?: string;
-  }
-
-  interface IAuthContext {
-    userProfile: IUser | null | undefined;
-    setUserProfile: (user: IUser | null) => void;
-    accessToken: string | null | undefined;
-    setAccessToken: (token: string | null | undefined) => void;
-    refreshToken: string | null | undefined;
-    setRefreshToken: (token: string | null | undefined) => void;
-    persist: boolean;
-    setPersist: (bool: boolean) => void;
-    loadingPersist: boolean;
-    setLoadingPersist: (bool: boolean) => void;
-  }
-
-  interface ILoadingContext {
-    loading: boolean;
-    setLoading: (bool: boolean) => void;
-  }
-
-  interface IPermissionRequest {
-    id: number;
-    user: IUser;
-    adminMsg: string;
-    role: UserRoles;
-    result: pReqResultENUM;
-    createdAt: Date;
-    updatedAt: Date;
-  }
 }

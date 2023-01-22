@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { apiSlice } from 'api/apiSlice';
-import authReducer from '../features/auth/authSlice'
+import authReducer from './features/auth/authSlice';
 
 export const store = configureStore({
     reducer: {
@@ -11,7 +11,7 @@ export const store = configureStore({
         getDefaultMiddleware({
             serializableCheck: false,
         })
-            .concat(apiSlice.middleware),
+            .concat([apiSlice.middleware]),
     devTools: process.env.NODE_ENV !== 'production' ? true : false
 });
 

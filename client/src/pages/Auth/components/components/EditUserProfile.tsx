@@ -1,18 +1,13 @@
 import { AlertTitle, Button, Stack, TextField } from '@mui/material';
-import { useAuth } from 'auth/hooks/useAuth';
-import useAxiosPrivate from 'auth/hooks/useAxiosPrivate';
-import { AxiosError } from 'axios';
+import { PageLoader } from 'components/PageLoader/PageLoader';
 import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';
+import { useGetCurrentUserQuery, useUpdateCurrentUserMutation } from 'redux/features/currentUser/currentUserApiSlice';
 import { useFormik } from 'formik';
+import { IEditCurrentUserDto } from 'models/currentUser.model';
 import { useSnackbar } from 'notistack';
 import * as yup from 'yup';
 
 interface IEditUserProfileProps {
-}
-
-interface IEditProfileDetailDto {
-    name: string;
-    photo: string;
 }
 
 const validationSchema = yup.object({
@@ -22,26 +17,24 @@ const validationSchema = yup.object({
         .min(5, 'The Full Name should have at minimum length of 5'),
 });
 
-
-
 const EditUserProfile: React.FunctionComponent<IEditUserProfileProps> = (props) => {
-    const { userProfile, setUserProfile } = useAuth()
-    const axiosPrivate = useAxiosPrivate()
+    const { data: currentUser, isSuccess: isGetCurrentUserSuccess, isLoading: isGetCurrentUserLoading, isError: isGetCurrentUserError, error } = useGetCurrentUserQuery()
+    const [updateCurrentUser, { isLoading: isUpdateCurrentUserLoading }] = useUpdateCurrentUserMutation()
     const { enqueueSnackbar } = useSnackbar()
+    const loading = isGetCurrentUserLoading || isUpdateCurrentUserLoading
 
     const initialValues = {
-        name: userProfile?.name || '',
-        photo: userProfile?.photo || ''
+        name: currentUser?.name || '',
+        photo: currentUser?.photo || ''
     };
 
-    const onLocalSubmit = async (values: IEditProfileDetailDto): Promise<any> => {
+    const onLocalSubmit = async (values: IEditCurrentUserDto) => {
         try {
-            const response = await axiosPrivate.patch('auth/change-profile-detail', values)
-            setUserProfile(response.data)
+            await updateCurrentUser(values).unwrap()
         }
         catch (ex) {
-            const err = ex as AxiosError<{ msg: string }>
-            enqueueSnackbar(err.response?.data?.msg || 'Unknown Error', { variant: 'error' });
+            const err = ex as { data: { msg: string } }
+            enqueueSnackbar(`Updating Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
         }
     };
 
@@ -51,8 +44,12 @@ const EditUserProfile: React.FunctionComponent<IEditUserProfileProps> = (props) 
         onSubmit: onLocalSubmit,
     });
 
-    return (
-        <form onSubmit={formik.handleSubmit}>
+    let content = <h3>unknown status(bug)!!!</h3>
+
+    if (loading) {
+        content = <PageLoader />
+    } else if (isGetCurrentUserSuccess) {
+        content = <form onSubmit={formik.handleSubmit}>
             <Stack direction={'column'} spacing={2}>
                 <AlertTitle><strong>☉</strong> You can only edit your <strong>profile picture</strong> and <strong>name</strong> here — <strong>try it!</strong></AlertTitle>
                 <ProfilePicEditor formik={formik} />
@@ -80,7 +77,14 @@ const EditUserProfile: React.FunctionComponent<IEditUserProfileProps> = (props) 
                 </Button>
             </Stack>
         </form>
-    )
+    } else if (isGetCurrentUserError) {
+        content =
+            <>
+                <p>{JSON.stringify(error)}</p>
+            </>
+    }
+
+    return content
 };
 
 export default EditUserProfile;

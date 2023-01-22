@@ -2,14 +2,15 @@ import ListAllIcon from '@mui/icons-material/ListAlt';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import { Avatar, Badge, Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, Typography, useTheme } from '@mui/material';
-import { useAppSelector } from 'apps/hooks';
-import { useAuth } from 'auth/hooks/useAuth';
-import useLogout from 'auth/hooks/useLogout';
+import { useAppSelector } from 'redux/hooks';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { UserRoles } from 'enum/userRoles.enum';
-import { selectAuthUser } from 'features/auth/authSlice';
+import { useAuthLogoutMutation } from 'redux/features/auth/authApiSlice';
+import { selectCurrentRefreshToken } from 'redux/features/auth/authSlice';
+import { useGetCurrentUserQuery } from 'redux/features/currentUser/currentUserApiSlice';
 import { strToBool } from 'helperFunctions/strToBool';
 import jwt_decode, { JwtPayload } from "jwt-decode";
+import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 
 interface MyBadgeProps {
@@ -18,9 +19,9 @@ interface MyBadgeProps {
 function MyBadge(props: MyBadgeProps) {
     const { children } = props;
     const [countDown, setCountDown] = useState<number>(0)
-    const { refreshToken } = useAppSelector(selectAuthUser)
-    const logout = useLogout();
+    const refreshToken = useAppSelector(selectCurrentRefreshToken)
     const decodedAT: JwtPayload = (strToBool(refreshToken) && jwt_decode(refreshToken as string)) || {} as JwtPayload
+    const [serverLogout] = useAuthLogoutMutation()
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -29,19 +30,19 @@ function MyBadge(props: MyBadgeProps) {
             }
             if (decodedAT.exp !== undefined && ((decodedAT.exp * 1000) - new Date().getTime()) <= 0) {
                 clearInterval(interval)
-                logout()
+                serverLogout()
             }
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [decodedAT.exp, logout]);
+    }, [decodedAT.exp, serverLogout]);
 
     return (
         <Badge
             sx={{
                 '.MuiBadge-anchorOriginTopRight': { mt: -1.5 }
             }}
-            invisible={Math.floor(countDown / 1000) > 90}
+            // invisible={Math.floor(countDown / 1000) > 90}
             color="secondary"
             badgeContent={Math.floor(countDown / 1000) || 0}
             anchorOrigin={{
@@ -57,9 +58,10 @@ function MyBadge(props: MyBadgeProps) {
 function Children() {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-    const { userProfile } = useAppSelector(selectAuthUser)
-    const logout = useLogout();
+    const { data: currentUser } = useGetCurrentUserQuery()
+    const [authLogout] = useAuthLogoutMutation()
     const theme = useTheme();
+    const { enqueueSnackbar } = useSnackbar()
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -70,8 +72,14 @@ function Children() {
     };
 
     const handleLogOut = async () => {
-        await logout();
+        try {
+            await authLogout().unwrap()
+        } catch (ex) {
+            const err = ex as { data: { msg: string } }
+            enqueueSnackbar(`Loggin Out Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
+        }
     };
+
 
     const popupMenu = (
         <Menu
@@ -110,11 +118,11 @@ function Children() {
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
             <MenuItem>
-                <Typography variant="h6">{`Hi, dear ${userProfile?.name}`}</Typography>
+                <Typography variant="h6">{`Hi, dear ${currentUser?.name}`}</Typography>
             </MenuItem>
             <Divider />
             {
-                userProfile?.roles?.includes(UserRoles.superUser) && <MenuItem component={MUINavLink} to='/approve-permission-requests'>
+                currentUser?.roles?.includes(UserRoles.superUser) && <MenuItem component={MUINavLink} to='/approve-permission-requests'>
                     <ListItemIcon>
                         <ListAllIcon fontSize="small" />
                     </ListItemIcon>
@@ -156,7 +164,7 @@ function Children() {
                     aria-expanded={open ? 'true' : undefined}
                 >
                     <Avatar
-                        alt={userProfile?.name}
+                        alt={currentUser?.name}
                         sx={{
                             width: 45,
                             height: 45,
@@ -166,7 +174,7 @@ function Children() {
                         <Box
                             component={'img'}
                             width={'100%'}
-                            src={userProfile?.photo}
+                            src={currentUser?.photo}
                         />
                     </Avatar>
                 </IconButton>
@@ -185,8 +193,6 @@ const LogOutCountDownBadge = (props: Props) => {
             <Children />
             <MyBadge />
         </>
-
-
     )
 }
 

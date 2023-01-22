@@ -240,7 +240,6 @@ export const selectPostReactionsCoundByPostIdAndReactionName =
       (selectAllPosts, postId: number, name: reactionTypeEnum) => ({ postId, name })
     ],
     (selectAllPosts, { postId, name }) => {
-      // console.log(postId, name)
       return selectAllPosts.data.find(post => post.id === postId)?.reactions[name]
     })
 export default postsSlice.reducer;

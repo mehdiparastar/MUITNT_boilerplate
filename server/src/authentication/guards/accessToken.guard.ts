@@ -4,8 +4,12 @@ import { AuthGuard } from '@nestjs/passport';
 @Injectable()
 export class AccessTokenGuard extends AuthGuard('jwt') {
   async canActivate(context: ExecutionContext) {
+    const url = (context.switchToHttp().getRequest().originalUrl)
     const activate = (await super.canActivate(context)) as boolean;
     // await super.logIn(request);
+    if (url === '/auth/profile') {
+      console.log(url, activate)
+    }
     return activate;
   }
 }

@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import GoogleIcon from '@mui/icons-material/Google';
+// import GoogleIcon from '@mui/icons-material/Google';
 import {
   Checkbox,
   Divider,
@@ -12,19 +12,20 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import { CredentialResponse, GoogleLogin, useGoogleLogin } from '@react-oauth/google';
-import axios from 'api/axios';
-import { useAppDispatch } from 'apps/hooks';
+// import { CredentialResponse, GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+// import axios from 'api/axios';
+import { useAppDispatch } from 'redux/hooks';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
-import { useGetUserProfileMutation, useLocalLoginMutation } from 'features/auth/authApiSlice';
+import { PageLoader } from 'components/PageLoader/PageLoader';
+import { useAuthLocalLoginMutation } from 'redux/features/auth/authApiSlice';
 import { useFormik } from 'formik';
 import { strToBool } from 'helperFunctions/strToBool';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { googleLoginService } from 'services/auth/google.login.service';
+// import { googleLoginService } from 'services/auth/google.login.service';
 import * as yup from 'yup';
-import { setAuthTokens, setAuthUserProfile, setPersist } from '../../../../features/auth/authSlice';
+import { setPersist } from '../../../../redux/features/auth/authSlice';
 
 interface ILocalLoginDto {
   email: string;
@@ -49,8 +50,7 @@ export const LoginForm = () => {
   const location = useLocation();
   const from = (location.state?.from?.pathname === '/auth' ? '/' : location.state?.from?.pathname) || '/';
 
-  const [localLogin, { isLoading: localLoginIsLoading }] = useLocalLoginMutation()
-  const [getUserProfile, { isLoading: getUserProfileIsLoading }] = useGetUserProfileMutation()
+  const [authLocalLogin, { isLoading: localLoginIsLoading }] = useAuthLocalLoginMutation()
 
   const dispatch = useAppDispatch()
 
@@ -66,26 +66,21 @@ export const LoginForm = () => {
     refreshToken,
   }: IAuthResponse) => {
 
-    dispatch(setAuthTokens({ accessToken, refreshToken }))
-
     persistCheck ? localStorage.setItem('persist', String(persistCheck)) : localStorage.setItem('persist', String(null))
     persistCheck ? localStorage.setItem('rT', String(refreshToken)) : localStorage.setItem('rT', String(null))
     dispatch(setPersist(persistCheck))
-
-    const response = await getUserProfile().unwrap();
-    dispatch(setAuthUserProfile(response))
-
     navigate(from, { replace: true });
     enqueueSnackbar('successfully login', { variant: 'success' });
   };
 
   const onLocalSubmit = async (values: ILocalLoginDto): Promise<any> => {
     try {
-      const response = await localLogin({ email: values.email, password: values.password }).unwrap();
+      const response = await authLocalLogin({ email: values.email, password: values.password }).unwrap();
       await handleCompletingLoginFlow(response);
     }
     catch (ex) {
-      enqueueSnackbar('Login Failed! try again', { variant: 'error' });
+      const err = ex as { data: { msg: string } }
+      enqueueSnackbar(`Login Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
     }
   };
 
@@ -95,31 +90,36 @@ export const LoginForm = () => {
     onSubmit: onLocalSubmit,
   });
 
-  const onGoogleSubmit = async (credentialResponse: CredentialResponse) => {
-    const response = await googleLoginService(credentialResponse.credential);
-    await handleCompletingLoginFlow(response.data);
-  };
+  // const onGoogleSubmit = async (credentialResponse: CredentialResponse) => {
+  //   const response = await googleLoginService(credentialResponse.credential);
+  //   await handleCompletingLoginFlow(response.data);
+  // };
 
-  const googleLogin = useGoogleLogin({
-    flow: 'auth-code',
-    onSuccess: async (tokenResponse) => {
-      const res = await axios.post('auth/google/login-custom-btn', {
-        code: tokenResponse.code,
-      });
-      await handleCompletingLoginFlow(res.data);
-    },
-    onError: (err) => {
-      console.error(err)
-      enqueueSnackbar('Login Failed! try again', { variant: 'error' });
-    },
-  });
+  // const googleLogin = useGoogleLogin({
+  //   flow: 'auth-code',
+  //   onSuccess: async (tokenResponse) => {
+  //     const res = await axios.post('auth/google/login-custom-btn', {
+  //       code: tokenResponse.code,
+  //     });
+  //     await handleCompletingLoginFlow(res.data);
+  //   },
+  //   onError: (err) => {
+  //     console.error(err)
+  //     enqueueSnackbar('Login Failed! try again', { variant: 'error' });
+  //   },
+  // });
 
   const togglePersist = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPersistCheck(event.target.checked);
   };
 
-  return (
-    <Grid container>
+  let content;
+
+  if (localLoginIsLoading) {
+    content = <PageLoader />
+  }
+  else {
+    content = <Grid container>
       <Grid xs={12}>
         <Stack direction={'row'} justifyContent={'center'}>
           <Typography variant="h4" sx={{ fontWeight: 700 }}>
@@ -219,53 +219,53 @@ export const LoginForm = () => {
           </Grid>
         </form>
       </Grid>
-      {
-        2 > 3 &&
-        <>
-          <Grid xs={12}>
-            <Stack
-              direction={'row'}
-              sx={{ width: '100%', my: 3 }}
-              alignItems="center"
-              justifyContent={'center'}
-            >
-              <Divider sx={{ width: '45%' }} />
-              <Typography paddingX={2}>or</Typography>
-              <Divider sx={{ width: '45%' }} />
-            </Stack>
-          </Grid>
-          <Grid xs={12}>
-            <Button
-              color="secondary"
-              startIcon={<GoogleIcon />}
-              onClick={() => googleLogin()}
-              fullWidth
-              variant="outlined"
-              size="large"
-            >
-              Login with Google
-            </Button>
-          </Grid>
-          <Grid xs={12} justifyContent={'center'} display="flex" mt={1}>
-            <GoogleLogin
-              type="standard"
-              shape="rectangular"
-              // theme={themeMode === 'dark' ? 'filled_blue' : 'outline'}
-              width="100%"
-              size="large"
-              context="signin"
-              auto_select={false}
-              useOneTap={false}
-              ux_mode="popup"
-              onSuccess={onGoogleSubmit}
-              onError={() => {
-                console.log('Login Failed');
-                enqueueSnackbar('Login Failed! try again', { variant: 'error' });
-              }}
-            />
-          </Grid>
-        </>
-      }
+      {/* {
+      2 > 3 &&
+      <>
+        <Grid xs={12}>
+          <Stack
+            direction={'row'}
+            sx={{ width: '100%', my: 3 }}
+            alignItems="center"
+            justifyContent={'center'}
+          >
+            <Divider sx={{ width: '45%' }} />
+            <Typography paddingX={2}>or</Typography>
+            <Divider sx={{ width: '45%' }} />
+          </Stack>
+        </Grid>
+        <Grid xs={12}>
+          <Button
+            color="secondary"
+            startIcon={<GoogleIcon />}
+            onClick={() => googleLogin()}
+            fullWidth
+            variant="outlined"
+            size="large"
+          >
+            Login with Google
+          </Button>
+        </Grid>
+        <Grid xs={12} justifyContent={'center'} display="flex" mt={1}>
+          <GoogleLogin
+            type="standard"
+            shape="rectangular"
+            // theme={themeMode === 'dark' ? 'filled_blue' : 'outline'}
+            width="100%"
+            size="large"
+            context="signin"
+            auto_select={false}
+            useOneTap={false}
+            ux_mode="popup"
+            onSuccess={onGoogleSubmit}
+            onError={() => {
+              enqueueSnackbar('Login Failed! try again', { variant: 'error' });
+            }}
+          />
+        </Grid>
+      </>
+    } */}
     </Grid>
-  );
+  }
+  return content
 };

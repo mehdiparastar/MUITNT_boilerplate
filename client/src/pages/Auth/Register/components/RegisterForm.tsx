@@ -8,16 +8,13 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import { useAppDispatch } from 'apps/hooks';
-import { AxiosError } from 'axios';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
+import { PageLoader } from 'components/PageLoader/PageLoader';
 import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';
-import { useGetUserProfileMutation, useLocalRegisterMutation } from 'features/auth/authApiSlice';
-import { setAuthTokens, setAuthUserProfile } from 'features/auth/authSlice';
+import { ILocalRegisterDto, useAuthLocalRegisterMutation } from 'redux/features/auth/authApiSlice';
 import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { localRegisterService } from 'services/auth/local.signup.service';
 import * as yup from 'yup';
 
 
@@ -43,10 +40,7 @@ export const RegisterForm = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
 
-  const [localRegister, { isLoading: localRegisterIsLoading }] = useLocalRegisterMutation()
-  const [getUserProfile, { isLoading: getUserProfileIsLoading }] = useGetUserProfileMutation()
-
-  const dispatch = useAppDispatch()
+  const [authLocalRegister, { isLoading }] = useAuthLocalRegisterMutation()
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -61,30 +55,24 @@ export const RegisterForm = () => {
     refreshToken,
   }: IAuthResponse) => {
 
-    dispatch(setAuthTokens({ accessToken, refreshToken }))
-
-    const response = await getUserProfile().unwrap();
-    dispatch(setAuthUserProfile(response))
-
     navigate(from, { replace: true });
     enqueueSnackbar('successfully registered.', { variant: 'success' });
   };
 
   const onLocalSubmit = async (values: ILocalRegisterDto): Promise<any> => {
     try {
-      const response = await localRegister({ email: values.email, password: values.password }).unwrap();
+      const response = await authLocalRegister(
+        {
+          email: values.email,
+          password: values.password,
+          name: values.name,
+          photo: values.photo
+        }).unwrap();
       await handleCompletingRegisteringFlow(response);
     }
     catch (ex) {
-      enqueueSnackbar('Login Failed! try again', { variant: 'error' });
-    }
-    try {
-      const response = await localRegisterService(values);
-      await handleCompletingRegisteringFlow(response.data);
-    }
-    catch (ex) {
-      const err = ex as AxiosError<{ msg: string }>
-      enqueueSnackbar(err.response?.data?.msg || 'Unknown Error', { variant: 'error' });
+      const err = ex as { data: { msg: string } }
+      enqueueSnackbar(`Registeration Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
     }
   };
 
@@ -94,8 +82,13 @@ export const RegisterForm = () => {
     onSubmit: onLocalSubmit,
   });
 
-  return (
-    <Grid container>
+  let content;
+
+  if (isLoading) {
+    content = <PageLoader />
+  }
+  else {
+    content = <Grid container>
       <Grid xs={12} mb={4}>
         <Stack direction={'row'} justifyContent={'center'}>
           <Typography variant="h4" sx={{ fontWeight: 700 }}>
@@ -189,7 +182,8 @@ export const RegisterForm = () => {
         </form>
       </Grid>
     </Grid>
-  );
+  }
+  return content
 };
 
 

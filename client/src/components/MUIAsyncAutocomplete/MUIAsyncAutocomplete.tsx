@@ -2,7 +2,7 @@ import { SxProps } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
 
@@ -45,8 +45,8 @@ export const MUIAsyncAutocomplete = <T,>(props: ICustomAutoCompleteProps<T>) => 
                     const response = await getOptions()
                     setOptions(response.data);
                 } catch (ex) {
-                    const err = ex as AxiosError<{ msg: string }>
-                    enqueueSnackbar(err.response?.data?.msg || 'Unknown Error', { variant: 'error' });
+                    const err = ex as { data: { msg: string } }
+                    enqueueSnackbar(`Fetching Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
                 }
             }
         })();

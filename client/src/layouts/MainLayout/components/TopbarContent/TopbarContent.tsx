@@ -5,8 +5,9 @@ import { colors } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Unstable_Grid2';
-import { useAppSelector } from 'apps/hooks';
-import { selectAuthUser } from 'features/auth/authSlice';
+import { useAppSelector } from 'redux/hooks';
+import { selectCurrentAccessToken } from 'redux/features/auth/authSlice';
+import { useGetCurrentUserQuery } from 'redux/features/currentUser/currentUserApiSlice';
 import React from 'react';
 import MUITNTSVG from 'svg/logos/MUITNT';
 import { paletteTypes } from 'theme/paletteTypes';
@@ -19,7 +20,8 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
 
   const theme = useTheme();
   const themeConfig = React.useContext(ThemeContext);
-  const { userProfile } = useAppSelector(selectAuthUser)
+  const { data: currentUser } = useGetCurrentUserQuery()
+  const accessToken = useAppSelector(selectCurrentAccessToken)
   const themeMode = theme.palette.mode;
   const paletteType = theme.palette.paletteType;
   const themeToggler = themeConfig.themeMode.toggleThemeMode;
@@ -37,7 +39,7 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
         >
           <MenuIcon />
         </IconButton>
-        {userProfile?.email ? (
+        {accessToken && currentUser?.email ? (
           <LogOutCountDownBadge />
         ) : (
           <MUITNTSVG
