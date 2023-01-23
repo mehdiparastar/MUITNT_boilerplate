@@ -1,6 +1,7 @@
 import 'aos/dist/aos.css';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
+import { CookiesProvider } from 'react-cookie';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import 'slick-carousel/slick/slick-theme.css';
@@ -16,17 +17,17 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      {/* <CookiesProvider> */}
-      <WithLayout>
-        <SnackbarProvider maxSnack={3}>
-          {/* <GoogleOAuthProvider
+      <CookiesProvider>
+        <WithLayout>
+          <SnackbarProvider maxSnack={3}>
+            {/* <GoogleOAuthProvider
             clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}
           > */}
-          <App />
-          {/* </GoogleOAuthProvider> */}
-        </SnackbarProvider>
-      </WithLayout>
-      {/* </CookiesProvider> */}
+            <App />
+            {/* </GoogleOAuthProvider> */}
+          </SnackbarProvider>
+        </WithLayout>
+      </CookiesProvider>
     </Provider>
   </React.StrictMode>,
 );

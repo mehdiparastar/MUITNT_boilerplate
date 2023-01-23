@@ -2,6 +2,7 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import AOS from 'aos';
 import * as React from 'react';
+import { useCookies } from 'react-cookie';
 import getTheme from 'theme';
 import { paletteTypes } from 'theme/paletteTypes';
 
@@ -15,11 +16,10 @@ export const ThemeContext = React.createContext({
 });
 
 export const WithLayout: React.FC<Props> = ({ children }) => {
+  const [cookies, setCookie] = useCookies<string, { 'theme-mode': themeMode, 'theme-pallete-type': themePaletteType }>(['theme-mode', 'theme-pallete-type']);
 
-  const [mode, setMode] = React.useState<themeMode>('dark');
-  const [palleteType, setPaletteType] = React.useState<themePaletteType>(
-    paletteTypes[0],
-  );
+  const [mode, setMode] = React.useState<themeMode>(cookies['theme-mode'] || 'dark');
+  const [palleteType, setPaletteType] = React.useState<themePaletteType>(cookies['theme-pallete-type'] || paletteTypes[0]);
 
   const themeMode = React.useMemo(() => {
     // Remove the server-side injected CSS.
@@ -40,10 +40,11 @@ export const WithLayout: React.FC<Props> = ({ children }) => {
 
     return {
       toggleThemeMode: () => {
+        setCookie('theme-mode', mode === 'light' ? 'dark' : 'light')
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
       },
     };
-  }, []);
+  }, [mode, setCookie]);
 
   const themePaletteType = React.useMemo(
     () => ({
@@ -51,10 +52,11 @@ export const WithLayout: React.FC<Props> = ({ children }) => {
         const palette: themePaletteType =
           paletteTypes.indexOf(type) === -1 ? 'green' : type;
 
+        setCookie('theme-pallete-type', palette)
         setPaletteType(palette);
       },
     }),
-    [],
+    [setCookie],
   );
 
 
