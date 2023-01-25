@@ -9,7 +9,7 @@ Content-Type: application/json
 
 ### Login with google
 
-GET http://localhost:3001/auth/google-logins
+GET http://localhost:3001/auth/google/callback
 Content-Type: application/json
 
 

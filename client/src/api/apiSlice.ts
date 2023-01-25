@@ -30,9 +30,9 @@ const baseQuery_refresh = fetchBaseQuery({
 
 const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
     async (args, api, extraOptions) => {
-        if (api.endpoint === 'authLocalLogin') {
+        if (api.endpoint === 'authLocalLogin' || api.endpoint === 'authGoogleLogin') {
             const login = await baseQuery_login(args, api, extraOptions)
-            api.dispatch(setAuthTokens(login.data as IAuthResponse))
+            // api.dispatch(setAuthTokens(login.data as IAuthResponse))
             return login
         }
         else {

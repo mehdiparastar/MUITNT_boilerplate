@@ -38,8 +38,6 @@ import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { AccessTokenGuard } from './guards/accessToken.guard';
 import { GoogleOauthGuard } from './guards/google-oauth.guard';
-import { GoogleOauthV2CustomBTNGuard } from './guards/google-oauth.v2.custom.btn.guard';
-import { GoogleOauthV2Guard } from './guards/google-oauth.v2.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { TestOrDevModeGuard } from './guards/test-or-dev-mode.guard';
@@ -71,7 +69,7 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  @Get('google-logins')
+  @Get('google-logins/:from')
   @UseGuards(GoogleOauthGuard)
   async googleLogin(@Req() req: Request) {
   }
@@ -80,26 +78,10 @@ export class AuthController {
   @UseGuards(GoogleOauthGuard)
   async googleLoginCallback(
     @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
   ) {
     const auth = await this.authService.login(req.user);
-    return auth;
-  }
-
-  // @react-oauth/google
-  @Post('google/login')
-  @UseGuards(GoogleOauthV2Guard)
-  async googleLoginV2(@Req() req: Request) {
-    const auth = await this.authService.login(req.user);
-    return auth;
-  }
-
-  // @react-oauth/google with custom button
-  @Post('google/login-custom-btn')
-  @UseGuards(GoogleOauthV2CustomBTNGuard)
-  async googleLoginV2CustomBTN(@Req() req: Request) {
-    const auth = await this.authService.login(req.user);
-    return auth;
+    res.redirect(`http://localhost:3000/google-oauth-success-redirect/${auth.accessToken}/${auth.refreshToken}${req.params.from}`)
   }
 
   @Get('profile')

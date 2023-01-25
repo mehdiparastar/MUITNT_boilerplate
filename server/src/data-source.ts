@@ -2,7 +2,6 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { Post } from './apps/CRUD/components/posts/entities/post.entity';
 import { Reaction } from './apps/CRUD/components/posts/entities/reaction.entity';
 import { PermissionRequest } from './users/entities/permission-requests.entity';
-
 import { User } from './users/entities/user.entity';
 
 interface IDBConfig {

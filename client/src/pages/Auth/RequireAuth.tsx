@@ -10,7 +10,7 @@ const RequireAuth: React.FC<{ allowedRoles: string[] }> = ({
   allowedRoles,
 }) => {
   const accessToken = useAppSelector(selectCurrentAccessToken)
-
+  console.log('req', accessToken)
   const { data: currentUser, isSuccess, isLoading, isError } = useGetCurrentUserQuery()
   const location = useLocation();
 

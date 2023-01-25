@@ -1,5 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
-// import GoogleIcon from '@mui/icons-material/Google';
+import GoogleIcon from '@mui/icons-material/Google';
 import {
   Checkbox,
   Divider,
@@ -12,8 +11,6 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-// import { CredentialResponse, GoogleLogin, useGoogleLogin } from '@react-oauth/google';
-// import axios from 'api/axios';
 import { useAppDispatch } from 'redux/hooks';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { PageLoader } from 'components/PageLoader/PageLoader';
@@ -23,7 +20,6 @@ import { strToBool } from 'helperFunctions/strToBool';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-// import { googleLoginService } from 'services/auth/google.login.service';
 import * as yup from 'yup';
 import { setPersist } from '../../../../redux/features/auth/authSlice';
 
@@ -48,8 +44,7 @@ export const LoginForm = () => {
   const [persistCheck, setPersistCheck] = useState<boolean>(strToBool(localStorage.getItem('persist')) || false)
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state?.from?.pathname === '/auth' ? '/' : location.state?.from?.pathname) || '/';
-
+  const from: string = (location.state?.from?.pathname === '/auth' ? '/' : location.state?.from?.pathname) || '/';
   const [authLocalLogin, { isLoading: localLoginIsLoading }] = useAuthLocalLoginMutation()
 
   const dispatch = useAppDispatch()
@@ -90,24 +85,13 @@ export const LoginForm = () => {
     onSubmit: onLocalSubmit,
   });
 
-  // const onGoogleSubmit = async (credentialResponse: CredentialResponse) => {
-  //   const response = await googleLoginService(credentialResponse.credential);
-  //   await handleCompletingLoginFlow(response.data);
-  // };
-
-  // const googleLogin = useGoogleLogin({
-  //   flow: 'auth-code',
-  //   onSuccess: async (tokenResponse) => {
-  //     const res = await axios.post('auth/google/login-custom-btn', {
-  //       code: tokenResponse.code,
-  //     });
-  //     await handleCompletingLoginFlow(res.data);
-  //   },
-  //   onError: (err) => {
-  //     console.error(err)
-  //     enqueueSnackbar('Login Failed! try again', { variant: 'error' });
-  //   },
-  // });
+  const googleLogin = async () => {
+    try {
+      window.open(`http://localhost:3001/auth/google-logins/${from.replaceAll('/', '@')}`, "_self");
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
 
   const togglePersist = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPersistCheck(event.target.checked);
@@ -219,52 +203,30 @@ export const LoginForm = () => {
           </Grid>
         </form>
       </Grid>
-      {/* {
-      2 > 3 &&
-      <>
-        <Grid xs={12}>
-          <Stack
-            direction={'row'}
-            sx={{ width: '100%', my: 3 }}
-            alignItems="center"
-            justifyContent={'center'}
-          >
-            <Divider sx={{ width: '45%' }} />
-            <Typography paddingX={2}>or</Typography>
-            <Divider sx={{ width: '45%' }} />
-          </Stack>
-        </Grid>
-        <Grid xs={12}>
-          <Button
-            color="secondary"
-            startIcon={<GoogleIcon />}
-            onClick={() => googleLogin()}
-            fullWidth
-            variant="outlined"
-            size="large"
-          >
-            Login with Google
-          </Button>
-        </Grid>
-        <Grid xs={12} justifyContent={'center'} display="flex" mt={1}>
-          <GoogleLogin
-            type="standard"
-            shape="rectangular"
-            // theme={themeMode === 'dark' ? 'filled_blue' : 'outline'}
-            width="100%"
-            size="large"
-            context="signin"
-            auto_select={false}
-            useOneTap={false}
-            ux_mode="popup"
-            onSuccess={onGoogleSubmit}
-            onError={() => {
-              enqueueSnackbar('Login Failed! try again', { variant: 'error' });
-            }}
-          />
-        </Grid>
-      </>
-    } */}
+      <Grid xs={12}>
+        <Stack
+          direction={'row'}
+          sx={{ width: '100%', my: 3 }}
+          alignItems="center"
+          justifyContent={'center'}
+        >
+          <Divider sx={{ width: '45%' }} />
+          <Typography paddingX={2}>or</Typography>
+          <Divider sx={{ width: '45%' }} />
+        </Stack>
+      </Grid>
+      <Grid xs={12}>
+        <Button
+          color="secondary"
+          startIcon={<GoogleIcon />}
+          onClick={googleLogin}
+          fullWidth
+          variant="outlined"
+          size="large"
+        >
+          Login with Google
+        </Button>
+      </Grid>
     </Grid>
   }
   return content

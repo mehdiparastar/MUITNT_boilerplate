@@ -15,11 +15,15 @@ import Unauthorized from 'pages/Unauthorized/Unauthorized';
 import { Route, Routes } from 'react-router-dom';
 import About from '../pages/About/About';
 import Home from '../pages/Home/Home';
+import GoogleOAuthSuccessRedirect from 'pages/Auth/GoogleOAuthSuccessRedirect/GoogleOAuthSuccessRedirect';
 
 export const RoutesList: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
+        <Route path="google-oauth-success-redirect">
+          <Route path=":accessToken/:refreshToken/:from" element={<GoogleOAuthSuccessRedirect />} />
+        </Route>
         {/* public routes */}
         <Route path="" element={<Home />} />
         <Route path="unauthorized" element={<Unauthorized />} />
