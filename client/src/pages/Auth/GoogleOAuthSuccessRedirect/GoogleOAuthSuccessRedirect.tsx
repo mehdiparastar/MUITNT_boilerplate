@@ -1,3 +1,4 @@
+import { strToBool } from 'helperFunctions/strToBool';
 import React, { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { setAuthTokens } from 'redux/features/auth/authSlice';
@@ -14,6 +15,7 @@ const GoogleOAuthSuccessRedirect = (props: Props) => {
     useEffect(() => {
         if (from && accessToken && refreshToken) {
             dispatch(setAuthTokens({ accessToken, refreshToken }))
+            strToBool(localStorage.getItem('persist')) ? localStorage.setItem('rT', String(refreshToken)) : localStorage.setItem('rT', String(null))
             navigate('/' + from, { replace: true });
         }
     }, [accessToken, dispatch, from, navigate, refreshToken])

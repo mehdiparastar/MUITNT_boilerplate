@@ -88,6 +88,8 @@ export const LoginForm = () => {
   const googleLogin = async () => {
     try {
       window.open(`http://localhost:3001/auth/google-logins/${from.replaceAll('/', '@')}`, "_self");
+      persistCheck ? localStorage.setItem('persist', String(persistCheck)) : localStorage.setItem('persist', String(null))
+      dispatch(setPersist(persistCheck))
     } catch (ex) {
       console.log(ex)
     }
