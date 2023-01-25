@@ -149,7 +149,7 @@ export class UsersService {
       (await this.findOneById(id)).provider === authTypeEnum.local;
     if (!isLocalUser) {
       throw new NotAcceptableException(
-        "you can change mail of only users that have been registered as 'local'!",
+        "you can change profile of only users that have been registered as 'local'!",
       );
     }
     const update = await this.update(id, { name: newName, photo: newPhoto });
@@ -162,7 +162,7 @@ export class UsersService {
       (await this.findOneById(id)).provider === authTypeEnum.local;
     if (!isLocalUser) {
       throw new NotAcceptableException(
-        "you can change mail of only users that have been registered as 'local'!",
+        "you can change password of only users that have been registered as 'local'!",
       );
     }
     const hashedNewPassword = await hashData(newPassword);
