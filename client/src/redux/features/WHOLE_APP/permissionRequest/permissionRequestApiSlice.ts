@@ -1,5 +1,5 @@
-import { IPermissionRequest, IPermissionRequestPaginated } from 'models/permissionRequest.model';
-import { apiSlice } from '../../../api/apiSlice';
+import { IPermissionRequest, IPermissionRequestPaginated } from 'models/WHOLE_APP/permissionRequest.model';
+import { apiSlice } from '../../../../api/apiSlice';
 
 export const permissionRequestApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({

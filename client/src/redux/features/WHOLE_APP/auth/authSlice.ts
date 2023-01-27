@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { strToBool } from "helperFunctions/strToBool";
-import { IAuth } from "models/auth.model";
-import { RootState } from "../../store";
+import { IAuth } from "models/WHOLE_APP/auth.model";
+import { RootState } from "../../../store";
 
 type StateType = IAuth
 

@@ -1,9 +1,9 @@
 import { AlertTitle, Button, Stack, TextField } from '@mui/material';
 import { PageLoader } from 'components/PageLoader/PageLoader';
 import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';
-import { useGetCurrentUserQuery, useUpdateCurrentUserMutation } from 'redux/features/currentUser/currentUserApiSlice';
+import { useGetCurrentUserQuery, useUpdateCurrentUserMutation } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
 import { useFormik } from 'formik';
-import { IEditCurrentUserDto } from 'models/currentUser.model';
+import { IEditCurrentUserDto } from 'models/WHOLE_APP/currentUser.model';
 import { useSnackbar } from 'notistack';
 import * as yup from 'yup';
 

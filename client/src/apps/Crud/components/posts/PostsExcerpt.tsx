@@ -2,12 +2,12 @@ import { Card, CardActionArea, CardActions, CardContent, CardHeader, Stack, useT
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
 import Item from 'components/Item/Item'
 import { formatDistanceToNow } from 'date-fns'
+import { ICRUDAPPPost } from 'models/CRUD_APP/post.model'
 import React from 'react'
-import { IPostsState } from './postsSlice'
 import ReactionButtons from './ReactionButtons'
 
 type Props = {
-    post: IPostsState
+    post: ICRUDAPPPost
 }
 
 const PostsExcerpt =
@@ -34,7 +34,7 @@ const PostsExcerpt =
                         <CardActions>
                             <Stack width={'100%'} direction={'row'} display={'flex'} justifyContent='space-between' alignItems={'center'}>
                                 {formatDistanceToNow(post.createdAt)} ago
-                                <ReactionButtons postId={post.id} />
+                                <ReactionButtons post={post} />
                             </Stack>
                         </CardActions>
                     </Card >

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { AddPostForm } from './components/posts/AddPostForm';
 import { PostsList } from './components/posts/PostsList';
-import { store } from './redux/store';
+import { store } from '../../redux/store';
 
 type Props = {}
 

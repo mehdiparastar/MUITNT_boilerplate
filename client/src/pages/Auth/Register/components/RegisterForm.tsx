@@ -11,7 +11,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { PageLoader } from 'components/PageLoader/PageLoader';
 import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';
-import { ILocalRegisterDto, useAuthLocalRegisterMutation } from 'redux/features/auth/authApiSlice';
+import { ILocalRegisterDto, useAuthLocalRegisterMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
 import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack';
 import { useLocation, useNavigate } from 'react-router-dom';

@@ -30,8 +30,8 @@ export class GoogleOauthStrategy extends PassportStrategy(Strategy, 'google') {
 
     if (!options?.state) {
       options = { ...options, state: req.params.from }
-    } 
-    
+    }
+
     return super.authenticate(req, options)
   }
 

@@ -1,8 +1,8 @@
 
 import { useAppSelector } from 'redux/hooks';
 import { PageLoader } from 'components/PageLoader/PageLoader';
-import { selectCurrentAccessToken } from 'redux/features/auth/authSlice';
-import { useGetCurrentUserQuery } from 'redux/features/currentUser/currentUserApiSlice';
+import { selectCurrentAccessToken } from 'redux/features/WHOLE_APP/auth/authSlice';
+import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
 import { getRolesExpand } from 'helperFunctions/get-roles-expand';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 

@@ -2,10 +2,10 @@ import { AlertTitle, Button, Card, CardMedia, Divider, Stack, TextField } from '
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import Item from 'components/Item/Item';
 import { PageLoader } from 'components/PageLoader/PageLoader';
-import { useAuthLogoutMutation } from 'redux/features/auth/authApiSlice';
-import { useChangeCurrentUserPasswordMutation } from 'redux/features/currentUser/currentUserApiSlice';
+import { useAuthLogoutMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
+import { useChangeCurrentUserPasswordMutation } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
 import { useFormik } from 'formik';
-import { IChangeCurrentUserPasswordDto } from 'models/currentUser.model';
+import { IChangeCurrentUserPasswordDto } from 'models/WHOLE_APP/currentUser.model';
 import { useSnackbar } from 'notistack';
 import PasswordSVG from 'svg/banners/Password/Password';
 import * as yup from 'yup';

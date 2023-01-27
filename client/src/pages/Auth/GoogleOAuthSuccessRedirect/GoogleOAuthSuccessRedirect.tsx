@@ -1,7 +1,7 @@
 import { strToBool } from 'helperFunctions/strToBool';
 import React, { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import { setAuthTokens } from 'redux/features/auth/authSlice';
+import { setAuthTokens } from 'redux/features/WHOLE_APP/auth/authSlice';
 import { useAppDispatch } from 'redux/hooks';
 
 type Props = {}

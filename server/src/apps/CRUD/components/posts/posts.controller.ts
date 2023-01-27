@@ -22,7 +22,7 @@ import { Post } from './entities/post.entity';
 import { Reaction } from './entities/reaction.entity';
 import { PostsService } from './posts.service';
 
-@Controller('posts')
+@Controller('crud_app/posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) { }
 
@@ -40,10 +40,18 @@ export class PostsController {
   @UseGuards(AccessTokenGuard)
   @Serialize(PaginationPostsDto)
   async getAllPosts(
+    @CurrentUser() user: User,
     @Query('skip') skip: number,
     @Query('limit') limit: number,
   ) {
-    return await this.postsService.findAll(skip, limit);
+    return await this.postsService.findAll(skip, limit);    
+  }
+
+  @Get('post/:id')
+  @UseGuards(AccessTokenGuard)
+  @Serialize(PostDto)
+  async getPost(@CurrentUser() user: User, @Param('id') id: string) {
+    return await this.postsService.findOneById(parseInt(id))
   }
 
   @Delete('delete-post/:id')
@@ -66,6 +74,7 @@ export class PostsController {
 
   @Patch('like-post/:id')
   @UseGuards(AccessTokenGuard)
+  @Serialize(ReactionDto)
   likePost(
     @CurrentUser() user: User,
     @Param('id') id: string,
@@ -75,6 +84,7 @@ export class PostsController {
 
   @Patch('dislike-post/:id')
   @UseGuards(AccessTokenGuard)
+  @Serialize(ReactionDto)
   dislikePost(
     @CurrentUser() user: User,
     @Param('id') id: string,

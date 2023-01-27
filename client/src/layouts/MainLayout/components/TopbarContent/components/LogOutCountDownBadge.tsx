@@ -5,9 +5,9 @@ import { Avatar, Badge, Box, Divider, IconButton, ListItemIcon, ListItemText, Me
 import { useAppSelector } from 'redux/hooks';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { UserRoles } from 'enum/userRoles.enum';
-import { useAuthLogoutMutation } from 'redux/features/auth/authApiSlice';
-import { selectCurrentRefreshToken } from 'redux/features/auth/authSlice';
-import { useGetCurrentUserQuery } from 'redux/features/currentUser/currentUserApiSlice';
+import { useAuthLogoutMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
+import { selectCurrentRefreshToken } from 'redux/features/WHOLE_APP/auth/authSlice';
+import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
 import { strToBool } from 'helperFunctions/strToBool';
 import jwt_decode, { JwtPayload } from "jwt-decode";
 import { useSnackbar } from 'notistack';

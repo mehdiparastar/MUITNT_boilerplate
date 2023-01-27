@@ -1,4 +1,4 @@
-import { apiSlice } from '../../../api/apiSlice'
+import { apiSlice } from '../../../../api/apiSlice'
 import { setAuthTokens } from './authSlice';
 
 export interface ILocalLoginRequest {

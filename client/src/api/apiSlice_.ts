@@ -1,7 +1,7 @@
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { RootState } from 'redux/store'
 import { Mutex } from 'async-mutex'
-import { setAuthTokens } from 'redux/features/auth/authSlice'
+import { setAuthTokens } from 'redux/features/WHOLE_APP/auth/authSlice'
 import { baseURL } from './baseUrl'
 
 const mutex = new Mutex()

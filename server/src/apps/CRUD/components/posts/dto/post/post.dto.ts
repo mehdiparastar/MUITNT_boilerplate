@@ -21,7 +21,9 @@ export class PostDto {
   @Expose()
   @Type(() => ReactionDto)
   @ApiProperty()
-  @Transform(({ value }) => value?.reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {}) || {})
+  // @Transform(({ value }) => {
+  //   return value?.reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {}) || {}
+  // })
   reactions: ReactionDto[];
 
   @Expose()

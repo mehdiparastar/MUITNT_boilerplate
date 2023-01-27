@@ -45,9 +45,9 @@ import {
     UserRolesFliped,
     UserRolesObj
 } from 'enum/userRoles.enum';
-import { useCreatePermissionRequestMutation, useDeletePermissionRequestMutation, useGetMyAllPermissionRequestQuery } from 'redux/features/permissionRequest/permissionRequestApiSlice';
+import { useCreatePermissionRequestMutation, useDeletePermissionRequestMutation, useGetMyAllPermissionRequestQuery } from 'redux/features/WHOLE_APP/permissionRequest/permissionRequestApiSlice';
 import { getRolesClassified } from 'helperFunctions/get-roles-expand';
-import { IPermissionRequest } from 'models/permissionRequest.model';
+import { IPermissionRequest } from 'models/WHOLE_APP/permissionRequest.model';
 import { useSnackbar } from 'notistack';
 import { forwardRef, useState } from 'react';
 import NoDataFoundSVG from 'svg/banners/NoDataFound/NoDataFound';

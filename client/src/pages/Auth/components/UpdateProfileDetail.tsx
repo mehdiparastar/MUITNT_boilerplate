@@ -3,7 +3,7 @@ import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import Item from "components/Item/Item";
 import { PageLoader } from "components/PageLoader/PageLoader";
 import { getRoleName } from "enum/userRoles.enum";
-import { useGetCurrentUserQuery } from "redux/features/currentUser/currentUserApiSlice";
+import { useGetCurrentUserQuery } from "redux/features/WHOLE_APP/currentUser/currentUserApiSlice";
 import EditUserProfile from "./components/EditUserProfile";
 
 export interface IUpdateProfileDetailProps {

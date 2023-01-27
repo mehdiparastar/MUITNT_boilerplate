@@ -30,3 +30,9 @@ export class UserDto {
   @ApiProperty({ isArray: true, type: 'string' })
   roles: string[];
 }
+
+export class UserIdDto {
+  @Expose()
+  @ApiProperty()
+  id: number;
+}

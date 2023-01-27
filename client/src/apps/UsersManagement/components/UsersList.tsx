@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { PageLoader } from 'components/PageLoader/PageLoader';
-import { useGetAllUsersQuery } from 'redux/features/user/userApiSlice';
+import { useGetAllUsersQuery } from 'redux/features/WHOLE_APP/user/userApiSlice';
 
 const UsersList = () => {
 

@@ -14,14 +14,14 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { useAppDispatch } from 'redux/hooks';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { PageLoader } from 'components/PageLoader/PageLoader';
-import { useAuthLocalLoginMutation } from 'redux/features/auth/authApiSlice';
+import { useAuthLocalLoginMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
 import { useFormik } from 'formik';
 import { strToBool } from 'helperFunctions/strToBool';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { setPersist } from '../../../../redux/features/auth/authSlice';
+import { setPersist } from '../../../../redux/features/WHOLE_APP/auth/authSlice';
 
 interface ILocalLoginDto {
   email: string;

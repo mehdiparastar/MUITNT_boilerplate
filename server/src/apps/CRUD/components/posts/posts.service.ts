@@ -32,13 +32,15 @@ export class PostsService {
     return this.postsRepo.save(newPost);
   }
 
-  async findAll(
-    skip: number = 0,
-    limit: number = 3,
-  ): Promise<{ data: Post[]; count: number }> {
+  async findAll(skip: number = 0, limit: number = 3): Promise<{ data: Post[]; count: number }> {
     // Create new Post
     const [result, total] = await this.postsRepo.findAndCount({
-      relations: ['author', 'reactions'],
+      relations: {
+        author: true,
+        reactions: {
+          creator: true
+        }
+      },
       where: {},
       order: { createdAt: 'DESC' },
       take: limit,
@@ -92,7 +94,7 @@ export class PostsService {
     return this.postsRepo.save(post);
   }
 
-  async like(user: User, postId: number): Promise<Partial<{ [key in reactionTypeEnum]: number }>> {
+  async like(user: User, postId: number): Promise<Reaction[]> {
     const post = await this.findOneById(postId);
     if (!post) {
       throw new NotFoundException('post not found');
@@ -118,10 +120,15 @@ export class PostsService {
 
     const reactions = (await this.findOneById(postId)).reactions
 
-    return reactions.reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {})
+    return reactions
+
+    // return {
+    //   allReactions: reactions.reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {}),
+    //   thisUserReaction: reactions.filter(reaction => reaction.creator.id === user.id).reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {}),
+    // }
   }
 
-  async dislike(user: User, postId: number): Promise<Partial<{ [key in reactionTypeEnum]: number }>> {
+  async dislike(user: User, postId: number): Promise<Reaction[]> {
     const post = await this.findOneById(postId);
     if (!post) {
       throw new NotFoundException('post not found');
@@ -147,7 +154,12 @@ export class PostsService {
 
     const reactions = (await this.findOneById(postId)).reactions
 
-    return reactions.reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {})
+    return reactions
+
+    // return {
+    //   allReactions: reactions.reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {}),
+    //   thisUserReaction: reactions.filter(reaction => reaction.creator.id === user.id).reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {}),
+    // }
   }
 
   whereRU(): string {
