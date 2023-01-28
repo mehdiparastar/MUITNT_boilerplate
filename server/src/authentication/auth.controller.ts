@@ -95,14 +95,14 @@ export class AuthController {
   @UseGuards(AccessTokenGuard)
   @Serialize(UserDto)
   logout(@Req() req: Request): Promise<User> {
-    return this.authService.logout(req.user.id);
+    return this.authService.logout((req.user as User).id);
   }
 
   @Get('refresh')
   @UseGuards(RefreshTokenGuard)
   refreshTokens(@Req() req: Request): Promise<IJWTTokensPair> {
-    const id = req.user.id;
-    const refreshToken = req.user.refreshToken;
+    const id = (req.user as User).id;
+    const refreshToken = (req.user as User).refreshToken;
     return this.authService.refreshTokens(id, refreshToken);
   }
 

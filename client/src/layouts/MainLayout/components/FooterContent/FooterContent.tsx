@@ -82,7 +82,7 @@ export const FooterContent: React.FC = () => {
                   >
                     This is an infrastructure for utilizing trend technologies
                     in web development; Material-UI v5 - Reactjs v18 - SVG -
-                    Nestjs - MongoDB - Docker are fantastic.
+                    Nestjs - TypeORM - Docker are fantastic.
                   </Typography>
                 </Grid>
                 <Grid

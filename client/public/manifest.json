@@ -1,6 +1,6 @@
 {
   "short_name": "MUITNT",
-  "name": "boilerplate of MUI-Typescript-Nestjs-MongoDB",
+  "name": "boilerplate of MUI-Typescript-Nestjs-TypeORM",
   "icons": [
     {
       "src": "favicon.ico",

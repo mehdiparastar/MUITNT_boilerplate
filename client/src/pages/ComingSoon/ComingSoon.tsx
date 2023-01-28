@@ -15,7 +15,7 @@ const ComingSoon: FC<any> = (): ReactElement => {
   });
 
   const [days, hours, minutes, seconds] = useCountdown(
-    new Date('2022-12-20').getTime(),
+    new Date('2023-02-20').getTime(),
   );
 
   React.useEffect(() => {

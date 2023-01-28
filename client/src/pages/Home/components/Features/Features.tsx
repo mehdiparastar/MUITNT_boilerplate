@@ -104,7 +104,7 @@ export const Features: React.FC<Props> = (props) => {
             color={theme.palette.text.secondary}
             align={'center'}
           >
-            Have <strong>MUI5 | Typescript | NestJs | MongoDB</strong> for your{' '}
+            Have <strong>MUI5 | Typescript | NestJs | TypeORM</strong> for your{' '}
             <strong>React</strong> apps.
             <br />
             An experience you'd expect from a full-stack system.

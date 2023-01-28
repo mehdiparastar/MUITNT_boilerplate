@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-
+import { User } from 'src/users/entities/user.entity';
 import { UserRoles } from '../enum/userRoles.enum';
 import { getRolesExpand } from '../helperFunctions/get-roles-expand';
 
@@ -10,7 +10,7 @@ import { getRolesExpand } from '../helperFunctions/get-roles-expand';
 export class RolesGuard implements CanActivate {
   constructor(
     private reflector: Reflector, // @Session() private session: any
-  ) {}
+  ) { }
 
   canActivate(
     context: ExecutionContext,
@@ -29,7 +29,7 @@ export class RolesGuard implements CanActivate {
       return false;
     }
 
-    const userRoles = getRolesExpand(request.user.roles);
+    const userRoles = getRolesExpand((request.user as User).roles);
 
     const auth = requiredRoles.some((role) => userRoles.includes(role));
 
