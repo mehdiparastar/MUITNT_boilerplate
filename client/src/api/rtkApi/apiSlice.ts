@@ -1,7 +1,7 @@
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { RootState } from 'redux/store'
 import { setAuthTokens } from 'redux/features/WHOLE_APP/auth/authSlice'
-import { baseURL } from './baseUrl'
+import { baseURL } from '../baseUrl'
 
 const baseQuery_login = fetchBaseQuery({ baseUrl: baseURL })
 
@@ -59,6 +59,6 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const apiSlice = createApi({
     reducerPath: 'apiSlice',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['CurrentUser', 'PermissionRequest', 'User', 'Post'],
+    tagTypes: ['CurrentUser', 'PermissionRequest', 'User', 'Post', 'File', 'FileTags'],
     endpoints: builder => ({})
 })

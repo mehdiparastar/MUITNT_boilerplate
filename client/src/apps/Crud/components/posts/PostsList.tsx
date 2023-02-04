@@ -14,7 +14,7 @@ export function PostsList() {
     const [skip, setSkip] = useState<number>(0);
 
     const query = `skip=${skip}&&limit=${limit}`;
-    const { data: paginatePosts = { data: [], count: 0 }, isError, error, isSuccess, isLoading } = useGetAllPostsQuery({ query })
+    const { data: paginatePosts = { data: [], count: 0 }, isLoading } = useGetAllPostsQuery({ query })
 
     const postsAllCount = paginatePosts.count
     const posts = paginatePosts.data

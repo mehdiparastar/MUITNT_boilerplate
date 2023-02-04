@@ -1,6 +1,7 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Post } from 'src/apps/CRUD/components/posts/entities/post.entity';
 import { Reaction } from 'src/apps/CRUD/components/posts/entities/reaction.entity';
+import { Tag } from 'src/tags/entities/tag.entity';
 import {
   Column,
   CreateDateColumn,
@@ -11,7 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
+import { File } from '../../apps/FILE/entities/file.entity'
 import { authTypeEnum } from '../../enum/authType.enum';
 import { PermissionRequest } from './permission-requests.entity';
 
@@ -82,4 +83,10 @@ export class User {
 
   @OneToMany(() => Reaction, (reaction) => reaction.creator, { cascade: true })
   reactions: Reaction[];
+
+  @OneToMany(() => File, (file) => file.owner, { cascade: true })
+  files: File[];
+
+  @OneToMany(() => Tag, (tag) => tag.creator, { cascade: true })
+  createdTags: Tag[];
 }

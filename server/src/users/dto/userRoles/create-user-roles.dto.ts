@@ -78,19 +78,19 @@ export class CreateUserRolesDto {
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.shareFileAppAdmin]?: boolean;
+  [UserRoles.fileAppAdmin]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.shareFileAppUserHL]?: boolean;
+  [UserRoles.fileAppUserHL]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.shareFileAppUserML]?: boolean;
+  [UserRoles.fileAppUserML]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.shareFileAppUserLL]?: boolean;
+  [UserRoles.fileAppUserLL]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })

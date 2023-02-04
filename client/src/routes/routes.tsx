@@ -16,6 +16,7 @@ import { Route, Routes } from 'react-router-dom';
 import About from '../pages/About/About';
 import Home from '../pages/Home/Home';
 import GoogleOAuthSuccessRedirect from 'pages/Auth/GoogleOAuthSuccessRedirect/GoogleOAuthSuccessRedirect';
+import Files from 'apps/Files/Files';
 
 export const RoutesList: React.FC = () => {
   return (
@@ -50,10 +51,10 @@ export const RoutesList: React.FC = () => {
         </Route>
 
         <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>
+          <Route path="files" element={<Files />} />
           <Route path="chat" element={<ComingSoon />} />
           <Route path="video-call" element={<ComingSoon />} />
           <Route path="voice-call" element={<ComingSoon />} />
-          <Route path="share-file" element={<ComingSoon />} />
           <Route path="movie" element={<ComingSoon />} />
           <Route path="music" element={<ComingSoon />} />
           <Route path="maps" element={<ComingSoon />} />

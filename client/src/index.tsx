@@ -20,11 +20,7 @@ root.render(
       <CookiesProvider>
         <WithLayout>
           <SnackbarProvider maxSnack={3}>
-            {/* <GoogleOAuthProvider
-            clientId={process.env.REACT_APP_API_GOOGLE_OAUTH2}
-          > */}
             <App />
-            {/* </GoogleOAuthProvider> */}
           </SnackbarProvider>
         </WithLayout>
       </CookiesProvider>

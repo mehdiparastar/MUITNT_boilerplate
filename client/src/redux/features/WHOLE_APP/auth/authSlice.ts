@@ -37,3 +37,4 @@ export default authSlice.reducer
 export const selectAuthState = (state: RootState) => state.auth;
 export const selectCurrentAccessToken = (state: RootState) => state.auth.accessToken;
 export const selectCurrentRefreshToken = (state: RootState) => state.auth.refreshToken;
+export const selectCurrentPersist = (state: RootState) => state.auth.persist;

@@ -1,4 +1,4 @@
-import { apiSlice } from '../../../../api/apiSlice'
+import { apiSlice } from '../../../../api/rtkApi/apiSlice'
 
 export const userApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({

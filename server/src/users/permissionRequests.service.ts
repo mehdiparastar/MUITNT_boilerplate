@@ -2,20 +2,15 @@ import {
   BadRequestException,
   Injectable,
   NotAcceptableException,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { permissionRequestResultEnum } from 'src/enum/permissionRequestResult.enum';
 import { strToBool } from 'src/helperFunctions/strToBool';
 import { In, Repository } from 'typeorm';
 
-import { authTypeEnum } from '../enum/authType.enum';
 import { UserRoles } from '../enum/userRoles.enum';
-import { getRolesArray } from '../helperFunctions/get-roles-array-from-roles-dto';
-import { hashData } from '../helperFunctions/hash-data';
 import { UpdatePermissionRequestDto } from './dto/permissionRequest/update-permission-request.dto';
-import { UpdateLocalUserDto } from './dto/user/update-local-user.dto';
-import { ApproveUserRolesDto } from './dto/userRoles/approve-user-roles.dto';
 import { PermissionRequest } from './entities/permission-requests.entity';
 import { User } from './entities/user.entity';
 

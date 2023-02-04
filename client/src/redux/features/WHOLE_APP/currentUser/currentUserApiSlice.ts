@@ -1,5 +1,5 @@
 import { IChangeCurrentUserPasswordDto, ICurrentUser, IEditCurrentUserDto } from 'models/WHOLE_APP/currentUser.model'
-import { apiSlice } from '../../../../api/apiSlice'
+import { apiSlice } from '../../../../api/rtkApi/apiSlice'
 
 export const currentUserApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({

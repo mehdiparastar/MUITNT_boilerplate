@@ -1,5 +1,5 @@
 import { ICRUDAPPCreatePostDto, ICRUDAPPPost, ICRUDAPPReaction, ICRUDAPPUpdatePostDto, ICRUDAPPPostPaginated } from 'models/CRUD_APP/post.model';
-import { apiSlice } from '../../../../api/apiSlice';
+import { apiSlice } from '../../../../api/rtkApi/apiSlice';
 
 export const postApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({

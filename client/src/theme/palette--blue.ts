@@ -10,7 +10,7 @@ export const light: Palette = {
   },
   cardShadow: 'rgba(23, 70, 161, .11)',
   mode: 'light',
-  paletteType:'blue',
+  paletteType: 'blue',
   primary: {
     main: '#1976d2',
     light: '#2196f3',
@@ -32,6 +32,7 @@ export const light: Palette = {
   background: {
     paper: '#fff',
     default: '#fff',
+    level3: '#f6f6f6',
     level2: '#f5f5f5',
     level1: '#fff',
   },
@@ -49,7 +50,7 @@ export const dark: Palette = {
     white: '#fff',
   },
   mode: 'dark',
-  paletteType:'blue',
+  paletteType: 'blue',
   primary: {
     main: '#1976d2',
     light: '#2196f3',
@@ -71,6 +72,7 @@ export const dark: Palette = {
   background: {
     paper: '#222B45',
     default: '#222B45',
+    level3: '#444',
     level2: '#333',
     level1: '#2D3748',
   },

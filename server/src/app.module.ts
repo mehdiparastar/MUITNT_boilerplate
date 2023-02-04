@@ -6,9 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CrudModule } from './apps/CRUD/crud.module';
+import { FilesModule } from './apps/FILE/files.module';
 import { AuthModule } from './authentication/auth.module';
 import { AppDataSource } from './data-source';
 import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
+import { TagsModule } from './tags/tags.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -20,7 +22,9 @@ import { UsersModule } from './users/users.module';
     TypeOrmModule.forRoot(AppDataSource.options),
     UsersModule,
     AuthModule,
-    CrudModule
+    CrudModule,
+    FilesModule,
+    TagsModule
   ],
   controllers: [AppController],
   providers: [
@@ -37,4 +41,4 @@ import { UsersModule } from './users/users.module';
     AppService,
   ],
 })
-export class AppModule {}
+export class AppModule { }

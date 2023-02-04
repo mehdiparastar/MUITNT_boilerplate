@@ -62,8 +62,8 @@ export const navigationPages: navPage[] = [
         icon: <VoiceCallIcon sx={{ pr: 0.5 }} />,
       },
       {
-        title: 'Share File',
-        href: '/share-file',
+        title: 'Files',
+        href: '/files',
         icon: <ShareFileIcon sx={{ pr: 0.5 }} />,
       },
       { title: 'Movie', href: '/movie', icon: <MovieIcon sx={{ pr: 0.5 }} /> },

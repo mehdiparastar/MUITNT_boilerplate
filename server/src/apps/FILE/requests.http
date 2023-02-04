@@ -1,0 +1,74 @@
+### Login with email and password
+
+# @name localLogin
+
+POST http://[::1]:3001/auth/login
+Content-Type: application/json
+
+{
+    "email":"m.parastar@udb.ir",
+    "password":"123456789"
+}
+
+
+### tokens
+@accessToken = {{localLogin.response.body.accessToken}}
+@loginRefreshToken = {{localLogin.response.body.refreshToken}}
+
+
+### refresh token
+
+# @name refresh
+
+GET http://[::1]:3001/auth/refresh
+Authorization: Bearer {{loginRefreshToken}}
+
+
+### update token
+@accessToken = {{refresh.response.body.accessToken}}
+
+
+### Create a new post
+POST http://[::1]:3001/posts/create-post
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "title":"Sit occaecat cillum culpa quis irure velit non esse aliquip voluptate Lorem minim elit.",
+    "caption":"Do sit consectetur proident velit laborum mollit dolor nostrud anim quis magna officia duis. Enim labore quis sint consequat quis adipisicing nostrud mollit nisi commodo nulla. Commodo nulla ullamco reprehenderit sint. Et in laboris amet sunt amet mollit laboris commodo. Adipisicing veniam cillum nisi adipisicing do qui mollit. Exercitation ut esse consectetur id. Ad dolore ullamco cillum cupidatat ad officia aliqua anim elit fugiat magna labore laboris nostrud."
+}
+
+
+### Get all posts
+GET http://[::1]:3001/posts/all-posts
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### Delete post by id
+DELETE http://[::1]:3001/posts/delete-post/40
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### Update post by id
+PATCH  http://[::1]:3001/posts/update-post/4
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "title":"Pariatur consectetur ad commodo adipisicing ut esse.",
+    "caption":"Ut commodo culpa culpa sint ipsum non. Esse sit consequat eiusmod labore nostrud. Et in et consectetur fugiat labore nisi veniam fugiat ex sunt. Enim culpa sint cillum pariatur veniam nisi dolore laboris ea nulla aliquip nulla. Id ea irure proident nostrud voluptate do velit veniam incididunt."
+}
+
+
+### like post by id
+PATCH  http://[::1]:3001/posts/like-post/3
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### dislike post by id
+PATCH  http://[::1]:3001/posts/dislike-post/3
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

@@ -1,10 +1,8 @@
 import { Box, Container } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useEffect } from 'react';
-import { Provider } from 'react-redux';
 import { AddPostForm } from './components/posts/AddPostForm';
 import { PostsList } from './components/posts/PostsList';
-import { store } from '../../redux/store';
 
 type Props = {}
 
@@ -17,7 +15,7 @@ const Crud = (props: Props) => {
     }, []);
 
     return (
-        <Provider store={store}>
+        <>
             <Box
                 height={1}
                 width={1}
@@ -55,7 +53,7 @@ const Crud = (props: Props) => {
                     <PostsList />
                 </Container>
             </Box>
-        </Provider>
+        </>
     )
 }
 

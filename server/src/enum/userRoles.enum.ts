@@ -22,10 +22,10 @@ export enum UserRoles {
   voiceCallAppUserML = '3043',
   voiceCallAppUserLL = '3044',
 
-  shareFileAppAdmin = '3051',
-  shareFileAppUserHL = '3052',
-  shareFileAppUserML = '3053',
-  shareFileAppUserLL = '3054',
+  fileAppAdmin = '3051',
+  fileAppUserHL = '3052',
+  fileAppUserML = '3053',
+  fileAppUserLL = '3054',
 
   movieAppAdmin = '3061',
   movieAppUserHL = '3062',

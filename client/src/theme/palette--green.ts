@@ -31,6 +31,7 @@ export const light: Palette = {
   background: {
     paper: '#fff',
     default: '#fff',
+    level3: '#f6f6f6',
     level2: '#f5f5f5',
     level1: '#fff',
   },
@@ -70,6 +71,7 @@ export const dark: Palette = {
   background: {
     paper: '#222B45',
     default: '#222B45',
+    level3: '#333',
     level2: '#333',
     level1: '#2D3748',
   },
