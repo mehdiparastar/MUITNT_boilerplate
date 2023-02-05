@@ -49,7 +49,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
     private readonly permissionRequestService: PermissionRequestsService,
-  ) { }
+  ) {}
 
   @Post('local-create')
   @Serialize(JWTTokenDto)
@@ -71,17 +71,15 @@ export class AuthController {
 
   @Get('google-logins/:from')
   @UseGuards(GoogleOauthGuard)
-  async googleLogin(@Req() req: Request) {
-  }
+  async googleLogin(@Req() req: Request) {}
 
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
-  async googleLoginCallback(
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
+  async googleLoginCallback(@Req() req: Request, @Res() res: Response) {
     const auth = await this.authService.login(req.user);
-    res.redirect(`http://localhost:3000/google-oauth-success-redirect/${auth.accessToken}/${auth.refreshToken}${req.params.from}`)
+    res.redirect(
+      `http://localhost:3000/google-oauth-success-redirect/${auth.accessToken}/${auth.refreshToken}${req.params.from}`,
+    );
   }
 
   @Get('profile')

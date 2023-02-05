@@ -16,14 +16,14 @@ export class ReactionsService {
   constructor(
     @InjectRepository(Reaction)
     private reactionsRepo: Repository<Reaction>,
-  ) { }
+  ) {}
 
   async create(
     user: User,
     type: reactionTypeEnum,
     post: Post,
   ): Promise<Reaction> {
-    // Create new Reaction    
+    // Create new Reaction
     const newReaction = this.reactionsRepo.create({
       creator: user,
       type,
@@ -96,7 +96,11 @@ export class ReactionsService {
     return this.reactionsRepo.remove(reaction);
   }
 
-  async update(user: User, id: number, newType: reactionTypeEnum): Promise<Reaction> {
+  async update(
+    user: User,
+    id: number,
+    newType: reactionTypeEnum,
+  ): Promise<Reaction> {
     const reaction = await this.findOneById(id);
     if (!reaction) {
       throw new NotFoundException('reaction not found');

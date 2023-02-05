@@ -1,7 +1,7 @@
 {
   "name": "MUITNT_boilerplate",
   "version": "1.0.0",
-  "description": "MUI-Typescript-Nestjs-MongoDB",
+  "description": "MUI-Typescript-Nestjs-TypeOrm",
   "main": "index.js",
   "repository": "https://github.com/mehdiparastar/MUITNT_boilerplate.git",
   "author": "mehdiparastar <parastar.mehdi@gmail.com>",
@@ -9,11 +9,8 @@
   "scripts": {
     "start-client": "cd client && yarn start"
   },
-  "comments": {
-    "adding ssl to react app": "https://www.makeuseof.com/create-react-app-ssl-https/"
-  },
-  "packageManager": "yarn@3.2.4",
+  "comments": {},
   "devDependencies": {
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.5"
   }
 }

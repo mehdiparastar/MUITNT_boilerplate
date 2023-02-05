@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   Delete,
-  Get, Param, Post, UseGuards
+  Get,
+  Param,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { appNameEnum } from 'src/enum/appName.enum';
@@ -20,20 +23,17 @@ import { TagsService } from './tags.service';
 @ApiTags('tags')
 @Controller('tags')
 export class TagsController {
-  constructor(
-    private readonly tagsService: TagsService,
-  ) { }
+  constructor(private readonly tagsService: TagsService) {}
 
   @Post('create')
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Roles(UserRoles.superUser, UserRoles.admin)
   @Serialize(TagDto)
-  async create(@CurrentUser() user: User, @Body() body: CreateTagDto): Promise<TagDto> {
-    return this.tagsService.create(
-      user,
-      body.tag,
-      body.appName
-    );
+  async create(
+    @CurrentUser() user: User,
+    @Body() body: CreateTagDto,
+  ): Promise<TagDto> {
+    return this.tagsService.create(user, body.tag, body.appName);
   }
 
   @Get('all/:appName')

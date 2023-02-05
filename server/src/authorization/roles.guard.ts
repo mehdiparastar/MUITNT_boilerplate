@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
@@ -10,7 +15,7 @@ import { getRolesExpand } from '../helperFunctions/get-roles-expand';
 export class RolesGuard implements CanActivate {
   constructor(
     private reflector: Reflector, // @Session() private session: any
-  ) { }
+  ) {}
 
   canActivate(
     context: ExecutionContext,

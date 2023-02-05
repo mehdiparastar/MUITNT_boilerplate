@@ -186,8 +186,6 @@ describe('AuthController', () => {
   });
 
   it('check delete user', async () => {
-    expect(await authController.remove('1')).toEqual(
-      fakeUsersRepo[0],
-    );
+    expect(await authController.remove('1')).toEqual(fakeUsersRepo[0]);
   });
 });

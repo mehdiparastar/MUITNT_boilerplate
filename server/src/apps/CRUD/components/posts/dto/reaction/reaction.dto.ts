@@ -15,7 +15,7 @@ export class ReactionDto {
 
   @Expose()
   @ApiProperty()
-  creator: UserIdDto
+  creator: UserIdDto;
 }
 
 export class ReactionDto1 {

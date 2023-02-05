@@ -10,8 +10,11 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
-  ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
-  UpdateDateColumn
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { FileBuffer } from './fileBuffer.entity';
 
@@ -43,15 +46,18 @@ export class FileInfo {
   @ApiProperty({ default: true })
   private: boolean;
 
-  @OneToOne(() => FileBuffer, (fileBuffer) => fileBuffer.fileInfo, { nullable: false, onDelete: 'CASCADE' })
+  @OneToOne(() => FileBuffer, (fileBuffer) => fileBuffer.fileInfo, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   @ApiProperty()
-  fileBuffer: FileBuffer
+  fileBuffer: FileBuffer;
 
   @Column()
   @ApiProperty()
   @Index({ unique: true })
-  fileHash: string
+  fileHash: string;
 
   @CreateDateColumn()
   @IsOptional()

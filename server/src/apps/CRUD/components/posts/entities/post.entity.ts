@@ -39,10 +39,6 @@ export class Post {
   @ManyToOne(() => User, (user) => user.posts, { nullable: false })
   author: User;
 
-  @OneToMany(
-    () => Reaction,
-    (reaction) => reaction.post,
-    { cascade: true },
-  )
+  @OneToMany(() => Reaction, (reaction) => reaction.post, { cascade: true })
   reactions: Reaction[];
 }

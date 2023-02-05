@@ -30,6 +30,6 @@ export const getRolesExpand = (currentRoles: string[]) => {
   const expand = currentRoles
     .map((role: string) => getRoles(role))
     .flat(Infinity)
-    .filter((item) => item !== undefined)as string[];
+    .filter((item) => item !== undefined) as string[];
   return expand.filter((n, i) => expand.indexOf(n) === i);
 };

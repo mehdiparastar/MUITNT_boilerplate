@@ -12,7 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { FileInfo } from '../../apps/FILE/entities/fileInfo.entity'
+import { FileInfo } from '../../apps/FILE/entities/fileInfo.entity';
 import { authTypeEnum } from '../../enum/authType.enum';
 import { PermissionRequest } from './permission-requests.entity';
 

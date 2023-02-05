@@ -15,7 +15,7 @@ export class TagsService {
   constructor(
     @InjectRepository(Tag)
     private tagsRepo: Repository<Tag>,
-  ) { }
+  ) {}
 
   async create(user: User, tag: string, appName: appNameEnum): Promise<Tag> {
     // Create new Tag
@@ -23,7 +23,7 @@ export class TagsService {
     const newTag = this.tagsRepo.create({
       creator: user,
       tag,
-      appName
+      appName,
     });
 
     return this.tagsRepo.save(newTag);
@@ -40,9 +40,9 @@ export class TagsService {
         order: { createdAt: 'DESC' },
       });
 
-      return result
+      return result;
     }
-    return []
+    return [];
   }
 
   async findOneById(id: number): Promise<Tag> {

@@ -27,12 +27,11 @@ export class GoogleOauthStrategy extends PassportStrategy(Strategy, 'google') {
   }
 
   authenticate(req: any, options: any) {
-
     if (!options?.state) {
-      options = { ...options, state: req.params.from }
+      options = { ...options, state: req.params.from };
     }
 
-    return super.authenticate(req, options)
+    return super.authenticate(req, options);
   }
 
   async validate(

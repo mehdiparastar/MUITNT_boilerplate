@@ -24,7 +24,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     CrudModule,
     FilesModule,
-    TagsModule
+    TagsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -41,4 +41,4 @@ import { UsersModule } from './users/users.module';
     AppService,
   ],
 })
-export class AppModule { }
+export class AppModule {}

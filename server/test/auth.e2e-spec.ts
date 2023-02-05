@@ -305,6 +305,8 @@ describe('Authentication system', () => {
     const loginReq = await request(app.getHttpServer()).get(
       '/auth/google-logins',
     );
-    expect(loginReq.header.location).toContain('https://accounts.google.com/o/oauth2/v2/auth')    
+    expect(loginReq.header.location).toContain(
+      'https://accounts.google.com/o/oauth2/v2/auth',
+    );
   });
 });

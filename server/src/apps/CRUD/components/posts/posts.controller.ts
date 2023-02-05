@@ -24,7 +24,7 @@ import { PostsService } from './posts.service';
 
 @Controller('crud_app/posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) { }
+  constructor(private readonly postsService: PostsService) {}
 
   @AxiosPost('create-post')
   @UseGuards(AccessTokenGuard)
@@ -44,14 +44,14 @@ export class PostsController {
     @Query('skip') skip: number,
     @Query('limit') limit: number,
   ) {
-    return await this.postsService.findAll(skip, limit);    
+    return await this.postsService.findAll(skip, limit);
   }
 
   @Get('post/:id')
   @UseGuards(AccessTokenGuard)
   @Serialize(PostDto)
   async getPost(@CurrentUser() user: User, @Param('id') id: string) {
-    return await this.postsService.findOneById(parseInt(id))
+    return await this.postsService.findOneById(parseInt(id));
   }
 
   @Delete('delete-post/:id')
@@ -75,20 +75,14 @@ export class PostsController {
   @Patch('like-post/:id')
   @UseGuards(AccessTokenGuard)
   @Serialize(ReactionDto)
-  likePost(
-    @CurrentUser() user: User,
-    @Param('id') id: string,
-  ) {
+  likePost(@CurrentUser() user: User, @Param('id') id: string) {
     return this.postsService.like(user, parseInt(id));
   }
 
   @Patch('dislike-post/:id')
   @UseGuards(AccessTokenGuard)
   @Serialize(ReactionDto)
-  dislikePost(
-    @CurrentUser() user: User,
-    @Param('id') id: string,
-  ) {
+  dislikePost(@CurrentUser() user: User, @Param('id') id: string) {
     return this.postsService.dislike(user, parseInt(id));
   }
 

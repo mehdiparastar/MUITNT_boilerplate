@@ -2,7 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotAcceptableException,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { permissionRequestResultEnum } from 'src/enum/permissionRequestResult.enum';

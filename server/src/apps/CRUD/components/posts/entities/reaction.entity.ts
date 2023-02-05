@@ -25,7 +25,10 @@ export class Reaction {
   @ApiProperty({ default: reactionTypeEnum.like, enum: reactionTypeEnum })
   type: reactionTypeEnum;
 
-  @ManyToOne(() => Post, (post) => post.reactions, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => Post, (post) => post.reactions, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   post: Post;
 
   @ManyToOne(() => User, (user) => user.reactions, { nullable: false })

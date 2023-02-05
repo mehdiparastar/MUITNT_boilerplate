@@ -2,12 +2,16 @@ import {
   Body,
   Controller,
   Delete,
-  Get, Param, Post,
+  Get,
+  Param,
+  Post,
   Query,
   Res,
-  StreamableFile, UnauthorizedException, UploadedFiles,
+  StreamableFile,
+  UnauthorizedException,
+  UploadedFiles,
   UseGuards,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
@@ -29,13 +33,14 @@ import { FileValidationPipe } from './validation.pipe';
 
 @Controller('files_app')
 export class FilesController {
-  constructor(private readonly filesService: FilesService) { }
+  constructor(private readonly filesService: FilesService) {}
 
   @Post('uploads')
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Roles(UserRoles.fileAppUserML)
   @UseInterceptors(
-    FilesInterceptor('files',
+    FilesInterceptor(
+      'files',
       // {
       //   storage: diskStorage({
       //     destination: './src/apps/FILE/uploads',
@@ -47,13 +52,15 @@ export class FilesController {
       //     }
       //   })
       // }
-    ))
+    ),
+  )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
-        file: { // 👈 this property
+        file: {
+          // 👈 this property
           type: 'string',
           format: 'binary',
         },
@@ -64,28 +71,32 @@ export class FilesController {
     @CurrentUser() user: User,
     @Body('tags') tags_: any,
     @Body('private') private__: any,
-    @UploadedFiles(FileValidationPipe) files: Array<Express.Multer.File>) {
-
-    const tags: TagDto[][] = (files.length > 1 ? tags_ : [tags_]).map(item => JSON.parse(item))
-    const private_: boolean[] = (files.length > 1 ? private__ : [private__]).map(item => strToBool(item))
+    @UploadedFiles(FileValidationPipe) files: Array<Express.Multer.File>,
+  ) {
+    const tags: TagDto[][] = (files.length > 1 ? tags_ : [tags_]).map((item) =>
+      JSON.parse(item),
+    );
+    const private_: boolean[] = (
+      files.length > 1 ? private__ : [private__]
+    ).map((item) => strToBool(item));
 
     const res = await this.filesService.uploads(
       files.map((file, index) => {
         const hashSum = createHash('sha256');
-        hashSum.update(file.buffer)
-        const fileHash = hashSum.digest('hex')
+        hashSum.update(file.buffer);
+        const fileHash = hashSum.digest('hex');
 
-        return ({
+        return {
           ...file,
           fileHash,
           owner: user,
           tags: (tags && tags[index]) || [],
           private: private_[index],
-        })
-      }))
-    return res
+        };
+      }),
+    );
+    return res;
   }
-
 
   @Get('all-files')
   @UseGuards(AccessTokenGuard)
@@ -95,32 +106,41 @@ export class FilesController {
     @Query('skip') skip: string,
     @Query('limit') limit: string,
     @Query('isPrivate') isPrivate: string,
-    @Query('tagsFilter') tagsFilter: string | undefined
+    @Query('tagsFilter') tagsFilter: string | undefined,
   ) {
     return await this.filesService.findAll(
       parseInt(skip),
       parseInt(limit),
       strToBool(isPrivate),
-      tagsFilter ? tagsFilter.split(',').map(item => parseInt(item)) : undefined,
-      user
+      tagsFilter
+        ? tagsFilter.split(',').map((item) => parseInt(item))
+        : undefined,
+      user,
     );
   }
 
   @Get('get-file/:id')
   @UseGuards(AccessTokenGuard)
-  async getFile(@CurrentUser() user: User, @Param('id') id: string, @Res({ passthrough: true }) res: Response) {
-    const record = await this.filesService.findOneById(parseInt(id))
+  async getFile(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const record = await this.filesService.findOneById(parseInt(id));
 
-    if ((record.private && user.id === record.owner.id) || record.private === false) {
+    if (
+      (record.private && user.id === record.owner.id) ||
+      record.private === false
+    ) {
       // const file = createReadStream(join(process.cwd(), 'package.json'))
       res.set({
         'Content-Type': record.type,
         'Content-Disposition': `attachment; filename=${record.name}`,
       });
 
-      return new StreamableFile(record.fileBuffer.file)
+      return new StreamableFile(record.fileBuffer.file);
     }
-    throw new UnauthorizedException()
+    throw new UnauthorizedException();
   }
 
   @Delete('delete-file/:id')

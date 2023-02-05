@@ -18,7 +18,7 @@ export class PostsService {
     @InjectRepository(Post)
     private postsRepo: Repository<Post>,
     private readonly reactionsService: ReactionsService,
-  ) { }
+  ) {}
 
   async create(user: User, title: string, caption: string): Promise<Post> {
     // Create new Post
@@ -32,14 +32,17 @@ export class PostsService {
     return this.postsRepo.save(newPost);
   }
 
-  async findAll(skip: number = 0, limit: number = 3): Promise<{ data: Post[]; count: number }> {
+  async findAll(
+    skip: number = 0,
+    limit: number = 3,
+  ): Promise<{ data: Post[]; count: number }> {
     // Create new Post
     const [result, total] = await this.postsRepo.findAndCount({
       relations: {
         author: true,
         reactions: {
-          creator: true
-        }
+          creator: true,
+        },
       },
       where: {},
       order: { createdAt: 'DESC' },
@@ -100,27 +103,28 @@ export class PostsService {
       throw new NotFoundException('post not found');
     }
 
-    const reaction = await this.reactionsService.findOneByCreatorIdandPostId(user.id, postId)
+    const reaction = await this.reactionsService.findOneByCreatorIdandPostId(
+      user.id,
+      postId,
+    );
 
     if (!reaction) {
-      await this.reactionsService.create(
-        user,
-        reactionTypeEnum.like,
-        post,
-      );
-    }
-    else {
+      await this.reactionsService.create(user, reactionTypeEnum.like, post);
+    } else {
       if (reaction.type === reactionTypeEnum.like) {
-        await this.reactionsService.removeReaction(user, reaction.id)
-      }
-      else {
-        await this.reactionsService.update(user, reaction.id, reactionTypeEnum.like)
+        await this.reactionsService.removeReaction(user, reaction.id);
+      } else {
+        await this.reactionsService.update(
+          user,
+          reaction.id,
+          reactionTypeEnum.like,
+        );
       }
     }
 
-    const reactions = (await this.findOneById(postId)).reactions
+    const reactions = (await this.findOneById(postId)).reactions;
 
-    return reactions
+    return reactions;
 
     // return {
     //   allReactions: reactions.reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {}),
@@ -134,27 +138,28 @@ export class PostsService {
       throw new NotFoundException('post not found');
     }
 
-    const reaction = await this.reactionsService.findOneByCreatorIdandPostId(user.id, postId)
+    const reaction = await this.reactionsService.findOneByCreatorIdandPostId(
+      user.id,
+      postId,
+    );
 
     if (!reaction) {
-      await this.reactionsService.create(
-        user,
-        reactionTypeEnum.dislike,
-        post,
-      );
-    }
-    else {
+      await this.reactionsService.create(user, reactionTypeEnum.dislike, post);
+    } else {
       if (reaction.type === reactionTypeEnum.dislike) {
-        await this.reactionsService.removeReaction(user, reaction.id)
-      }
-      else {
-        await this.reactionsService.update(user, reaction.id, reactionTypeEnum.dislike)
+        await this.reactionsService.removeReaction(user, reaction.id);
+      } else {
+        await this.reactionsService.update(
+          user,
+          reaction.id,
+          reactionTypeEnum.dislike,
+        );
       }
     }
 
-    const reactions = (await this.findOneById(postId)).reactions
+    const reactions = (await this.findOneById(postId)).reactions;
 
-    return reactions
+    return reactions;
 
     // return {
     //   allReactions: reactions.reduce((p, c) => ({ ...p, [c.type]: (p[c.type] || 0) + 1 }), {}),

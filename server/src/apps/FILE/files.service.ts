@@ -3,7 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotAcceptableException,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagDto } from 'src/tags/dto/tag.dto';
@@ -21,22 +21,26 @@ export class FilesService {
     private filesInfoRepo: Repository<FileInfo>,
     @InjectRepository(FileBuffer)
     private filesBufferRepo: Repository<FileBuffer>,
-  ) { }
+  ) {}
 
-  async uploads(files: Array<Express.Multer.File & {
-    owner: UserDto,
-    tags: TagDto[],
-    private: boolean,
-    fileHash: string
-  }>) {
-    let savingRes: FileInfo[] = []
+  async uploads(
+    files: Array<
+      Express.Multer.File & {
+        owner: UserDto;
+        tags: TagDto[];
+        private: boolean;
+        fileHash: string;
+      }
+    >,
+  ) {
+    let savingRes: FileInfo[] = [];
 
     for (const file of files) {
       const fileBuffer = this.filesBufferRepo.create({
         file: file.buffer,
         fileHash: file.fileHash,
-      })
-      await this.filesBufferRepo.save(fileBuffer)
+      });
+      await this.filesBufferRepo.save(fileBuffer);
 
       const fileInfo = this.filesInfoRepo.create({
         name: file.originalname,
@@ -46,38 +50,47 @@ export class FilesService {
         fileHash: file.fileHash,
         private: file.private,
         tags: file.tags,
-        owner: file.owner
-      })
-      const save = await this.filesInfoRepo.save(fileInfo)
-      savingRes.push(save)
+        owner: file.owner,
+      });
+      const save = await this.filesInfoRepo.save(fileInfo);
+      savingRes.push(save);
     }
 
-    return savingRes.map(item => item.id)
+    return savingRes.map((item) => item.id);
   }
 
-
-  async findAll(skip: number = 0, limit: number = 3, isPrivate: boolean, tagsFilter: number[] | undefined, user: User): Promise<{ data: FileInfo[]; count: number }> {
+  async findAll(
+    skip: number = 0,
+    limit: number = 3,
+    isPrivate: boolean,
+    tagsFilter: number[] | undefined,
+    user: User,
+  ): Promise<{ data: FileInfo[]; count: number }> {
     // Create new File
     const [result, total] = await this.filesInfoRepo.findAndCount({
       relations: {
         owner: true,
         tags: {
-          creator: true
-        }
+          creator: true,
+        },
       },
       where:
-        isPrivate === true ?
-          {
-            owner: { id: user.id },
-            private: true,
-            ...((!tagsFilter || JSON.stringify(tagsFilter) === JSON.stringify([])) ? {} : { tags: { id: In(tagsFilter) } })
-          }
-          :
-          {
-            private: false,
-            ...((!tagsFilter || JSON.stringify(tagsFilter) === JSON.stringify([])) ? {} : { tags: { id: In(tagsFilter) } })
-          }
-      ,
+        isPrivate === true
+          ? {
+              owner: { id: user.id },
+              private: true,
+              ...(!tagsFilter ||
+              JSON.stringify(tagsFilter) === JSON.stringify([])
+                ? {}
+                : { tags: { id: In(tagsFilter) } }),
+            }
+          : {
+              private: false,
+              ...(!tagsFilter ||
+              JSON.stringify(tagsFilter) === JSON.stringify([])
+                ? {}
+                : { tags: { id: In(tagsFilter) } }),
+            },
       order: { createdAt: 'DESC' },
       take: limit,
       skip: skip,
@@ -112,8 +125,8 @@ export class FilesService {
       throw new NotAcceptableException(
         'You only could remove files that are your own!',
       );
-    }    
-    return this.filesBufferRepo.remove(file.fileBuffer)
+    }
+    return this.filesBufferRepo.remove(file.fileBuffer);
   }
 
   whereRU(): string {

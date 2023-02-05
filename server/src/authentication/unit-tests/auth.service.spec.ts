@@ -1,4 +1,8 @@
-import { BadRequestException, NotAcceptableException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -139,12 +143,14 @@ describe('AuthService', () => {
   });
 
   it('should return a local user object when credentials are valid', async () => {
-    const res = await service.localUserValidate(fakeUsersRepo[0].email, "test");
+    const res = await service.localUserValidate(fakeUsersRepo[0].email, 'test');
     expect(res.id).toEqual(0);
   });
 
   it('should throw error when credentials are invalid', async () => {
-    await expect(service.localUserValidate('wrong@wrong.com', 'wrong')).rejects.toThrow(NotAcceptableException)
+    await expect(
+      service.localUserValidate('wrong@wrong.com', 'wrong'),
+    ).rejects.toThrow(NotAcceptableException);
   });
 
   it('create a local new user and check tokens and password hashing', async () => {
