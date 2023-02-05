@@ -1,5 +1,5 @@
 import { Upload } from '@mui/icons-material';
-import { Box, Container, LinearProgress } from '@mui/material';
+import { Box, Container, LinearProgress, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import FilesDropZone from 'apps/Files/components/FilesDropZone/FilesDropZone';
@@ -11,7 +11,7 @@ import Filter from './components/Filter/Filter';
 
 type Props = {}
 
-const Files = (props: Props) => {
+const Files = (props: Props) => {    
     const theme = useTheme();
     const [loading, setLoading] = useState<boolean>(false)
     const [privateFilter, setPrivateFilter] = useState<boolean>(false)
@@ -21,7 +21,7 @@ const Files = (props: Props) => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return () => { };
     }, []);
-
+    
     return (
         <Box width={1} height={1}>
             {loading && <LinearProgress color='primary' />}
@@ -64,6 +64,7 @@ const Files = (props: Props) => {
                                 confirmText='upload all'
                                 formId="file-app-dropzone-form"
                             />
+                            <Typography variant='body2' pt={4}>⭐ Max Upload Size = 500 MB</Typography>
                         </Grid>
                         <Grid xs={12} sm={9}>
                             <Filter

@@ -143,7 +143,7 @@ function FilesDropZone({ formId, setLoading }: { formId: string, setLoading: (ar
                             </Box>
                             <Box display={'flex'} alignItems={'baseline'}>
                                 <Typography variant='h6' component={'pre'}>{`file size: `}</Typography>
-                                <Typography variant='body1' component={'pre'}>{`${filesize(file.size, { base: 2, standard: "jedec" })}`}</Typography>
+                                <Typography variant='body1' component={'pre'}>{`${filesize(file.size)}`}</Typography>
                             </Box>
                             {/* <Box display={'flex'} alignItems={'center'}>
                                 <Typography variant='h6' component={'pre'}>{`status: `}</Typography>

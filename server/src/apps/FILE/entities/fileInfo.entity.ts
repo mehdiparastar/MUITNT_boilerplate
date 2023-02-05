@@ -7,14 +7,16 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinColumn,
   JoinTable,
   ManyToMany,
-  ManyToOne, OneToMany, PrimaryGeneratedColumn,
+  ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
+import { FileBuffer } from './fileBuffer.entity';
 
 @Entity()
-export class File {
+export class FileInfo {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id: number;
@@ -41,9 +43,10 @@ export class File {
   @ApiProperty({ default: true })
   private: boolean;
 
-  @Column({ type: 'longblob' })
+  @OneToOne(() => FileBuffer, (fileBuffer) => fileBuffer.fileInfo, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn()
   @ApiProperty()
-  file: Buffer
+  fileBuffer: FileBuffer
 
   @Column()
   @ApiProperty()

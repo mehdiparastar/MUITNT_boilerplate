@@ -44,6 +44,7 @@
     "class-validator": "^0.14.0",
     "cookie-session": "^2.0.0",
     "cross-env": "^7.0.3",
+    "filesize": "^10.0.6",
     "mysql2": "^3.0.1",
     "passport": "^0.6.0",
     "passport-google-oauth2": "^0.2.0",

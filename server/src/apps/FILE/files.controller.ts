@@ -5,12 +5,13 @@ import {
   Get, Param, Post,
   Query,
   Res,
-  StreamableFile, UploadedFiles,
+  StreamableFile, UnauthorizedException, UploadedFiles,
   UseGuards,
   UseInterceptors
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { createHash } from 'crypto';
 import { Response } from 'express';
 import { AccessTokenGuard } from 'src/authentication/guards/accessToken.guard';
 import { Roles } from 'src/authorization/roles.decorator';
@@ -25,7 +26,6 @@ import { FileDto } from './dto/file/file.dto';
 import { PaginationFilesDto } from './dto/file/pagination-files.dto';
 import { FilesService } from './files.service';
 import { FileValidationPipe } from './validation.pipe';
-import { createHash } from 'crypto'
 
 @Controller('files_app')
 export class FilesController {
@@ -108,23 +108,25 @@ export class FilesController {
 
   @Get('get-file/:id')
   @UseGuards(AccessTokenGuard)
-  // @Serialize(FileDto)
-  async getFile(/*@CurrentUser() user: User, */@Param('id') id: string, @Res({ passthrough: true }) res: Response) {
+  async getFile(@CurrentUser() user: User, @Param('id') id: string, @Res({ passthrough: true }) res: Response) {
     const record = await this.filesService.findOneById(parseInt(id))
 
-    // const file = createReadStream(join(process.cwd(), 'package.json'))
-    res.set({
-      'Content-Type': record.type,
-      'Content-Disposition': `attachment; filename=${record.name}`,
-    });
+    if ((record.private && user.id === record.owner.id) || record.private === false) {
+      // const file = createReadStream(join(process.cwd(), 'package.json'))
+      res.set({
+        'Content-Type': record.type,
+        'Content-Disposition': `attachment; filename=${record.name}`,
+      });
 
-    return new StreamableFile(record.file)
+      return new StreamableFile(record.fileBuffer.file)
+    }
+    throw new UnauthorizedException()
   }
 
   @Delete('delete-file/:id')
   @UseGuards(AccessTokenGuard)
   @Serialize(FileDto)
-  removePReq(@CurrentUser() user: User, @Param('id') id: string) {
+  async removeFile(@CurrentUser() user: User, @Param('id') id: string) {
     return this.filesService.removeFile(user, parseInt(id));
   }
 

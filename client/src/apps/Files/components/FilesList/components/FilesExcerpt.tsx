@@ -4,11 +4,11 @@ import Grid from '@mui/material/Unstable_Grid2/Grid2'
 import useAxiosPrivate from 'api/axiosApi/useAxiosPrivate'
 import Item from 'components/Item/Item'
 import { formatDistanceToNow } from 'date-fns'
+import { filesize } from 'filesize'
 import { IFile } from 'models/FILES_APP/file.model'
 import { useSnackbar } from 'notistack'
 import React, { useState } from 'react'
-import { filesize } from 'filesize'
-// import { useDownloadFileMutation } from 'redux/features/FILE/filesApiSlice'
+import { useDeleteFileMutation } from 'redux/features/FILE/filesApiSlice'
 
 type Props = {
     file: IFile
@@ -20,6 +20,7 @@ const FilesExcerpt =
         const { enqueueSnackbar } = useSnackbar()
         const [loading, setLoading] = useState(false)
         // const [downloadFile] = useDownloadFileMutation()
+        const [deleteFile, { isLoading: deletingLoad }] = useDeleteFileMutation()
         const axiosPrivate = useAxiosPrivate();
 
         const downloadFile_usingAxios = async () => {
@@ -62,6 +63,19 @@ const FilesExcerpt =
             }
         }
 
+        const handleDeleteFile = async () => {
+            try {
+                if (window.confirm(`Are you sure for Deleting File with the name of '${file.name}'`)) {
+                    await deleteFile({ id: file.id }).unwrap()
+                    enqueueSnackbar(`file with id '${file.id}' has deleted successfully.`, { variant: 'success' })
+                }
+            } catch (ex) {
+                setLoading(false)
+                const err = ex as { data: { msg: string } }
+                enqueueSnackbar(`Downloading Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
+            }
+        }
+
         return (
             <Grid xs={12} sm={6} md={4} >
                 <Item
@@ -97,7 +111,14 @@ const FilesExcerpt =
 
                                         }
                                     </IconButton>
-                                    <IconButton><DeleteForever color="error" /></IconButton>
+                                    <IconButton onClick={handleDeleteFile}>
+                                        {
+                                            deletingLoad ?
+                                                <CircularProgress size={20} />
+                                                :
+                                                <DeleteForever color="error" />
+                                        }
+                                    </IconButton>
                                 </Box>
                             </Stack>
                         </CardActions>

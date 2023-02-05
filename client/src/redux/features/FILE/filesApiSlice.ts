@@ -1,4 +1,4 @@
-import { IFilePaginated } from 'models/FILES_APP/file.model';
+import { IFile, IFilePaginated } from 'models/FILES_APP/file.model';
 import { apiSlice } from '../../../api/rtkApi/apiSlice';
 
 export const fileApiSlice = apiSlice.injectEndpoints({
@@ -59,7 +59,17 @@ export const fileApiSlice = apiSlice.injectEndpoints({
                     )
                 })
             }
-        })
+        }),
+
+        deleteFile: builder.mutation<IFile, { id: number }>({
+            query({ id }) {
+                return {
+                    url: `files_app/delete-file/${id}`,
+                    method: 'Delete',
+                };
+            },
+            invalidatesTags: ['File']
+        }),
 
 
     })
@@ -69,4 +79,5 @@ export const {
     useUploadMultipleFileMutation,
     useGetAllFilesQuery,
     useDownloadFileMutation,
+    useDeleteFileMutation
 } = fileApiSlice

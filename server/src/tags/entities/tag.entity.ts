@@ -10,7 +10,7 @@ import {
     ManyToOne, PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
-import { File } from 'src/apps/FILE/entities/file.entity';
+import { FileInfo } from 'src/apps/FILE/entities/fileInfo.entity';
 
 @Entity()
 @Index(['tag', 'appName'], { unique: true })
@@ -39,6 +39,6 @@ export class Tag {
     @ManyToOne(() => User, (user) => user.createdTags, { nullable: false })
     creator: User;
 
-    @ManyToMany(() => File, (file) => file.tags, { nullable: true })
-    files: File;
+    @ManyToMany(() => FileInfo, (file) => file.tags, { nullable: true })
+    files: FileInfo;
 }

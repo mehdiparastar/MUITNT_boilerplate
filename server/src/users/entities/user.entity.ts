@@ -12,7 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { File } from '../../apps/FILE/entities/file.entity'
+import { FileInfo } from '../../apps/FILE/entities/fileInfo.entity'
 import { authTypeEnum } from '../../enum/authType.enum';
 import { PermissionRequest } from './permission-requests.entity';
 
@@ -84,8 +84,8 @@ export class User {
   @OneToMany(() => Reaction, (reaction) => reaction.creator, { cascade: true })
   reactions: Reaction[];
 
-  @OneToMany(() => File, (file) => file.owner, { cascade: true })
-  files: File[];
+  @OneToMany(() => FileInfo, (file) => file.owner, { cascade: true })
+  files: FileInfo[];
 
   @OneToMany(() => Tag, (tag) => tag.creator, { cascade: true })
   createdTags: Tag[];

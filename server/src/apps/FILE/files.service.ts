@@ -1,4 +1,6 @@
 import {
+  BadRequestException,
+  ConflictException,
   Injectable,
   NotAcceptableException,
   NotFoundException
@@ -9,13 +11,16 @@ import { Tag } from 'src/tags/entities/tag.entity';
 import { UserDto } from 'src/users/dto/user/user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { In, Repository } from 'typeorm';
-import { File } from './entities/file.entity';
+import { FileBuffer } from './entities/fileBuffer.entity';
+import { FileInfo } from './entities/fileInfo.entity';
 
 @Injectable()
 export class FilesService {
   constructor(
-    @InjectRepository(File)
-    private filesRepo: Repository<File>,
+    @InjectRepository(FileInfo)
+    private filesInfoRepo: Repository<FileInfo>,
+    @InjectRepository(FileBuffer)
+    private filesBufferRepo: Repository<FileBuffer>,
   ) { }
 
   async uploads(files: Array<Express.Multer.File & {
@@ -24,25 +29,36 @@ export class FilesService {
     private: boolean,
     fileHash: string
   }>) {
-    const newFiles = files.map(file => this.filesRepo.create({
-      name: file.originalname,
-      type: file.mimetype,
-      file: file.buffer,
-      size: file.size,
-      fileHash: file.fileHash,
-      private: file.private,
-      tags: file.tags,
-      owner: file.owner
-    }))
+    let savingRes: FileInfo[] = []
 
-    const savingRes = await Promise.all(newFiles.map(newFile => this.filesRepo.save(newFile)))
+    for (const file of files) {
+      const fileBuffer = this.filesBufferRepo.create({
+        file: file.buffer,
+        fileHash: file.fileHash,
+      })
+      await this.filesBufferRepo.save(fileBuffer)
+
+      const fileInfo = this.filesInfoRepo.create({
+        name: file.originalname,
+        type: file.mimetype,
+        fileBuffer: fileBuffer,
+        size: file.size,
+        fileHash: file.fileHash,
+        private: file.private,
+        tags: file.tags,
+        owner: file.owner
+      })
+      const save = await this.filesInfoRepo.save(fileInfo)
+      savingRes.push(save)
+    }
+
     return savingRes.map(item => item.id)
   }
 
 
-  async findAll(skip: number = 0, limit: number = 3, isPrivate: boolean, tagsFilter: number[] | undefined, user: User): Promise<{ data: File[]; count: number }> {
+  async findAll(skip: number = 0, limit: number = 3, isPrivate: boolean, tagsFilter: number[] | undefined, user: User): Promise<{ data: FileInfo[]; count: number }> {
     // Create new File
-    const [result, total] = await this.filesRepo.findAndCount({
+    const [result, total] = await this.filesInfoRepo.findAndCount({
       relations: {
         owner: true,
         tags: {
@@ -73,13 +89,13 @@ export class FilesService {
     };
   }
 
-  async findOneById(id: number): Promise<File> {
+  async findOneById(id: number): Promise<FileInfo> {
     if (!id) {
       throw new NotFoundException('file not found');
     }
-    const find = await this.filesRepo.findOne({
-      relations: { owner: true }, //['author'],
+    const find = await this.filesInfoRepo.findOne({
       where: { id },
+      relations: { owner: true, fileBuffer: true }, //['author'],
     });
     if (!find) {
       throw new NotFoundException('file not found');
@@ -87,7 +103,7 @@ export class FilesService {
     return find;
   }
 
-  async removeFile(user: User, id: number): Promise<File> {
+  async removeFile(user: User, id: number): Promise<FileBuffer> {
     const file = await this.findOneById(id);
     if (!file) {
       throw new NotFoundException('file not found');
@@ -96,8 +112,8 @@ export class FilesService {
       throw new NotAcceptableException(
         'You only could remove files that are your own!',
       );
-    }
-    return this.filesRepo.remove(file);
+    }    
+    return this.filesBufferRepo.remove(file.fileBuffer)
   }
 
   whereRU(): string {

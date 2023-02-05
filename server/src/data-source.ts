@@ -1,7 +1,8 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { Post } from './apps/CRUD/components/posts/entities/post.entity';
 import { Reaction } from './apps/CRUD/components/posts/entities/reaction.entity';
-import { File } from './apps/FILE/entities/file.entity';
+import { FileBuffer } from './apps/FILE/entities/fileBuffer.entity';
+import { FileInfo } from './apps/FILE/entities/fileInfo.entity';
 import { Tag } from './tags/entities/tag.entity';
 import { PermissionRequest } from './users/entities/permission-requests.entity';
 import { User } from './users/entities/user.entity';
@@ -20,7 +21,7 @@ const dbConfig: IDBConfig = {
     username: 'admin',
     password: 'admin',
     database: 'dev_db',
-    entities: [User, PermissionRequest, Post, Reaction, File, Tag],
+    entities: [User, PermissionRequest, Post, Reaction, FileInfo, FileBuffer, Tag],
     synchronize: true,
     // synchronize: false,
     // migrations: ['src/migration_dev/*.js'],
@@ -33,8 +34,8 @@ const dbConfig: IDBConfig = {
     port: 3306,
     username: 'admin',
     password: 'admin',
-    database: 'test_db',                                    
-    entities: [User, PermissionRequest, Post, Reaction, File, Tag],
+    database: 'test_db',
+    entities: [User, PermissionRequest, Post, Reaction, FileInfo, FileBuffer, Tag],
     synchronize: true,
     // synchronize: false,
     // migrations: ['src/migration_test/*.js'],
