@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker compose -f docker-compose.dev.yml down
+# docker compose -f docker-compose.dev.yml down
 
 echo "\n\nstarting app..."
 
