@@ -1,0 +1,16 @@
+
+FROM node:18.8.0-alpine3.16 AS development
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install glob rimraf
+
+RUN npm install --only=development
+
+COPY . .
+
+ENV NODE_ENV development
+
+RUN npm run build

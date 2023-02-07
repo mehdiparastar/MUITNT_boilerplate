@@ -16,7 +16,7 @@ interface IDBConfig {
 const dbConfig: IDBConfig = {
   development: {
     type: 'mysql',
-    host: 'localhost',
+    host: 'db',  //'localhost',
     port: 3306,
     username: 'admin',
     password: 'admin',
@@ -37,7 +37,7 @@ const dbConfig: IDBConfig = {
   },
   test: {
     type: 'mysql',
-    host: 'localhost',
+    host: 'db',  //'localhost',
     port: 3306,
     username: 'admin',
     password: 'admin',

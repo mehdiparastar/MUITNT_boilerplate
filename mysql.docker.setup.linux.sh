@@ -1,23 +1,24 @@
 #!/bin/bash
 
 input="./server/.development.env"
-MYSQL_PASSWORD="admin"
-MYSQL_USER="admin"
-
 while IFS= read -r line; do
     eval $line
-    MYSQL_DATABASE="$DB_NAME"    
+    MYSQL_DATABASE="$DB_NAME"
+    MYSQL_DEV_PASSWORD="$MYSQL_DEV_PASSWORD"
+    MYSQL_DEV_USER="$MYSQL_DEV_USER"
 done <"$input"
 
 input="./server/.test.env"
 while IFS= read -r line; do
     eval $line
-    MYSQL_TEST_DATABASE="$DB_NAME"    
+    MYSQL_TEST_DATABASE="$DB_NAME"
+    MYSQL_TEST_PASSWORD="$MYSQL_TEST_PASSWORD"
+    MYSQL_TEST_USER="$MYSQL_TEST_USER"
 done <"$input"
 
-create_dev_user="CREATE USER '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';\n"
-admin_user_privileges_localhost_to_dev_db="GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';\n"
-admin_user_privileges_localhost_to_test_db="GRANT ALL PRIVILEGES ON ${MYSQL_TEST_DATABASE}.* TO '${MYSQL_USER}'@'%';\n\n"
+create_dev_user="CREATE USER '${MYSQL_DEV_USER}'@'localhost' IDENTIFIED BY '${MYSQL_DEV_PASSWORD}';\n"
+admin_user_privileges_localhost_to_dev_db="GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_DEV_USER}'@'%';\n"
+admin_user_privileges_localhost_to_test_db="GRANT ALL PRIVILEGES ON ${MYSQL_TEST_DATABASE}.* TO '${MYSQL_DEV_USER}'@'%';\n\n"
 USER_SQL="${create_dev_user}${admin_user_privileges_localhost_to_dev_db}${admin_user_privileges_localhost_to_test_db}"
 echo ${USER_SQL} >./server/docker_mysql_init/init/01-users.sql
 
@@ -33,8 +34,8 @@ l05="\t\timage: mysql\n"
 l06="\t\tenvironment:\n"
 l07="\t\t\t- MYSQL_ROOT_PASSWORD=password\n"
 l08="\t\t\t- MYSQL_DATABASE=${MYSQL_DATABASE}\n"
-l09="\t\t\t- MYSQL_USER=${MYSQL_USER}\n"
-l10="\t\t\t- MYSQL_PASSWORD=${MYSQL_PASSWORD}\n"
+l09="\t\t\t- MYSQL_DEV_USER=${MYSQL_DEV_USER}\n"
+l10="\t\t\t- MYSQL_DEV_PASSWORD=${MYSQL_DEV_PASSWORD}\n"
 l11="\t\tcommand: [ --character-set-server=utf8, --collation-server=utf8_persian_ci, --max-allowed-packet=524288000, --default-authentication-plugin=mysql_native_password]\n"
 l12="\t\trestart: always\n"
 l13="\t\tports:\n"

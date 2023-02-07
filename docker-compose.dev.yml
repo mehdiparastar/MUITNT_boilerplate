@@ -1,29 +1,62 @@
-version: "3.8"
-
+version: '3.8'
 services:
-
   client:
     build:
       context: ./client
       dockerfile: dockerfile.dev
-
     ports:
       - 3000:3000
-
     container_name: muitnt-client
-
     networks:
       - muitnt-stack-net
-
     volumes:
       - ./client/src:/usr/app/src
       - ./client/public:/usr/app/public
-
-    restart: "always"
-
+    restart: always
     stdin_open: true
     tty: true
+
+  server:
+    container_name: server
+    build:
+        context: ./server
+        target: development
+        dockerfile: ./dockerfile.dev
+    command: npm run start:debug
+    ports:
+        - 3001:3001
+        - 9229:9229
+    networks:
+        - muitnt-stack-net
+    volumes:
+        - ./server:/usr/src/app
+    restart: unless-stopped
+
+  db:
+    container_name: mysqlcontainer
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=dev_db
+      - MYSQL_DEV_USER=admin
+      - MYSQL_DEV_PASSWORD=admin
+    command: [ --character-set-server=utf8, --collation-server=utf8_persian_ci, --max-allowed-packet=524288000, --default-authentication-plugin=mysql_native_password]
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+    expose:
+      - 3306
+    networks:
+      - muitnt-stack-net
+
+volumes:
+  db:
+    driver: local
 
 networks:
   muitnt-stack-net:
     driver: bridge
+
