@@ -1,62 +1,36 @@
 #!/bin/bash
 
 mkdir "./server/docker_mysql_init"
+
+sleep 2
+
 mkdir "./server/docker_mysql_init/init"
+
+sleep 2
 
 input="./server/.development.env"
 while IFS= read -r line; do
-    eval $line
-    MYSQL_DATABASE="$DB_NAME"
-    MYSQL_DEV_PASSWORD="$MYSQL_DEV_PASSWORD"
-    MYSQL_DEV_USER="$MYSQL_DEV_USER"
+  eval $line
+  MYSQL_DATABASE="$DB_NAME"
+  MYSQL_DEV_PASSWORD="$MYSQL_DEV_PASSWORD"
+  MYSQL_DEV_USER="$MYSQL_DEV_USER"
 done <"$input"
 
 input="./server/.test.env"
 while IFS= read -r line; do
-    eval $line
-    MYSQL_TEST_DATABASE="$DB_NAME"
-    MYSQL_TEST_PASSWORD="$MYSQL_TEST_PASSWORD"
-    MYSQL_TEST_USER="$MYSQL_TEST_USER"
+  eval $line
+  MYSQL_TEST_DATABASE="$DB_NAME"
+  MYSQL_TEST_PASSWORD="$MYSQL_TEST_PASSWORD"
+  MYSQL_TEST_USER="$MYSQL_TEST_USER"
 done <"$input"
 
 create_dev_user="CREATE USER '${MYSQL_DEV_USER}'@'localhost' IDENTIFIED BY '${MYSQL_DEV_PASSWORD}';\n"
 admin_user_privileges_localhost_to_dev_db="GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_DEV_USER}'@'%';\n"
 admin_user_privileges_localhost_to_test_db="GRANT ALL PRIVILEGES ON ${MYSQL_TEST_DATABASE}.* TO '${MYSQL_DEV_USER}'@'%';\n\n"
-USER_SQL="${create_dev_user}${admin_user_privileges_localhost_to_dev_db}${admin_user_privileges_localhost_to_test_db}"
-echo ${USER_SQL} >./server/docker_mysql_init/init/01-users.sql
-
 create_test_db="CREATE DATABASE IF NOT EXISTS ${MYSQL_TEST_DATABASE};\n"
-DB_SQL="${create_test_db}"
-echo ${DB_SQL} >./server/docker_mysql_init/init/02-databases.sql
 
-  db:
-    container_name: mysqlcontainer
-    image: mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=dev_db
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=admin
-    command: [ --character-set-server=utf8, --collation-server=utf8_persian_ci, --max-allowed-packet=524288000, --default-authentication-plugin=mysql_native_password]
-    restart: always
-    ports:
-      - 3306:3306
-    volumes:
-      - db:/var/lib/mysql
-      - ./server/docker_mysql_init/init:/docker-entrypoint-initdb.d
-    expose:
-      - 3306
-    networks:
-      - muitnt-stack-net
-
-volumes:
-  db:
-    driver: local
-
-networks:
-  muitnt-stack-net:
-    driver: bridge
-
+INIT_SQL="${create_dev_user}${admin_user_privileges_localhost_to_dev_db}${admin_user_privileges_localhost_to_test_db}${create_test_db}"
+echo ${INIT_SQL} >./server/docker_mysql_init/init/init.sql
 
 l01="version: '3.8'\n"
 l02="services:\n"
@@ -96,15 +70,15 @@ l35="\t\timage: mysql\n"
 l36="\t\tenvironment:\n"
 l37="\t\t\t- MYSQL_ROOT_PASSWORD=password\n"
 l38="\t\t\t- MYSQL_DATABASE=${MYSQL_DATABASE}\n"
-l39="\t\t\t- MYSQL_DEV_USER=${MYSQL_DEV_USER}\n"
-l40="\t\t\t- MYSQL_DEV_PASSWORD=${MYSQL_DEV_PASSWORD}\n"
+l39="\t\t\t- MYSQL_USER=${MYSQL_DEV_USER}\n"
+l40="\t\t\t- MYSQL_PASSWORD=${MYSQL_DEV_PASSWORD}\n"
 l41="\t\tcommand: [ --character-set-server=utf8, --collation-server=utf8_persian_ci, --max-allowed-packet=524288000, --default-authentication-plugin=mysql_native_password]\n"
 l42="\t\trestart: always\n"
 l43="\t\tports:\n"
 l44="\t\t\t- 3306:3306\n"
 l45="\t\tvolumes:\n"
 l46="\t\t\t- db:/var/lib/mysql\n"
-l47="\t\t\t- ./init:/docker-entrypoint-initdb.d\n"
+l47="\t\t\t- ./server/docker_mysql_init/init:/docker-entrypoint-initdb.d\n"
 l48="\t\texpose:\n"
 l49="\t\t\t- 3306\n"
 l50="\t\tnetworks:\n"
@@ -126,7 +100,6 @@ echo ${docker_compose} >./docker-compose.dev.yml
 sleep 2
 sed -i 's/\t/  /g' ./docker-compose.dev.yml
 sleep 2
-
 
 docker compose -f docker-compose.dev.yml down
 
