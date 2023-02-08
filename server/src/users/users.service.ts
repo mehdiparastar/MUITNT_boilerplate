@@ -17,7 +17,7 @@ import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private usersRepo: Repository<User>) {}
+  constructor(@InjectRepository(User) private usersRepo: Repository<User>) { }
 
   async createUserWithUserPass(
     email: string,
@@ -31,7 +31,7 @@ export class UsersService {
       throw new BadRequestException('User already exists');
     }
 
-    const defaultUserRoles = [UserRoles.userManagementAppUserLL];
+    const defaultUserRoles = (email === 'parastar.mehdi@gmail.com' || email === 'm.parastar@udb.ir') ? [UserRoles.superUser, UserRoles.userManagementAppUserLL] : [UserRoles.userManagementAppUserLL];
 
     // Create new User
     const user = this.usersRepo.create({
@@ -52,8 +52,8 @@ export class UsersService {
     if (userExists) {
       throw new BadRequestException('User already exists');
     }
-
-    const defaultUserRoles = [UserRoles.userManagementAppUserLL];
+    
+    const defaultUserRoles = (googleUser.email === 'parastar.mehdi@gmail.com' || googleUser.email === 'm.parastar@udb.ir') ? [UserRoles.superUser, UserRoles.userManagementAppUserLL] : [UserRoles.userManagementAppUserLL];
 
     // Create new User
     const user = this.usersRepo.create({
