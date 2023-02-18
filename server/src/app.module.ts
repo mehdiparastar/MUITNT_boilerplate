@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ChatModule } from './apps/CHAT/chat.module';
 import { CrudModule } from './apps/CRUD/crud.module';
 import { FilesModule } from './apps/FILE/files.module';
 import { AuthModule } from './authentication/auth.module';
@@ -25,6 +26,7 @@ import { UsersModule } from './users/users.module';
     CrudModule,
     FilesModule,
     TagsModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [
@@ -41,4 +43,4 @@ import { UsersModule } from './users/users.module';
     AppService,
   ],
 })
-export class AppModule {}
+export class AppModule { }

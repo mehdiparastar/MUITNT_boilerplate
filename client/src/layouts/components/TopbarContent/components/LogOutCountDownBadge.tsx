@@ -2,16 +2,16 @@ import ListAllIcon from '@mui/icons-material/ListAlt';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import { Avatar, Badge, Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, Typography, useTheme } from '@mui/material';
-import { useAppSelector } from 'redux/hooks';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { UserRoles } from 'enum/userRoles.enum';
-import { useAuthLogoutMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
-import { selectCurrentRefreshToken } from 'redux/features/WHOLE_APP/auth/authSlice';
-import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
 import { strToBool } from 'helperFunctions/strToBool';
 import jwt_decode, { JwtPayload } from "jwt-decode";
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
+import { useAuthLogoutMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
+import { selectCurrentRefreshToken } from 'redux/features/WHOLE_APP/auth/authSlice';
+import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
+import { useAppSelector } from 'redux/hooks';
 
 interface MyBadgeProps {
     children?: React.ReactNode;

@@ -1,4 +1,4 @@
-import { PickType } from '@nestjs/swagger';
+import { PickType } from '@nestjs/mapped-types';
 
 import { CreateLocalUserDto } from './create-local-user.dto';
 
@@ -11,4 +11,4 @@ import { CreateLocalUserDto } from './create-local-user.dto';
 export class ChangeLocalUserProfileDetailDto extends PickType(
   CreateLocalUserDto,
   ['name', 'photo'] as const,
-) {}
+) { }

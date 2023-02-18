@@ -1,10 +1,13 @@
-import { responsiveFontSizes, createTheme } from '@mui/material/styles';
-import shadows from './shadows';
-import palette from './palette';
-import IransansXWoff from '../assets/fonts/IRANSansX-Regular.woff';
-import IransansXWoff2 from '../assets/fonts/IRANSansX-Regular.woff2';
+import { createTheme, responsiveFontSizes } from '@mui/material/styles';
+import BeautyDemoWoff from '../assets/fonts/BeautyDemo.woff';
 import IransansXBoldWoff from '../assets/fonts/IRANSansX-Bold.woff';
 import IransansXBoldWoff2 from '../assets/fonts/IRANSansX-Bold.woff2';
+import IransansXWoff from '../assets/fonts/IRANSansX-Regular.woff';
+import IransansXWoff2 from '../assets/fonts/IRANSansX-Regular.woff2';
+import TheBlacklistWoff from '../assets/fonts/TheBlacklist.woff';
+import palette from './palette';
+import shadows from './shadows';
+
 
 const getTheme = (
   mode: themeMode,
@@ -44,6 +47,20 @@ const getTheme = (
                 font-style: normal;
                 font-weight: 700;
                 src: url(${IransansXBoldWoff}) format('woff'), url(${IransansXBoldWoff2}) format('woff2');
+              }
+
+              @font-face {
+                font-family: 'TheBlacklist';
+                font-style: normal;
+                font-weight: 400;
+                src: url(${TheBlacklistWoff}) format('woff');
+              }
+
+              @font-face {
+                font-family: 'BeautyDemo';
+                font-style: normal;
+                font-weight: 400;
+                src: url(${BeautyDemoWoff}) format('woff');
               }
 
               ::-webkit-scrollbar {

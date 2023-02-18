@@ -9,6 +9,10 @@ declare global {
     OAUTH_GOOGLE_ID?: string;
     OAUTH_GOOGLE_SECRET?: string;
     OAUTH_GOOGLE_REDIRECT_URL?: string;
+    CLIENT_PORT?: number;
+    SERVER_PORT?: number;
+    JWT_ACCESS_EXPIRATION_TIME?: string | number;
+    JWT_REFRESH_EXPIRATION_TIME?: string | number;
   }
 
   interface IGoogleUser {
@@ -38,4 +42,4 @@ declare global {
   }
 }
 
-export {};
+export { };

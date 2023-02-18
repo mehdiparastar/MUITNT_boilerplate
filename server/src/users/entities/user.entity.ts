@@ -1,4 +1,7 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { ChatIntendedParticipants } from 'src/apps/CHAT/entities/intendedParticipants.entity';
+import { ChatMessage } from 'src/apps/CHAT/entities/messages.entity';
+import { ChatRoom } from 'src/apps/CHAT/entities/room.entity';
 import { Post } from 'src/apps/CRUD/components/posts/entities/post.entity';
 import { Reaction } from 'src/apps/CRUD/components/posts/entities/reaction.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
@@ -7,6 +10,7 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -89,4 +93,22 @@ export class User {
 
   @OneToMany(() => Tag, (tag) => tag.creator, { cascade: true })
   createdTags: Tag[];
+
+  @OneToMany(() => ChatRoom, (room) => room.creator, { cascade: true })
+  createdRooms: ChatRoom[];
+
+  @ManyToMany(() => ChatRoom, (room) => room.participants, { nullable: true })
+  participantsRoom: ChatRoom[];
+
+  @ManyToMany(() => ChatRoom, (room) => room.admins, { nullable: true })
+  adminsRoom: ChatRoom[];
+
+  @OneToMany(() => ChatMessage, (msg) => msg.writer, { cascade: true })
+  chatMessages: ChatMessage[];
+
+  @OneToMany(() => ChatIntendedParticipants, (intendedParticipant) => intendedParticipant.creator, { cascade: true })
+  creatorOfIntendedParticipants: ChatIntendedParticipants[];
+
+  @OneToMany(() => ChatIntendedParticipants, (intendedParticipant) => intendedParticipant.participant, { cascade: true })
+  participantOfIntendedParticipants: ChatIntendedParticipants[];
 }

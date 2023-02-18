@@ -6,9 +6,9 @@ import Item from 'components/Item/Item';
 import { Sidebar } from 'components/Sidebar/Sidebar';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { FooterContent } from './components/FooterContent/FooterContent';
-import { SidebarContent } from './components/SidebarContent/SidebarContent';
-import { TopbarContent } from './components/TopbarContent/TopbarContent';
+import { FooterContent } from '../components/FooterContent/FooterContent';
+import { SidebarContent } from '../components/SidebarContent/SidebarContent';
+import { TopbarContent } from '../components/TopbarContent/TopbarContent';
 
 export const MainLayout: React.FC<layoutProps> = ({ children }) => {
 

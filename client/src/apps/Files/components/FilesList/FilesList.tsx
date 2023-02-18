@@ -4,7 +4,7 @@ import { PageLoader } from 'components/PageLoader/PageLoader'
 import { IFile } from 'models/FILES_APP/file.model'
 import { ITag } from 'models/TAGS/tag.model'
 import React, { useEffect, useState } from 'react'
-import { useGetAllFilesQuery } from 'redux/features/FILE/filesApiSlice'
+import { useGetAllFilesQuery } from 'redux/features/FILE_APP/filesApiSlice'
 import FilesExcerpt from './components/FilesExcerpt'
 
 type Props = {

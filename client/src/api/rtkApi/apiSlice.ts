@@ -59,6 +59,6 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const apiSlice = createApi({
     reducerPath: 'apiSlice',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['CurrentUser', 'PermissionRequest', 'User', 'Post', 'File', 'FileTags'],
+    tagTypes: ['CurrentUser', 'PermissionRequest', 'User', 'Post', 'File', 'FileTags', 'Chat'],
     endpoints: builder => ({})
 })

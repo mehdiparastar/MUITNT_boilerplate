@@ -1,4 +1,7 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { ChatIntendedParticipants } from './apps/CHAT/entities/intendedParticipants.entity';
+import { ChatMessage } from './apps/CHAT/entities/messages.entity';
+import { ChatRoom } from './apps/CHAT/entities/room.entity';
 import { Post } from './apps/CRUD/components/posts/entities/post.entity';
 import { Reaction } from './apps/CRUD/components/posts/entities/reaction.entity';
 import { FileBuffer } from './apps/FILE/entities/fileBuffer.entity';
@@ -16,7 +19,7 @@ interface IDBConfig {
 const dbConfig: IDBConfig = {
   development: {
     type: 'mysql',
-    host: 'db',  //'localhost',
+    host: 'localhost', //'db',  //'localhost',
     port: 3306,
     username: 'admin',
     password: 'admin',
@@ -29,6 +32,9 @@ const dbConfig: IDBConfig = {
       FileInfo,
       FileBuffer,
       Tag,
+      ChatRoom,
+      ChatMessage,
+      ChatIntendedParticipants
     ],
     synchronize: true,
     // synchronize: false,
@@ -50,6 +56,9 @@ const dbConfig: IDBConfig = {
       FileInfo,
       FileBuffer,
       Tag,
+      ChatRoom,
+      ChatMessage,
+      ChatIntendedParticipants
     ],
     synchronize: true,
     // synchronize: false,

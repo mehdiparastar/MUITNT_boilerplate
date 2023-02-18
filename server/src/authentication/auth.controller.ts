@@ -12,6 +12,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { strToBool } from 'src/helperFunctions/strToBool';
@@ -49,7 +50,8 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
     private readonly permissionRequestService: PermissionRequestsService,
-  ) {}
+    private configService: ConfigService<IconfigService>,
+  ) { }
 
   @Post('local-create')
   @Serialize(JWTTokenDto)
@@ -71,14 +73,16 @@ export class AuthController {
 
   @Get('google-logins/:from')
   @UseGuards(GoogleOauthGuard)
-  async googleLogin(@Req() req: Request) {}
+  async googleLogin(@Req() req: Request) { }
 
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
   async googleLoginCallback(@Req() req: Request, @Res() res: Response) {
     const auth = await this.authService.login(req.user);
+    const clientPort = this.configService.get<number>('CLIENT_PORT');
+
     res.redirect(
-      `http://localhost:3000/google-oauth-success-redirect/${auth.accessToken}/${auth.refreshToken}${req.params.from}`,
+      `http://localhost:${clientPort}/google-oauth-success-redirect/${auth.accessToken}/${auth.refreshToken}${req.params.from}`,
     );
   }
 

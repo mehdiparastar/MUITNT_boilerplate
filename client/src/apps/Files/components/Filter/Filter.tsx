@@ -6,7 +6,7 @@ import { MUIAsyncAutocompleteTags } from 'components/MUIAsyncAutocompleteTags/MU
 import SimpleSlideDialog from 'components/SimpleSlideDialog/SimpleSlideDialog';
 import { strToBool } from 'helperFunctions/strToBool';
 import { ITag } from 'models/TAGS/tag.model';
-import { useGetFileTagsQuery } from 'redux/features/FILE/fileTagsApiSlice';
+import { useGetFileTagsQuery } from 'redux/features/FILE_APP/fileTagsApiSlice';
 import AddTag from './components/AddTag';
 
 
@@ -49,6 +49,7 @@ const Filter = (props: Props) => {
             </FormControl>
             <Stack direction={'row'}>
                 <MUIAsyncAutocompleteTags<ITag>
+                    name="tagsFilter"
                     ac_sx={{ width: '100%' }}
                     titleField={'tag'}
                     label='Tags Filter'

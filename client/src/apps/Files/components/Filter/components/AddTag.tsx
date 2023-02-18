@@ -3,7 +3,7 @@ import { appNameEnum } from 'enum/appName.enum';
 import { useFormik } from 'formik';
 import { IAddTag } from 'models/TAGS/tag.model';
 import { useSnackbar } from 'notistack';
-import { useAddFileTagMutation } from 'redux/features/FILE/fileTagsApiSlice';
+import { useAddFileTagMutation } from 'redux/features/FILE_APP/fileTagsApiSlice';
 import * as yup from 'yup';
 
 type Props = {

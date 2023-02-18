@@ -42,7 +42,7 @@ export const Hero: React.FC<Props> = (props) => {
                 best.
               </Typography>
               <br />
-              to be the
+              For being the
               <Typography
                 color={'primary'}
                 component={'span'}
@@ -99,7 +99,7 @@ export const Hero: React.FC<Props> = (props) => {
         >
           <UI02BGSVG
             width="100%"
-            height="100%"            
+            height="100%"
           />
           {/* <RocketIllustration
               width={'100%'}

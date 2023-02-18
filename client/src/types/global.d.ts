@@ -61,5 +61,4 @@ declare global {
     photo?: string;
     roles?: string[];
   }
-
 }

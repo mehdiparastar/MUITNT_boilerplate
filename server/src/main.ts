@@ -1,7 +1,9 @@
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
+import { SocketIOAdapter } from './apps/CHAT/socket-io-adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -14,15 +16,17 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const appPort = process.env.PORT || 3001;
+  const configService = app.get(ConfigService<IconfigService>);
+  const serverPort = configService.get<number>('SERVER_PORT') || 3001;
+  const clientPort = configService.get('CLIENT_PORT')
+
+  // const serverPort = process.env.PORT || 3001;
   var whitelist = [
-    'http://localhost',
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'https://accounts.google.com/o/oauth2/v2',
-    'http://localhost:3001/auth/google-logins',
-    'http://localhost:3001/auth/google/callback',
-    'http://localhost:3001/auth/google/callback/last/:access/:refresh',
+    `http://localhost`,
+    `http://localhost:${clientPort}`,
+    `http://localhost:${serverPort}`,
+    new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`),
+    new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${serverPort}$/`),       
   ];
   app.enableCors({
     // credentials: true,
@@ -35,7 +39,9 @@ async function bootstrap() {
     },
   });
 
-  await app.listen(appPort);
+  app.useWebSocketAdapter(new SocketIOAdapter(app, configService));
+
+  await app.listen(serverPort);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

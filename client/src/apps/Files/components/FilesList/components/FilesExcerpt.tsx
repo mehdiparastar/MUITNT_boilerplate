@@ -8,7 +8,7 @@ import { filesize } from 'filesize'
 import { IFile } from 'models/FILES_APP/file.model'
 import { useSnackbar } from 'notistack'
 import React, { useState } from 'react'
-import { useDeleteFileMutation } from 'redux/features/FILE/filesApiSlice'
+import { useDeleteFileMutation } from 'redux/features/FILE_APP/filesApiSlice'
 
 type Props = {
     file: IFile

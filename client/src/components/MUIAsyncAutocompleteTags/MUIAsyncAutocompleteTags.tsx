@@ -8,6 +8,7 @@ import * as React from 'react';
 
 
 export interface ICustomAutoCompleteTagsProps<T> {
+    name: string
     ac_sx?: SxProps;
     label?: string;
     titleField: Extract<keyof T, string>,
@@ -19,7 +20,7 @@ export interface ICustomAutoCompleteTagsProps<T> {
         <T = any>(fieldOrEvent: T): T extends string ? (e: any) => void : void;
     },
     error?: boolean,
-    helperText?: string | boolean,
+    helperText?: string | string[] | boolean | any,
     textfield_sx?: SxProps
 }
 
@@ -82,6 +83,7 @@ export const MUIAsyncAutocompleteTags = <T,>(props: ICustomAutoCompleteTagsProps
             renderInput={(params) => (
                 <TextField
                     {...params}
+                    name={props.name}
                     label={props?.label || "Asynchronous"}
                     InputProps={{
                         ...params.InputProps,

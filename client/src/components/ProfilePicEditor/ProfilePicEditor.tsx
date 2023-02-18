@@ -53,7 +53,7 @@ const ProfilePicEditor = (props: { formik?: any }) => {
                     p={2}
                     {...getRootProps()}>
                     <Grid xs={12}>
-                        <Typography textAlign={'center'} variant='body1'>Select your profile picture</Typography>
+                        <Typography textAlign={'center'} variant='body1'>Select your picture</Typography>
                         <input {...getInputProps()} />
                         <Paper
                             sx={{
@@ -113,7 +113,7 @@ const ProfilePicEditor = (props: { formik?: any }) => {
                                     color='secondary'
                                     onClick={handleSave}
                                 >
-                                    Save Profile Pic
+                                    Save Pic (temporarily!)
                                 </Button>
                             </Grid>
                             <Grid xs={6}>
@@ -131,7 +131,7 @@ const ProfilePicEditor = (props: { formik?: any }) => {
                             <Grid xs={12}>
                                 <Alert severity="info">
                                     <AlertTitle>
-                                        This save is temporarily, to complete the flow, finalize your changes.
+                                        This saving is temporarily, to complete the flow, finalize your changes.
                                     </AlertTitle>
                                 </Alert>
                             </Grid>

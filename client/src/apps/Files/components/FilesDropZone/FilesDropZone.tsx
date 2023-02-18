@@ -12,8 +12,8 @@ import { ITag } from 'models/TAGS/tag.model';
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useUploadMultipleFileMutation } from 'redux/features/FILE/filesApiSlice';
-import { useGetFileTagsQuery } from 'redux/features/FILE/fileTagsApiSlice';
+import { useUploadMultipleFileMutation } from 'redux/features/FILE_APP/filesApiSlice';
+import { useGetFileTagsQuery } from 'redux/features/FILE_APP/fileTagsApiSlice';
 import UploadFileSVG from 'svg/banners/UploadFile/UploadFile';
 import * as yup from 'yup';
 
@@ -206,6 +206,7 @@ function FilesDropZone({ formId, setLoading }: { formId: string, setLoading: (ar
                 </Box>
                 <Box sx={{ padding: theme.spacing(1), pt: 0 }}>
                     <MUIAsyncAutocompleteTags
+                        name="fileTags"
                         ac_sx={{ width: '100%' }}
                         titleField={'tag'}
                         label='Tags'

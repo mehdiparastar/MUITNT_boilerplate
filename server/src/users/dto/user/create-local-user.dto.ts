@@ -16,6 +16,6 @@ export class CreateLocalUserDto {
 
   @IsString()
   @IsOptional()
-  @ApiProperty({ default: 'test' })
+  @ApiProperty()
   photo?: string;
 }

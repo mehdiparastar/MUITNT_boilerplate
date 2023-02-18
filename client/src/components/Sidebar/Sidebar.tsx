@@ -1,14 +1,14 @@
-import * as React from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
-import CloseIcon from '@mui/icons-material/Close';
+import * as React from 'react';
 import MUITNTSVG from 'svg/logos/MUITNT';
 
 
 type SidebarProps = Props & {
-  onClose: () => void;
+  onClose?: () => void;
   open: boolean;
   variant: 'permanent' | 'persistent' | 'temporary';
 };
@@ -16,7 +16,7 @@ type SidebarProps = Props & {
 const drawerWidth: number = 400;
 
 export const Sidebar: React.FC<SidebarProps> = (props) => {
-  
+
   const { children, onClose, open, variant } = props;
 
   return (
@@ -45,7 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         }}
       >
         <MUITNTSVG sx={{ width: 60, height: 60 }} />
-        <IconButton onClick={() => onClose()}>
+        <IconButton onClick={onClose}>
           <CloseIcon
             color="secondary"
             fontSize="small"
