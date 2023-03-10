@@ -38,7 +38,7 @@ export class ChatIntendedParticipants {
     @ApiProperty()
     updatedAt?: Date;
 
-    @ManyToOne(() => ChatRoom, (room) => room.intendedParticipants)
+    @ManyToOne(() => ChatRoom, (room) => room.intendedParticipants, { nullable: false })
     room: ChatRoom;
 
     @ManyToOne(() => User, (user) => user.creatorOfIntendedParticipants, { nullable: false })
@@ -46,5 +46,4 @@ export class ChatIntendedParticipants {
 
     @ManyToOne(() => User, (user) => user.participantOfIntendedParticipants, { nullable: false })
     participant: User;
-
 }

@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { IsDate } from 'class-validator';
-import { UserDto, UserIdDto } from 'src/users/dto/user/user.dto';
+import { UserDto, UserCompressDto } from 'src/users/dto/user/user.dto';
+import { RoomIntendedParticipantDto } from '../intendedParticipant/intended-participant.dto';
 import { MessageDto } from '../message/message.dto';
 
 export class RoomDtoWithoutMessages {
@@ -22,14 +23,9 @@ export class RoomDtoWithoutMessages {
   photo: string;
 
   @Expose()
-  @Type(() => UserIdDto)
+  @Type(() => RoomIntendedParticipantDto)
   @ApiProperty()
-  participants: UserIdDto[];
-
-  @Expose()
-  @Type(() => UserIdDto)
-  @ApiProperty()
-  admins: UserIdDto[];
+  intendedParticipants: RoomIntendedParticipantDto[];
 
   @Expose()
   @ApiProperty()
@@ -45,6 +41,14 @@ export class RoomDtoWithoutMessages {
   @Type(() => UserDto)
   @ApiProperty()
   creator: UserDto;
+
+  @Expose()
+  @ApiProperty()
+  onlineUsersCount?: number;
+
+  @Expose()
+  @ApiProperty()
+  onlineUsers?: UserCompressDto[];
 }
 
 export class RoomDtoWithMessages extends RoomDtoWithoutMessages {

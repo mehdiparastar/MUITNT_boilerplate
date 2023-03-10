@@ -5,6 +5,7 @@ import { IoAdapter } from '@nestjs/platform-socket.io';
 import { Server, ServerOptions } from 'socket.io';
 import { Socket } from 'socket.io';
 import { AuthService } from 'src/authentication/auth.service';
+import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 
 export class SocketIOAdapter extends IoAdapter {
@@ -48,15 +49,16 @@ export class SocketIOAdapter extends IoAdapter {
 
 const createTokenMiddleware =
   (jwtService: JwtService, usersService: UsersService, logger: Logger) =>
-    async (socket: Socket, next) => {
+    async (socket: Socket & { user: User }, next) => {
       // for Postman testing support, fallback to token header
       const accessToken = socket.handshake.auth.accessToken || socket.handshake.headers['accessToken'];
 
-      logger.debug(`Validating auth token before connection: ${accessToken}`);
 
       try {
         const payload = jwtService.verify(accessToken);
-        const x = await usersService.findByEmail(payload.email)
+        const [user] = await usersService.findByEmail(payload.email)
+        logger.debug(`Validating auth token before connection: ${user.email}`);
+        socket.user = user
         // socket.userID = payload.sub;
         // socket.pollID = payload.pollID;
         // socket.name = payload.name;

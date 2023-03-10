@@ -63,7 +63,6 @@ const CreateChatRoom = (props: Props) => {
 
     const onSubmit = async (values: ICreateChatRoomFormDto): Promise<any> => {
         try {
-            console.log(values)
             const newRoom = await createChatRoom(values).unwrap()
             enqueueSnackbar(`Room Created Successfully with the id of ${newRoom.id}`, { variant: 'success' })
             formik.resetForm()

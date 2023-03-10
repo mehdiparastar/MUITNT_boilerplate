@@ -3,7 +3,8 @@ import { RoomDtoWithoutMessages } from "./room.model";
 
 export interface RoomIntendedParticipantDto {
     id: number;
-    status: chatIntendedParticipantStatus
+    status: chatIntendedParticipantStatus;
+    isAdmin: boolean;
     participant: IUser;
     room: RoomDtoWithoutMessages;
     createdAt: Date;

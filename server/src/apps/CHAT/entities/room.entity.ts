@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -38,7 +39,7 @@ export class ChatRoom {
   @Column({ type: 'boolean', default: false })
   @ApiProperty()
   closed: boolean
-
+  
   @CreateDateColumn()
   @ApiProperty()
   createdAt?: Date;
@@ -49,14 +50,6 @@ export class ChatRoom {
 
   @ManyToOne(() => User, (user) => user.createdRooms, { nullable: false })
   creator: User;
-
-  @ManyToMany(() => User, (user) => user.participantsRoom, { cascade: true })
-  @JoinTable()
-  participants: User[];
-
-  @ManyToMany(() => User, (user) => user.adminsRoom, { cascade: true })
-  @JoinTable()
-  admins: User[];
 
   @OneToMany(() => ChatMessage, (msg) => msg.room, { cascade: true })
   messages: ChatMessage[];

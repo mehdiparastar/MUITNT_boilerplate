@@ -1,9 +1,10 @@
-import { Check } from '@mui/icons-material';
-import { Avatar, Box, Divider, Drawer, List, ListItem, ListItemAvatar, ListItemButton, ListItemSecondaryAction, ListItemText, Stack, Toolbar, Typography } from '@mui/material';
+import { SearchOutlined } from '@mui/icons-material';
+import { Avatar, Box, Drawer, InputAdornment, List, ListItem, ListItemAvatar, ListItemButton, ListItemSecondaryAction, ListItemText, Paper, Stack, TextField, Toolbar, Typography } from '@mui/material';
 import Badge, { BadgeProps } from '@mui/material/Badge';
 import { styled, useTheme } from '@mui/material/styles';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { formatDistanceToNow } from 'date-fns';
+import { chatIntendedParticipantStatus } from 'enum/chatIntendedParticipantStatus.enum';
 import { useLocation } from 'react-router-dom';
 import { useGetMyAllRoomsQuery } from 'redux/features/CHAT_APP/chatApiSlice';
 
@@ -22,7 +23,29 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 const RoomSide = (props: Props) => {
     const theme = useTheme();
     const location = useLocation()
-    const { data: allRooms = [], isLoading } = useGetMyAllRoomsQuery()
+    const { data = [], isLoading } = useGetMyAllRoomsQuery()
+
+    const allRooms =
+        data.map(
+            room => ({
+                ...room,
+                members: [
+                    ...room.intendedParticipants.filter(
+                        participant =>
+                            participant.status === chatIntendedParticipantStatus.accepted
+                    ),
+                    room.creator
+                ].map(item => item.id).sort(),
+                deliveredUsers: room.status_delivered_users?.map(item => item.id).sort()
+            })
+        )
+            .map(room => ({
+                ...room,
+                members: room.members,
+                deliveredUsers: room.deliveredUsers,
+                isDelivered: JSON.stringify(room.members) === JSON.stringify(room.deliveredUsers)
+            }))
+
     return (
         <Drawer
             variant="permanent"
@@ -30,15 +53,32 @@ const RoomSide = (props: Props) => {
                 zIndex: 0,
                 width: props.drawerWidth,
                 flexShrink: 0,
-                [`& .MuiDrawer-paper`]: { width: props.drawerWidth, boxSizing: 'border-box' },
+                [
+                    `& .MuiDrawer-paper`]: {
+                    width: props.drawerWidth,
+                    boxSizing: 'border-box'
+                },
             }}
         >
             <Box sx={{ overflow: 'auto' }}>
-                <Toolbar >
+                <Toolbar sx={{ background: theme.palette.alternate.main }}>
                     <Typography fontFamily={'BeautyDemo'} width={'100%'} variant='body1' textAlign={'center'} fontWeight={'bold'}>MUITNT</Typography>
-                    <Divider />
                 </Toolbar>
-                <Divider />
+                <Toolbar sx={{ position: 'absolute', zIndex: 1, width: '100%', mt: 1 }}>
+                    <Paper elevation={5} sx={{ width: 1, height: 1, p: 0 }}>
+                        <TextField
+                            placeholder='Search'
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchOutlined color='info' />
+                                    </InputAdornment>
+                                )
+                            }}
+                        />
+                    </Paper>
+                </Toolbar>
+                <Toolbar />
                 <List>
                     {allRooms.map((room, index) => (
                         <ListItem
@@ -64,7 +104,7 @@ const RoomSide = (props: Props) => {
                                         />
                                     </Avatar>
                                 </ListItemAvatar>
-                                <ListItemText primary={room.title} secondary={`${room.participants.length} member`} />
+                                <ListItemText primary={room.title} secondary={`${room.intendedParticipants.length} member | ${room.onlineUsersCount || 0} online`} />
                                 <ListItemSecondaryAction sx={{ transform: 'translateY(-90%)' }}>
                                     <StyledBadge
                                         badgeContent={5}
@@ -80,6 +120,7 @@ const RoomSide = (props: Props) => {
                         </ListItem>
                     ))}
                 </List>
+                <Toolbar />
             </Box>
         </Drawer>
     )

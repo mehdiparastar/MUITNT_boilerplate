@@ -11,6 +11,7 @@ import {
   Entity,
   Index,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -97,12 +98,6 @@ export class User {
   @OneToMany(() => ChatRoom, (room) => room.creator, { cascade: true })
   createdRooms: ChatRoom[];
 
-  @ManyToMany(() => ChatRoom, (room) => room.participants, { nullable: true })
-  participantsRoom: ChatRoom[];
-
-  @ManyToMany(() => ChatRoom, (room) => room.admins, { nullable: true })
-  adminsRoom: ChatRoom[];
-
   @OneToMany(() => ChatMessage, (msg) => msg.writer, { cascade: true })
   chatMessages: ChatMessage[];
 
@@ -111,4 +106,11 @@ export class User {
 
   @OneToMany(() => ChatIntendedParticipants, (intendedParticipant) => intendedParticipant.participant, { cascade: true })
   participantOfIntendedParticipants: ChatIntendedParticipants[];
+
+  @ManyToMany(() => ChatMessage, (msg) => msg.status_seen_users, { nullable: true })
+  seenMessages: ChatMessage;
+
+  @ManyToMany(() => ChatMessage, (msg) => msg.status_delivered_users, { nullable: true })
+  deliveredMessages: ChatMessage;
+
 }

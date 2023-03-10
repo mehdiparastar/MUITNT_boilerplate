@@ -36,3 +36,17 @@ export class UserIdDto {
   @ApiProperty()
   id: number;
 }
+
+export class UserCompressDto {
+  @Expose()
+  @ApiProperty()
+  id: number;
+
+  @Expose()
+  @ApiProperty()
+  email: string;
+
+  @Expose()
+  @ApiProperty()
+  name: string;
+}

@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 import { chatMessageStatus } from 'src/enum/chatMessageStatus.enum';
 import { User } from 'src/users/entities/user.entity';
 import {
     Column,
     CreateDateColumn,
-    Entity, ManyToOne, PrimaryGeneratedColumn,
+    Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
 import { ChatRoom } from './room.entity';
@@ -19,9 +20,15 @@ export class ChatMessage {
     @ApiProperty()
     message: string;
 
-    @Column({ type: 'enum', enum: chatMessageStatus, nullable: false, default: chatMessageStatus.sent })
-    @ApiProperty({ default: chatMessageStatus.sent, enum: chatMessageStatus })
-    status: chatMessageStatus;
+    @IsOptional()
+    @ManyToMany(() => User, (user) => user.deliveredMessages, { cascade: true })
+    @JoinTable()
+    status_delivered_users?: User[];
+
+    @IsOptional()
+    @ManyToMany(() => User, (user) => user.seenMessages, { cascade: true })
+    @JoinTable()
+    status_seen_users?: User[];
 
     @CreateDateColumn()
     @ApiProperty()
@@ -36,6 +43,4 @@ export class ChatMessage {
 
     @ManyToOne(() => User, (user) => user.chatMessages, { nullable: false })
     writer: User;
-
-
 }

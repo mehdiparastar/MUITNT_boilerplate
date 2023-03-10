@@ -61,4 +61,10 @@ declare global {
     photo?: string;
     roles?: string[];
   }
+
+  interface ICompressedUser {
+    id?: number;
+    email?: string;
+    name?: string;
+  }
 }

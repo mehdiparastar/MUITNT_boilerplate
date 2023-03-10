@@ -1,12 +1,16 @@
-import { Logger, UseFilters, UsePipes, ValidationPipe } from "@nestjs/common";
+import { forwardRef, Inject, Logger, UseFilters, UsePipes, ValidationPipe } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from "@nestjs/websockets";
+import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from "@nestjs/websockets";
 import { Request } from "express";
 import { from, map, Observable } from "rxjs";
-import { Namespace } from 'socket.io'
+import { Namespace, Socket } from 'socket.io'
 import { AuthService } from "src/authentication/auth.service";
 import { AccessTokenStrategy } from "src/authentication/strategies/accessToken.strategy";
 import { ChatEvent } from "src/enum/chatEvent.enum";
+import { Serialize } from "src/interceptors/serialize.interceptor";
+import { UserDto } from "src/users/dto/user/user.dto";
+import { User } from "src/users/entities/user.entity";
+import { getRepository } from "typeorm";
 import { ChatService } from "./chat.service";
 
 @UsePipes(new ValidationPipe())
@@ -16,54 +20,76 @@ import { ChatService } from "./chat.service";
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     private readonly logger = new Logger(ChatGateway.name);
-    constructor(
-        private readonly chatService: ChatService,
-        private xxx: AccessTokenStrategy
-    ) { }
 
     @WebSocketServer() io: Namespace
 
-    afterInit(io: Namespace): void {
+    constructor(
+        @Inject(forwardRef(() => ChatService))
+        private readonly chatService: ChatService,
+    ) { }
+
+    async afterInit(io: Namespace) {
         this.logger.log(`**Websocket Gateway initialized with the name => ${io.name}.**`);
     }
 
-    async handleConnection(client: any, ...args: any[]) {
+    async handleConnection(client: Socket & { user: User }, ...args: any[]) {
         const sockets = this.io.sockets;
         this.logger.debug(
-            `Socket connected with userID: ${client.userID}, pollID: ${client.pollID}, and name: "${client.name}"`,
+            `Socket connected with userID: ${client.user.id}, pollID: ${'client.pollID'}, and name: "${client.user.name}"`,
         );
 
 
         this.logger.log(`WS Client with id: ${client.id} connected!`);
         this.logger.debug(`Number of connected sockets: ${sockets.size}`);
 
-        const roomName = client.pollID;
-        await client.join(roomName);
+        const allMyRooms = await this.chatService.findMyAllRooms(client.user)
+
+        const roomName = client.user.id.toString();
+        const roomsId = allMyRooms.map(room => room.id.toString())
+
+        await client.join(roomsId);
 
         const connectedClients = this.io.adapter.rooms?.get(roomName)?.size ?? 0;
 
         this.logger.debug(
-            `userID: ${client.userID} joined room with name: ${roomName}`,
-        );
-        this.logger.debug(
-            `Total clients connected to room '${roomName}': ${connectedClients}`,
+            `userID: ${client.user.id} joined to ${allMyRooms.length} rooms.`,
         );
 
-        // const updatedPoll = await this.chatService.addParticipant({
-        //     pollID: client.pollID,
-        //     userID: client.userID,
-        //     name: client.name,
-        // });
-
+        this.io.to(roomsId).emit(
+            'rooms_updated',
+            allMyRooms
+                .map(
+                    room => {
+                        return (
+                            {
+                                ...room,
+                                onlineUsers:
+                                    room.onlineUsers.map(usr => usr.id).includes(client.user.id) ?
+                                        room.onlineUsers :
+                                        [...room.onlineUsers, client.user],
+                                onlineUsersCount: (
+                                    room.onlineUsers.map(usr => usr.id).includes(client.user.id) ?
+                                        room.onlineUsers :
+                                        [...room.onlineUsers, client.user]
+                                ).length
+                                // this.io.adapter.rooms?.get(room.id.toString())?.size ?? 0
+                            }
+                        )
+                    })
+        )
         // this.io.to(roomName).emit('poll_updated', updatedPoll);
     }
 
     handleDisconnect(client: any) {
-        console.log('client')
+        console.log('client disconnect')
     }
 
-    @SubscribeMessage(ChatEvent.ReceiveMessage)
-    onEvent(@MessageBody() data: unknown) {
+    @SubscribeMessage(ChatEvent.DeliverMessage)
+    @Serialize(UserDto)
+    async onEvent(
+        @MessageBody() data: unknown,
+        @ConnectedSocket() client: Socket & { user: User },
+    ) {
         const event = 'events'
         const response = [1, 2, 3]
         this.io.emit(ChatEvent.SendMessage, {

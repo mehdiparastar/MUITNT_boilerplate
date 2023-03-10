@@ -46,7 +46,7 @@ export const UI01BGSVG: React.FC<SvgIconProps> = (props) => {
           fill: ${theme.palette.success.light};
         }
       `}
-      {...props}
+      {...props}      
     />
   );
 };

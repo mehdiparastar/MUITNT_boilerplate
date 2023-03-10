@@ -1,13 +1,11 @@
 import { Box, Card, CardMedia, Container, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useEffect } from 'react';
-import { useGetMessagesQuery } from 'redux/features/CHAT_APP/chatApiSlice';
 
 type Props = {}
 
 const Chat = (props: Props) => {
     const theme = useTheme();
-    const xxx = useGetMessagesQuery()
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -26,7 +24,6 @@ const Chat = (props: Props) => {
                     alignItems: 'center'
                 }}
             >
-                {xxx.data?.msg}
                 <Typography mb={10} color={theme.palette.text.primary} textAlign={'center'} variant='h4'>Welcome to MUITNT Chat App.</Typography>
                 <Card sx={{ maxWidth: 1000, width: { xs: 200, sm: 300, md: 500, lg: 600, xl: 800 } }}>
                     <CardMedia

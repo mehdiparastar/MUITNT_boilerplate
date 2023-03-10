@@ -15,6 +15,10 @@ export class RoomIntendedParticipantDto {
   status: chatIntendedParticipantStatus
 
   @Expose()
+  @ApiProperty()
+  isAdmin: boolean
+
+  @Expose()
   @Type(() => UserIdDto)
   @ApiProperty()
   participant: UserIdDto;

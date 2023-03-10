@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import Toolbar from '@mui/material/Toolbar';
 import Grid from '@mui/material/Unstable_Grid2';
 import { HidableAppBar } from 'components/HidableAppBar/HidableAppBar';
@@ -21,54 +21,49 @@ export const ChatLayout: React.FC<layoutProps> = ({ children }) => {
     setOpenSidebar(false);
   };
 
-  return (
 
-    <>
-      <Grid
-        container
-        justifyContent="space-between"
-        alignItems="center"
-        minHeight={'100vh'}
-        direction="column"
-      >
-        <Grid xs={12}>
-          <HidableAppBar>
-            <TopbarContent onSidebarOpen={handleSidebarOpen} />
-          </HidableAppBar>
-          <Sidebar
-            onClose={handleSidebarClose}
-            open={openSidebar}
-            variant="temporary"
-          >
-            <SidebarContent onClose={handleSidebarClose} />
-          </Sidebar>
-          <Toolbar />
-          <Box
-            display={'flex'}
+  return (
+    <Grid
+      container
+      direction="column"
+    >
+      <Grid minHeight={'100vh'} xs={12} >
+        <HidableAppBar>
+          <TopbarContent onSidebarOpen={handleSidebarOpen} />
+        </HidableAppBar>
+        <Sidebar
+          onClose={handleSidebarClose}
+          open={openSidebar}
+          variant="temporary"
+        >
+          <SidebarContent onClose={handleSidebarClose} />
+        </Sidebar>
+        <Toolbar />
+        <Box
+          display={'flex'}
+          justifyContent="center"
+          alignItems="center"
+          flexDirection={'row'}
+          width={1}
+          height={1}
+        >
+          <RoomSide drawerWidth={300} />
+          <Grid
+            container
+            component="main"
             justifyContent="center"
             alignItems="center"
-            flexDirection={'row'}
-            width={1}
-            height={1}
+            sx={{
+              width: '100%',
+              p: 1,
+            }}
           >
-            <RoomSide drawerWidth={300} />
-            <Grid
-              container
-              component="main"
-              justifyContent="center"
-              alignItems="center"
-              sx={{
-                width: '100%',
-                p: 1,
-              }}
-            >
-              <Outlet />
-              <Toolbar />
-            </Grid>
-          </Box>
-        </Grid>
+            <Outlet />
+            <Toolbar />
+          </Grid>
+        </Box>
       </Grid>
       <BottomNav />
-    </>
+    </Grid>
   );
 };
