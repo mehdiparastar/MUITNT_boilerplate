@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
-import { chatMessageStatus } from 'src/enum/chatMessageStatus.enum';
 import { User } from 'src/users/entities/user.entity';
 import {
     Column,
     CreateDateColumn,
-    Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn,
+    Entity,
+    ManyToOne, OneToMany, PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
+import { ChatDeliveredMessages } from './deliveredMessages.entity';
 import { ChatRoom } from './room.entity';
+import { ChatSeenMessages } from './seenMessages.entity';
 
 @Entity()
 export class ChatMessage {
@@ -20,15 +21,21 @@ export class ChatMessage {
     @ApiProperty()
     message: string;
 
-    @IsOptional()
-    @ManyToMany(() => User, (user) => user.deliveredMessages, { cascade: true })
-    @JoinTable()
-    status_delivered_users?: User[];
+    @OneToMany(() => ChatDeliveredMessages, (delieveredMessage) => delieveredMessage.message, { cascade: true })
+    delivered: ChatDeliveredMessages[];
 
-    @IsOptional()
-    @ManyToMany(() => User, (user) => user.seenMessages, { cascade: true })
-    @JoinTable()
-    status_seen_users?: User[];
+    @OneToMany(() => ChatSeenMessages, (seenMessage) => seenMessage.message, { cascade: true })
+    seen: ChatSeenMessages[];
+
+    // @IsOptional()
+    // @ManyToMany(() => User, (user) => user.deliveredMessages, { cascade: true })
+    // @JoinTable()
+    // status_delivered_users?: User[];
+
+    // @IsOptional()
+    // @ManyToMany(() => User, (user) => user.seenMessages, { cascade: true })
+    // @JoinTable()
+    // status_seen_users?: User[];
 
     @CreateDateColumn()
     @ApiProperty()

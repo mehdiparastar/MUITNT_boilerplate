@@ -1,3 +1,4 @@
+import { chatSocket } from 'redux/features/CHAT_APP/chatApiSlice';
 import { apiSlice } from '../../../../api/rtkApi/apiSlice'
 import { setAuthTokens } from './authSlice';
 
@@ -40,7 +41,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 try {
                     await queryFulfilled;
                     dispatch(setAuthTokens({ accessToken: null, refreshToken: null }));
-                    // dispatch(apiSlice.util.resetApiState())
+                    chatSocket.disconnect()
                 } catch (error) {
                     dispatch(setAuthTokens({ accessToken: null, refreshToken: null }));
                 }

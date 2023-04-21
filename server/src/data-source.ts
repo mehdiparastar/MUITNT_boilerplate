@@ -1,7 +1,9 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { ChatDeliveredMessages } from './apps/CHAT/entities/deliveredMessages.entity';
 import { ChatIntendedParticipants } from './apps/CHAT/entities/intendedParticipants.entity';
 import { ChatMessage } from './apps/CHAT/entities/messages.entity';
 import { ChatRoom } from './apps/CHAT/entities/room.entity';
+import { ChatSeenMessages } from './apps/CHAT/entities/seenMessages.entity';
 import { Post } from './apps/CRUD/components/posts/entities/post.entity';
 import { Reaction } from './apps/CRUD/components/posts/entities/reaction.entity';
 import { FileBuffer } from './apps/FILE/entities/fileBuffer.entity';
@@ -34,7 +36,9 @@ const dbConfig: IDBConfig = {
       Tag,
       ChatRoom,
       ChatMessage,
-      ChatIntendedParticipants
+      ChatIntendedParticipants,
+      ChatDeliveredMessages,
+      ChatSeenMessages
     ],
     synchronize: true,
     // synchronize: false,
@@ -58,7 +62,9 @@ const dbConfig: IDBConfig = {
       Tag,
       ChatRoom,
       ChatMessage,
-      ChatIntendedParticipants
+      ChatIntendedParticipants,
+      ChatDeliveredMessages,
+      ChatSeenMessages
     ],
     synchronize: true,
     // synchronize: false,

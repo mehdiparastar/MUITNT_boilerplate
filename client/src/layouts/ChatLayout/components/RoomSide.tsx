@@ -6,7 +6,7 @@ import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { formatDistanceToNow } from 'date-fns';
 import { chatIntendedParticipantStatus } from 'enum/chatIntendedParticipantStatus.enum';
 import { useLocation } from 'react-router-dom';
-import { useGetMyAllRoomsQuery } from 'redux/features/CHAT_APP/chatApiSlice';
+import { useChatSocketQuery, useGetMyAllRoomsQuery } from 'redux/features/CHAT_APP/chatApiSlice';
 
 type Props = {
     drawerWidth?: number
@@ -24,6 +24,7 @@ const RoomSide = (props: Props) => {
     const theme = useTheme();
     const location = useLocation()
     const { data = [], isLoading } = useGetMyAllRoomsQuery()
+    const { data: socketData = { onlineUsers: {} } } = useChatSocketQuery()
 
     const allRooms =
         data.map(
@@ -104,7 +105,7 @@ const RoomSide = (props: Props) => {
                                         />
                                     </Avatar>
                                 </ListItemAvatar>
-                                <ListItemText primary={room.title} secondary={`${room.intendedParticipants.length} member | ${room.onlineUsersCount || 0} online`} />
+                                <ListItemText primary={room.title} secondary={`${room.intendedParticipants.length} member | ${socketData.onlineUsers[room.id] ? socketData.onlineUsers[room.id].length : 0 || 0} online`} />
                                 <ListItemSecondaryAction sx={{ transform: 'translateY(-90%)' }}>
                                     <StyledBadge
                                         badgeContent={5}

@@ -1,12 +1,16 @@
-import { INestApplicationContext, Logger } from '@nestjs/common';
+import { BadRequestException, INestApplicationContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import { WsException } from '@nestjs/websockets';
 import { Server, ServerOptions } from 'socket.io';
 import { Socket } from 'socket.io';
 import { AuthService } from 'src/authentication/auth.service';
+import { ChatEvent } from 'src/enum/chatEvent.enum';
+import { WsBadRequestException } from 'src/exceptions/ws-exceptions';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+import { ChatService } from './chat.service';
 
 export class SocketIOAdapter extends IoAdapter {
   private readonly logger = new Logger(SocketIOAdapter.name);
@@ -39,31 +43,40 @@ export class SocketIOAdapter extends IoAdapter {
 
     const jwtService = this.app.get(JwtService)
     const usersService = this.app.get(UsersService)
+    const chatService = this.app.get(ChatService)
+
     const server: Server = super.createIOServer(port, optionsWithCORS);
 
-    server.of('chat').use(createTokenMiddleware(jwtService, usersService, this.logger));
+    const init = server.of('chat')
+      .use(createTokenMiddleware(jwtService, usersService, chatService, this.logger))
 
     return server;
   }
 }
 
 const createTokenMiddleware =
-  (jwtService: JwtService, usersService: UsersService, logger: Logger) =>
-    async (socket: Socket & { user: User }, next) => {
+  (jwtService: JwtService, usersService: UsersService, chatService: ChatService, logger: Logger) =>
+    async (socket: SocketWithAuth, next) => {
       // for Postman testing support, fallback to token header
-      const accessToken = socket.handshake.auth.accessToken || socket.handshake.headers['accessToken'];
-
+      const accessToken = socket.handshake.query.accessToken as string
 
       try {
+
         const payload = jwtService.verify(accessToken);
         const [user] = await usersService.findByEmail(payload.email)
+
+        const allMyRooms = await chatService.findMyAllRooms(user)
+
+        const roomsId = allMyRooms.map(room => room.id.toString())
+
         logger.debug(`Validating auth token before connection: ${user.email}`);
+
         socket.user = user
-        // socket.userID = payload.sub;
-        // socket.pollID = payload.pollID;
-        // socket.name = payload.name;
+        socket.roomsId = roomsId
+
         next();
       } catch (ex) {
-        next(new Error('FORBIDDEN'));
+        next(ex)
+        // next(new Error('FORBIDDEN'));      
       }
     };

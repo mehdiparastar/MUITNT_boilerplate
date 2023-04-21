@@ -28,7 +28,7 @@ const baseQuery_refresh = fetchBaseQuery({
 
 })
 
-const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
+export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
     async (args, api, extraOptions) => {
         if (api.endpoint === 'authLocalLogin' || api.endpoint === 'authGoogleLogin') {
             const login = await baseQuery_login(args, api, extraOptions)

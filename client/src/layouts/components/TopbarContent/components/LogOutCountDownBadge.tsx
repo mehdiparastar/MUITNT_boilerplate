@@ -2,6 +2,7 @@ import ListAllIcon from '@mui/icons-material/ListAlt';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import { Avatar, Badge, Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, Typography, useTheme } from '@mui/material';
+import { apiSlice } from 'api/rtkApi/apiSlice';
 import { MUINavLink } from 'components/MUINavLink/MUINavLink';
 import { UserRoles } from 'enum/userRoles.enum';
 import { strToBool } from 'helperFunctions/strToBool';
@@ -11,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuthLogoutMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
 import { selectCurrentRefreshToken } from 'redux/features/WHOLE_APP/auth/authSlice';
 import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
-import { useAppSelector } from 'redux/hooks';
+import { useAppDispatch, useAppSelector } from 'redux/hooks';
 
 interface MyBadgeProps {
     children?: React.ReactNode;
@@ -62,6 +63,7 @@ function Children() {
     const [authLogout] = useAuthLogoutMutation()
     const theme = useTheme();
     const { enqueueSnackbar } = useSnackbar()
+    const dispatch = useAppDispatch()
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -74,6 +76,7 @@ function Children() {
     const handleLogOut = async () => {
         try {
             await authLogout().unwrap()
+            dispatch(apiSlice.util.resetApiState())
         } catch (ex) {
             const err = ex as { data: { msg: string } }
             enqueueSnackbar(`Loggin Out Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });

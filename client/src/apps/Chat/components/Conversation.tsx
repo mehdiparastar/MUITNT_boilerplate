@@ -9,11 +9,12 @@ import * as yup from 'yup';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack';
-import { useAddMessageMutation, useGetMessagesQuery } from 'redux/features/CHAT_APP/chatApiSlice';
+import { chatSocket, useAddMessageMutation, useGetMessagesQuery } from 'redux/features/CHAT_APP/chatApiSlice';
 import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
 import { formatRelative } from 'date-fns';
 import { es } from 'date-fns/locale';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
+import { ChatEvent } from 'enum/chatEvent.enum';
 
 type Props = {}
 
@@ -43,6 +44,12 @@ const Conversation = (props: Props) => {
     };
 
     useEffect(() => {
+        formik.values.roomId = Number(roomId)
+        localStorage.setItem('active-room-id', roomId as string)
+        chatSocket.emit(ChatEvent.ChangeActiveRoom, { currentActiveRoomId: Number(roomId) })
+    }, [roomId])
+
+    useEffect(() => {
         if (scrollableNodeRef.current) {
             scrollableNodeRef.current.scrollTop = scrollableNodeRef.current.scrollHeight
         }
@@ -51,7 +58,7 @@ const Conversation = (props: Props) => {
     const onSubmit = async (values: IChatRoomAddMessageFormDto) => {
         try {
             const msg = await addMessage(values).unwrap()
-            enqueueSnackbar(`Message Added Successfully with the id of ${msg.id}`, { variant: 'success' })
+            // enqueueSnackbar(`Message Added Successfully with the id of ${msg.id}`, { variant: 'success' })
             formik.resetForm()
         } catch (ex) {
             const err = ex as { data: { msg: string } }
@@ -141,11 +148,12 @@ const Conversation = (props: Props) => {
                                     </Paper>
                                     <Box textAlign={!isWriter ? 'left' : 'right'} sx={{ display: 'flex', flexDirection: isWriter ? 'row' : 'row-reverse', alignItems: 'flex-end' }}>
                                         {
-                                            (msg.isDelivered && !msg.isSeen) ?
-                                                <DoneAllIcon sx={{ mx: 1 }} /> :
-                                                (msg.isDelivered && msg.isSeen) ?
-                                                    <DoneAllIcon sx={{ mx: 1 }} color='primary' /> :
-                                                    <Check sx={{ mx: 1 }} />
+                                            isWriter && (
+                                                (msg.isDelivered && !msg.isSeen) ?
+                                                    <DoneAllIcon sx={{ mx: 1 }} /> :
+                                                    (msg.isDelivered && msg.isSeen) ?
+                                                        <DoneAllIcon sx={{ mx: 1 }} color='primary' /> :
+                                                        <Check sx={{ mx: 1 }} />)
                                         }
                                         <Typography variant={'caption'}>{formatRelative(msg.updatedAt, new Date())}</Typography>
                                     </Box>

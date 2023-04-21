@@ -1,4 +1,6 @@
 import { User as UserEntity } from '../users/entities/user.entity';
+import { Request } from 'express';
+import { Socket } from 'socket.io';
 
 declare global {
   interface IconfigService {
@@ -40,6 +42,14 @@ declare global {
     accessToken: string;
     refreshToken: string;
   }
+
+  type AuthPayload = {
+    user: UserEntity;
+    roomsId: string[];
+  };
+
+  type SocketWithAuth = Socket & AuthPayload;
+  type RequestWithAuth = Request & AuthPayload;
 }
 
 export { };

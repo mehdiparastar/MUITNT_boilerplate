@@ -34,6 +34,6 @@ import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
     RefreshTokenStrategy,
     GoogleOauthStrategy,
   ],
-  exports: [AccessTokenStrategy]
+  exports: [AccessTokenStrategy, JwtModule]
 })
 export class AuthModule { }

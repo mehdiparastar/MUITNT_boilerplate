@@ -1,7 +1,22 @@
 export enum ChatEvent {
+    NewMember = 'new_member',
+    NewMemberBroadCast = 'new_member_broadcast',
+    NewMessage = 'new_message',
+    NewMessageBroadCast = 'new_message_broadcast',
+    MessageSeen = 'message_seen',
+    MessageSeenBroadCast = 'message_seen_broadcast',
+    roomMessagesSeen = 'room_messages_seen',
+    MultipleDeliveringBroadCast = 'multiple-delivering-broadCast',
+    MultipleSeenBroadCast = 'multiple-seen-broadCast',
+    ChangeActiveRoom = 'change-active-room',
+    NewRoomCreated = 'new-room-created',
+    NewRoomCreatedBroadcast = 'new-room-created-broadcast',
+    NewRoomIntendedParticipantBroadcast = 'new-room-intended-participant-broadcast',
+    JoinRequestConfirmed = 'join-request-confirmed',
+    InvalidAccessToken = 'invalid_access_token',
     SendMessage = 'send_message',
     RequestAllMessages = 'request_all_messages',
     SendAllMessages = 'send_all_messages',
     ReceiveMessage = 'receive_message',
-    DeliverMessage = 'deliver_message'
+    DeliverMessage = 'deliver_message',
 }

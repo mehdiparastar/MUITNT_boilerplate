@@ -10,12 +10,9 @@ import {
   CreateDateColumn,
   Entity,
   Index,
-  ManyToMany,
-  ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { FileInfo } from '../../apps/FILE/entities/fileInfo.entity';
 import { authTypeEnum } from '../../enum/authType.enum';
@@ -106,11 +103,5 @@ export class User {
 
   @OneToMany(() => ChatIntendedParticipants, (intendedParticipant) => intendedParticipant.participant, { cascade: true })
   participantOfIntendedParticipants: ChatIntendedParticipants[];
-
-  @ManyToMany(() => ChatMessage, (msg) => msg.status_seen_users, { nullable: true })
-  seenMessages: ChatMessage;
-
-  @ManyToMany(() => ChatMessage, (msg) => msg.status_delivered_users, { nullable: true })
-  deliveredMessages: ChatMessage;
 
 }

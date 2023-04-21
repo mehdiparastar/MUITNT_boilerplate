@@ -5,15 +5,12 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    Index,
-    JoinTable,
-    ManyToMany,
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
-import { ChatMessage } from './messages.entity';
+import { ChatDeliveredMessages } from './deliveredMessages.entity';
 import { ChatRoom } from './room.entity';
 
 @Entity()
@@ -46,4 +43,7 @@ export class ChatIntendedParticipants {
 
     @ManyToOne(() => User, (user) => user.participantOfIntendedParticipants, { nullable: false })
     participant: User;
+
+    @OneToMany(() => ChatDeliveredMessages, (delieveredMessage) => delieveredMessage.intendedParticipant, { cascade: true })
+    delivered: ChatDeliveredMessages[];
 }

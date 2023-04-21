@@ -18,27 +18,28 @@ const RequireAuth: React.FC<{ allowedRoles: string[] }> = ({
 
   if (isLoading) {
     content = <PageLoader />
-  } else if (isSuccess) {
-    if (accessToken) {
-      let inDBRoles: string[] = []
-      if (currentUser.roles) {
-        inDBRoles = getRolesExpand(currentUser.roles)
-      }
-      if (!!(inDBRoles?.find((role) => allowedRoles?.includes(role)))) {
-        content = <Outlet />
-      } else {
-        if (currentUser.email) {
-          content = <Navigate to="/unauthorized" state={{ from: location }} replace />
-        } else {
-          content = <Navigate to="/auth" state={{ from: location }} replace />
+  } else
+    if (isSuccess) {
+      if (accessToken) {
+        let inDBRoles: string[] = []
+        if (currentUser.roles) {
+          inDBRoles = getRolesExpand(currentUser.roles)
         }
+        if (!!(inDBRoles?.find((role) => allowedRoles?.includes(role)))) {
+          content = <Outlet />
+        } else {
+          if (currentUser.email) {
+            content = <Navigate to="/unauthorized" state={{ from: location }} replace />
+          } else {
+            content = <Navigate to="/auth" state={{ from: location }} replace />
+          }
+        }
+      } else {
+        content = <Navigate to="/auth" state={{ from: location }} replace />
       }
-    } else {
+    } else if (isError) {
       content = <Navigate to="/auth" state={{ from: location }} replace />
     }
-  } else if (isError) {
-    content = <Navigate to="/auth" state={{ from: location }} replace />
-  }
   return content
 };
 

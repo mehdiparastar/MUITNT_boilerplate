@@ -59,35 +59,35 @@ const ChatRoomRequests = (props: Props) => {
                     />
                 </Box>
             </Container>
-            :            
-                    <Stack component={TransitionGroup} width={1} direction={'column'} spacing={1}>
-                        {allReqs.map((req, index) =>
-                            <Collapse key={req.id}>
-                                <Alert
-                                    key={index}
-                                    sx={{ width: '100%' }}
-                                    severity="info"
-                                    action={
-                                        <Stack spacing={1} direction='row'>
-                                            <Tooltip title="confirm">
-                                                <IconButton edge="end" aria-label="confirm" onClick={() => handleConfirmRequst(req)}>
-                                                    <Check color='success' />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="reject">
-                                                <IconButton edge="end" aria-label="reject" onClick={() => handleRejectRequst(req)}>
-                                                    <Close color='error' />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </Stack>
-                                    }
-                                >
-                                    <AlertTitle>{req.room.title}</AlertTitle>
-                                    by {req.creator.name} | {formatDistanceToNow(req.createdAt)} ago
-                                </Alert>
-                            </Collapse >
-                        )}
-                    </Stack >                
+            :
+            <Stack component={TransitionGroup} width={1} direction={'column'} spacing={1}>
+                {allReqs.map((req, index) => {
+                    return <Collapse key={req.id}>
+                        <Alert
+                            key={index}
+                            sx={{ width: '100%' }}
+                            severity="info"
+                            action={
+                                <Stack spacing={1} direction='row'>
+                                    <Tooltip title="confirm">
+                                        <IconButton edge="end" aria-label="confirm" onClick={() => handleConfirmRequst(req)}>
+                                            <Check color='success' />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="reject">
+                                        <IconButton edge="end" aria-label="reject" onClick={() => handleRejectRequst(req)}>
+                                            <Close color='error' />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Stack>
+                            }
+                        >
+                            <AlertTitle>{req.room.title}</AlertTitle>
+                            by {req.creator.name} | {formatDistanceToNow(req.createdAt)} ago
+                        </Alert>
+                    </Collapse >
+                })}
+            </Stack >
     )
 }
 

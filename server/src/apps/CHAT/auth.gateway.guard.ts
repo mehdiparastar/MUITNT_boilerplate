@@ -1,52 +1,46 @@
-// import {
-//     CanActivate,
-//     ExecutionContext,
-//     Injectable,
-//     Logger,
-// } from '@nestjs/common';
-// import { JwtService } from '@nestjs/jwt';
-// import { WsUnauthorizedException } from 'src/exceptions/ws-exceptions';
-// import { ChatService } from './chat.service';
-// import { AuthPayload, SocketWithAuth } from './types';
+import {
+    CanActivate,
+    ExecutionContext,
+    Inject,
+    Injectable,
+    Logger,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ChatEvent } from 'src/enum/chatEvent.enum';
+import { WsUnauthorizedException } from 'src/exceptions/ws-exceptions';
+import { ChatService } from './chat.service';
 
-// @Injectable()
-// export class AuthGatewayGuard implements CanActivate {
-//     private readonly logger = new Logger(AuthGatewayGuard.name);
-//     constructor(
-//         private readonly chatsService: ChatService,
-//         private readonly jwtService: JwtService,
-//     ) { }
-//     async canActivate(context: ExecutionContext): Promise<boolean> {
-//         // regular `Socket` from socket.io is probably sufficient
-//         const socket: SocketWithAuth = context.switchToWs().getClient();
+@Injectable()
+export class AuthGatewayGuard implements CanActivate {
+    private readonly logger = new Logger(AuthGatewayGuard.name);
+    constructor(
+        private readonly jwtService: JwtService
+        // private readonly chatsService: ChatService,
+    ) { }
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        // regular `Socket` from socket.io is probably sufficient
+        const socket: SocketWithAuth = context.switchToWs().getClient();
 
-//         // for testing support, fallback to token header
-//         const token = socket.handshake.auth.accessToken || socket.handshake.headers['accessToken'];
+        // for testing support, fallback to token header
 
-//         if (!token) {
-//             this.logger.error('No authorization token provided');
+        if (!socket.user) {
+            this.logger.error('No authorization token provided');
 
-//             throw new WsUnauthorizedException('No token provided');
-//         }
+            throw new WsUnauthorizedException('No token provided');
+        }
 
-//         try {
-//             const payload = this.jwtService.verify<AuthPayload & { sub: string }>(
-//                 token,
-//             );
+        try {
+            
 
-//             this.logger.debug(`Validating admin using token payload`, payload);
+            this.logger.debug(`Validating admin using token payload`, socket.user.email);
 
-//             const { sub, pollID } = payload;
+            // if (sub !== poll.adminID) {
+            //     throw new WsUnauthorizedException('Admin privileges required');
+            // }
 
-//             const poll = await this.chatsService.getPoll(pollID);
-
-//             if (sub !== poll.adminID) {
-//                 throw new WsUnauthorizedException('Admin privileges required');
-//             }
-
-//             return true;
-//         } catch {
-//             throw new WsUnauthorizedException('Admin privileges required');
-//         }
-//     }
-// }
+            return true;
+        } catch (ex) {
+            throw new WsUnauthorizedException(ex.message || 'Admin privileges required');
+        }
+    }
+}

@@ -6,7 +6,7 @@ import { RoutesList } from './routes/routes';
 
 
 const App: React.FC = () => {
-  
+
   return (
     <Paper elevation={0} sx={{ minHeight: "100vh" }}>
       <Router>

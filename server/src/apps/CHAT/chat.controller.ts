@@ -18,6 +18,15 @@ import { RoomAuthGuard } from './guards/addMsg.guard';
 export class ChatController {
   constructor(private chatService: ChatService) { }
 
+  @Get('socket_initializing')
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(UserRoles.chatAppUserLL)
+  async socketInitilizing() {
+    return {
+      onlineUsers: []
+    }
+  }
+
   @Post('create-room')
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Roles(UserRoles.chatAppUserLL)

@@ -1,10 +1,14 @@
+import { RoomDtoWithoutMessages } from "./room.model";
+
 export interface MessageDto {
     id: number;
     message: string;
     createdAt: Date;
     updatedAt: Date;
     writer: IUser;
-    status_delivered_users: ICompressedUser[]
+    room: RoomDtoWithoutMessages;
+    delivered: ICompressedUser[];
+    seen: ICompressedUser[];
     isSeen?: boolean
     isDelivered?: boolean
 }

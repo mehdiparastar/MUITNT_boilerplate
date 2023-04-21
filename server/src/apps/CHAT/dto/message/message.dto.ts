@@ -35,12 +35,12 @@ export class MessageDto {
   @Expose()
   @Type(() => UserCompressDto)
   @ApiProperty()
-  status_delivered_users: UserCompressDto[];
+  delivered: UserCompressDto[];
 
   @Expose()
   @Type(() => UserCompressDto)
   @ApiProperty()
-  status_seen_users: UserCompressDto[];
+  seen: UserCompressDto[];
 
   @Expose()
   @ApiProperty()
