@@ -4,11 +4,11 @@ import { ChatIntendedParticipants } from './apps/CHAT/entities/intendedParticipa
 import { ChatMessage } from './apps/CHAT/entities/messages.entity';
 import { ChatRoom } from './apps/CHAT/entities/room.entity';
 import { ChatSeenMessages } from './apps/CHAT/entities/seenMessages.entity';
-import { Post } from './apps/CRUD/components/posts/entities/post.entity';
-import { Reaction } from './apps/CRUD/components/posts/entities/reaction.entity';
+import { CrudPost } from './apps/CRUD/components/posts/entities/post.entity';
+import { CrudReaction } from './apps/CRUD/components/posts/entities/reaction.entity';
 import { FileBuffer } from './apps/FILE/entities/fileBuffer.entity';
 import { FileInfo } from './apps/FILE/entities/fileInfo.entity';
-import { Tag } from './tags/entities/tag.entity';
+import { FileTag } from './tags/entities/tag.entity';
 import { UserPermissionRequest } from './users/entities/permission-requests.entity';
 import { User } from './users/entities/user.entity';
 
@@ -29,11 +29,11 @@ const dbConfig: IDBConfig = {
     entities: [
       User,
       UserPermissionRequest,
-      Post,
-      Reaction,
+      CrudPost,
+      CrudReaction,
       FileInfo,
       FileBuffer,
-      Tag,
+      FileTag,
       ChatRoom,
       ChatMessage,
       ChatIntendedParticipants,
@@ -55,11 +55,11 @@ const dbConfig: IDBConfig = {
     entities: [
       User,
       UserPermissionRequest,
-      Post,
-      Reaction,
+      CrudPost,
+      CrudReaction,
       FileInfo,
       FileBuffer,
-      Tag,
+      FileTag,
       ChatRoom,
       ChatMessage,
       ChatIntendedParticipants,

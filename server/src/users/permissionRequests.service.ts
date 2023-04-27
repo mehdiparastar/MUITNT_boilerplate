@@ -80,9 +80,8 @@ export class PermissionRequestsService {
   }
 
   async findAll(): Promise<UserPermissionRequest[]> {
-    const allPReq: UserPermissionRequest[] = await this.permissionRequestsRepo.find(
-      {},
-    );
+    const allPReq: UserPermissionRequest[] =
+      await this.permissionRequestsRepo.find({});
     return allPReq;
   }
 
@@ -182,7 +181,10 @@ export class PermissionRequestsService {
     return this.permissionRequestsRepo.remove(pReq);
   }
 
-  async pReqSetToSeen(user: User, pReqId: number): Promise<UserPermissionRequest> {
+  async pReqSetToSeen(
+    user: User,
+    pReqId: number,
+  ): Promise<UserPermissionRequest> {
     const update = await this.update(pReqId, {
       approver: user,
       result: permissionRequestResultEnum.seen,
@@ -190,7 +192,10 @@ export class PermissionRequestsService {
     return update;
   }
 
-  async approvePReq(user: User, pReqId: number): Promise<UserPermissionRequest> {
+  async approvePReq(
+    user: User,
+    pReqId: number,
+  ): Promise<UserPermissionRequest> {
     const update = await this.update(pReqId, {
       approver: user,
       result: permissionRequestResultEnum.accepted,

@@ -18,8 +18,8 @@ import { PaginationPostsDto } from './dto/post/pagination-posts.dto';
 import { PostDto } from './dto/post/post.dto';
 import { UpdatePostDto } from './dto/post/update-post.dto';
 import { ReactionDto } from './dto/reaction/reaction.dto';
-import { Post } from './entities/post.entity';
-import { Reaction } from './entities/reaction.entity';
+import { CrudPost } from './entities/post.entity';
+import { CrudReaction } from './entities/reaction.entity';
 import { PostsService } from './posts.service';
 
 @Controller('crud_app/posts')
@@ -32,7 +32,7 @@ export class PostsController {
   async createPermissionRequest(
     @CurrentUser() user: User,
     @Body() body: CreatePostDto,
-  ): Promise<Post> {
+  ): Promise<CrudPost> {
     return this.postsService.create(user, body.title, body.caption);
   }
 
@@ -68,7 +68,7 @@ export class PostsController {
     @CurrentUser() user: User,
     @Param('id') id: string,
     @Body() body: UpdatePostDto,
-  ): Promise<Post> {
+  ): Promise<CrudPost> {
     return this.postsService.update(user, parseInt(id), body);
   }
 

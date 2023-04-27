@@ -11,10 +11,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Reaction } from './reaction.entity';
+import { CrudReaction } from './reaction.entity';
 
 @Entity()
-export class Post {
+export class CrudPost {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id: number;
@@ -39,6 +39,6 @@ export class Post {
   @ManyToOne(() => User, (user) => user.posts, { nullable: false })
   author: User;
 
-  @OneToMany(() => Reaction, (reaction) => reaction.post, { cascade: true })
-  reactions: Reaction[];
+  @OneToMany(() => CrudReaction, (reaction) => reaction.post, { cascade: true })
+  reactions: CrudReaction[];
 }

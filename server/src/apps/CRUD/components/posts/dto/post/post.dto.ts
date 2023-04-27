@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Transform, Type } from 'class-transformer';
 import { IsDate } from 'class-validator';
 import { UserDto } from 'src/users/dto/user/user.dto';
-import { Reaction } from '../../entities/reaction.entity';
+import { CrudReaction } from '../../entities/reaction.entity';
 import { ReactionDto } from '../reaction/reaction.dto';
 
 export class PostDto {

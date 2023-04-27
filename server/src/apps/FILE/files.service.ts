@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagDto } from 'src/tags/dto/tag.dto';
-import { Tag } from 'src/tags/entities/tag.entity';
+import { FileTag } from 'src/tags/entities/tag.entity';
 import { UserDto } from 'src/users/dto/user/user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { In, Repository } from 'typeorm';

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
-import { Tag } from 'src/tags/entities/tag.entity';
+import { FileTag } from 'src/tags/entities/tag.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -30,9 +30,9 @@ export class FileInfo {
   name: string;
 
   @IsOptional()
-  @ManyToMany(() => Tag, (tag) => tag.files, { cascade: true })
+  @ManyToMany(() => FileTag, (tag) => tag.files, { cascade: true })
   @JoinTable()
-  tags?: Tag[];
+  tags?: FileTag[];
 
   @Column()
   @ApiProperty({ default: 'file type' })

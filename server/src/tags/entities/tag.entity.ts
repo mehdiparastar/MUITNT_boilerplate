@@ -15,7 +15,7 @@ import { FileInfo } from 'src/apps/FILE/entities/fileInfo.entity';
 
 @Entity()
 @Index(['tag', 'appName'], { unique: true })
-export class Tag {
+export class FileTag {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id: number;

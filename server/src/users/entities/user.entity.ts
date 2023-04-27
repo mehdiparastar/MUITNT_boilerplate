@@ -2,9 +2,9 @@ import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { ChatIntendedParticipants } from 'src/apps/CHAT/entities/intendedParticipants.entity';
 import { ChatMessage } from 'src/apps/CHAT/entities/messages.entity';
 import { ChatRoom } from 'src/apps/CHAT/entities/room.entity';
-import { Post } from 'src/apps/CRUD/components/posts/entities/post.entity';
-import { Reaction } from 'src/apps/CRUD/components/posts/entities/reaction.entity';
-import { Tag } from 'src/tags/entities/tag.entity';
+import { CrudPost } from 'src/apps/CRUD/components/posts/entities/post.entity';
+import { CrudReaction } from 'src/apps/CRUD/components/posts/entities/reaction.entity';
+import { FileTag } from 'src/tags/entities/tag.entity';
 import {
   Column,
   CreateDateColumn,
@@ -80,17 +80,19 @@ export class User {
   )
   approves: UserPermissionRequest[];
 
-  @OneToMany(() => Post, (post) => post.author, { cascade: true })
-  posts: Post[];
+  @OneToMany(() => CrudPost, (post) => post.author, { cascade: true })
+  posts: CrudPost[];
 
-  @OneToMany(() => Reaction, (reaction) => reaction.creator, { cascade: true })
-  reactions: Reaction[];
+  @OneToMany(() => CrudReaction, (reaction) => reaction.creator, {
+    cascade: true,
+  })
+  reactions: CrudReaction[];
 
   @OneToMany(() => FileInfo, (file) => file.owner, { cascade: true })
   files: FileInfo[];
 
-  @OneToMany(() => Tag, (tag) => tag.creator, { cascade: true })
-  createdTags: Tag[];
+  @OneToMany(() => FileTag, (tag) => tag.creator, { cascade: true })
+  createdTags: FileTag[];
 
   @OneToMany(() => ChatRoom, (room) => room.creator, { cascade: true })
   createdRooms: ChatRoom[];

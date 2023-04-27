@@ -8,21 +8,21 @@ import { reactionTypeEnum } from 'src/enum/reactionType.enum';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/post/update-post.dto';
-import { Post } from './entities/post.entity';
-import { Reaction } from './entities/reaction.entity';
+import { CrudPost } from './entities/post.entity';
+import { CrudReaction } from './entities/reaction.entity';
 
 @Injectable()
 export class ReactionsService {
   constructor(
-    @InjectRepository(Reaction)
-    private reactionsRepo: Repository<Reaction>,
+    @InjectRepository(CrudReaction)
+    private reactionsRepo: Repository<CrudReaction>,
   ) {}
 
   async create(
     user: User,
     type: reactionTypeEnum,
-    post: Post,
-  ): Promise<Reaction> {
+    post: CrudPost,
+  ): Promise<CrudReaction> {
     // Create new Reaction
     const newReaction = this.reactionsRepo.create({
       creator: user,
@@ -33,7 +33,7 @@ export class ReactionsService {
     return this.reactionsRepo.save(newReaction);
   }
 
-  async findAll(): Promise<Reaction[]> {
+  async findAll(): Promise<CrudReaction[]> {
     // Create new Post
     const result = await this.reactionsRepo.find({
       relations: { creator: true },
@@ -44,7 +44,7 @@ export class ReactionsService {
     return result;
   }
 
-  async findOneById(id: number): Promise<Reaction> {
+  async findOneById(id: number): Promise<CrudReaction> {
     if (!id) {
       throw new NotFoundException('reaction not found');
     }
@@ -58,7 +58,7 @@ export class ReactionsService {
   async findOneByCreatorIdandPostId(
     creatorId: number,
     postId: number,
-  ): Promise<Reaction> {
+  ): Promise<CrudReaction> {
     if (!creatorId || !postId) {
       throw new NotFoundException('query is not correct');
     }
@@ -69,7 +69,7 @@ export class ReactionsService {
     return find;
   }
 
-  async findAllByPostId(postId: number): Promise<Reaction[]> {
+  async findAllByPostId(postId: number): Promise<CrudReaction[]> {
     if (!postId) {
       throw new NotFoundException('post not found');
     }
@@ -83,7 +83,7 @@ export class ReactionsService {
     return find;
   }
 
-  async removeReaction(user: User, id: number): Promise<Reaction> {
+  async removeReaction(user: User, id: number): Promise<CrudReaction> {
     const reaction = await this.findOneById(id);
     if (!reaction) {
       throw new NotFoundException('reaction not found');
@@ -100,7 +100,7 @@ export class ReactionsService {
     user: User,
     id: number,
     newType: reactionTypeEnum,
-  ): Promise<Reaction> {
+  ): Promise<CrudReaction> {
     const reaction = await this.findOneById(id);
     if (!reaction) {
       throw new NotFoundException('reaction not found');

@@ -8,19 +8,19 @@ import { reactionTypeEnum } from 'src/enum/reactionType.enum';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/post/update-post.dto';
-import { Post } from './entities/post.entity';
-import { Reaction } from './entities/reaction.entity';
+import { CrudPost } from './entities/post.entity';
+import { CrudReaction } from './entities/reaction.entity';
 import { ReactionsService } from './reactions.service';
 
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectRepository(Post)
-    private postsRepo: Repository<Post>,
+    @InjectRepository(CrudPost)
+    private postsRepo: Repository<CrudPost>,
     private readonly reactionsService: ReactionsService,
   ) {}
 
-  async create(user: User, title: string, caption: string): Promise<Post> {
+  async create(user: User, title: string, caption: string): Promise<CrudPost> {
     // Create new Post
 
     const newPost = this.postsRepo.create({
@@ -35,7 +35,7 @@ export class PostsService {
   async findAll(
     skip: number = 0,
     limit: number = 3,
-  ): Promise<{ data: Post[]; count: number }> {
+  ): Promise<{ data: CrudPost[]; count: number }> {
     // Create new Post
     const [result, total] = await this.postsRepo.findAndCount({
       relations: {
@@ -56,7 +56,7 @@ export class PostsService {
     };
   }
 
-  async findOneById(id: number): Promise<Post> {
+  async findOneById(id: number): Promise<CrudPost> {
     if (!id) {
       throw new NotFoundException('post not found');
     }
@@ -70,7 +70,7 @@ export class PostsService {
     return find;
   }
 
-  async removePost(user: User, id: number): Promise<Post> {
+  async removePost(user: User, id: number): Promise<CrudPost> {
     const post = await this.findOneById(id);
     if (!post) {
       throw new NotFoundException('post not found');
@@ -83,7 +83,11 @@ export class PostsService {
     return this.postsRepo.remove(post);
   }
 
-  async update(user: User, id: number, attrs: UpdatePostDto): Promise<Post> {
+  async update(
+    user: User,
+    id: number,
+    attrs: UpdatePostDto,
+  ): Promise<CrudPost> {
     const post = await this.findOneById(id);
     if (!post) {
       throw new NotFoundException('post not found');
@@ -97,7 +101,7 @@ export class PostsService {
     return this.postsRepo.save(post);
   }
 
-  async like(user: User, postId: number): Promise<Reaction[]> {
+  async like(user: User, postId: number): Promise<CrudReaction[]> {
     const post = await this.findOneById(postId);
     if (!post) {
       throw new NotFoundException('post not found');
@@ -132,7 +136,7 @@ export class PostsService {
     // }
   }
 
-  async dislike(user: User, postId: number): Promise<Reaction[]> {
+  async dislike(user: User, postId: number): Promise<CrudReaction[]> {
     const post = await this.findOneById(postId);
     if (!post) {
       throw new NotFoundException('post not found');

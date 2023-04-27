@@ -8,16 +8,20 @@ import { appNameEnum } from 'src/enum/appName.enum';
 import { reactionTypeEnum } from 'src/enum/reactionType.enum';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { Tag } from './entities/tag.entity';
+import { FileTag } from './entities/tag.entity';
 
 @Injectable()
 export class TagsService {
   constructor(
-    @InjectRepository(Tag)
-    private tagsRepo: Repository<Tag>,
+    @InjectRepository(FileTag)
+    private tagsRepo: Repository<FileTag>,
   ) {}
 
-  async create(user: User, tag: string, appName: appNameEnum): Promise<Tag> {
+  async create(
+    user: User,
+    tag: string,
+    appName: appNameEnum,
+  ): Promise<FileTag> {
     // Create new Tag
 
     const newTag = this.tagsRepo.create({
@@ -29,7 +33,7 @@ export class TagsService {
     return this.tagsRepo.save(newTag);
   }
 
-  async findAll(appName: appNameEnum): Promise<Tag[]> {
+  async findAll(appName: appNameEnum): Promise<FileTag[]> {
     // Create new Tag
     if (appName) {
       const result = await this.tagsRepo.find({
@@ -45,7 +49,7 @@ export class TagsService {
     return [];
   }
 
-  async findOneById(id: number): Promise<Tag> {
+  async findOneById(id: number): Promise<FileTag> {
     if (!id) {
       throw new NotFoundException('tag not found');
     }
@@ -59,7 +63,7 @@ export class TagsService {
     return find;
   }
 
-  async removeTag(user: User, id: number): Promise<Tag> {
+  async removeTag(user: User, id: number): Promise<FileTag> {
     const tag = await this.findOneById(id);
     if (!tag) {
       throw new NotFoundException('tag not found');

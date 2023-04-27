@@ -12,11 +12,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Post } from './post.entity';
+import { CrudPost } from './post.entity';
 
 @Entity()
 @Index(['type', 'creator', 'post'], { unique: true })
-export class Reaction {
+export class CrudReaction {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id: number;
@@ -25,11 +25,11 @@ export class Reaction {
   @ApiProperty({ default: reactionTypeEnum.like, enum: reactionTypeEnum })
   type: reactionTypeEnum;
 
-  @ManyToOne(() => Post, (post) => post.reactions, {
+  @ManyToOne(() => CrudPost, (post) => post.reactions, {
     nullable: false,
     onDelete: 'CASCADE',
   })
-  post: Post;
+  post: CrudPost;
 
   @ManyToOne(() => User, (user) => user.reactions, { nullable: false })
   creator: User;
