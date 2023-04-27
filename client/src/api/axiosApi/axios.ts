@@ -11,14 +11,13 @@ export default axios.create({
   transformResponse: (data) => {
     try {
       if (data instanceof Blob) {
-        return data
+        return data;
       }
       return JSON.parse(data, (key, value) =>
         dateKeyRx.test(value) ? new Date(value) : value,
-      )
-    }
-    catch (ex) {
-      return data
+      );
+    } catch (ex) {
+      return data;
     }
   },
 });
@@ -29,15 +28,14 @@ export const axiosPrivate = axios.create({
   transformResponse: (data) => {
     try {
       if (data instanceof Blob) {
-        return data
+        return data;
       }
       return JSON.parse(data, (key, value) =>
         dateKeyRx.test(value) ? new Date(value) : value,
-      )
-    }
-    catch (ex) {
-      console.error(ex)
-      return data
+      );
+    } catch (ex) {
+      console.error(ex);
+      return data;
     }
   },
   //   withCredentials:true

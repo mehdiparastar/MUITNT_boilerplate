@@ -5,7 +5,7 @@ declare global {
       PORT: number;
       DB_NAME: string;
       REACT_APP_API_GOOGLE_OAUTH2: string;
-      REACT_APP_API_SERVER_URL:string;
+      REACT_APP_API_SERVER_URL: string;
     }
   }
 }

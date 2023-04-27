@@ -1,4 +1,8 @@
-import { BadRequestException, INestApplicationContext, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  INestApplicationContext,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { IoAdapter } from '@nestjs/platform-socket.io';
@@ -41,42 +45,54 @@ export class SocketIOAdapter extends IoAdapter {
       cors,
     };
 
-    const jwtService = this.app.get(JwtService)
-    const usersService = this.app.get(UsersService)
-    const chatService = this.app.get(ChatService)
+    const jwtService = this.app.get(JwtService);
+    const usersService = this.app.get(UsersService);
+    const chatService = this.app.get(ChatService);
 
     const server: Server = super.createIOServer(port, optionsWithCORS);
 
-    const init = server.of('chat')
-      .use(createTokenMiddleware(jwtService, usersService, chatService, this.logger))
+    const init = server
+      .of('chat')
+      .use(
+        createTokenMiddleware(
+          jwtService,
+          usersService,
+          chatService,
+          this.logger,
+        ),
+      );
 
     return server;
   }
 }
 
 const createTokenMiddleware =
-  (jwtService: JwtService, usersService: UsersService, chatService: ChatService, logger: Logger) =>
-    async (socket: SocketWithAuth, next) => {
-      // for Postman testing support, fallback to token header
-      const accessToken = socket.handshake.query.accessToken as string
+  (
+    jwtService: JwtService,
+    usersService: UsersService,
+    chatService: ChatService,
+    logger: Logger,
+  ) =>
+  async (socket: SocketWithAuth, next) => {
+    // for Postman testing support, fallback to token header
+    const accessToken = socket.handshake.query.accessToken as string;
 
-      try {
+    try {
+      const payload = jwtService.verify(accessToken);
+      const [user] = await usersService.findByEmail(payload.email);
 
-        const payload = jwtService.verify(accessToken);
-        const [user] = await usersService.findByEmail(payload.email)
+      const allMyRooms = await chatService.findMyAllRooms(user);
 
-        const allMyRooms = await chatService.findMyAllRooms(user)
+      const roomsId = allMyRooms.map((room) => room.id.toString());
 
-        const roomsId = allMyRooms.map(room => room.id.toString())
+      logger.debug(`Validating auth token before connection: ${user.email}`);
 
-        logger.debug(`Validating auth token before connection: ${user.email}`);
+      socket.user = user;
+      socket.roomsId = roomsId;
 
-        socket.user = user
-        socket.roomsId = roomsId
-
-        next();
-      } catch (ex) {
-        next(ex)
-        // next(new Error('FORBIDDEN'));      
-      }
-    };
+      next();
+    } catch (ex) {
+      next(ex);
+      // next(new Error('FORBIDDEN'));
+    }
+  };

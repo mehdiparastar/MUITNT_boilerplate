@@ -1,6 +1,6 @@
 export enum pReqResultENUM {
-    accepted = 'accepted',
-    rejected = 'rejected',
-    unSeen = 'unSeen',
-    seen = 'seen',
+  accepted = 'accepted',
+  rejected = 'rejected',
+  unSeen = 'unSeen',
+  seen = 'seen',
 }

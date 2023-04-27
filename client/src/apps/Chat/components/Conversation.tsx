@@ -1,20 +1,18 @@
-import { AttachFileOutlined, CallOutlined, Check, EmojiEmotionsOutlined, MoreVertOutlined, Person, PhotoLibraryOutlined, ReportOutlined, Send, VideoCameraFrontOutlined, VolumeUpOutlined } from '@mui/icons-material';
+import { AttachFileOutlined, CallOutlined, Check, EmojiEmotionsOutlined, MoreVertOutlined, PhotoLibraryOutlined, ReportOutlined, Send, VideoCameraFrontOutlined, VolumeUpOutlined } from '@mui/icons-material';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { Avatar, Box, Divider, IconButton, ListItemButton, ListItemText, Paper, Stack, TextField, Toolbar, Typography, useTheme } from '@mui/material';
+import { formatRelative } from 'date-fns';
+import { ChatEvent } from 'enum/chatEvent.enum';
+import { useFormik } from 'formik';
 import { IChatRoomAddMessageFormDto } from 'models/CHAT_APP/message.model';
+import { useSnackbar } from 'notistack';
 import { createRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { chatSocket, useAddMessageMutation, useGetMessagesQuery } from 'redux/features/CHAT_APP/chatApiSlice';
+import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
 import SimpleBarReact from "simplebar-react";
 import UI04BGSVG from 'svg/backgrounds/UI04BGSVG';
 import * as yup from 'yup';
-import { useLocation, useNavigate } from "react-router-dom";
-import { useFormik } from 'formik';
-import { useSnackbar } from 'notistack';
-import { chatSocket, useAddMessageMutation, useGetMessagesQuery } from 'redux/features/CHAT_APP/chatApiSlice';
-import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
-import { formatRelative } from 'date-fns';
-import { es } from 'date-fns/locale';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
-import { ChatEvent } from 'enum/chatEvent.enum';
 
 type Props = {}
 
@@ -30,8 +28,6 @@ const validationSchema = yup.object<Shape<IChatRoomAddMessageFormDto>>({
 const Conversation = (props: Props) => {
     let { roomId } = useParams();
     const theme = useTheme()
-    const navigate = useNavigate();
-    const location = useLocation();
     const { enqueueSnackbar } = useSnackbar()
     const scrollableNodeRef = createRef<any>();
     const [addMessage] = useAddMessageMutation()
@@ -47,6 +43,7 @@ const Conversation = (props: Props) => {
         formik.values.roomId = Number(roomId)
         localStorage.setItem('active-room-id', roomId as string)
         chatSocket.emit(ChatEvent.ChangeActiveRoom, { currentActiveRoomId: Number(roomId) })
+        // eslint-disable-next-line
     }, [roomId])
 
     useEffect(() => {
@@ -57,8 +54,7 @@ const Conversation = (props: Props) => {
 
     const onSubmit = async (values: IChatRoomAddMessageFormDto) => {
         try {
-            const msg = await addMessage(values).unwrap()
-            // enqueueSnackbar(`Message Added Successfully with the id of ${msg.id}`, { variant: 'success' })
+            await addMessage(values).unwrap()
             formik.resetForm()
         } catch (ex) {
             const err = ex as { data: { msg: string } }

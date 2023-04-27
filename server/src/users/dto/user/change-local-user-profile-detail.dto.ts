@@ -11,4 +11,4 @@ import { CreateLocalUserDto } from './create-local-user.dto';
 export class ChangeLocalUserProfileDetailDto extends PickType(
   CreateLocalUserDto,
   ['name', 'photo'] as const,
-) { }
+) {}

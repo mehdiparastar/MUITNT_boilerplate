@@ -34,90 +34,112 @@ export class ChatService {
     @InjectRepository(ChatSeenMessages)
     private seenMessagesRepo: Repository<ChatSeenMessages>,
     @Inject(forwardRef(() => ChatGateway))
-    private chatGateWay: ChatGateway
-  ) { }
+    private chatGateWay: ChatGateway,
+  ) {}
 
-  async createRoom(user: User, createRoomDto: CreateRoomDto): Promise<ChatRoom> {
+  async createRoom(
+    user: User,
+    createRoomDto: CreateRoomDto,
+  ): Promise<ChatRoom> {
     // Create new Post
-    const { title, caption, intendedParticipants, ...rest } = createRoomDto
+    const { title, caption, intendedParticipants, ...rest } = createRoomDto;
     const newRoom = this.roomsRepo.create({
       creator: user,
       title,
       caption,
-      ...rest
+      ...rest,
     });
 
-    const newRoomSave = await this.roomsRepo.save(newRoom)
+    const newRoomSave = await this.roomsRepo.save(newRoom);
 
-    await this.sendJoinReqToIntendedUsers(user, intendedParticipants, newRoom)
+    await this.sendJoinReqToIntendedUsers(user, intendedParticipants, newRoom);
 
-    return newRoomSave
+    return newRoomSave;
   }
 
-  async sendJoinReqToIntendedUsers(user: User, intendedParticipants: UserDto[], room: ChatRoom): Promise<ChatIntendedParticipants[]> {
-
+  async sendJoinReqToIntendedUsers(
+    user: User,
+    intendedParticipants: UserDto[],
+    room: ChatRoom,
+  ): Promise<ChatIntendedParticipants[]> {
     const roomCreator = this.intendedParticipantsRepo.create({
       creator: user,
       participant: user,
       room: room,
       status: chatIntendedParticipantStatus.accepted,
-      isAdmin: true
-    })
+      isAdmin: true,
+    });
 
-    const saveRoomCreator = await this.intendedParticipantsRepo.save(roomCreator)
+    const saveRoomCreator = await this.intendedParticipantsRepo.save(
+      roomCreator,
+    );
 
-    const newIntendedParticipants = intendedParticipants.map(intendedParticipant => this.intendedParticipantsRepo.create({
-      creator: user,
-      participant: intendedParticipant,
-      room: room,
-    }))
+    const newIntendedParticipants = intendedParticipants.map(
+      (intendedParticipant) =>
+        this.intendedParticipantsRepo.create({
+          creator: user,
+          participant: intendedParticipant,
+          room: room,
+        }),
+    );
 
-    const save = await Promise.all(newIntendedParticipants.map(item => this.intendedParticipantsRepo.save(item)))
-    return save
+    const save = await Promise.all(
+      newIntendedParticipants.map((item) =>
+        this.intendedParticipantsRepo.save(item),
+      ),
+    );
+    return save;
   }
 
   async findMyAllRooms(user: User) {
     try {
-      const rooms = (await this.roomsRepo.find({
+      const rooms = await this.roomsRepo.find({
         relations: {
           creator: true,
           intendedParticipants: {
-            participant: true
+            participant: true,
           },
           messages: { delivered: true },
         },
         order: { createdAt: 'DESC' },
-      }))
+      });
 
       const filteredRooms = rooms.filter(
-        room =>
-          (room.closed === false && room.creator.id === user.id)
-          ||
-          (
-            room.closed === false &&
-            room.intendedParticipants.filter(item => item.status === chatIntendedParticipantStatus.accepted)
-              .map(item => item.participant.id).includes(user.id)
-          )
+        (room) =>
+          (room.closed === false && room.creator.id === user.id) ||
+          (room.closed === false &&
+            room.intendedParticipants
+              .filter(
+                (item) =>
+                  item.status === chatIntendedParticipantStatus.accepted,
+              )
+              .map((item) => item.participant.id)
+              .includes(user.id)),
       );
 
-      return filteredRooms
-
+      return filteredRooms;
     } catch (ex) {
-      console.log(ex)
+      console.log(ex);
     }
   }
 
   async findMyAllRequests(user: User) {
-    const qryRes = (await this.intendedParticipantsRepo.find({
-      relations: {
-        creator: true,
-        participant: true,
-        room: true
-      },
-      order: { createdAt: 'DESC' },
-    })).filter(intendedParticipant => intendedParticipant.participant.id === user.id && intendedParticipant.status === chatIntendedParticipantStatus.requested);
+    const qryRes = (
+      await this.intendedParticipantsRepo.find({
+        relations: {
+          creator: true,
+          participant: true,
+          room: true,
+        },
+        order: { createdAt: 'DESC' },
+      })
+    ).filter(
+      (intendedParticipant) =>
+        intendedParticipant.participant.id === user.id &&
+        intendedParticipant.status === chatIntendedParticipantStatus.requested,
+    );
 
-    return qryRes
+    return qryRes;
   }
 
   async findAllRoom(
@@ -149,24 +171,24 @@ export class ChatService {
         creator: true,
       },
       where: {
-        id: id
-      }
-    })
-    return qry
+        id: id,
+      },
+    });
+    return qry;
   }
 
   async findIntendedParticipantById(id: number) {
     const qry = await this.intendedParticipantsRepo.findOne({
       relations: {
-        room: { intendedParticipants: true },
+        room: { intendedParticipants: { participant: true }, creator: true },
         creator: true,
         participant: true,
       },
       where: {
-        id: id
-      }
-    })
-    return qry
+        id: id,
+      },
+    });
+    return qry;
   }
 
   async findOneRoomById(id: number): Promise<ChatRoom> {
@@ -177,7 +199,7 @@ export class ChatService {
       relations: {
         creator: true,
         intendedParticipants: true,
-        messages: true
+        messages: true,
       },
       where: { id, closed: false },
     });
@@ -187,7 +209,9 @@ export class ChatService {
     return find;
   }
 
-  async findOneIntendedParticipantById(id: number): Promise<ChatIntendedParticipants> {
+  async findOneIntendedParticipantById(
+    id: number,
+  ): Promise<ChatIntendedParticipants> {
     if (!id) {
       throw new NotFoundException('participant not found');
     }
@@ -212,7 +236,7 @@ export class ChatService {
       relations: {
         creator: true,
         intendedParticipants: true,
-        messages: true
+        messages: true,
       },
       where: { id },
     });
@@ -235,12 +259,21 @@ export class ChatService {
     return this.roomsRepo.remove(room);
   }
 
-  async update(user: User, id: number, attrs: UpdateRoomDto): Promise<ChatRoom> {
+  async update(
+    user: User,
+    id: number,
+    attrs: UpdateRoomDto,
+  ): Promise<ChatRoom> {
     const room = await this.findOneRoomById(id);
     if (!room) {
       throw new NotFoundException('room not found');
     }
-    if (!room.intendedParticipants.filter(el => el.isAdmin).map(item => item.id).includes(user.id)) {
+    if (
+      !room.intendedParticipants
+        .filter((el) => el.isAdmin)
+        .map((item) => item.id)
+        .includes(user.id)
+    ) {
       throw new NotAcceptableException(
         'You only could update rooms that you are as administrator!',
       );
@@ -260,9 +293,11 @@ export class ChatService {
       );
     }
 
-    Object.assign(intendedParticipsnt, { status: chatIntendedParticipantStatus.accepted });
+    Object.assign(intendedParticipsnt, {
+      status: chatIntendedParticipantStatus.accepted,
+    });
     const save = await this.intendedParticipantsRepo.save(intendedParticipsnt);
-    return save
+    return save;
   }
 
   async rejectJoinRequest(user: User, id: number) {
@@ -276,112 +311,122 @@ export class ChatService {
       );
     }
 
-    Object.assign(intendedPsrticipsnt, { status: chatIntendedParticipantStatus.rejected });
+    Object.assign(intendedPsrticipsnt, {
+      status: chatIntendedParticipantStatus.rejected,
+    });
     return this.intendedParticipantsRepo.save(intendedPsrticipsnt);
   }
 
   async roomMsgAuthorization(user: User, roomId: number) {
-    const find = (await this.intendedParticipantsRepo.find({
+    const find = await this.intendedParticipantsRepo.find({
       relations: {
         creator: true,
         participant: true,
-        room: true
+        room: true,
       },
       // where: [
       //   { creator: { id: user.id }, room: { id: roomId } },
       //   { participant: { id: user.id }, room: { id: roomId }, status: chatIntendedParticipantStatus.accepted },
       // ],
-    }))
-    const x = find.filter(intendedParticipant =>
-      (intendedParticipant.creator.id === user.id && intendedParticipant.room.id === roomId) ||
-      (
-        intendedParticipant.participant.id === user.id &&
-        intendedParticipant.room.id === roomId &&
-        intendedParticipant.status === chatIntendedParticipantStatus.accepted
-      )
+    });
+    const x = find.filter(
+      (intendedParticipant) =>
+        (intendedParticipant.creator.id === user.id &&
+          intendedParticipant.room.id === roomId) ||
+        (intendedParticipant.participant.id === user.id &&
+          intendedParticipant.room.id === roomId &&
+          intendedParticipant.status ===
+            chatIntendedParticipantStatus.accepted),
     );
-    return find.length > 0
+    return find.length > 0;
   }
 
   async addMessage(user: User, body: CreateMessageDto) {
-
-    const room = await this.findOneRoomById(body.roomId)
+    const room = await this.findOneRoomById(body.roomId);
 
     const newMsg = this.messagesRepo.create({
       message: body.message,
       room: room,
       writer: user,
-    })
+    });
 
-    const save = await this.messagesRepo.save(newMsg)
+    const save = await this.messagesRepo.save(newMsg);
 
-    return save
+    return save;
   }
 
   async getMessages(user: User, roomId: number) {
     const [room] = await this.roomsRepo.find({
       relations: {
         creator: true,
-        intendedParticipants: { participant: true }
+        intendedParticipants: { participant: true },
       },
       where: {
-        id: roomId
-      }
-    })
+        id: roomId,
+      },
+    });
 
     const members = [
-      ...room.intendedParticipants.filter(participant => participant.status === chatIntendedParticipantStatus.accepted).map(item => item.participant.id),
-    ].sort()
+      ...room.intendedParticipants
+        .filter(
+          (participant) =>
+            participant.status === chatIntendedParticipantStatus.accepted,
+        )
+        .map((item) => item.participant.id),
+    ].sort();
 
     const messages = await this.messagesRepo.find({
       relations: {
         writer: true,
         room: true,
         delivered: { intendedParticipant: { participant: true } },
-        seen: { intendedParticipant: { participant: true } }
+        seen: { intendedParticipant: { participant: true } },
       },
       where: {
         room: {
-          id: roomId
-        }
+          id: roomId,
+        },
       },
-      order: { updatedAt: 'ASC' }
-    })
+      order: { updatedAt: 'ASC' },
+    });
 
-    return messages.map(message => {
-      return (
-        {
-          ...message,
-          writer: {
-            id: message.writer.id,
-            email: message.writer.email,
-            name: message.writer.name,
-            photo: message.writer.photo
-          },
-          delivered: [
-            message.delivered.map(item => (
-              {
-                id: item.intendedParticipant.participant.id,
-                email: item.intendedParticipant.participant.email,
-                name: item.intendedParticipant.participant.name,
-              }
-            ))
-          ].flat(Infinity),
-          seen: [
-            message.seen.map(item => (
-              {
-                id: item.intendedParticipant.participant.id,
-                email: item.intendedParticipant.participant.email,
-                name: item.intendedParticipant.participant.name,
-              }
-            ))
-          ].flat(Infinity),
-          isDelivered: JSON.stringify(message.delivered.map(item => item.intendedParticipant.participant.id).sort()) === JSON.stringify(members),
-          isSeen: JSON.stringify(message.seen.map(item => item.intendedParticipant.participant.id).sort()) === JSON.stringify(members),
-        }
-      )
-    })
-
+    return messages.map((message) => {
+      return {
+        ...message,
+        writer: {
+          id: message.writer.id,
+          email: message.writer.email,
+          name: message.writer.name,
+          photo: message.writer.photo,
+        },
+        delivered: [
+          message.delivered.map((item) => ({
+            id: item.intendedParticipant.participant.id,
+            email: item.intendedParticipant.participant.email,
+            name: item.intendedParticipant.participant.name,
+          })),
+        ].flat(Infinity),
+        seen: [
+          message.seen.map((item) => ({
+            id: item.intendedParticipant.participant.id,
+            email: item.intendedParticipant.participant.email,
+            name: item.intendedParticipant.participant.name,
+          })),
+        ].flat(Infinity),
+        isDelivered:
+          JSON.stringify(
+            message.delivered
+              .map((item) => item.intendedParticipant.participant.id)
+              .sort(),
+          ) === JSON.stringify(members),
+        isSeen:
+          JSON.stringify(
+            message.seen
+              .map((item) => item.intendedParticipant.participant.id)
+              .sort(),
+          ) === JSON.stringify(members),
+      };
+    });
 
     // const addingSeenStatus = messages.map(
     //   msg => {
@@ -416,27 +461,31 @@ export class ChatService {
         writer: true,
         room: true,
         delivered: { intendedParticipant: { participant: true } },
-        seen: { intendedParticipant: { participant: true } }
+        seen: { intendedParticipant: { participant: true } },
       },
       where: {
-        id: messageId
+        id: messageId,
       },
-    })
+    });
 
     const [room] = await this.roomsRepo.find({
       relations: {
         creator: true,
-        intendedParticipants: { participant: true }
+        intendedParticipants: { participant: true },
       },
       where: {
-        id: message.room.id
-      }
-    })
+        id: message.room.id,
+      },
+    });
 
     const members = [
-      ...room.intendedParticipants.filter(participant => participant.status === chatIntendedParticipantStatus.accepted).map(item => item.participant.id),
-    ].sort()
-
+      ...room.intendedParticipants
+        .filter(
+          (participant) =>
+            participant.status === chatIntendedParticipantStatus.accepted,
+        )
+        .map((item) => item.participant.id),
+    ].sort();
 
     return {
       ...message,
@@ -444,114 +493,134 @@ export class ChatService {
         id: message.writer.id,
         email: message.writer.email,
         name: message.writer.name,
-        photo: message.writer.photo
+        photo: message.writer.photo,
       },
       delivered: [
-        message.delivered.map(item => (
-          {
-            id: item.intendedParticipant.participant.id,
-            email: item.intendedParticipant.participant.email,
-            name: item.intendedParticipant.participant.name,
-          }
-        ))
+        message.delivered.map((item) => ({
+          id: item.intendedParticipant.participant.id,
+          email: item.intendedParticipant.participant.email,
+          name: item.intendedParticipant.participant.name,
+        })),
       ].flat(Infinity),
       seen: [
-        message.seen.map(item => (
-          {
-            id: item.intendedParticipant.participant.id,
-            email: item.intendedParticipant.participant.email,
-            name: item.intendedParticipant.participant.name,
-          }
-        ))
+        message.seen.map((item) => ({
+          id: item.intendedParticipant.participant.id,
+          email: item.intendedParticipant.participant.email,
+          name: item.intendedParticipant.participant.name,
+        })),
       ].flat(Infinity),
-      isDelivered: JSON.stringify(message.delivered.map(item => item.intendedParticipant.participant.id).sort()) === JSON.stringify(members),
-      isSeen: JSON.stringify(message.seen.map(item => item.intendedParticipant.participant.id).sort()) === JSON.stringify(members),
-    }
+      isDelivered:
+        JSON.stringify(
+          message.delivered
+            .map((item) => item.intendedParticipant.participant.id)
+            .sort(),
+        ) === JSON.stringify(members),
+      isSeen:
+        JSON.stringify(
+          message.seen
+            .map((item) => item.intendedParticipant.participant.id)
+            .sort(),
+        ) === JSON.stringify(members),
+    };
   }
 
   async getRoomMembers(roomId: number) {
-    const room = await this.roomsRepo.findOne({ where: { id: roomId }, relations: { intendedParticipants: { participant: true } } })
-    const members =
-      room.intendedParticipants.filter(participant => participant.status === chatIntendedParticipantStatus.accepted).map(item => item.participant)
-    return members
+    const room = await this.roomsRepo.findOne({
+      where: { id: roomId },
+      relations: { intendedParticipants: { participant: true } },
+    });
+    const members = room.intendedParticipants
+      .filter(
+        (participant) =>
+          participant.status === chatIntendedParticipantStatus.accepted,
+      )
+      .map((item) => item.participant);
+    return members;
   }
 
-  async addMessageDelivering(user: User, msg: ChatMessage, roomsWithOnlineUsers: { [key: number]: User[] }) {
+  async addMessageDelivering(
+    user: User,
+    msg: ChatMessage,
+    roomsWithOnlineUsers: { [key: number]: User[] },
+  ) {
     try {
-      const roomsWithIntendedParticipants = {}
-      const deliveredMessagesSaves = {}
-      const roomId = msg.room.id
+      const roomsWithIntendedParticipants = {};
+      const deliveredMessagesSaves = {};
+      const roomId = msg.room.id;
 
-      const thisRoomOnlineUsers = roomsWithOnlineUsers[roomId] || []
-      const thisRoomWithIntendedParticipants = (await Promise.all(
-        thisRoomOnlineUsers.map(
-          (usr: User) =>
+      const thisRoomOnlineUsers = roomsWithOnlineUsers[roomId] || [];
+      const thisRoomWithIntendedParticipants =
+        (await Promise.all(
+          thisRoomOnlineUsers.map((usr: User) =>
             this.intendedParticipantsRepo.findOne({
               where: [
                 {
                   room: { id: Number(roomId) },
                   participant: { id: usr.id },
-                  status: chatIntendedParticipantStatus.accepted
+                  status: chatIntendedParticipantStatus.accepted,
                 },
                 {
                   room: { id: Number(roomId) },
                   creator: { id: usr.id },
-                  status: chatIntendedParticipantStatus.accepted
+                  status: chatIntendedParticipantStatus.accepted,
                 },
-              ]
-            })
-        )
-      )) || []
+              ],
+            }),
+          ),
+        )) || [];
 
       for (const item of thisRoomWithIntendedParticipants) {
         const found = await this.deliveredMessagesRepo.findOne({
           relations: { message: true, intendedParticipant: true },
-          where: { intendedParticipant: { id: item.id }, message: { id: msg.id } }
-        })
+          where: {
+            intendedParticipant: { id: item.id },
+            message: { id: msg.id },
+          },
+        });
         if (!found) {
           const newRec = this.deliveredMessagesRepo.create({
             intendedParticipant: item,
-            message: msg
-          })
-          const newRecSave = await this.deliveredMessagesRepo.save(newRec)
-          deliveredMessagesSaves[roomId] = deliveredMessagesSaves[roomId] || []
-          deliveredMessagesSaves[roomId].push(newRecSave)
+            message: msg,
+          });
+          const newRecSave = await this.deliveredMessagesRepo.save(newRec);
+          deliveredMessagesSaves[roomId] = deliveredMessagesSaves[roomId] || [];
+          deliveredMessagesSaves[roomId].push(newRecSave);
         }
       }
 
-      return deliveredMessagesSaves
+      return deliveredMessagesSaves;
+    } catch (ex) {
+      console.log(ex);
     }
-    catch (ex) {
-      console.log(ex)
-    }
-
   }
 
   async addMessageSeen(user: User, messageId: number, roomId: number) {
     try {
-      const msg = await this.messagesRepo.findOne({ where: { id: messageId } })
+      const msg = await this.messagesRepo.findOne({ where: { id: messageId } });
       const intendedParticipant = await this.intendedParticipantsRepo.findOne({
         where: [
           {
             room: { id: Number(roomId) },
             participant: { id: user.id },
-            status: chatIntendedParticipantStatus.accepted
+            status: chatIntendedParticipantStatus.accepted,
           },
           {
             room: { id: Number(roomId) },
             creator: { id: user.id },
-            status: chatIntendedParticipantStatus.accepted
+            status: chatIntendedParticipantStatus.accepted,
           },
-        ]
-      })
-      const save = await this.seenMessagesRepo.upsert({ intendedParticipant: intendedParticipant, message: msg }, { conflictPaths: ['id'], skipUpdateIfNoValuesChanged: true })
+        ],
+      });
+      const save = await this.seenMessagesRepo.upsert(
+        { intendedParticipant: intendedParticipant, message: msg },
+        { conflictPaths: ['id'], skipUpdateIfNoValuesChanged: true },
+      );
 
-      console.log(user.id, 'seen')
+      console.log(user.id, 'seen');
 
-      return save
-    }
-    catch (ex) {
-      console.log(ex)
+      return save;
+    } catch (ex) {
+      console.log(ex);
     }
   }
 
@@ -560,87 +629,118 @@ export class ChatService {
       const myRooms = await this.roomsRepo.find({
         relations: {
           intendedParticipants: { participant: true },
-          messages: { room: { intendedParticipants: { participant: true } } }
+          messages: { room: { intendedParticipants: { participant: true } } },
         },
         where: {
-          intendedParticipants: { participant: { id: In([user.id]) } }
-        }
-      })
+          intendedParticipants: { participant: { id: In([user.id]) } },
+        },
+      });
 
-      const allMessages = (myRooms.map(room => room.messages).flat(Infinity) as unknown as ChatMessage[])
-        .reduce((p, c) => ({ ...p, [c.id.toString()]: c }), {})
+      const allMessages = (
+        myRooms
+          .map((room) => room.messages)
+          .flat(Infinity) as unknown as ChatMessage[]
+      ).reduce((p, c) => ({ ...p, [c.id.toString()]: c }), {});
 
-      const allMessagesIds = myRooms.map(room => room.messages.map(msg => msg.id)).flat(Infinity)
+      const allMessagesIds = myRooms
+        .map((room) => room.messages.map((msg) => msg.id))
+        .flat(Infinity);
 
       const deliveryStatus = await this.deliveredMessagesRepo.find({
-        relations: { intendedParticipant: { participant: true }, message: true },
-        where: { message: { id: In(allMessagesIds) }, intendedParticipant: { participant: { id: user.id } } }
-      })
+        relations: {
+          intendedParticipant: { participant: true },
+          message: true,
+        },
+        where: {
+          message: { id: In(allMessagesIds) },
+          intendedParticipant: { participant: { id: user.id } },
+        },
+      });
 
-      const toAddDeliveryMessages: ChatMessage[] = (allMessagesIds
-        .filter(item => !deliveryStatus.map(elem => elem.message.id).includes(Number(item)))
-      ).map(x => allMessages[x.toString()])
+      const toAddDeliveryMessages: ChatMessage[] = allMessagesIds
+        .filter(
+          (item) =>
+            !deliveryStatus
+              .map((elem) => elem.message.id)
+              .includes(Number(item)),
+        )
+        .map((x) => allMessages[x.toString()]);
 
       const newRecs = this.deliveredMessagesRepo.create(
-        toAddDeliveryMessages
-          .map(msg => ({
-            message: msg,
-            intendedParticipant: msg.room.intendedParticipants.find(x => x.participant.id === user.id)
-          })))
+        toAddDeliveryMessages.map((msg) => ({
+          message: msg,
+          intendedParticipant: msg.room.intendedParticipants.find(
+            (x) => x.participant.id === user.id,
+          ),
+        })),
+      );
 
-      const addingMissedDelivery = await this.deliveredMessagesRepo.save(newRecs)
+      const addingMissedDelivery = await this.deliveredMessagesRepo.save(
+        newRecs,
+      );
 
       const updatedMessages = await this.messagesRepo.find({
         relations: {
           room: { intendedParticipants: { participant: true } },
           delivered: { intendedParticipant: { participant: true } },
           seen: { intendedParticipant: { participant: true } },
-          writer: true
+          writer: true,
         },
-        where: { id: In(toAddDeliveryMessages.map(item => item.id)) }
-      })
+        where: { id: In(toAddDeliveryMessages.map((item) => item.id)) },
+      });
 
       // const addingMissedDelivery = await this.deliveredMessagesRepo.insert(toAddDeliveryMessages.map(msg => ({ message: msg, intendedParticipant: msg.room.intendedParticipants.find(x => x.participant.id === user.id) })))
 
-      return updatedMessages.map(item => {
-
+      return updatedMessages.map((item) => {
         const members = [
-          item.room.intendedParticipants.filter(participant => participant.status === chatIntendedParticipantStatus.accepted).map(item => item.participant.id),
-        ].flat(Infinity).sort()
+          item.room.intendedParticipants
+            .filter(
+              (participant) =>
+                participant.status === chatIntendedParticipantStatus.accepted,
+            )
+            .map((item) => item.participant.id),
+        ]
+          .flat(Infinity)
+          .sort();
 
-        return ({
+        return {
           ...item,
           writer: {
             id: item.writer.id,
             email: item.writer.email,
             name: item.writer.name,
-            photo: item.writer.photo
+            photo: item.writer.photo,
           },
           delivered: [
-            item.delivered.map(item => (
-              {
-                id: item.intendedParticipant.participant.id,
-                email: item.intendedParticipant.participant.email,
-                name: item.intendedParticipant.participant.name,
-              }
-            ))
+            item.delivered.map((item) => ({
+              id: item.intendedParticipant.participant.id,
+              email: item.intendedParticipant.participant.email,
+              name: item.intendedParticipant.participant.name,
+            })),
           ].flat(Infinity),
           seen: [
-            item.seen.map(item => (
-              {
-                id: item.intendedParticipant.participant.id,
-                email: item.intendedParticipant.participant.email,
-                name: item.intendedParticipant.participant.name,
-              }
-            ))
+            item.seen.map((item) => ({
+              id: item.intendedParticipant.participant.id,
+              email: item.intendedParticipant.participant.email,
+              name: item.intendedParticipant.participant.name,
+            })),
           ].flat(Infinity),
-          isDelivered: JSON.stringify(item.delivered.map(item => item.intendedParticipant.participant.id).sort()) === JSON.stringify(members),
-          isSeen: JSON.stringify(item.seen.map(item => item.intendedParticipant.participant.id).sort()) === JSON.stringify(members),
-        })
-      })
-    }
-    catch (ex) {
-      console.log(ex)
+          isDelivered:
+            JSON.stringify(
+              item.delivered
+                .map((item) => item.intendedParticipant.participant.id)
+                .sort(),
+            ) === JSON.stringify(members),
+          isSeen:
+            JSON.stringify(
+              item.seen
+                .map((item) => item.intendedParticipant.participant.id)
+                .sort(),
+            ) === JSON.stringify(members),
+        };
+      });
+    } catch (ex) {
+      console.log(ex);
     }
   }
 
@@ -649,85 +749,109 @@ export class ChatService {
       const thisRoom = await this.roomsRepo.findOne({
         relations: {
           intendedParticipants: { participant: true },
-          messages: { room: { intendedParticipants: { participant: true } } }
+          messages: { room: { intendedParticipants: { participant: true } } },
         },
-        where: { id: roomId }
-      })
+        where: { id: roomId },
+      });
 
-      const thisRoomAllMessages = (thisRoom.messages as ChatMessage[])
-        .reduce((p, c) => ({ ...p, [c.id.toString()]: c }), {})
+      const thisRoomAllMessages = (thisRoom.messages as ChatMessage[]).reduce(
+        (p, c) => ({ ...p, [c.id.toString()]: c }),
+        {},
+      );
 
-      const thisRoomAllMessagesIds = thisRoom.messages.map(msg => msg.id)
+      const thisRoomAllMessagesIds = thisRoom.messages.map((msg) => msg.id);
 
       const seenStatus = await this.seenMessagesRepo.find({
-        relations: { intendedParticipant: { participant: true }, message: true },
-        where: { message: { id: In(thisRoomAllMessagesIds) }, intendedParticipant: { participant: { id: user.id } } }
-      })
+        relations: {
+          intendedParticipant: { participant: true },
+          message: true,
+        },
+        where: {
+          message: { id: In(thisRoomAllMessagesIds) },
+          intendedParticipant: { participant: { id: user.id } },
+        },
+      });
 
-      const toAddSeenMessages: ChatMessage[] = (thisRoomAllMessagesIds
-        .filter(item => !seenStatus.map(elem => elem.message.id).includes(Number(item)))
-      ).map(x => thisRoomAllMessages[x.toString()])
+      const toAddSeenMessages: ChatMessage[] = thisRoomAllMessagesIds
+        .filter(
+          (item) =>
+            !seenStatus.map((elem) => elem.message.id).includes(Number(item)),
+        )
+        .map((x) => thisRoomAllMessages[x.toString()]);
 
       const newRecs = this.seenMessagesRepo.create(
-        toAddSeenMessages
-          .map(msg => ({
-            message: msg,
-            intendedParticipant: msg.room.intendedParticipants.find(x => x.participant.id === user.id)
-          })))
+        toAddSeenMessages.map((msg) => ({
+          message: msg,
+          intendedParticipant: msg.room.intendedParticipants.find(
+            (x) => x.participant.id === user.id,
+          ),
+        })),
+      );
 
-      const addingMissedSeen = await this.seenMessagesRepo.save(newRecs)
+      const addingMissedSeen = await this.seenMessagesRepo.save(newRecs);
 
       const updatedMessages = await this.messagesRepo.find({
         relations: {
           room: { intendedParticipants: { participant: true } },
           delivered: { intendedParticipant: { participant: true } },
           seen: { intendedParticipant: { participant: true } },
-          writer: true
+          writer: true,
         },
-        where: { id: In(toAddSeenMessages.map(item => item.id)) }
-      })
+        where: { id: In(toAddSeenMessages.map((item) => item.id)) },
+      });
 
       // const addingMissedDelivery = await this.deliveredMessagesRepo.insert(toAddDeliveryMessages.map(msg => ({ message: msg, intendedParticipant: msg.room.intendedParticipants.find(x => x.participant.id === user.id) })))
 
-      return updatedMessages.map(item => {
-
+      return updatedMessages.map((item) => {
         const members = [
-          item.room.intendedParticipants.filter(participant => participant.status === chatIntendedParticipantStatus.accepted).map(item => item.participant.id),
-        ].flat(Infinity).sort()
+          item.room.intendedParticipants
+            .filter(
+              (participant) =>
+                participant.status === chatIntendedParticipantStatus.accepted,
+            )
+            .map((item) => item.participant.id),
+        ]
+          .flat(Infinity)
+          .sort();
 
-        return ({
+        return {
           ...item,
           writer: {
             id: item.writer.id,
             email: item.writer.email,
             name: item.writer.name,
-            photo: item.writer.photo
+            photo: item.writer.photo,
           },
           delivered: [
-            item.delivered.map(item => (
-              {
-                id: item.intendedParticipant.participant.id,
-                email: item.intendedParticipant.participant.email,
-                name: item.intendedParticipant.participant.name,
-              }
-            ))
+            item.delivered.map((item) => ({
+              id: item.intendedParticipant.participant.id,
+              email: item.intendedParticipant.participant.email,
+              name: item.intendedParticipant.participant.name,
+            })),
           ].flat(Infinity),
           seen: [
-            item.seen.map(item => (
-              {
-                id: item.intendedParticipant.participant.id,
-                email: item.intendedParticipant.participant.email,
-                name: item.intendedParticipant.participant.name,
-              }
-            ))
+            item.seen.map((item) => ({
+              id: item.intendedParticipant.participant.id,
+              email: item.intendedParticipant.participant.email,
+              name: item.intendedParticipant.participant.name,
+            })),
           ].flat(Infinity),
-          isDelivered: JSON.stringify(item.delivered.map(item => item.intendedParticipant.participant.id).sort()) === JSON.stringify(members),
-          isSeen: JSON.stringify(item.seen.map(item => item.intendedParticipant.participant.id).sort()) === JSON.stringify(members),
-        })
-      })
-    }
-    catch (ex) {
-      console.log(ex)
+          isDelivered:
+            JSON.stringify(
+              item.delivered
+                .map((item) => item.intendedParticipant.participant.id)
+                .sort(),
+            ) === JSON.stringify(members),
+          isSeen:
+            JSON.stringify(
+              item.seen
+                .map((item) => item.intendedParticipant.participant.id)
+                .sort(),
+            ) === JSON.stringify(members),
+        };
+      });
+    } catch (ex) {
+      console.log(ex);
     }
   }
 
@@ -735,4 +859,3 @@ export class ChatService {
     return 'hello, you are in service of chat app.';
   }
 }
-

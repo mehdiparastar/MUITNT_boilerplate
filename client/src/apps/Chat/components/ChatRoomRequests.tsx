@@ -1,20 +1,20 @@
 import { Check, Close } from '@mui/icons-material'
-import { Alert, AlertTitle, Box, Container, Fade, IconButton, Slide, Stack, Tooltip, Typography } from '@mui/material'
-import { useConfirmJoinRequestMutation, useGetMyAllRequestsQuery, useRejectJoinRequestMutation } from 'redux/features/CHAT_APP/chatApiSlice'
+import { Alert, AlertTitle, Box, Container, IconButton, Stack, Tooltip, Typography } from '@mui/material'
+import Collapse from '@mui/material/Collapse'
+import { useTheme } from '@mui/material/styles'
 import { formatDistanceToNow } from 'date-fns'
-import { NotFoundSVG } from 'svg/pages/NotFoundSVG'
-import { useTheme } from '@mui/material/styles';
-import { TransitionGroup } from 'react-transition-group';
-import Collapse from '@mui/material/Collapse';
 import { RoomIntendedParticipantDto } from 'models/CHAT_APP/intendedParticipant.model'
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack'
+import { TransitionGroup } from 'react-transition-group'
+import { useConfirmJoinRequestMutation, useGetMyAllRequestsQuery, useRejectJoinRequestMutation } from 'redux/features/CHAT_APP/chatApiSlice'
+import { NotFoundSVG } from 'svg/pages/NotFoundSVG'
 
 type Props = {}
 
 const ChatRoomRequests = (props: Props) => {
     const theme = useTheme();
     const { enqueueSnackbar } = useSnackbar()
-    const { data: allReqs = [], isLoading } = useGetMyAllRequestsQuery()
+    const { data: allReqs = [] } = useGetMyAllRequestsQuery()
     const [confirmJoinRequest] = useConfirmJoinRequestMutation()
     const [rejectJoinRequest] = useRejectJoinRequestMutation()
 

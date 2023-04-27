@@ -15,7 +15,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       //   ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
-      usernameField: 'email',      
+      usernameField: 'email',
     });
   }
 
@@ -31,5 +31,5 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   success(user: any, info?: any): void {
     console.log('user');
-  }  
+  }
 }

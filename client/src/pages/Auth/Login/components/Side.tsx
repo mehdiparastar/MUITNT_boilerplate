@@ -13,7 +13,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 
 
 export const Side: FC<any> = (): ReactElement => {
-  
+
   const theme = useTheme();
   const themeMode = theme.palette.mode;
 
@@ -41,6 +41,7 @@ export const Side: FC<any> = (): ReactElement => {
         '& .slick-dots li button:before': {
           color: themeMode === 'dark' ? 'white' : 'black',
         },
+        width: '100%'
       }}
     >
       <Slider {...settings}>

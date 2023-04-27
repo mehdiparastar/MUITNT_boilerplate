@@ -14,7 +14,7 @@ import { UserRoles } from 'src/enum/userRoles.enum';
 
 @Entity()
 @Index(['role', 'user'], { unique: true })
-export class PermissionRequest {
+export class UserPermissionRequest {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id: number;

@@ -2,7 +2,7 @@ import { pReqResultENUM } from 'enum/pReqResult.enum';
 import { FC } from 'react';
 import * as yup from 'yup';
 
-export { };
+export {};
 
 declare global {
   type themeMode = 'light' | 'dark';

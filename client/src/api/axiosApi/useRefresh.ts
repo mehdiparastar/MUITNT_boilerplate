@@ -1,12 +1,16 @@
 import axios from 'api/axiosApi/axios';
 import { strToBool } from 'helperFunctions/strToBool';
-import { selectCurrentPersist, selectCurrentRefreshToken, setAuthTokens } from 'redux/features/WHOLE_APP/auth/authSlice';
+import {
+  selectCurrentPersist,
+  selectCurrentRefreshToken,
+  setAuthTokens,
+} from 'redux/features/WHOLE_APP/auth/authSlice';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 
 const useRefreshToken = () => {
-  const persist = useAppSelector(selectCurrentPersist)
-  const refreshToken = useAppSelector(selectCurrentRefreshToken)
-  const dispatch = useAppDispatch()
+  const persist = useAppSelector(selectCurrentPersist);
+  const refreshToken = useAppSelector(selectCurrentRefreshToken);
+  const dispatch = useAppDispatch();
 
   const refresh = async (persistRT?: string | null) => {
     const rT =
@@ -19,7 +23,7 @@ const useRefreshToken = () => {
         Authorization: `Bearer ${rT}`,
       },
     });
-    dispatch(setAuthTokens(response.data))
+    dispatch(setAuthTokens(response.data));
     return { aT: response.data.accessToken, rT: response.data.refreshToken };
   };
 

@@ -52,4 +52,4 @@ declare global {
   type RequestWithAuth = Request & AuthPayload;
 }
 
-export { };
+export {};

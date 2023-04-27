@@ -1,7 +1,6 @@
 import { Palette } from '@mui/material/styles/createPalette';
 import { defaultTheme } from './defaultTheme';
 
-
 export const light: Palette = {
   ...defaultTheme.palette,
   alternate: {

@@ -1,3 +1,3 @@
 export enum appNameEnum {
-    file = 'FILE',
+  file = 'FILE',
 }

@@ -1,4 +1,3 @@
-
 export interface IChatSocket {
-    onlineUsers: { [roomId: number]: [] }
+  onlineUsers: { [roomId: number]: [] };
 }

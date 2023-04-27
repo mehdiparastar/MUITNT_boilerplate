@@ -26,7 +26,7 @@ import { UsersModule } from './users/users.module';
     CrudModule,
     FilesModule,
     TagsModule,
-    ChatModule
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [
@@ -43,4 +43,4 @@ import { UsersModule } from './users/users.module';
     AppService,
   ],
 })
-export class AppModule { }
+export class AppModule {}

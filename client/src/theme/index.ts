@@ -8,11 +8,7 @@ import TheBlacklistWoff from '../assets/fonts/TheBlacklist.woff';
 import palette from './palette';
 import shadows from './shadows';
 
-
-const getTheme = (
-  mode: themeMode,
-  paletteType: themePaletteType,
-) =>
+const getTheme = (mode: themeMode, paletteType: themePaletteType) =>
   responsiveFontSizes(
     createTheme({
       palette: palette(mode, paletteType),

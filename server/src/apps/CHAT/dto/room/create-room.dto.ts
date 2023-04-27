@@ -20,5 +20,5 @@ export class CreateRoomDto {
 
   @ApiProperty()
   @IsArray()
-  intendedParticipants: UserDto[]
+  intendedParticipants: UserDto[];
 }

@@ -44,9 +44,9 @@ export class MessageDto {
 
   @Expose()
   @ApiProperty()
-  isSeen?: boolean
+  isSeen?: boolean;
 
   @Expose()
   @ApiProperty()
-  isDelivered?: boolean
+  isDelivered?: boolean;
 }

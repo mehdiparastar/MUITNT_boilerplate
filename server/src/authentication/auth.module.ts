@@ -19,7 +19,9 @@ import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
         return {
           secret: config.get<string>('JWT_ACCESS_SECRET'),
           signOptions: {
-            expiresIn: config.get<string | number>('JWT_ACCESS_EXPIRATION_TIME'),
+            expiresIn: config.get<string | number>(
+              'JWT_ACCESS_EXPIRATION_TIME',
+            ),
           },
         };
       },
@@ -34,6 +36,6 @@ import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
     RefreshTokenStrategy,
     GoogleOauthStrategy,
   ],
-  exports: [AccessTokenStrategy, JwtModule]
+  exports: [AccessTokenStrategy, JwtModule],
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -8,7 +8,7 @@ import { LoginForm } from './components/LoginForm';
 import { Side } from './components/Side';
 
 const Login: FC<any> = (): ReactElement => {
-  
+
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'), {
     defaultMatches: true,

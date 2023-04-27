@@ -11,17 +11,17 @@ import { In, Repository } from 'typeorm';
 
 import { UserRoles } from '../enum/userRoles.enum';
 import { UpdatePermissionRequestDto } from './dto/permissionRequest/update-permission-request.dto';
-import { PermissionRequest } from './entities/permission-requests.entity';
+import { UserPermissionRequest } from './entities/permission-requests.entity';
 import { User } from './entities/user.entity';
 
 @Injectable()
 export class PermissionRequestsService {
   constructor(
-    @InjectRepository(PermissionRequest)
-    private permissionRequestsRepo: Repository<PermissionRequest>,
+    @InjectRepository(UserPermissionRequest)
+    private permissionRequestsRepo: Repository<UserPermissionRequest>,
   ) {}
 
-  async create(user: User, role: UserRoles): Promise<PermissionRequest> {
+  async create(user: User, role: UserRoles): Promise<UserPermissionRequest> {
     // Check if duplication
     const [pRExists] = await this.permissionRequestsRepo.find({
       relations: ['user'],
@@ -45,7 +45,7 @@ export class PermissionRequestsService {
     return this.permissionRequestsRepo.save(pReq);
   }
 
-  async findByUser(user: User): Promise<PermissionRequest[]> {
+  async findByUser(user: User): Promise<UserPermissionRequest[]> {
     const find = await this.permissionRequestsRepo.find({
       relations: ['user'],
       where: { user: { id: user.id } },
@@ -53,7 +53,7 @@ export class PermissionRequestsService {
     return find;
   }
 
-  async findOneById(id: number): Promise<PermissionRequest> {
+  async findOneById(id: number): Promise<UserPermissionRequest> {
     if (!id) {
       throw new NotFoundException('user not found');
     }
@@ -70,7 +70,7 @@ export class PermissionRequestsService {
   async update(
     id: number,
     attrs: UpdatePermissionRequestDto,
-  ): Promise<PermissionRequest> {
+  ): Promise<UserPermissionRequest> {
     const pReq = await this.findOneById(id);
     if (!pReq) {
       throw new NotFoundException('user not found');
@@ -79,8 +79,8 @@ export class PermissionRequestsService {
     return this.permissionRequestsRepo.save(pReq);
   }
 
-  async findAll(): Promise<PermissionRequest[]> {
-    const allPReq: PermissionRequest[] = await this.permissionRequestsRepo.find(
+  async findAll(): Promise<UserPermissionRequest[]> {
+    const allPReq: UserPermissionRequest[] = await this.permissionRequestsRepo.find(
       {},
     );
     return allPReq;
@@ -94,7 +94,7 @@ export class PermissionRequestsService {
     rejected?: boolean,
     unSeen?: boolean,
     seen?: boolean,
-  ): Promise<{ data: PermissionRequest[]; count: number }> {
+  ): Promise<{ data: UserPermissionRequest[]; count: number }> {
     const query = [
       accepted === true ? permissionRequestResultEnum.accepted : null,
       rejected === true ? permissionRequestResultEnum.rejected : null,
@@ -132,7 +132,7 @@ export class PermissionRequestsService {
     unSeen?: boolean,
     seen?: boolean,
     selectedUserId?: string | null | undefined,
-  ): Promise<{ data: PermissionRequest[]; count: number }> {
+  ): Promise<{ data: UserPermissionRequest[]; count: number }> {
     const resultQuery = [
       accepted === true ? permissionRequestResultEnum.accepted : null,
       rejected === true ? permissionRequestResultEnum.rejected : null,
@@ -163,7 +163,7 @@ export class PermissionRequestsService {
     };
   }
 
-  async remove(user: User, id: number): Promise<PermissionRequest> {
+  async remove(user: User, id: number): Promise<UserPermissionRequest> {
     const pReq = await this.findOneById(id);
     if (!pReq) {
       throw new NotFoundException('permission request not found');
@@ -182,7 +182,7 @@ export class PermissionRequestsService {
     return this.permissionRequestsRepo.remove(pReq);
   }
 
-  async pReqSetToSeen(user: User, pReqId: number): Promise<PermissionRequest> {
+  async pReqSetToSeen(user: User, pReqId: number): Promise<UserPermissionRequest> {
     const update = await this.update(pReqId, {
       approver: user,
       result: permissionRequestResultEnum.seen,
@@ -190,7 +190,7 @@ export class PermissionRequestsService {
     return update;
   }
 
-  async approvePReq(user: User, pReqId: number): Promise<PermissionRequest> {
+  async approvePReq(user: User, pReqId: number): Promise<UserPermissionRequest> {
     const update = await this.update(pReqId, {
       approver: user,
       result: permissionRequestResultEnum.accepted,
@@ -198,7 +198,7 @@ export class PermissionRequestsService {
     return update;
   }
 
-  async rejectPReq(user: User, pReqId: number): Promise<PermissionRequest> {
+  async rejectPReq(user: User, pReqId: number): Promise<UserPermissionRequest> {
     const update = await this.update(pReqId, {
       approver: user,
       result: permissionRequestResultEnum.rejected,

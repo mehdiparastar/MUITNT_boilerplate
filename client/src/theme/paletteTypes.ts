@@ -1,4 +1,3 @@
-
 export const paletteTypes: themePaletteType[] = [
   'green',
   'blue',

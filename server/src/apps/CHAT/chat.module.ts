@@ -14,14 +14,22 @@ import { ChatSeenMessages } from './entities/seenMessages.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ChatRoom, ChatMessage, ChatIntendedParticipants, ChatDeliveredMessages, ChatSeenMessages]),
+    TypeOrmModule.forFeature([
+      ChatRoom,
+      ChatMessage,
+      ChatIntendedParticipants,
+      ChatDeliveredMessages,
+      ChatSeenMessages,
+    ]),
     AuthModule,
     JwtModule.registerAsync({
       useFactory: (config: ConfigService<IconfigService>) => {
         return {
           secret: config.get<string>('JWT_ACCESS_SECRET'),
           signOptions: {
-            expiresIn: config.get<string | number>('JWT_ACCESS_EXPIRATION_TIME'),
+            expiresIn: config.get<string | number>(
+              'JWT_ACCESS_EXPIRATION_TIME',
+            ),
           },
         };
       },
@@ -29,11 +37,6 @@ import { ChatSeenMessages } from './entities/seenMessages.entity';
     }),
   ],
   controllers: [ChatController],
-  providers: [
-    ChatGateway,
-    ChatService,
-  ],
+  providers: [ChatGateway, ChatService],
 })
-export class ChatModule {
-
-}
+export class ChatModule {}

@@ -18,7 +18,7 @@ export class AuthService {
     protected configService: ConfigService<IconfigService>,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async localUserValidate(
     email: string,
@@ -106,11 +106,15 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: this.configService.get<string | number>('JWT_ACCESS_EXPIRATION_TIME'),
+        expiresIn: this.configService.get<string | number>(
+          'JWT_ACCESS_EXPIRATION_TIME',
+        ),
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        expiresIn: this.configService.get<string | number>('JWT_REFRESH_EXPIRATION_TIME'),
+        expiresIn: this.configService.get<string | number>(
+          'JWT_REFRESH_EXPIRATION_TIME',
+        ),
       }),
     ]);
 

@@ -1,17 +1,15 @@
-import { apiSlice } from '../../../../api/rtkApi/apiSlice'
+import { apiSlice } from '../../../../api/rtkApi/apiSlice';
 
 export const userApiSlice = apiSlice.injectEndpoints({
-    endpoints: (builder) => ({
-        getAllUsers: builder.query<IUser[], void>({
-            query: () => {
-                return ({ url: 'auth/all', method: 'GET' })
-            },
-            providesTags: ['User'],
-            keepUnusedDataFor: 5
-        }),
-    })
-})
+  endpoints: (builder) => ({
+    getAllUsers: builder.query<IUser[], void>({
+      query: () => {
+        return { url: 'auth/all', method: 'GET' };
+      },
+      providesTags: ['User'],
+      keepUnusedDataFor: 5,
+    }),
+  }),
+});
 
-export const {
-    useGetAllUsersQuery
-} = userApiSlice
+export const { useGetAllUsersQuery } = userApiSlice;

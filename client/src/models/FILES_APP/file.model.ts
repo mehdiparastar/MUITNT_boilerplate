@@ -1,27 +1,26 @@
-import { ITag } from "models/TAGS/tag.model";
+import { ITag } from 'models/TAGS/tag.model';
 
 export interface IFile {
-    id: number;
+  id: number;
 
-    name: string;
+  name: string;
 
-    tags?: ITag[];
+  tags?: ITag[];
 
-    type: string;
+  type: string;
 
-    size: number;
+  size: number;
 
-    private: boolean;
+  private: boolean;
 
-    createdAt: Date;
+  createdAt: Date;
 
-    updatedAt: Date;
+  updatedAt: Date;
 
-    owner: IUser;
-
+  owner: IUser;
 }
 
 export interface IFilePaginated {
-    data: IFile[];
-    count: number
+  data: IFile[];
+  count: number;
 }

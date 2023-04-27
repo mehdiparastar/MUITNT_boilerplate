@@ -72,7 +72,7 @@ const FilesExcerpt =
             } catch (ex) {
                 setLoading(false)
                 const err = ex as { data: { msg: string } }
-                enqueueSnackbar(`Downloading Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
+                enqueueSnackbar(`Deleting Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
             }
         }
 

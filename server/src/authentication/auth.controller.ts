@@ -20,7 +20,7 @@ import { CreatePermissionRequestDto } from 'src/users/dto/permissionRequest/crea
 import { PaginationPermissionRequestDto } from 'src/users/dto/permissionRequest/pagination-permission-request.dto';
 import { PermissionRequestDto } from 'src/users/dto/permissionRequest/permission-request.dto';
 import { ChangeLocalUserProfileDetailDto } from 'src/users/dto/user/change-local-user-profile-detail.dto';
-import { PermissionRequest } from 'src/users/entities/permission-requests.entity';
+import { UserPermissionRequest } from 'src/users/entities/permission-requests.entity';
 import { PermissionRequestsService } from 'src/users/permissionRequests.service';
 
 import { Roles } from '../authorization/roles.decorator';
@@ -51,7 +51,7 @@ export class AuthController {
     private readonly usersService: UsersService,
     private readonly permissionRequestService: PermissionRequestsService,
     private configService: ConfigService<IconfigService>,
-  ) { }
+  ) {}
 
   @Post('local-create')
   @Serialize(JWTTokenDto)
@@ -73,7 +73,7 @@ export class AuthController {
 
   @Get('google-logins/:from')
   @UseGuards(GoogleOauthGuard)
-  async googleLogin(@Req() req: Request) { }
+  async googleLogin(@Req() req: Request) {}
 
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
@@ -207,7 +207,7 @@ export class AuthController {
   async createPermissionRequest(
     @CurrentUser() user: User,
     @Body() body: CreatePermissionRequestDto,
-  ): Promise<PermissionRequest> {
+  ): Promise<UserPermissionRequest> {
     return this.permissionRequestService.create(user, body.role);
   }
 
@@ -275,7 +275,7 @@ export class AuthController {
   pReqSetToSeen(
     @CurrentUser() user: User,
     @Body('pReqId') pReqId: number,
-  ): Promise<PermissionRequest> {
+  ): Promise<UserPermissionRequest> {
     return this.permissionRequestService.pReqSetToSeen(user, pReqId);
   }
 
@@ -285,7 +285,7 @@ export class AuthController {
   async approvePReq(
     @CurrentUser() user: User,
     @Body('pReqId') pReqId: number,
-  ): Promise<PermissionRequest> {
+  ): Promise<UserPermissionRequest> {
     const pReq = await this.permissionRequestService.findOneById(pReqId);
     const updatePermission = await this.usersService.update(pReq.user.id, {
       roles: [...new Set([...pReq.user.roles, pReq.role])],
@@ -299,7 +299,7 @@ export class AuthController {
   async rejectPReq(
     @CurrentUser() user: User,
     @Body('pReqId') pReqId: number,
-  ): Promise<PermissionRequest> {
+  ): Promise<UserPermissionRequest> {
     const pReq = await this.permissionRequestService.findOneById(pReqId);
     const updatePermission = await this.usersService.update(pReq.user.id, {
       roles: pReq.user.roles.filter((item) => item !== pReq.role),

@@ -54,7 +54,7 @@ const BottomNav = (props: Props) => {
         if (value !== currentLoc) {
             setValue(null)
         }
-    }, [location.pathname, value])
+    }, [location.pathname, value, currentLoc])
 
     return (
         <Paper

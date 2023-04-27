@@ -1,17 +1,16 @@
 import { Box, Button, Container, Stack, TextField, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import { AxiosResponse } from 'axios';
 import { MUIAsyncAutocompleteTags } from 'components/MUIAsyncAutocompleteTags/MUIAsyncAutocompleteTags';
+import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';
 import { useFormik } from 'formik';
 import { ICreateChatRoomFormDto } from 'models/CHAT_APP/room.model';
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
 import { useCreateChatRoomMutation } from 'redux/features/CHAT_APP/chatApiSlice';
 import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
 import { useGetAllUsersQuery } from 'redux/features/WHOLE_APP/user/userApiSlice';
 import * as yup from 'yup';
-import { useLocation, useNavigate } from "react-router-dom";
-import ProfilePicEditor from 'components/ProfilePicEditor/ProfilePicEditor';
 
 type Props = {}
 
@@ -19,9 +18,9 @@ const userSchema = yup.object<Shape<IUser>>({
     id: yup.number(),
     email: yup.string().email(),
     name: yup.string(),
-    photo: yup.string().notRequired().nullable(true),
+    photo: yup.string().notRequired().nullable(),
     provider: yup.string(),
-    providerId: yup.string().notRequired().nullable(true),
+    providerId: yup.string().notRequired().nullable(),
     roles: yup.array().of(yup.string())
 })
 
@@ -42,7 +41,6 @@ const validationSchema = yup.object/*<Shape<ICreateChatRoomFormDto>>*/({
 });
 
 const CreateChatRoom = (props: Props) => {
-    const theme = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
     const { enqueueSnackbar } = useSnackbar()

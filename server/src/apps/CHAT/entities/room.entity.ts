@@ -8,7 +8,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { ChatIntendedParticipants } from './intendedParticipants.entity';
 import { ChatMessage } from './messages.entity';
@@ -35,8 +35,8 @@ export class ChatRoom {
 
   @Column({ type: 'boolean', default: false })
   @ApiProperty()
-  closed: boolean
-  
+  closed: boolean;
+
   @CreateDateColumn()
   @ApiProperty()
   createdAt?: Date;
@@ -51,6 +51,8 @@ export class ChatRoom {
   @OneToMany(() => ChatMessage, (msg) => msg.room, { cascade: true })
   messages: ChatMessage[];
 
-  @OneToMany(() => ChatIntendedParticipants, (msg) => msg.room, { cascade: true })
+  @OneToMany(() => ChatIntendedParticipants, (msg) => msg.room, {
+    cascade: true,
+  })
   intendedParticipants: ChatIntendedParticipants[];
 }

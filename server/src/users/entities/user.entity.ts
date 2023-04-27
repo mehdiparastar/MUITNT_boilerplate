@@ -12,11 +12,11 @@ import {
   Index,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { FileInfo } from '../../apps/FILE/entities/fileInfo.entity';
 import { authTypeEnum } from '../../enum/authType.enum';
-import { PermissionRequest } from './permission-requests.entity';
+import { UserPermissionRequest } from './permission-requests.entity';
 
 @Entity()
 export class User {
@@ -67,18 +67,18 @@ export class User {
   updatedAt?: Date;
 
   @OneToMany(
-    () => PermissionRequest,
+    () => UserPermissionRequest,
     (permissionRequest) => permissionRequest.user,
     { cascade: true },
   )
-  permissionRequests: PermissionRequest[];
+  permissionRequests: UserPermissionRequest[];
 
   @OneToMany(
-    () => PermissionRequest,
+    () => UserPermissionRequest,
     (permissionRequest) => permissionRequest.user,
     { cascade: true },
   )
-  approves: PermissionRequest[];
+  approves: UserPermissionRequest[];
 
   @OneToMany(() => Post, (post) => post.author, { cascade: true })
   posts: Post[];
@@ -98,10 +98,17 @@ export class User {
   @OneToMany(() => ChatMessage, (msg) => msg.writer, { cascade: true })
   chatMessages: ChatMessage[];
 
-  @OneToMany(() => ChatIntendedParticipants, (intendedParticipant) => intendedParticipant.creator, { cascade: true })
+  @OneToMany(
+    () => ChatIntendedParticipants,
+    (intendedParticipant) => intendedParticipant.creator,
+    { cascade: true },
+  )
   creatorOfIntendedParticipants: ChatIntendedParticipants[];
 
-  @OneToMany(() => ChatIntendedParticipants, (intendedParticipant) => intendedParticipant.participant, { cascade: true })
+  @OneToMany(
+    () => ChatIntendedParticipants,
+    (intendedParticipant) => intendedParticipant.participant,
+    { cascade: true },
+  )
   participantOfIntendedParticipants: ChatIntendedParticipants[];
-
 }

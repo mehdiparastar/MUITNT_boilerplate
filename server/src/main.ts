@@ -18,7 +18,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService<IconfigService>);
   const serverPort = configService.get<number>('SERVER_PORT') || 3001;
-  const clientPort = configService.get('CLIENT_PORT')
+  const clientPort = configService.get('CLIENT_PORT');
 
   // const serverPort = process.env.PORT || 3001;
   var whitelist = [
@@ -26,7 +26,7 @@ async function bootstrap() {
     `http://localhost:${clientPort}`,
     `http://localhost:${serverPort}`,
     new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`),
-    new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${serverPort}$/`),       
+    new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${serverPort}$/`),
   ];
   app.enableCors({
     // credentials: true,

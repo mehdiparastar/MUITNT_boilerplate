@@ -16,22 +16,25 @@ import { RoomAuthGuard } from './guards/addMsg.guard';
 
 @Controller('chat_app')
 export class ChatController {
-  constructor(private chatService: ChatService) { }
+  constructor(private chatService: ChatService) {}
 
   @Get('socket_initializing')
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Roles(UserRoles.chatAppUserLL)
   async socketInitilizing() {
     return {
-      onlineUsers: []
-    }
+      onlineUsers: [],
+    };
   }
 
   @Post('create-room')
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Roles(UserRoles.chatAppUserLL)
   @Serialize(RoomDtoWithoutMessages)
-  async create(@CurrentUser() user: User, @Body() createRoomDto: CreateRoomDto) {
+  async create(
+    @CurrentUser() user: User,
+    @Body() createRoomDto: CreateRoomDto,
+  ) {
     const result = await this.chatService.createRoom(user, createRoomDto);
     return result;
   }
@@ -41,8 +44,8 @@ export class ChatController {
   @Roles(UserRoles.chatAppUserLL)
   @Serialize(RoomDtoWithoutMessages)
   async getMyAllRooms(@CurrentUser() user: User) {
-    const qry = await this.chatService.findMyAllRooms(user)
-    return qry
+    const qry = await this.chatService.findMyAllRooms(user);
+    return qry;
   }
 
   @Get('get-my-all-requests')
@@ -50,8 +53,8 @@ export class ChatController {
   @Roles(UserRoles.chatAppUserLL)
   @Serialize(RoomIntendedParticipantDto)
   async getMyAllRequests(@CurrentUser() user: User) {
-    const qry = await this.chatService.findMyAllRequests(user)
-    return qry
+    const qry = await this.chatService.findMyAllRequests(user);
+    return qry;
   }
 
   @Post('confirm-join-room-request')
@@ -59,8 +62,8 @@ export class ChatController {
   @Roles(UserRoles.chatAppUserLL)
   @Serialize(RoomIntendedParticipantDto)
   async confirmJoinRequest(@CurrentUser() user: User, @Body('id') id: number) {
-    const qry = await this.chatService.confirmJoinRequest(user, id)
-    return qry
+    const qry = await this.chatService.confirmJoinRequest(user, id);
+    return qry;
   }
 
   @Post('reject-join-room-request')
@@ -68,8 +71,8 @@ export class ChatController {
   @Roles(UserRoles.chatAppUserLL)
   @Serialize(RoomIntendedParticipantDto)
   async rejectJoinRequest(@CurrentUser() user: User, @Body('id') id: number) {
-    const qry = await this.chatService.rejectJoinRequest(user, id)
-    return qry
+    const qry = await this.chatService.rejectJoinRequest(user, id);
+    return qry;
   }
 
   @Post('add-message')
@@ -77,17 +80,20 @@ export class ChatController {
   @Roles(UserRoles.chatAppUserLL)
   @Serialize(MessageDto)
   async addMessage(@CurrentUser() user: User, @Body() body: CreateMessageDto) {
-    const qry = await this.chatService.addMessage(user, body)
-    return qry
+    const qry = await this.chatService.addMessage(user, body);
+    return qry;
   }
 
   @Get('messages/:roomId')
   @UseGuards(AccessTokenGuard, RolesGuard, RoomAuthGuard)
   @Roles(UserRoles.chatAppUserLL)
   @Serialize(MessageDto)
-  async getMessages(@CurrentUser() user: User, @Param('roomId') roomId: number) {
-    const qry = await this.chatService.getMessages(user, roomId)
-    return qry
+  async getMessages(
+    @CurrentUser() user: User,
+    @Param('roomId') roomId: number,
+  ) {
+    const qry = await this.chatService.getMessages(user, roomId);
+    return qry;
   }
 
   @Get('test')

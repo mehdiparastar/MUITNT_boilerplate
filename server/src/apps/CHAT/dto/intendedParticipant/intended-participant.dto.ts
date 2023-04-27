@@ -12,11 +12,11 @@ export class RoomIntendedParticipantDto {
 
   @Expose()
   @ApiProperty({ enum: chatIntendedParticipantStatus })
-  status: chatIntendedParticipantStatus
+  status: chatIntendedParticipantStatus;
 
   @Expose()
   @ApiProperty()
-  isAdmin: boolean
+  isAdmin: boolean;
 
   @Expose()
   @Type(() => UserIdDto)
@@ -43,5 +43,3 @@ export class RoomIntendedParticipantDto {
   @ApiProperty()
   creator: UserDto;
 }
-
-

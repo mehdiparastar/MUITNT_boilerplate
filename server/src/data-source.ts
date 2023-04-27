@@ -9,7 +9,7 @@ import { Reaction } from './apps/CRUD/components/posts/entities/reaction.entity'
 import { FileBuffer } from './apps/FILE/entities/fileBuffer.entity';
 import { FileInfo } from './apps/FILE/entities/fileInfo.entity';
 import { Tag } from './tags/entities/tag.entity';
-import { PermissionRequest } from './users/entities/permission-requests.entity';
+import { UserPermissionRequest } from './users/entities/permission-requests.entity';
 import { User } from './users/entities/user.entity';
 
 interface IDBConfig {
@@ -28,7 +28,7 @@ const dbConfig: IDBConfig = {
     database: 'dev_db',
     entities: [
       User,
-      PermissionRequest,
+      UserPermissionRequest,
       Post,
       Reaction,
       FileInfo,
@@ -38,7 +38,7 @@ const dbConfig: IDBConfig = {
       ChatMessage,
       ChatIntendedParticipants,
       ChatDeliveredMessages,
-      ChatSeenMessages
+      ChatSeenMessages,
     ],
     synchronize: true,
     // synchronize: false,
@@ -47,14 +47,14 @@ const dbConfig: IDBConfig = {
   },
   test: {
     type: 'mysql',
-    host: 'db',  //'localhost',
+    host: 'db', //'localhost',
     port: 3306,
     username: 'admin',
     password: 'admin',
     database: 'test_db',
     entities: [
       User,
-      PermissionRequest,
+      UserPermissionRequest,
       Post,
       Reaction,
       FileInfo,
@@ -64,7 +64,7 @@ const dbConfig: IDBConfig = {
       ChatMessage,
       ChatIntendedParticipants,
       ChatDeliveredMessages,
-      ChatSeenMessages
+      ChatSeenMessages,
     ],
     synchronize: true,
     // synchronize: false,

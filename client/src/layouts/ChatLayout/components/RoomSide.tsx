@@ -23,7 +23,7 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 const RoomSide = (props: Props) => {
     const theme = useTheme();
     const location = useLocation()
-    const { data = [], isLoading } = useGetMyAllRoomsQuery()
+    const { data = [] } = useGetMyAllRoomsQuery()
     const { data: socketData = { onlineUsers: {} } } = useChatSocketQuery()
 
     const allRooms =
