@@ -8,16 +8,16 @@ import { TagDto } from 'src/tags/dto/tag.dto';
 import { UserDto } from 'src/users/dto/user/user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { In, Repository } from 'typeorm';
-import { FileBuffer } from './entities/fileBuffer.entity';
-import { FileInfo } from './entities/fileInfo.entity';
+import { MovieFileBuffer } from './entities/movieFileBuffer.entity';
+import { MovieFileInfo } from './entities/movieFileInfo.entity';
 
 @Injectable()
-export class FilesService {
+export class MoviesService {
   constructor(
-    @InjectRepository(FileInfo)
-    private filesInfoRepo: Repository<FileInfo>,
-    @InjectRepository(FileBuffer)
-    private filesBufferRepo: Repository<FileBuffer>,
+    @InjectRepository(MovieFileInfo)
+    private filesInfoRepo: Repository<MovieFileInfo>,
+    @InjectRepository(MovieFileBuffer)
+    private filesBufferRepo: Repository<MovieFileBuffer>,
   ) {}
 
   async uploads(
@@ -30,7 +30,7 @@ export class FilesService {
       }
     >,
   ) {
-    let savingRes: FileInfo[] = [];
+    let savingRes: MovieFileInfo[] = [];
 
     for (const file of files) {
       const fileBuffer = this.filesBufferRepo.create({
@@ -62,7 +62,7 @@ export class FilesService {
     isPrivate: boolean,
     tagsFilter: number[] | undefined,
     user: User,
-  ): Promise<{ data: FileInfo[]; count: number }> {
+  ): Promise<{ data: MovieFileInfo[]; count: number }> {
     // Create new File
     const [result, total] = await this.filesInfoRepo.findAndCount({
       relations: {
@@ -99,7 +99,7 @@ export class FilesService {
     };
   }
 
-  async findOneById(id: number): Promise<FileInfo> {
+  async findOneById(id: number): Promise<MovieFileInfo> {
     if (!id) {
       throw new NotFoundException('file not found');
     }
@@ -113,7 +113,7 @@ export class FilesService {
     return find;
   }
 
-  async removeFile(user: User, id: number): Promise<FileBuffer> {
+  async removeFile(user: User, id: number): Promise<MovieFileBuffer> {
     const file = await this.findOneById(id);
     if (!file) {
       throw new NotFoundException('file not found');

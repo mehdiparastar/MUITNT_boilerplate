@@ -24,6 +24,7 @@ import Unauthorized from 'pages/Unauthorized/Unauthorized';
 import { Route, Routes } from 'react-router-dom';
 import About from '../pages/About/About';
 import Home from '../pages/Home/Home';
+import Movie from 'apps/Movie/Movie';
 
 export const RoutesList: React.FC = () => {
   return (
@@ -37,8 +38,8 @@ export const RoutesList: React.FC = () => {
           <Route path='requests' element={<ChatRoomRequests />} />
           <Route path='settings' element={<ChatRoomSettings />} />
         </Route>
-
       </Route>
+
       <Route path="/" element={<MainLayout />}>
         <Route path="google-oauth-success-redirect">
           <Route path=":accessToken/:refreshToken/:from" element={<GoogleOAuthSuccessRedirect />} />
@@ -65,11 +66,14 @@ export const RoutesList: React.FC = () => {
           <Route path="" element={<Crud />} />
         </Route>
 
+        <Route path="movie" element={<RequireAuth allowedRoles={[UserRoles.movieAppUserLL]} />}>
+          <Route path="" element={<Movie />} />
+        </Route>
+
         <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>
           <Route path="files" element={<Files />} />
           <Route path="video-call" element={<ComingSoon />} />
           <Route path="voice-call" element={<ComingSoon />} />
-          <Route path="movie" element={<ComingSoon />} />
           <Route path="music" element={<ComingSoon />} />
           <Route path="maps" element={<ComingSoon />} />
           <Route path="trade-bot" element={<ComingSoon />} />

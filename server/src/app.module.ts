@@ -13,6 +13,7 @@ import { AppDataSource } from './data-source';
 import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
 import { TagsModule } from './tags/tags.module';
 import { UsersModule } from './users/users.module';
+import { MoviesModule } from './apps/Movie/movies.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UsersModule } from './users/users.module';
     FilesModule,
     TagsModule,
     ChatModule,
+    MoviesModule,
   ],
   controllers: [AppController],
   providers: [

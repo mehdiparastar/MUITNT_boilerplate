@@ -41,7 +41,7 @@ export class TagsController {
   @Roles(UserRoles.superUser, UserRoles.admin)
   @Serialize(TagDto)
   async findAll(@Param('appName') appName: appNameEnum) {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
     return this.tagsService.findAll(appName);
   }
 

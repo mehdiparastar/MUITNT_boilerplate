@@ -5,8 +5,8 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
-import { RootState } from 'redux/store';
 import { setAuthTokens } from 'redux/features/WHOLE_APP/auth/authSlice';
+import { RootState } from 'redux/store';
 import { baseURL } from '../baseUrl';
 
 const baseQuery_login = fetchBaseQuery({ baseUrl: baseURL });
@@ -77,6 +77,8 @@ export const apiSlice = createApi({
     'File',
     'FileTags',
     'Chat',
+    'Movie',
+    'MovieFileTags',
   ],
   endpoints: (builder) => ({}),
 });
