@@ -5,7 +5,8 @@ import {
   CreateDateColumn,
   Entity,
   Index,
-  OneToOne,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -16,20 +17,21 @@ export class MovieFileBuffer {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id: number;
+  @Column({ nullable: false })
+  segmentNo: number;
 
   @Column({ type: 'longblob' })
   @ApiProperty()
   file: Buffer;
 
-  @OneToOne(() => MovieFileInfo, (file) => file.fileBuffer, {
-    nullable: false,
-    onDelete: 'CASCADE',
-  }) // specify inverse side as a second parameter
-  fileInfo: MovieFileInfo;
+  @ManyToMany(() => MovieFileInfo, (file) => file.fileBuffers, {
+    nullable: true,
+  })
+  filesInfo: MovieFileInfo[];
 
   @Column()
+  @Index({ unique: false })
   @ApiProperty()
-  @Index({ unique: true })
   fileHash: string;
 
   @CreateDateColumn()

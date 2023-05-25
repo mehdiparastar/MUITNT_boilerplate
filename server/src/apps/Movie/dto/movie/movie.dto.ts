@@ -24,7 +24,19 @@ export class MovieFileDto {
 
   @Expose()
   @ApiProperty()
+  fileHash: string;
+
+  @Expose()
+  @ApiProperty()
   size: number;
+
+  @Expose()
+  @ApiProperty()
+  totalSegments: number;
+
+  @Expose()
+  @ApiProperty()
+  uploadedComplete: boolean;
 
   @Expose()
   @ApiProperty()

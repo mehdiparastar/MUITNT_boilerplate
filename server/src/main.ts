@@ -22,16 +22,24 @@ async function bootstrap() {
 
   // const serverPort = process.env.PORT || 3001;
   var whitelist = [
-    `http://localhost`,
     `http://localhost:${clientPort}`,
     `http://localhost:${serverPort}`,
-    new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`),
-    new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${serverPort}$/`),
+    new RegExp(`^http:\/\/192\.168\.1\.([1-9]|[1-9]\\d):${clientPort}$`),
+    new RegExp(`^http:\/\/192\.168\.1\.([1-9]|[1-9]\\d):${serverPort}$`),
+    new RegExp(`^http:\/\/192\.168\.0\.([1-9]|[1-9]\\d):${clientPort}$`),
+    new RegExp(`^http:\/\/192\.168\.0\.([1-9]|[1-9]\\d):${serverPort}$`),
   ];
   app.enableCors({
     // credentials: true,
     origin: function (origin, callback) {
-      if (!origin || whitelist.indexOf(origin) !== -1) {
+      if (
+        !origin ||
+        whitelist.some(
+          (item) =>
+            (typeof item === 'string' && item === origin) ||
+            (item instanceof RegExp && item.test(origin)),
+        )
+      ) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));

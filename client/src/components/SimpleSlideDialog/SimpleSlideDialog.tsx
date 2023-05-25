@@ -29,7 +29,7 @@ interface Props {
     formId: string,
     sx?: SxProps,
     btnProps?: ButtonProps,
-    tooltipTitle?: string
+    tooltipTitle?: string,
 }
 
 export default function SimpleSlideDialog(props: Props) {

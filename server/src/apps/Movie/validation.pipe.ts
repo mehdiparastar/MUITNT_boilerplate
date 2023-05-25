@@ -13,7 +13,7 @@ export class MovieFileValidationPipe implements PipeTransform {
     const M = K * K;
     const KB = K * 1;
     const MB = K * KB;
-    const maxSize = 500 * MB;
+    const maxSize = 5000 * MB;
     // console.log(files, 'metadata')
     const invalidFilesSize = files.filter((file) => file.size > maxSize);
     if (invalidFilesSize.length > 0) {
@@ -27,7 +27,11 @@ export class MovieFileValidationPipe implements PipeTransform {
     }
 
     const invalidFilesType = files.filter(
-      (file) => file.mimetype !== 'video/mp4',
+      (file) =>
+        !(
+          file.mimetype === 'video/mp4' ||
+          file.mimetype === 'application/octet-stream'
+        ),
     );
     if (invalidFilesType.length > 0) {
       throw new BadRequestException(

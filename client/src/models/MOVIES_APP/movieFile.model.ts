@@ -11,6 +11,8 @@ export interface IMovieFile {
 
   size: number;
 
+  fileHash: string;
+
   private: boolean;
 
   createdAt: Date;
@@ -18,6 +20,10 @@ export interface IMovieFile {
   updatedAt: Date;
 
   owner: IUser;
+
+  totalSegments: number;
+
+  uploadedComplete: boolean;
 }
 
 export interface IMovieFilePaginated {

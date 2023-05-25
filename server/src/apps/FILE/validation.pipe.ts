@@ -13,7 +13,7 @@ export class FileValidationPipe implements PipeTransform {
     const M = K * K;
     const KB = K * 1;
     const MB = K * KB;
-    const maxSize = 500 * MB;
+    const maxSize = 5000 * MB;
     // console.log(files, 'metadata')
     const invalidFiles = files.filter((file) => file.size > maxSize);
     if (invalidFiles.length > 0) {

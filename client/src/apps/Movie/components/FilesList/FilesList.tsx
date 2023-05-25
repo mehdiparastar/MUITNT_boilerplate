@@ -9,7 +9,8 @@ import MovieFilesExcerpt from './components/MovieFilesExcerpt'
 
 type Props = {
     privateFilter: boolean,
-    tagsFilter: ITag[]
+    tagsFilter: ITag[],
+    uploadingProgress: { [key: string]: number }
 }
 
 const FilesList = (props: Props) => {
@@ -38,7 +39,12 @@ const FilesList = (props: Props) => {
         setSkip((value - 1) * limit);
     };
 
-    const renderedFiles = files.map((file: IMovieFile) => <MovieFilesExcerpt key={file.id} file={file} />)
+    const renderedFiles = files.map((file: IMovieFile) =>
+        <MovieFilesExcerpt
+            key={file.id}
+            file={file}
+            uploadingProgress={props.uploadingProgress}
+        />)
 
     useEffect(() => {
         setPage(1);
@@ -53,6 +59,7 @@ const FilesList = (props: Props) => {
                 <Grid container spacing={2}>
                     {renderedFiles}
                 </Grid>
+                <br />
                 <Pagination
                     sx={{ display: 'flex', width: 1, justifyContent: 'center' }}
                     variant="outlined"

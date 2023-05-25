@@ -7,17 +7,16 @@ import {
   CreateDateColumn,
   Entity,
   Index,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { MovieFileBuffer } from './movieFileBuffer.entity';
 
 @Entity()
+@Index(['fileHash', 'owner'], { unique: true })
 export class MovieFileInfo {
   @PrimaryGeneratedColumn()
   @ApiProperty()
@@ -41,17 +40,24 @@ export class MovieFileInfo {
   @ApiProperty({ default: 'file size' })
   size: number;
 
+  @Column({ type: 'int', nullable: false })
+  @ApiProperty()
+  totalSegments: number;
+
+  @Column({ type: 'boolean', default: false, comment: 'size in byte' })
+  @ApiProperty({ default: false })
+  uploadedComplete: boolean;
+
   @Column({ type: 'boolean', default: true, comment: 'size in byte' })
   @ApiProperty({ default: true })
   private: boolean;
 
-  @OneToOne(() => MovieFileBuffer, (fileBuffer) => fileBuffer.fileInfo, {
-    nullable: false,
-    onDelete: 'CASCADE',
+  @IsOptional()
+  @ManyToMany(() => MovieFileBuffer, (fileBuffer) => fileBuffer.filesInfo, {
+    cascade: true,
   })
-  @JoinColumn()
-  @ApiProperty()
-  fileBuffer: MovieFileBuffer;
+  @JoinTable()
+  fileBuffers?: MovieFileBuffer[];
 
   @Column()
   @ApiProperty()

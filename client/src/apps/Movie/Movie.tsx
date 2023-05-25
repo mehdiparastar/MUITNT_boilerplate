@@ -4,7 +4,7 @@ import { ITag } from 'models/TAGS/tag.model';
 import { Box, Container, LinearProgress, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import SimpleSlideDialog from 'components/SimpleSlideDialog/SimpleSlideDialog';
-import {  Upload } from '@mui/icons-material';
+import { Upload } from '@mui/icons-material';
 import FilesDropZone from './components/FilesDropZone/FilesDropZone';
 import Filter from './components/Filter/Filter';
 import FilesList from './components/FilesList/FilesList';
@@ -16,6 +16,7 @@ const Movie = (props: Props) => {
     const [loading, setLoading] = useState<boolean>(false)
     const [privateFilter, setPrivateFilter] = useState<boolean>(false)
     const [tagsFilter, setTagsFilter] = useState<ITag[]>([])
+    const [uploadingProgress, setUploadingProgress] = useState<{ [key: string]: number }>({})
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -34,7 +35,7 @@ const Movie = (props: Props) => {
                 component={'section'}
             >
                 <Container
-                    maxWidth="lg"                    
+                    maxWidth="lg"
                 >
                     <Grid
                         container
@@ -55,13 +56,14 @@ const Movie = (props: Props) => {
                                     <FilesDropZone
                                         formId="movie-app-dropzone-form"
                                         setLoading={setLoading}
+                                        setUploadingProgress={setUploadingProgress}
                                     />
                                 }
                                 title="Upload Your Movies"
                                 confirmText='upload all'
                                 formId="movie-app-dropzone-form"
                             />
-                            <Typography variant='body2' pt={4}>⭐ Max Upload Size = 500 MB</Typography>
+                            <Typography variant='body2' pt={4}>⭐ Max Upload Size = 5000 MB</Typography>
                         </Grid>
                         <Grid xs={12} sm={9}>
                             <Filter
@@ -92,6 +94,7 @@ const Movie = (props: Props) => {
                     <FilesList
                         privateFilter={privateFilter}
                         tagsFilter={tagsFilter}
+                        uploadingProgress={uploadingProgress}
                     />
                 </Container>
             </Box>

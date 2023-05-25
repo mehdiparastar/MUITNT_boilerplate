@@ -3,10 +3,28 @@ import {
   IMovieFilePaginated,
 } from 'models/MOVIES_APP/movieFile.model';
 import { apiSlice } from '../../../api/rtkApi/apiSlice';
+import { IAddMovieFileInfoDto } from 'models/MOVIES_APP/addMovieFile.model';
 
 export const moviesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    uploadMultipleMovieFile: builder.mutation<number[], FormData>({
+    createMultipleMovieFileInfo: builder.mutation<
+      IMovieFile[],
+      IAddMovieFileInfoDto[]
+    >({
+      query(data) {
+        return {
+          url: `movies_app/create-movie-files-info`,
+          method: 'POST',
+          body: data,
+        };
+      },
+      invalidatesTags: ['Movie'],
+    }),
+
+    uploadMultipleMovieFile: builder.mutation<
+      { id: number; segmentNo: number }[],
+      FormData
+    >({
       query(data) {
         return {
           url: `movies_app/uploads`,
@@ -17,7 +35,24 @@ export const moviesApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Movie'],
     }),
 
-    downloadMovieFile: builder.mutation<Blob,{ fileId: number; fileName: string }>({
+    setUploadingFileAsCompleted: builder.mutation<
+      IMovieFile,
+      { fileInfoId: number }
+    >({
+      query(arg) {
+        return {
+          url: `movies_app/set-uploading-file-as-completed`,
+          method: 'POST',
+          body: arg,
+        };
+      },
+      invalidatesTags: ['Movie'],
+    }),
+
+    downloadMovieFile: builder.mutation<
+      Blob,
+      { fileId: number; fileName: string }
+    >({
       query(arg) {
         return {
           url: `movies_app/get-file/${arg.fileId}`,
@@ -36,6 +71,21 @@ export const moviesApiSlice = apiSlice.injectEndpoints({
           cache: 'no-cache',
         };
       },
+    }),
+
+    getHlsStreamUrl: builder.mutation<Blob, number>({
+      query(arg) {
+        return {
+          url: `movies_app/get-file/${arg}`,
+          method: 'GET',
+          responseHandler: async (response) => {
+            const res = await response.blob();
+
+            return res;
+          },
+        };
+      },
+      invalidatesTags: ['Movie'],
     }),
 
     getAllMovieFiles: builder.query<IMovieFilePaginated, { qry: string }>({
@@ -75,4 +125,7 @@ export const {
   useGetAllMovieFilesQuery,
   useDownloadMovieFileMutation,
   useDeleteMovieFileMutation,
+  useGetHlsStreamUrlMutation,
+  useCreateMultipleMovieFileInfoMutation,
+  useSetUploadingFileAsCompletedMutation,
 } = moviesApiSlice;

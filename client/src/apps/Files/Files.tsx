@@ -64,7 +64,7 @@ const Files = (props: Props) => {
                                 confirmText='upload all'
                                 formId="file-app-dropzone-form"
                             />
-                            <Typography variant='body2' pt={4}>⭐ Max Upload Size = 500 MB</Typography>
+                            <Typography variant='body2' pt={4}>⭐ Max Upload Size = 5000 MB</Typography>
                         </Grid>
                         <Grid xs={12} sm={9}>
                             <Filter
