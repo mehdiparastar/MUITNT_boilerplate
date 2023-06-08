@@ -96,7 +96,7 @@ const FilesExcerpt =
                                 title={file.name}
                                 subheader={`uploaded by ${file.owner?.name || 'UNKNOWN AUTHOR'} | ${filesize(file.size)}`}
                             />
-                            <CardContent>tags: {(file.tags && file.tags.length > 0) ? file.tags.map(tag => `#${tag.tag}`).join(', ') : 'without ant tag'}</CardContent>
+                            <CardContent>tags: {(file.tags && file.tags.length > 0) ? file.tags.map(tag => `#${tag.tag}`).join(', ') : 'without any tag'}</CardContent>
                         </CardActionArea>
                         <CardActions>
                             <Stack width={'100%'} direction={'row'} display={'flex'} justifyContent='space-between' alignItems={'center'}>

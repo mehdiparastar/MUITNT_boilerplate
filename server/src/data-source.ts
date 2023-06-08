@@ -12,7 +12,6 @@ import { FileTag } from './tags/entities/tag.entity';
 import { UserPermissionRequest } from './users/entities/permission-requests.entity';
 import { User } from './users/entities/user.entity';
 import { MovieFileInfo } from './apps/Movie/entities/movieFileInfo.entity';
-import { MovieFileBuffer } from './apps/Movie/entities/movieFileBuffer.entity';
 
 interface IDBConfig {
   development: DataSourceOptions;
@@ -42,7 +41,6 @@ const dbConfig: IDBConfig = {
       ChatDeliveredMessages,
       ChatSeenMessages,
       MovieFileInfo,
-      MovieFileBuffer,
     ],
     synchronize: true,
     // synchronize: false,
@@ -70,7 +68,6 @@ const dbConfig: IDBConfig = {
       ChatDeliveredMessages,
       ChatSeenMessages,
       MovieFileInfo,
-      MovieFileBuffer,
     ],
     synchronize: true,
     // synchronize: false,

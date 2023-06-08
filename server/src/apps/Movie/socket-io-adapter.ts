@@ -1,23 +1,13 @@
-import {
-  BadRequestException,
-  INestApplicationContext,
-  Logger,
-} from '@nestjs/common';
+import { INestApplicationContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import { WsException } from '@nestjs/websockets';
 import { Server, ServerOptions } from 'socket.io';
-import { Socket } from 'socket.io';
-import { AuthService } from 'src/authentication/auth.service';
-import { ChatEvent } from 'src/enum/chatEvent.enum';
-import { WsBadRequestException } from 'src/exceptions/ws-exceptions';
-import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { ChatService } from './chat.service';
+import { MoviesService } from './movies.service';
 
-export class ChatSocketIOAdapter extends IoAdapter {
-  private readonly logger = new Logger(ChatSocketIOAdapter.name);
+export class MovieSocketIOAdapter extends IoAdapter {
+  private readonly logger = new Logger(MovieSocketIOAdapter.name);
   constructor(
     private app: INestApplicationContext,
     private configService: ConfigService<IconfigService>,
@@ -47,17 +37,17 @@ export class ChatSocketIOAdapter extends IoAdapter {
 
     const jwtService = this.app.get(JwtService);
     const usersService = this.app.get(UsersService);
-    const chatService = this.app.get(ChatService);
+    const movieService = this.app.get(MoviesService);
 
     const server: Server = super.createIOServer(port, optionsWithCORS);
 
     const init = server
-      .of('chat')
+      .of('movie')
       .use(
         createTokenMiddleware(
           jwtService,
           usersService,
-          chatService,
+          movieService,
           this.logger,
         ),
       );
@@ -70,7 +60,7 @@ const createTokenMiddleware =
   (
     jwtService: JwtService,
     usersService: UsersService,
-    chatService: ChatService,
+    movieService: MoviesService,
     logger: Logger,
   ) =>
   async (socket: SocketWithAuth, next) => {
@@ -81,14 +71,10 @@ const createTokenMiddleware =
       const payload = jwtService.verify(accessToken);
       const [user] = await usersService.findByEmail(payload.email);
 
-      const allMyRooms = await chatService.findMyAllRooms(user);
-
-      const roomsId = allMyRooms.map((room) => room.id.toString());
-
       logger.debug(`Validating auth token before connection: ${user.email}`);
 
       socket.user = user;
-      socket.roomsId = roomsId;
+      socket.roomsId = [user.email];
 
       next();
     } catch (ex) {

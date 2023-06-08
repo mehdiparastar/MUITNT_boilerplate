@@ -6,19 +6,23 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { In, Repository } from 'typeorm';
-import { MovieFileBuffer } from './entities/movieFileBuffer.entity';
 import { MovieFileInfo } from './entities/movieFileInfo.entity';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as ffmpeg from 'fluent-ffmpeg';
+import { sleep } from 'src/helperFunctions/sleep';
+import { MovieGateway } from './movie.gateway';
 
 @Injectable()
 export class MoviesService {
+  private uploadPath: string;
   constructor(
     @InjectRepository(MovieFileInfo)
     private filesInfoRepo: Repository<MovieFileInfo>,
-    @InjectRepository(MovieFileBuffer)
-    private filesBufferRepo: Repository<MovieFileBuffer>,
-  ) {}
+    private readonly movieSocketGateway: MovieGateway,
+  ) {
+    this.uploadPath = path.join(process.cwd(), '..', 'uploads'); // Define your upload directory
+  }
 
   async uploads(
     files: Array<
@@ -28,69 +32,114 @@ export class MoviesService {
         segmentNo: number;
       }
     >,
+    user: User,
   ) {
-    const savingRes: MovieFileBuffer[] = [];
-    for (const file of files) {
-      const fileInfo = await this.findOneMovieFileInfoById(file.fileInfoId);
+    try {
+      const savingRes = [];
+      for (const file of files) {
+        const fileInfo = await this.findOneMovieFileInfoById(file.fileInfoId);
 
-      const uploadPath = path.join(process.cwd(), '..', 'uploads'); // Define your upload directory
-
-      // Create the uploads directory if it doesn't exist
-      if (!fs.existsSync(uploadPath)) {
-        fs.mkdirSync(uploadPath);
-      }
-
-      const fileName = `${file.fileInfoId}`; // Define a unique file name
-
-      const filePath = path.join(
-        uploadPath,
-        `${fileName}.part${file.segmentNo}`,
-      );
-
-      // Write the chunk to the file system
-      fs.writeFileSync(filePath, Buffer.from(file.buffer));
-
-      if (file.segmentNo === fileInfo.totalSegments - 1) {
-        // If this is the last chunk, all chunks have been uploaded
-        // Reassemble the chunks and perform any necessary operations on the complete file
-        const completeFilePath = path.join(uploadPath, fileName);
-
-        const writeStream = fs.createWriteStream(completeFilePath, {
-          flags: 'a',
-        });
-
-        for (let i = 0; i < fileInfo.totalSegments; i++) {
-          const partFilePath = path.join(uploadPath, `${fileName}.part${i}`);
-          const chunkBuffer = fs.readFileSync(partFilePath);
-          writeStream.write(chunkBuffer);
-          fs.unlinkSync(partFilePath); // Remove the individual chunk file
+        // Create the uploads directory if it doesn't exist
+        if (!fs.existsSync(this.uploadPath)) {
+          fs.mkdirSync(this.uploadPath);
         }
 
-        writeStream.end();
+        const fileName = `${file.fileInfoId}`; // Define a unique file name
 
-        // Perform any additional operations with the complete file, such as saving it to the database
+        const filePath = path.join(
+          this.uploadPath,
+          `${fileName}.part${file.segmentNo}`,
+        );
 
-        // return { message: 'File upload completed successfully' };
+        // Write the chunk to the file system
+        fs.writeFileSync(filePath, Buffer.from(file.buffer));
+
+        if (file.segmentNo === fileInfo.totalSegments - 1) {
+          // If this is the last chunk, all chunks have been uploaded
+          // Reassemble the chunks and perform any necessary operations on the complete file
+          const completeFilePath = path.join(this.uploadPath, fileName);
+
+          const writeStream = fs.createWriteStream(completeFilePath, {
+            flags: 'a',
+          });
+
+          for (let i = 0; i < fileInfo.totalSegments; i++) {
+            const partFilePath = path.join(
+              this.uploadPath,
+              `${fileName}.part${i}`,
+            );
+            const chunkBuffer = fs.readFileSync(partFilePath);
+            writeStream.write(chunkBuffer);
+            fs.unlinkSync(partFilePath); // Remove the individual chunk file
+          }
+
+          writeStream.end();
+
+          // await sleep(2000);
+
+          // const streamDir = path.join(this.uploadPath, 'streams');
+
+          // if (!fs.existsSync(streamDir)) {
+          //   fs.mkdirSync(streamDir);
+          // }
+
+          // const convertPath = path.join(streamDir, fileName);
+
+          // if (!fs.existsSync(convertPath)) {
+          //   fs.mkdirSync(convertPath);
+          // }
+
+          // new Promise<void>((resolve, reject) => {
+          //   ffmpeg(completeFilePath)
+          //     .output(path.join(convertPath, `index.m3u8`))
+          //     .outputOptions([
+          //       // '-c:v h264_nvenc', // NVIDIA NVENC codec for H.264 encoding
+          //       '-c:v libx264',
+          //       '-c:a aac',
+          //       '-hls_time 2',
+          //       '-hls_list_size 3',
+          //     ])
+          //     .on('progress', async (progress) => {
+          //       this.movieSocketGateway.emitStreamablizationingProgress(
+          //         user.email,
+          //         fileInfo.name,
+          //         Math.round(progress.percent),
+          //       );
+          //     })
+          //     .on('end', async () => {
+          //       console.log('Video converted to HLS segments.');
+          //       this.movieSocketGateway.emitStreamablizationingComplete(
+          //         fileInfo.id,
+          //       );
+          //       await this.filesInfoRepo.update(fileInfo.id, {
+          //         streamable: true,
+          //       });
+          //       resolve();
+          //     })
+          //     .on('error', (err) => {
+          //       console.log(err);
+          //       return reject(err);
+          //     })
+          //     .run();
+          // });
+
+          await this.filesInfoRepo.save({
+            ...fileInfo,
+            hlsUrl: `http://localhost:8000/${fileName}`,
+            uploadedComplete: true,
+            streamable: true,
+          });
+        }
+
+        savingRes.push({ segmentNo: file.segmentNo });
       }
 
-      // Return a response indicating the successful upload of the chunk
-      // return { message: `Chunk ${segmentNo + 1} uploaded successfully` };
-
-      const fileBuffer = this.filesBufferRepo.create({
-        file: file.buffer,
-        fileHash: file.fileHash,
-        filesInfo: [fileInfo],
-        segmentNo: file.segmentNo,
-      });
-
-      const save = await this.filesBufferRepo.save(fileBuffer);
-      savingRes.push(save);
+      return savingRes.map((item, index) => ({
+        segmentNo: item.segmentNo,
+      }));
+    } catch (error) {
+      console.log(error);
     }
-
-    return savingRes.map((item) => ({
-      id: item.id,
-      segmentNo: item.segmentNo,
-    }));
   }
 
   async findAll(
@@ -166,7 +215,11 @@ export class MoviesService {
       where: { fileHash: fileInfo.fileHash },
     });
     if (filesCount === 0) {
-      await this.filesBufferRepo.delete({ fileHash: fileInfo.fileHash });
+      fs.unlinkSync(path.join(this.uploadPath, `${id}`)); // Remove the file
+      fs.rmSync(path.join(this.uploadPath, 'streams', `${id}`), {
+        recursive: true,
+        force: true,
+      });
     }
     return removeFileInfo;
   }
@@ -186,19 +239,6 @@ export class MoviesService {
     return save;
   }
 
-  async findMovieFileSegments(user: User, fileHash: string) {
-    if (!fileHash) {
-      throw new NotFoundException('file not found');
-    }
-    const find = await this.filesBufferRepo.find({
-      where: { fileHash: fileHash },
-      order: { segmentNo: 'ASC' },
-    });
-    if (!find) {
-      throw new NotFoundException('file not found');
-    }
-    return find;
-  }
 
   whereRU(): string {
     return 'hello, you are in movies app.';

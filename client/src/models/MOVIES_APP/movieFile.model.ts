@@ -13,6 +13,10 @@ export interface IMovieFile {
 
   fileHash: string;
 
+  hlsUrl: string;
+
+  streamable: boolean;
+
   private: boolean;
 
   createdAt: Date;

@@ -39,7 +39,7 @@ function FilesDropZone(
         onSubmit: async (values: { files: IAddMovieFileDto[] }) => {
             try {
                 setLoading(true)
-                const segmentSize = 10 * 1024 * 1024; // 1 MB
+                const segmentSize = 10 * 1024 * 1024; // 10 MB
 
                 if (values.files.length > 0) {
                     const movieFiles: IAddMovieFileInfoDto[] = []

@@ -3,19 +3,22 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Post,
   Query,
   Res,
-  StreamableFile,
   UnauthorizedException,
   UploadedFiles,
   UseGuards,
-  UseInterceptors,
+  UseInterceptors
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { Response } from 'express';
+import * as fs from 'fs';
+import { createReadStream, existsSync } from 'fs';
+import * as path from 'path';
 import { AccessTokenGuard } from 'src/authentication/guards/accessToken.guard';
 import { Roles } from 'src/authorization/roles.decorator';
 import { RolesGuard } from 'src/authorization/roles.guard';
@@ -24,22 +27,40 @@ import { strToBool } from 'src/helperFunctions/strToBool';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CurrentUser } from 'src/users/decorators/current-user.middleware';
 import { User } from 'src/users/entities/user.entity';
-import { PaginationFilesDto } from '../FILE/dto/file/pagination-files.dto';
 import { MovieFileDto } from './dto/movie/movie.dto';
-import { MoviesService } from './movies.service';
-import { MovieFileValidationPipe } from './validation.pipe';
-// const NodeMediaServer = require('node-media-server');
+import { PaginationMovieFilesDto } from './dto/movie/pagination-movies.dto';
 import { MovieFileInfo } from './entities/movieFileInfo.entity';
 import { MediaServerService } from './media-server.service';
-import { PaginationMovieFilesDto } from './dto/movie/pagination-movies.dto';
-import { createReadStream } from 'fs';
+import { MoviesService } from './movies.service';
+import { MovieFileValidationPipe } from './validation.pipe';
 
 @Controller('movies_app')
 export class MoviesController {
+  private uploadPath: string;
+
   constructor(
     private readonly moviesService: MoviesService,
     private readonly mediaServerService: MediaServerService,
-  ) {}
+  ) {
+    this.uploadPath = path.join(process.cwd(), '..', 'uploads'); // Define your upload directory
+  }
+
+  @Get('socket_initializing')
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(UserRoles.movieAppUserLL)
+  async socketInitilizing() {
+    return {};
+  }
+
+  @Get('movie_conversion/:id')
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles(UserRoles.movieAppUserLL)
+  async movieConversionCompleteStatus(@Param('id') id: string) {
+    const fileInfo = await this.moviesService.findOneMovieFileInfoById(
+      parseInt(id),
+    );
+    return { [id]: fileInfo.streamable };
+  }
 
   @Post('uploads')
   @UseGuards(AccessTokenGuard, RolesGuard)
@@ -79,6 +100,7 @@ export class MoviesController {
           segmentNo: parseInt(segmentNo),
         };
       }),
+      user,
     );
     return res;
   }
@@ -109,94 +131,83 @@ export class MoviesController {
   async getFile(
     @CurrentUser() user: User,
     @Param('id') id: string,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
   ) {
-    const record = await this.moviesService.findOneMovieFileInfoById(
-      parseInt(id),
-    );
-
-    if (
-      (record.private && user.id === record.owner.id) ||
-      record.private === false
-    ) {
-      // const file = createReadStream(join(process.cwd(), 'package.json'))
-      res.set({
-        // 'Content-Type': record.type,
-        'Content-Type': 'application/octet-stream',
-        'Content-Disposition': `attachment; filename=${record.name}`,
-      });
-
-      const fileSegments = await this.moviesService.findMovieFileSegments(
-        user,
-        record.fileHash,
+    try {
+      const fileInfo = await this.moviesService.findOneMovieFileInfoById(
+        parseInt(id),
       );
 
-      const combinedFile = new Blob(
-        fileSegments.map((el) => el.file),
-        { type: 'application/octet-stream' },
-      );
+      if (
+        (fileInfo.private && user.id === fileInfo.owner.id) ||
+        fileInfo.private === false
+      ) {
+        const filePath = path.join(this.uploadPath, `${fileInfo.id}`);
 
-      const arrayBuffer = await combinedFile.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
+        if (!existsSync(filePath)) {
+          throw new NotFoundException('File not found');
+        }
+        const stream = createReadStream(filePath);
+        const fileSize = fs.statSync(filePath).size;
 
-      // return fileSegments.forEach((segment) => {
-      //   const readStream = createReadStream(segment.file);
-      //   readStream.pipe(res);
-      //   // return new StreamableFile(segment.file);
-      // });
+        res.set({
+          // 'Content-Type': fileInfo.type,
+          'Content-Type': 'application/octet-stream',
+          'Content-Length': fileSize,
+          // 'Content-Disposition': `attachment; filename=${fileInfo.name}`,
+        });
 
-      return new StreamableFile(uint8Array);
+        stream.pipe(res);
+
+        // return new StreamableFile(stream); //if you want to use this, you should replace `@Res({ passthrough: true }) res: Response` instead of `@Res() res: Response`
+      } else {
+        throw new UnauthorizedException();
+      }
+    } catch (ex) {
+      console.log(ex);
     }
-    throw new UnauthorizedException();
   }
 
-  // @Get('stream-nms-file/:id')
-  // async streamNMSVideo(@Param('id') id: number, @Res() res: Response) {
-  //   try {
-  //     const video = await this.moviesService.findOneMovieFileInfoById(id);
+  @Get('get-file-chunk/:id/:chunkSize/:chunkNumber')
+  @UseGuards(AccessTokenGuard)
+  async getFileChunk(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @Param('chunkSize') chunkSize: string,
+    @Param('chunkNumber') chunkNumber: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const fileInfo = await this.moviesService.findOneMovieFileInfoById(
+        parseInt(id),
+      );
 
-  //     if (!video) {
-  //       throw new NotFoundException('Video not found');
-  //     }
+      if (
+        (fileInfo.private && user.id === fileInfo.owner.id) ||
+        fileInfo.private === false
+      ) {
+        const filePath = path.join(this.uploadPath, `${fileInfo.id}`);
 
-  //     // check if the video is stored in the database
-  //     if (video.fileBuffer.file instanceof Buffer) {
-  //       // start the media server
-  //       const { streamKey, streamUrl } =
-  //         await this.mediaServerService.createStream(video.fileHash);
+        if (!existsSync(filePath)) {
+          throw new NotFoundException('File not found');
+        }
 
-  //       res.header('Content-Type', 'application/x-mpegURL');
-  //       res.header(
-  //         'Content-Disposition',
-  //         `attachment; filename="${video.fileHash}.m3u8"`,
-  //       );
-  //       res.send(streamUrl);
+        const fileSize = fs.statSync(filePath).size;
 
-  //       // const streamKey = 'test';
-  //       // const hlsUrl = `http://localhost:8000/live/${streamKey}.m3u8`;
+        const start = Number(chunkNumber) * Number(chunkSize);
+        const end = Math.min(start + Number(chunkSize) - 1, fileSize - 1);
 
-  //       // res.writeHead(200, {
-  //       //   'Content-Type': 'video/mp4',
-  //       //   'Transfer-Encoding': 'chunked',
-  //       // });
+        res.setHeader('Content-Length', end - start + 1);
 
-  //       // res.end(JSON.stringify({ hlsUrl }));
-
-  //       // // generate the HLS files and stream them to the response object
-  //       // const streamPath = `/${video.id}/index.m3u8`;
-  //       // nms.on('prePublish', (id, streamPath, args) => {
-  //       //   nms.getSession(id).accept();
-  //       // });
-  //       // res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
-  //       // res.setHeader('Content-Length', streamPath.length);
-  //       // res.write(streamPath);
-  //       // console.log(streamPath);
-  //       // res.end();
-  //     }
-  //   } catch (ex) {
-  //     console.log(ex);
-  //   }
-  // }
+        const fileStream = createReadStream(filePath, { start, end });
+        fileStream.pipe(res);
+      } else {
+        throw new UnauthorizedException();
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }  
 
   @Delete('delete-file/:id')
   @UseGuards(AccessTokenGuard)

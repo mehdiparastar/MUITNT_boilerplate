@@ -3,7 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
-import { SocketIOAdapter } from './apps/CHAT/socket-io-adapter';
+import { ChatSocketIOAdapter } from './apps/CHAT/socket-io-adapter';
+import { MovieSocketIOAdapter } from './apps/Movie/socket-io-adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -47,7 +48,8 @@ async function bootstrap() {
     },
   });
 
-  app.useWebSocketAdapter(new SocketIOAdapter(app, configService));
+  app.useWebSocketAdapter(new ChatSocketIOAdapter(app, configService));
+  app.useWebSocketAdapter(new MovieSocketIOAdapter(app, configService));
 
   await app.listen(serverPort);
   console.log(`Application is running on: ${await app.getUrl()}`);

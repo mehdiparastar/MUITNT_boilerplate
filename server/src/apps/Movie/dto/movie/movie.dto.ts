@@ -44,6 +44,14 @@ export class MovieFileDto {
 
   @Expose()
   @ApiProperty()
+  hlsUrl: string;
+
+  @Expose()
+  @ApiProperty()
+  streamable: boolean;
+
+  @Expose()
+  @ApiProperty()
   @IsDate()
   createdAt?: Date;
 

@@ -3,12 +3,12 @@ import { MoviesController } from './movies.controller';
 import { MoviesService } from './movies.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MovieFileInfo } from './entities/movieFileInfo.entity';
-import { MovieFileBuffer } from './entities/movieFileBuffer.entity';
 import { MediaServerService } from './media-server.service';
+import { MovieGateway } from './movie.gateway';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MovieFileInfo, MovieFileBuffer])],
+  imports: [TypeOrmModule.forFeature([MovieFileInfo])],
   controllers: [MoviesController],
-  providers: [MoviesService, MediaServerService],
+  providers: [MoviesService, MediaServerService, MovieGateway],
 })
 export class MoviesModule {}

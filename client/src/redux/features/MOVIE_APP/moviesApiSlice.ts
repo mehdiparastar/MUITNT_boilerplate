@@ -71,22 +71,7 @@ export const moviesApiSlice = apiSlice.injectEndpoints({
           cache: 'no-cache',
         };
       },
-    }),
-
-    getHlsStreamUrl: builder.mutation<Blob, number>({
-      query(arg) {
-        return {
-          url: `movies_app/get-file/${arg}`,
-          method: 'GET',
-          responseHandler: async (response) => {
-            const res = await response.blob();
-
-            return res;
-          },
-        };
-      },
-      invalidatesTags: ['Movie'],
-    }),
+    }),    
 
     getAllMovieFiles: builder.query<IMovieFilePaginated, { qry: string }>({
       query(arg) {
@@ -125,7 +110,6 @@ export const {
   useGetAllMovieFilesQuery,
   useDownloadMovieFileMutation,
   useDeleteMovieFileMutation,
-  useGetHlsStreamUrlMutation,
   useCreateMultipleMovieFileInfoMutation,
   useSetUploadingFileAsCompletedMutation,
 } = moviesApiSlice;

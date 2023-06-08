@@ -13,7 +13,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { MovieFileBuffer } from './movieFileBuffer.entity';
 
 @Entity()
 @Index(['fileHash', 'owner'], { unique: true })
@@ -48,16 +47,17 @@ export class MovieFileInfo {
   @ApiProperty({ default: false })
   uploadedComplete: boolean;
 
+  @Column({ nullable: true, type: 'varchar' })
+  @ApiProperty()
+  hlsUrl: string;
+
+  @Column({ default: false, type: 'boolean' })
+  @ApiProperty()
+  streamable: boolean;
+
   @Column({ type: 'boolean', default: true, comment: 'size in byte' })
   @ApiProperty({ default: true })
   private: boolean;
-
-  @IsOptional()
-  @ManyToMany(() => MovieFileBuffer, (fileBuffer) => fileBuffer.filesInfo, {
-    cascade: true,
-  })
-  @JoinTable()
-  fileBuffers?: MovieFileBuffer[];
 
   @Column()
   @ApiProperty()

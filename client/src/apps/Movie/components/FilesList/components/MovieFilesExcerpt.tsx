@@ -1,16 +1,48 @@
 import { AttachFileRounded, DeleteForever, Download, Lock, LockOpen } from '@mui/icons-material'
+import StreamIcon from '@mui/icons-material/Stream'
 import { Box, Card, CardActionArea, CardActions, CardContent, CardHeader, CircularProgress, IconButton, LinearProgress, Stack, Typography, useTheme } from '@mui/material'
+import {
+    CircularProgressProps,
+} from '@mui/material/CircularProgress'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
 import useAxiosPrivate from 'api/axiosApi/useAxiosPrivate'
 import Item from 'components/Item/Item'
 import { formatDistanceToNow } from 'date-fns'
 import { filesize } from 'filesize'
+import { IMovieFile } from 'models/MOVIES_APP/movieFile.model'
 import { useSnackbar } from 'notistack'
 import React, { useState } from 'react'
-import { useDeleteMovieFileMutation, useGetHlsStreamUrlMutation } from 'redux/features/MOVIE_APP/moviesApiSlice'
-import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleOutline';
-// import ReactPlayer from 'react-player'
-import { IMovieFile } from 'models/MOVIES_APP/movieFile.model'
+import ReactPlayer from 'react-player'
+import { useDeleteMovieFileMutation } from 'redux/features/MOVIE_APP/moviesApiSlice'
+import { useMovieConversionSocketQuery } from 'redux/features/MOVIE_APP/moviesSocketApiSlice'
+
+function CircularProgressWithLabel(
+    props: CircularProgressProps & { value: number },
+) {
+    return (
+        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+            <CircularProgress variant="determinate" {...props} />
+            <Box
+                sx={{
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Typography
+                    variant="caption"
+                    component="div"
+                    color="text.secondary"
+                >{`${Math.round(props.value)}`}</Typography>
+            </Box>
+        </Box>
+    );
+}
 
 type Props = {
     file: IMovieFile;
@@ -23,27 +55,27 @@ const MovieFilesExcerpt =
         const { enqueueSnackbar } = useSnackbar()
         const [loading, setLoading] = useState(false)
         const [downloadingProgress, setDownloadingProgress] = useState<{ [key: string]: number }>({})
-        const [streamUrl, setStreamUrl] = useState<string>()
         // const [downloadFile] = useDownloadFileMutation()
         const [deleteFile, { isLoading: deletingLoad }] = useDeleteMovieFileMutation()
         const axiosPrivate = useAxiosPrivate();
-        const [streamFile, { isLoading: streamingLoad }] = useGetHlsStreamUrlMutation();
+        const { data: socketData } = useMovieConversionSocketQuery({ id: file.id })
 
-
-        const downloadFile_usingAxios = async () => {
+        const downloadWholeFile_usingAxios = async () => {
             try {
-                const { data } = await axiosPrivate.get(`movies_app/get-file/${file.id}`, {
-                    responseType: 'blob',
-                    headers: {
-                        Accept: 'application/octet-stream',
-                        'Content-Type': file.type,
-                    },
+                const { data }: { data: Blob } = await axiosPrivate.get(`movies_app/get-file/${file.id}`, {
+                    responseType: 'arraybuffer',
+                    // headers: {`movies_app/get-file/${file.id}`
+                    //     Accept: 'application/octet-stream',
+                    //     'Content-Type': file.type,
+                    // },
                     onDownloadProgress(progressEvent) {
-                        const progress = progressEvent.total ? (progressEvent.loaded / progressEvent.total) * 100 : 0;
+                        const progress1 = progressEvent.total ? (progressEvent.loaded / progressEvent.total) * 100 : 0;
+                        const progress2 = file.size ? (progressEvent.loaded / file.size) * 100 : 0;
+                        const progress = Math.max(progress1, progress2)
                         setDownloadingProgress(downloadingProgress => ({ ...downloadingProgress, [file.fileHash]: progress }))
                     },
                 });
-                if (!(data instanceof Blob)) return;
+                // if (!(data instanceof ArrayBuffer)) return;
 
                 const blob = new Blob([data], { type: file.type });
                 const link = document.createElement('a');
@@ -52,6 +84,53 @@ const MovieFilesExcerpt =
                 link.click();
             } catch (err) {
                 console.log(err)
+            }
+        };
+
+        const saveChunkToFile = (chunk: ArrayBuffer, index: number) => {
+            // Create a temporary <a> element to trigger the file download
+            const blob = new Blob([chunk], { type: 'application/octet-stream' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = `${file.fileHash}.${index + 1}.bin`; // Replace with the desired file name
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        const handleFileChunkDownload = async () => {
+            const chunkSize = 128 * 1024 * 1024; // Chunk size in bytes (e.g., 128MB)
+            const totalChunks = Math.ceil(file.size / chunkSize)
+
+            try {
+                const fileData = [];
+
+                for (let i = 0; i < totalChunks; i++) {
+                    const { data }: { data: ArrayBuffer } = await axiosPrivate.get(`movies_app/get-file-chunk/${file.id}/${chunkSize}/${i}`, {
+                        responseType: 'arraybuffer',
+                        onDownloadProgress(progressEvent) {
+                            const progress = file.size ? ((((i) * chunkSize) + progressEvent.loaded) / file.size) * 100 : 0;
+                            setDownloadingProgress(downloadingProgress => ({ ...downloadingProgress, [file.fileHash]: progress }))
+                        },
+                    });
+
+                    fileData.push(data);
+                    // saveChunkToFile(data, i)
+                    setDownloadingProgress(downloadingProgress => ({ ...downloadingProgress, [file.fileHash]: (i + 1) / totalChunks * 100 }))
+                }
+
+                const blob = new Blob(fileData, { type: 'application/octet-stream' });
+                const downloadUrl = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', file.name); // Replace with the desired file name
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error(error);
+                // Handle file download error
             }
         };
 
@@ -64,27 +143,14 @@ const MovieFilesExcerpt =
                 //                                                                                             //
                 //await downloadFile({ fileId: file.id, fileName: file.name }).unwrap()                        //
                 /////////////////////////////////////////////////////////////////////////////////////////////////
-                await downloadFile_usingAxios()
+                // await downloadFile_usingAxios()
+                await handleFileChunkDownload()
                 setLoading(false)
                 enqueueSnackbar(`file with id '${file.id}' has downloaded successfully.`, { variant: 'success' })
             } catch (ex) {
                 setLoading(false)
                 const err = ex as { data: { msg: string } }
                 enqueueSnackbar(`Downloading Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
-            }
-        }
-
-        const handleStramFile = async () => {
-            try {
-                const videoBlob = await streamFile(file.id).unwrap()
-                const videoUrl = URL.createObjectURL(videoBlob);
-
-                setStreamUrl(videoUrl)
-                // console.log(stream)
-            } catch (ex) {
-                console.log(ex)
-                const err = ex as { data: { msg: string } }
-                enqueueSnackbar(`Straming Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
             }
         }
 
@@ -131,33 +197,40 @@ const MovieFilesExcerpt =
                     <Card sx={{ width: 1, height: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} >
                         <CardActionArea>
                             <CardHeader
-                                action={file.private ? <Lock color="secondary" /> : <LockOpen color="primary" />}
+                                action={
+                                    file.private ?
+                                        (file.streamable || (socketData && socketData[file.id])) ?
+                                            <Stack spacing={1} direction={'column'}>
+                                                <Lock color="primary" />
+                                                <StreamIcon color="secondary" />
+                                            </Stack> :
+                                            <Lock color="secondary" />
+                                        :
+                                        (file.streamable || (socketData && socketData[file.id])) ?
+                                            <Stack spacing={1} direction={'column'}>
+                                                <LockOpen color="primary" />
+                                                <StreamIcon color="secondary" />
+                                            </Stack> :
+                                            <LockOpen color="primary" />
+
+                                }
                                 avatar={<AttachFileRounded color='primary' />}
                                 title={file.name}
                                 subheader={`uploaded by ${file.owner?.name || 'UNKNOWN AUTHOR'} | ${filesize(file.size)}`}
                             />
-                            {/* <ReactPlayer url={streamUrl} /> */}
-                            {streamUrl && <video width={'100%'} height={300} src={streamUrl} controls />}
-                            <CardContent>tags: {(file.tags && file.tags.length > 0) ? file.tags.map(tag => `#${tag.tag}`).join(', ') : 'without ant tag'}</CardContent>
+                            <ReactPlayer url={file.hlsUrl} controls width={'100%'} height={300} />
+                            <CardContent>tags: {(file.tags && file.tags.length > 0) ? file.tags.map(tag => `#${tag.tag}`).join(', ') : 'without any tag'}</CardContent>
                         </CardActionArea>
                         <CardActions>
                             <Stack width={'100%'} direction={'row'} display={'flex'} justifyContent='space-between' alignItems={'center'}>
                                 {formatDistanceToNow(file.createdAt)} ago
                                 <Box>
-                                    <IconButton onClick={handleStramFile}>
-                                        {
-                                            streamingLoad ?
-                                                <CircularProgress size={20} />
-                                                :
-                                                <PlayCircleFilledWhiteIcon color='info' />
-                                        }
-                                    </IconButton>
-                                    <IconButton onClick={handleDownloadFile}>
+                                    <IconButton disabled={!file.uploadedComplete} onClick={handleDownloadFile}>
                                         {
                                             loading ? (
                                                 downloadingProgress[file.fileHash] === undefined ?
                                                     <CircularProgress size={25} /> :
-                                                    <CircularProgress variant="determinate" value={downloadingProgress[file.fileHash] || 0} size={25} />
+                                                    <CircularProgressWithLabel value={downloadingProgress[file.fileHash] || 0} size={25} />
                                             )
                                                 :
                                                 <Download color="primary" />
