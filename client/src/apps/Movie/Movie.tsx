@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import { useTheme } from '@mui/material/styles';
-import { ITag } from 'models/TAGS/tag.model';
+import { Upload } from '@mui/icons-material';
 import { Alert, Box, Container, LinearProgress, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
+import { useTheme } from '@mui/material/styles';
 import SimpleSlideDialog from 'components/SimpleSlideDialog/SimpleSlideDialog';
-import { Upload } from '@mui/icons-material';
-import FilesDropZone from './components/FilesDropZone/FilesDropZone';
-import Filter from './components/Filter/Filter';
-import FilesList from './components/FilesList/FilesList';
+import { ITag } from 'models/TAGS/tag.model';
+import { useEffect, useState } from 'react';
 import { useMovieSocketQuery } from 'redux/features/MOVIE_APP/moviesSocketApiSlice';
+import FilesDropZone from './components/FilesDropZone/FilesDropZone';
+import FilesList from './components/FilesList/FilesList';
+import Filter from './components/Filter/Filter';
 
 type Props = {}
 

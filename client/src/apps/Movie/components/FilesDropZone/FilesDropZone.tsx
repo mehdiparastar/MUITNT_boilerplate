@@ -1,7 +1,7 @@
 import { DeleteForever } from '@mui/icons-material';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { Box, IconButton, LinearProgress, SxProps, Tooltip, Typography, useTheme } from '@mui/material';
+import { Box, IconButton, SxProps, Tooltip, Typography, useTheme } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import Item from 'components/Item/Item';
 import { MUIAsyncAutocompleteTags } from 'components/MUIAsyncAutocompleteTags/MUIAsyncAutocompleteTags';
@@ -11,7 +11,7 @@ import HashLargeFile from 'helperFunctions/hash-large-file';
 import { IAddMovieFileDto, IAddMovieFileInfoDto } from 'models/MOVIES_APP/addMovieFile.model';
 import { ITag } from 'models/TAGS/tag.model';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useGetMovieFileTagsQuery } from 'redux/features/MOVIE_APP/movieFileTagsApiSlice';
 import { useCreateMultipleMovieFileInfoMutation, useSetUploadingFileAsCompletedMutation, useUploadMultipleMovieFileMutation } from 'redux/features/MOVIE_APP/moviesApiSlice';

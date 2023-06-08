@@ -4,14 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as fs from 'fs';
+import * as path from 'path';
 import { User } from 'src/users/entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { MovieFileInfo } from './entities/movieFileInfo.entity';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as ffmpeg from 'fluent-ffmpeg';
-import { sleep } from 'src/helperFunctions/sleep';
-import { MovieGateway } from './movie.gateway';
 
 @Injectable()
 export class MoviesService {
@@ -19,7 +16,6 @@ export class MoviesService {
   constructor(
     @InjectRepository(MovieFileInfo)
     private filesInfoRepo: Repository<MovieFileInfo>,
-    private readonly movieSocketGateway: MovieGateway,
   ) {
     this.uploadPath = path.join(process.cwd(), '..', 'uploads'); // Define your upload directory
   }
@@ -73,55 +69,7 @@ export class MoviesService {
             fs.unlinkSync(partFilePath); // Remove the individual chunk file
           }
 
-          writeStream.end();
-
-          // await sleep(2000);
-
-          // const streamDir = path.join(this.uploadPath, 'streams');
-
-          // if (!fs.existsSync(streamDir)) {
-          //   fs.mkdirSync(streamDir);
-          // }
-
-          // const convertPath = path.join(streamDir, fileName);
-
-          // if (!fs.existsSync(convertPath)) {
-          //   fs.mkdirSync(convertPath);
-          // }
-
-          // new Promise<void>((resolve, reject) => {
-          //   ffmpeg(completeFilePath)
-          //     .output(path.join(convertPath, `index.m3u8`))
-          //     .outputOptions([
-          //       // '-c:v h264_nvenc', // NVIDIA NVENC codec for H.264 encoding
-          //       '-c:v libx264',
-          //       '-c:a aac',
-          //       '-hls_time 2',
-          //       '-hls_list_size 3',
-          //     ])
-          //     .on('progress', async (progress) => {
-          //       this.movieSocketGateway.emitStreamablizationingProgress(
-          //         user.email,
-          //         fileInfo.name,
-          //         Math.round(progress.percent),
-          //       );
-          //     })
-          //     .on('end', async () => {
-          //       console.log('Video converted to HLS segments.');
-          //       this.movieSocketGateway.emitStreamablizationingComplete(
-          //         fileInfo.id,
-          //       );
-          //       await this.filesInfoRepo.update(fileInfo.id, {
-          //         streamable: true,
-          //       });
-          //       resolve();
-          //     })
-          //     .on('error', (err) => {
-          //       console.log(err);
-          //       return reject(err);
-          //     })
-          //     .run();
-          // });
+          writeStream.end();        
 
           await this.filesInfoRepo.save({
             ...fileInfo,

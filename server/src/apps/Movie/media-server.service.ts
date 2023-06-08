@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import * as fs from 'fs';
 import * as path from 'path';
 const NodeMediaServer = require('node-media-server');
 // import NodeMediaServer from 'node-media-server';

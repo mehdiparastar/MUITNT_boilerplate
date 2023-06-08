@@ -1,9 +1,9 @@
+import { IAddMovieFileInfoDto } from 'models/MOVIES_APP/addMovieFile.model';
 import {
   IMovieFile,
   IMovieFilePaginated,
 } from 'models/MOVIES_APP/movieFile.model';
 import { apiSlice } from '../../../api/rtkApi/apiSlice';
-import { IAddMovieFileInfoDto } from 'models/MOVIES_APP/addMovieFile.model';
 
 export const moviesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
