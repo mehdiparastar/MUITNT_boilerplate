@@ -17,17 +17,25 @@ export interface ILocalRegisterDto {
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     authLocalLogin: builder.mutation<IAuthResponse, ILocalLoginRequest>({
-      query: (credentials) => ({
-        url: '/auth/login',
-        method: 'POST',
-        body: { ...credentials },
-      }),
+      query: (credentials) => {
+        return {
+          url: '/auth/login',
+          method: 'POST',
+          body: { ...credentials },
+        };
+      },      
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const tokens = await queryFulfilled;
           dispatch(setAuthTokens(tokens.data));
         } catch (error) {
-          dispatch(setAuthTokens({ accessToken: null, refreshToken: null }));
+          dispatch(
+            setAuthTokens({
+              accessToken: null,
+              refreshToken: null,
+              streamToken: null,
+            }),
+          );
         }
       },
       invalidatesTags: ['CurrentUser'],
@@ -40,10 +48,22 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
-          dispatch(setAuthTokens({ accessToken: null, refreshToken: null }));
+          dispatch(
+            setAuthTokens({
+              accessToken: null,
+              refreshToken: null,
+              streamToken: null,
+            }),
+          );
           chatSocket.disconnect();
         } catch (error) {
-          dispatch(setAuthTokens({ accessToken: null, refreshToken: null }));
+          dispatch(
+            setAuthTokens({
+              accessToken: null,
+              refreshToken: null,
+              streamToken: null,
+            }),
+          );
         }
       },
       invalidatesTags: ['CurrentUser', 'PermissionRequest', 'User'],
@@ -59,7 +79,13 @@ export const authApiSlice = apiSlice.injectEndpoints({
           const tokens = await queryFulfilled;
           dispatch(setAuthTokens(tokens.data));
         } catch (error) {
-          dispatch(setAuthTokens({ accessToken: null, refreshToken: null }));
+          dispatch(
+            setAuthTokens({
+              accessToken: null,
+              refreshToken: null,
+              streamToken: null,
+            }),
+          );
         }
       },
       invalidatesTags: ['CurrentUser', 'PermissionRequest', 'User'],

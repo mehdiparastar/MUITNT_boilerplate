@@ -37,6 +37,10 @@ export class User {
   @ApiProperty()
   refreshToken: string;
 
+  @Column({ nullable: true })
+  @ApiProperty()
+  streamToken: string;
+
   @Column({ type: 'enum', enum: authTypeEnum, default: authTypeEnum.local })
   @ApiProperty()
   provider: string;

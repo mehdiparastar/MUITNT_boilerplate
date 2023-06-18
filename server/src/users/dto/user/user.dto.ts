@@ -29,6 +29,10 @@ export class UserDto {
   @Expose()
   @ApiProperty({ isArray: true, type: 'string' })
   roles: string[];
+
+  @Expose()
+  @ApiProperty()
+  streamToken: string;
 }
 
 export class UserIdDto {
@@ -49,4 +53,8 @@ export class UserCompressDto {
   @Expose()
   @ApiProperty()
   name: string;
+
+  @Expose()
+  @ApiProperty()
+  streamToken: string;
 }

@@ -9,4 +9,8 @@ export class JWTTokenDto {
   @Expose()
   @ApiProperty()
   refreshToken: string;
+
+  @Expose()
+  @ApiProperty()
+  streamToken: string;
 }

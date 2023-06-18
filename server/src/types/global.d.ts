@@ -8,6 +8,7 @@ declare global {
     DB_NAME?: string;
     JWT_ACCESS_SECRET?: string;
     JWT_REFRESH_SECRET?: string;
+    JWT_STREAM_SECRET?: string;
     OAUTH_GOOGLE_ID?: string;
     OAUTH_GOOGLE_SECRET?: string;
     OAUTH_GOOGLE_REDIRECT_URL?: string;
@@ -15,6 +16,7 @@ declare global {
     SERVER_PORT?: number;
     JWT_ACCESS_EXPIRATION_TIME?: string | number;
     JWT_REFRESH_EXPIRATION_TIME?: string | number;
+    JWT_STREAM_EXPIRATION_TIME?: string | number;
   }
 
   interface IGoogleUser {
@@ -41,6 +43,7 @@ declare global {
   interface IJWTTokensPair {
     accessToken: string;
     refreshToken: string;
+    streamToken: string;
   }
 
   type AuthPayload = {

@@ -10,6 +10,10 @@ export class UpdateLocalUserDto extends PartialType(CreateLocalUserDto) {
   refreshToken?: string;
 
   @Expose()
+  @ApiProperty()
+  streamToken?: string;
+
+  @Expose()
   @ApiProperty({ isArray: true, type: 'string' })
   roles?: string[];
 }

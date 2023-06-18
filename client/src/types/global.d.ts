@@ -50,6 +50,7 @@ declare global {
   interface IAuthResponse {
     accessToken: string;
     refreshToken: string;
+    streamToken: string;
   }
 
   interface IUser {
@@ -60,11 +61,13 @@ declare global {
     name?: string;
     photo?: string;
     roles?: string[];
+    streamToken?: string;
   }
 
   interface ICompressedUser {
     id?: number;
     email?: string;
     name?: string;
+    streamToken?: string;
   }
 }

@@ -9,24 +9,25 @@ import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { GoogleOauthStrategy } from './strategies/google.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
+import { StreamTokenStrategy } from './strategies/streamToken.strategy';
 
 @Module({
   imports: [
     UsersModule,
-    // JwtModule.register({})
-    JwtModule.registerAsync({
-      useFactory: (config: ConfigService<IconfigService>) => {
-        return {
-          secret: config.get<string>('JWT_ACCESS_SECRET'),
-          signOptions: {
-            expiresIn: config.get<string | number>(
-              'JWT_ACCESS_EXPIRATION_TIME',
-            ),
-          },
-        };
-      },
-      inject: [ConfigService],
-    }),
+    JwtModule.register({}),
+    // JwtModule.registerAsync({
+    //   useFactory: (config: ConfigService<IconfigService>) => {
+    //     return {
+    //       secret: config.get<string>('JWT_ACCESS_SECRET'),
+    //       signOptions: {
+    //         expiresIn: config.get<string | number>(
+    //           'JWT_ACCESS_EXPIRATION_TIME',
+    //         ),
+    //       },
+    //     };
+    //   },
+    //   inject: [ConfigService],
+    // }),
   ],
   controllers: [AuthController],
   providers: [
@@ -34,8 +35,9 @@ import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
     LocalStrategy,
     AccessTokenStrategy,
     RefreshTokenStrategy,
+    StreamTokenStrategy,
     GoogleOauthStrategy,
   ],
-  exports: [AccessTokenStrategy, JwtModule],
+  exports: [AccessTokenStrategy, StreamTokenStrategy, JwtModule],
 })
 export class AuthModule {}

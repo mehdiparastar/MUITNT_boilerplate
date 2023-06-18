@@ -11,7 +11,7 @@ import {
   UnauthorizedException,
   UploadedFiles,
   UseGuards,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
@@ -40,9 +40,10 @@ export class MoviesController {
 
   constructor(
     private readonly moviesService: MoviesService,
-    private readonly mediaServerService: MediaServerService,
+    private readonly NMS: MediaServerService,
   ) {
     this.uploadPath = path.join(process.cwd(), '..', 'uploads'); // Define your upload directory
+    this.NMS = new MediaServerService();
   }
 
   @Get('socket_initializing')
@@ -115,6 +116,10 @@ export class MoviesController {
     @Query('isPrivate') isPrivate: string,
     @Query('tagsFilter') tagsFilter: string | undefined,
   ) {
+    // if (!this.NMS.hasHttpServer()) {
+    //   await this.NMS.start();
+    //   this.NMS.setEvents();
+    // }
     return await this.moviesService.findAll(
       parseInt(skip),
       parseInt(limit),
@@ -207,7 +212,7 @@ export class MoviesController {
     } catch (ex) {
       console.log(ex);
     }
-  }  
+  }
 
   @Delete('delete-file/:id')
   @UseGuards(AccessTokenGuard)

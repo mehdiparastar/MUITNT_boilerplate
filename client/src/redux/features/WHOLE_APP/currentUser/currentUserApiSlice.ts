@@ -7,12 +7,17 @@ import { apiSlice } from '../../../../api/rtkApi/apiSlice';
 
 export const currentUserApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getCurrentUser: builder.query<ICurrentUser, void>({
-      query: () => {
+    getCurrentUser: builder.query<ICurrentUser, string | null | void>({
+      query: (aT?: string) => {
         return { url: 'auth/profile', method: 'GET' };
       },
-      providesTags: (result) => {
-        return ['CurrentUser'];
+      // providesTags: (result) => {
+      //   return ['CurrentUser'];
+      // },
+      providesTags: ['CurrentUser'],
+      transformErrorResponse(baseQueryReturnValue, meta, arg) {
+        console.log('');
+        return { data: null };
       },
       keepUnusedDataFor: 0,
     }),

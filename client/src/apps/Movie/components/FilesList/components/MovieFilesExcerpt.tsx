@@ -10,11 +10,12 @@ import Item from 'components/Item/Item'
 import { formatDistanceToNow } from 'date-fns'
 import { filesize } from 'filesize'
 import { IMovieFile } from 'models/MOVIES_APP/movieFile.model'
+import { ICurrentUser } from 'models/WHOLE_APP/currentUser.model'
 import { useSnackbar } from 'notistack'
 import React, { useState } from 'react'
 import ReactPlayer from 'react-player'
 import { useDeleteMovieFileMutation } from 'redux/features/MOVIE_APP/moviesApiSlice'
-import { useMovieConversionSocketQuery } from 'redux/features/MOVIE_APP/moviesSocketApiSlice'
+import { UnauthorizedSVG } from 'svg/pages/UnauthorizedSVG'
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number },
@@ -47,10 +48,11 @@ function CircularProgressWithLabel(
 type Props = {
     file: IMovieFile;
     uploadingProgress: { [key: string]: number };
+    currentUser: ICurrentUser | null
 }
 
 const MovieFilesExcerpt =
-    ({ file, uploadingProgress }: Props) => {
+    ({ file, uploadingProgress, currentUser }: Props) => {
         const theme = useTheme();
         const { enqueueSnackbar } = useSnackbar()
         const [loading, setLoading] = useState(false)
@@ -58,35 +60,8 @@ const MovieFilesExcerpt =
         // const [downloadFile] = useDownloadFileMutation()
         const [deleteFile, { isLoading: deletingLoad }] = useDeleteMovieFileMutation()
         const axiosPrivate = useAxiosPrivate();
-        const { data: socketData } = useMovieConversionSocketQuery({ id: file.id })
-
-        const downloadWholeFile_usingAxios = async () => {
-            try {
-                const { data }: { data: Blob } = await axiosPrivate.get(`movies_app/get-file/${file.id}`, {
-                    responseType: 'arraybuffer',
-                    // headers: {`movies_app/get-file/${file.id}`
-                    //     Accept: 'application/octet-stream',
-                    //     'Content-Type': file.type,
-                    // },
-                    onDownloadProgress(progressEvent) {
-                        const progress1 = progressEvent.total ? (progressEvent.loaded / progressEvent.total) * 100 : 0;
-                        const progress2 = file.size ? (progressEvent.loaded / file.size) * 100 : 0;
-                        const progress = Math.max(progress1, progress2)
-                        setDownloadingProgress(downloadingProgress => ({ ...downloadingProgress, [file.fileHash]: progress }))
-                    },
-                });
-                // if (!(data instanceof ArrayBuffer)) return;
-
-                const blob = new Blob([data], { type: file.type });
-                const link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = file.name;
-                link.click();
-            } catch (err) {
-                console.log(err)
-            }
-        };
-
+        const [error, setError] = useState<boolean>(false)
+        // eslint-disable-next-line
         const saveChunkToFile = (chunk: ArrayBuffer, index: number) => {
             // Create a temporary <a> element to trigger the file download
             const blob = new Blob([chunk], { type: 'application/octet-stream' });
@@ -167,6 +142,9 @@ const MovieFilesExcerpt =
             }
         }
 
+
+
+
         return (
             <Grid xs={12} sm={6} md={4} >
                 {((uploadingProgress[file.fileHash] !== 100 && uploadingProgress[file.fileHash] !== undefined) || file.uploadedComplete === false) ?
@@ -199,14 +177,14 @@ const MovieFilesExcerpt =
                             <CardHeader
                                 action={
                                     file.private ?
-                                        (file.streamable || (socketData && socketData[file.id])) ?
+                                        (file.streamable) ?
                                             <Stack spacing={1} direction={'column'}>
                                                 <Lock color="primary" />
                                                 <StreamIcon color="secondary" />
                                             </Stack> :
                                             <Lock color="secondary" />
                                         :
-                                        (file.streamable || (socketData && socketData[file.id])) ?
+                                        (file.streamable) ?
                                             <Stack spacing={1} direction={'column'}>
                                                 <LockOpen color="primary" />
                                                 <StreamIcon color="secondary" />
@@ -215,10 +193,28 @@ const MovieFilesExcerpt =
 
                                 }
                                 avatar={<AttachFileRounded color='primary' />}
-                                title={file.name}
+                                title={file.name.length > 20 ? `${file.name.substring(0, 20)} ...` : file.name}
                                 subheader={`uploaded by ${file.owner?.name || 'UNKNOWN AUTHOR'} | ${filesize(file.size)}`}
                             />
-                            <ReactPlayer url={file.hlsUrl} controls width={'100%'} height={300} />
+                            {
+                                error ?
+                                    <Box
+                                        width={'100%'}
+                                        height={300}
+                                    >
+                                        <UnauthorizedSVG />
+                                    </Box>
+                                    :
+                                    <ReactPlayer
+                                        url={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
+                                        controls
+                                        width={'100%'}
+                                        height={300}
+                                        onError={(error: any) => {
+                                            setError(true)
+                                        }}
+                                    />
+                            }
                             <CardContent>tags: {(file.tags && file.tags.length > 0) ? file.tags.map(tag => `#${tag.tag}`).join(', ') : 'without any tag'}</CardContent>
                         </CardActionArea>
                         <CardActions>

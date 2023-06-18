@@ -1,11 +1,10 @@
 import { Upload } from '@mui/icons-material';
-import { Alert, Box, Container, LinearProgress, Typography } from '@mui/material';
+import { Box, Container, LinearProgress, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { useTheme } from '@mui/material/styles';
 import SimpleSlideDialog from 'components/SimpleSlideDialog/SimpleSlideDialog';
 import { ITag } from 'models/TAGS/tag.model';
 import { useEffect, useState } from 'react';
-import { useMovieSocketQuery } from 'redux/features/MOVIE_APP/moviesSocketApiSlice';
 import FilesDropZone from './components/FilesDropZone/FilesDropZone';
 import FilesList from './components/FilesList/FilesList';
 import Filter from './components/Filter/Filter';
@@ -18,25 +17,16 @@ const Movie = (props: Props) => {
     const [privateFilter, setPrivateFilter] = useState<boolean>(false)
     const [tagsFilter, setTagsFilter] = useState<ITag[]>([])
     const [uploadingProgress, setUploadingProgress] = useState<{ [key: string]: number }>({})
-    const { data: socketData = {} } = useMovieSocketQuery()
-    const [showConversionProgress, setShowConversionProgress] = useState(true)
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return () => { };
     }, []);
 
-    const streamblizationingProgressFiles = Object.keys(socketData)
 
     return (
         <Box width={1} height={1}>
             {loading && <LinearProgress color='primary' />}
-            {
-                (streamblizationingProgressFiles.length > 0 && showConversionProgress) &&
-                streamblizationingProgressFiles.map((item, index) =>
-                    <Alert severity='info' onClose={() => { setShowConversionProgress(false) }} key={index}>{`${item} Conversion progress: ${socketData[item]}%`}</Alert>
-                )
-            }
             <Box
                 height={1}
                 width={1}

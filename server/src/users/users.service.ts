@@ -102,7 +102,8 @@ export class UsersService {
       throw new NotFoundException('user not found');
     }
     Object.assign(user, attrs);
-    return this.usersRepo.save(user);
+    const save = await this.usersRepo.save(user);
+    return save;
   }
 
   async changeUserRoles(

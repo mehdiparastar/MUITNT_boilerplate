@@ -6,6 +6,7 @@ import { ITag } from 'models/TAGS/tag.model'
 import React, { useEffect, useState } from 'react'
 import { useGetAllMovieFilesQuery } from 'redux/features/MOVIE_APP/moviesApiSlice'
 import MovieFilesExcerpt from './components/MovieFilesExcerpt'
+import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
 
 type Props = {
     privateFilter: boolean,
@@ -23,6 +24,8 @@ const FilesList = (props: Props) => {
     const isPrivateQry = `isPrivate=${props.privateFilter}`
     const tagsQry = props.tagsFilter.length > 0 ? `tagsFilter=${props.tagsFilter.map(item => item.id)}` : undefined
     const qry = [skipQry, limitQry, isPrivateQry, tagsQry].filter(item => item !== undefined).join('&&')
+
+    const { data: currentUser = null } = useGetCurrentUserQuery()
 
     const { data: paginatedFiles = { data: [], count: 0 }, isLoading } = useGetAllMovieFilesQuery({ qry })
 
@@ -44,6 +47,7 @@ const FilesList = (props: Props) => {
             key={file.id}
             file={file}
             uploadingProgress={props.uploadingProgress}
+            currentUser={currentUser}
         />)
 
     useEffect(() => {

@@ -20,12 +20,12 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
 
   const theme = useTheme();
   const themeConfig = React.useContext(ThemeContext);
-  const { data: currentUser } = useGetCurrentUserQuery()
   const accessToken = useAppSelector(selectCurrentAccessToken)
   const themeMode = theme.palette.mode;
   const paletteType = theme.palette.paletteType;
   const themeToggler = themeConfig.themeMode.toggleThemeMode;
   const setThemePalette = themeConfig.themePaletteType.changeThemePaletteType;
+  const { data: currentUser } = useGetCurrentUserQuery(accessToken)
 
   return (
     <Grid container justifyContent={'space-between'} alignItems={'center'}>
