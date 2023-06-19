@@ -9,13 +9,16 @@ import useAxiosPrivate from 'api/axiosApi/useAxiosPrivate'
 import Item from 'components/Item/Item'
 import { formatDistanceToNow } from 'date-fns'
 import { filesize } from 'filesize'
-import { IMovieFile } from 'models/MOVIES_APP/movieFile.model'
+import { IMusicFile } from 'models/MUSICS_APP/musicFile.model'
 import { ICurrentUser } from 'models/WHOLE_APP/currentUser.model'
 import { useSnackbar } from 'notistack'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import ReactAudioPlayer from 'react-audio-player'
 import ReactPlayer from 'react-player'
-import { useDeleteMovieFileMutation } from 'redux/features/MOVIE_APP/moviesApiSlice'
+import { useDeleteMusicFileMutation } from 'redux/features/MUSIC_APP/musicsApiSlice'
 import { UnauthorizedSVG } from 'svg/pages/UnauthorizedSVG'
+import WaveForm from './WaveForm'
+import Waveform from './WaveForm'
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number },
@@ -46,19 +49,19 @@ function CircularProgressWithLabel(
 }
 
 type Props = {
-    file: IMovieFile;
+    file: IMusicFile;
     uploadingProgress: { [key: string]: number };
     currentUser: ICurrentUser | null
 }
 
-const MovieFilesExcerpt =
+const MusicFilesExcerpt =
     ({ file, uploadingProgress, currentUser }: Props) => {
         const theme = useTheme();
         const { enqueueSnackbar } = useSnackbar()
         const [loading, setLoading] = useState(false)
         const [downloadingProgress, setDownloadingProgress] = useState<{ [key: string]: number }>({})
         // const [downloadFile] = useDownloadFileMutation()
-        const [deleteFile, { isLoading: deletingLoad }] = useDeleteMovieFileMutation()
+        const [deleteFile, { isLoading: deletingLoad }] = useDeleteMusicFileMutation()
         const axiosPrivate = useAxiosPrivate();
         const [error, setError] = useState<boolean>(false)
         // eslint-disable-next-line
@@ -82,7 +85,7 @@ const MovieFilesExcerpt =
                 const fileData = [];
 
                 for (let i = 0; i < totalChunks; i++) {
-                    const { data }: { data: ArrayBuffer } = await axiosPrivate.get(`movies_app/get-file-chunk/${file.id}/${chunkSize}/${i}`, {
+                    const { data }: { data: ArrayBuffer } = await axiosPrivate.get(`musics_app/get-file-chunk/${file.id}/${chunkSize}/${i}`, {
                         responseType: 'arraybuffer',
                         onDownloadProgress(progressEvent) {
                             const progress = file.size ? ((((i) * chunkSize) + progressEvent.loaded) / file.size) * 100 : 0;
@@ -141,6 +144,8 @@ const MovieFilesExcerpt =
                 enqueueSnackbar(`Deleting Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
             }
         }
+
+      
 
         return (
             <Grid xs={12} sm={6} md={4} >
@@ -202,15 +207,46 @@ const MovieFilesExcerpt =
                                         <UnauthorizedSVG />
                                     </Box>
                                     :
-                                    <ReactPlayer
-                                        url={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
-                                        controls
-                                        width={'100%'}
-                                        height={300}
-                                        onError={(error: any) => {
-                                            setError(true)
-                                        }}
-                                    />
+                                    <Box
+                                        padding={1}
+                                    >
+                                        {/* <Waveform audio={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`} /> */}
+                                        {/* <Waveform
+                                            height={100}
+                                            waveColor="rgb(200, 0, 200)"
+                                            progressColor="rgb(100, 0, 100)"
+                                            url={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
+                                        /> */}
+                                        {/* <audio
+                                            style={{ width: '100%' }}
+                                            src={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
+                                            controls
+                                        /> */}
+                                        <ReactAudioPlayer
+                                            src={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
+                                            style={{ width: '100%' }}
+                                            controls
+                                            onError={(error: any) => {
+                                                setError(true)
+                                            }}
+                                            
+                                        />
+                                        {/* <Box
+                                            ref={audioElmRef}
+
+                                        >
+
+                                            <ReactAudioPlayer
+                                                src={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
+                                                style={{ width: '100%' }}
+                                                controls
+                                                onError={(error: any) => {
+                                                    setError(true)
+                                                }}
+                                                onPlay={audioAnalyzer}
+                                            />
+                                        </Box> */}
+                                    </Box>
                             }
                             <CardContent>tags: {(file.tags && file.tags.length > 0) ? file.tags.map(tag => `#${tag.tag}`).join(', ') : 'without any tag'}</CardContent>
                         </CardActionArea>
@@ -246,4 +282,4 @@ const MovieFilesExcerpt =
         )
     }
 
-export default React.memo(MovieFilesExcerpt)
+export default React.memo(MusicFilesExcerpt)

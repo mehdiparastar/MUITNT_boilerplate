@@ -8,13 +8,13 @@ import { MUIAsyncAutocompleteTags } from 'components/MUIAsyncAutocompleteTags/MU
 import { filesize } from 'filesize';
 import { useFormik } from 'formik';
 import HashLargeFile from 'helperFunctions/hash-large-file';
-import { IAddMovieFileDto, IAddMovieFileInfoDto } from 'models/MOVIES_APP/addMovieFile.model';
+import { IAddMusicFileDto, IAddMusicFileInfoDto } from 'models/MUSICS_APP/addMusicFile.model';
 import { ITag } from 'models/TAGS/tag.model';
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useGetMovieFileTagsQuery } from 'redux/features/MOVIE_APP/movieFileTagsApiSlice';
-import { useCreateMultipleMovieFileInfoMutation, useSetUploadingMovieFileAsCompletedMutation, useUploadMultipleMovieFileMutation } from 'redux/features/MOVIE_APP/moviesApiSlice';
+import { useGetMusicFileTagsQuery } from 'redux/features/MUSIC_APP/musicFileTagsApiSlice';
+import { useCreateMultipleMusicFileInfoMutation, useSetUploadingMusicFileAsCompletedMutation, useUploadMultipleMusicFileMutation } from 'redux/features/MUSIC_APP/musicsApiSlice';
 import UploadFileSVG from 'svg/banners/UploadFile/UploadFile';
 import * as yup from 'yup';
 
@@ -28,27 +28,27 @@ function FilesDropZone(
         setLoading: (arg: boolean) => void,
         setUploadingProgress: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>
     }) {
-    const [createMultipleMovieFileInfo] = useCreateMultipleMovieFileInfoMutation()
-    const [uploadMultipleFile] = useUploadMultipleMovieFileMutation()
-    const [setUploadingMovieFileAsCompleted] = useSetUploadingMovieFileAsCompletedMutation()
-    const { data: fileTags = [] } = useGetMovieFileTagsQuery()
+    const [createMultipleMusicFileInfo] = useCreateMultipleMusicFileInfoMutation()
+    const [uploadMultipleFile] = useUploadMultipleMusicFileMutation()
+    const [setUploadingMusicFileAsCompleted] = useSetUploadingMusicFileAsCompletedMutation()
+    const { data: fileTags = [] } = useGetMusicFileTagsQuery()
     const { enqueueSnackbar } = useSnackbar()
 
     const formik = useFormik({
-        initialValues: { files: [] } as { files: IAddMovieFileDto[] },
-        onSubmit: async (values: { files: IAddMovieFileDto[] }) => {
+        initialValues: { files: [] } as { files: IAddMusicFileDto[] },
+        onSubmit: async (values: { files: IAddMusicFileDto[] }) => {
             try {
                 setLoading(true)
                 const segmentSize = 10 * 1024 * 1024; // 10 MB
 
                 if (values.files.length > 0) {
-                    const movieFiles: IAddMovieFileInfoDto[] = []
+                    const musicFiles: IAddMusicFileInfoDto[] = []
                     // for (const file of values.files) {
                     for (let i = 0; i < values.files.length; i++) {
                         const file = values.files[i]
                         const thisFileHash = await HashLargeFile(file)
 
-                        movieFiles.push({
+                        musicFiles.push({
                             name: file.name,
                             private: file.private || false,
                             fileHash: thisFileHash,
@@ -59,14 +59,14 @@ function FilesDropZone(
                         })
 
                     }
-                    const movieFilesInfo = await createMultipleMovieFileInfo(movieFiles).unwrap()
+                    const musicFilesInfo = await createMultipleMusicFileInfo(musicFiles).unwrap()
                     setLoading(false)
 
                     for (let i = 0; i < values.files.length; i++) {
                         const file = values.files[i]
-                        const fileHash = movieFiles[i].fileHash
+                        const fileHash = musicFiles[i].fileHash
 
-                        const movieFileInfo = [movieFilesInfo[i]]
+                        const musicFileInfo = [musicFilesInfo[i]]
 
                         enqueueSnackbar(`Uploading ${file.name.toString()} started.`, { variant: 'info' })
 
@@ -80,13 +80,13 @@ function FilesDropZone(
                             const formData = new FormData()
                             formData.append('files', segment)
                             formData.append('fileHash', fileHash)
-                            formData.append('fileInfoId', movieFileInfo[0].id.toString())
+                            formData.append('fileInfoId', musicFileInfo[0].id.toString())
                             formData.append('segmentNo', i.toString())
                             const uploadRes = await uploadMultipleFile(formData).unwrap()
                             setUploadingProgress(uploadingProgress => ({ ...uploadingProgress, [fileHash]: (uploadRes[0].segmentNo + 1) / totalSegments * 100 }))
                         }
                         enqueueSnackbar(`Uploading ${file.name.toString()} successfully Completed.`, { variant: 'success' })
-                        await setUploadingMovieFileAsCompleted({ fileInfoId: movieFileInfo[0].id }).unwrap()
+                        await setUploadingMusicFileAsCompleted({ fileInfoId: musicFileInfo[0].id }).unwrap()
                     }
                 }
 
@@ -109,7 +109,7 @@ function FilesDropZone(
     const theme = useTheme()
     const { getRootProps, getInputProps } = useDropzone({
         accept: {
-            'video/*': ['.mp4']
+            'audio/*': ['.mp3']
         },
         onDrop: (acceptedFiles: File[], fileRejections, event) => {
             formik.setFieldValue('files', acceptedFiles.map((file: File) => Object.assign(file, {

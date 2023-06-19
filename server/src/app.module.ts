@@ -16,6 +16,7 @@ import { MoviesModule } from './apps/Movie/movies.module';
 import { MediaServerModule } from './NMS/nms.module';
 const NodeMediaServer = require('node-media-server');
 import * as path from 'path';
+import { MusicsModule } from './apps/Music/musics.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import * as path from 'path';
     TagsModule,
     ChatModule,
     MoviesModule,
+    MusicsModule,
     MediaServerModule,
   ],
   controllers: [AppController],

@@ -3,4 +3,5 @@ export enum appNameEnum {
   crud = 'CRUD',
   chat = 'CHAT',
   movie = 'MOVIE',
+  music = 'MUSIC',
 }

@@ -8,16 +8,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { User } from 'src/users/entities/user.entity';
 import { In, Repository } from 'typeorm';
-import { MovieFileInfo } from './entities/movieFileInfo.entity';
+import { MusicFileInfo } from './entities/musicFileInfo.entity';
 
 @Injectable()
-export class MoviesService {
+export class MusicsService {
   private uploadPath: string;
   constructor(
-    @InjectRepository(MovieFileInfo)
-    private filesInfoRepo: Repository<MovieFileInfo>,
+    @InjectRepository(MusicFileInfo)
+    private filesInfoRepo: Repository<MusicFileInfo>,
   ) {
-    this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'movies'); // Define your upload directory
+    this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'musics'); // Define your upload directory
   }
 
   async uploads(
@@ -33,7 +33,7 @@ export class MoviesService {
     try {
       const savingRes = [];
       for (const file of files) {
-        const fileInfo = await this.findOneMovieFileInfoById(file.fileInfoId);
+        const fileInfo = await this.findOneMusicFileInfoById(file.fileInfoId);
 
         // Create the uploads directory if it doesn't exist
         if (!fs.existsSync(this.uploadPath)) {
@@ -73,7 +73,7 @@ export class MoviesService {
 
           await this.filesInfoRepo.save({
             ...fileInfo,
-            hlsUrl: `http://localhost:8000/movies/${fileName}`,
+            hlsUrl: `http://localhost:8000/musics/${fileName}`,
             uploadedComplete: true,
             streamable: true,
           });
@@ -96,7 +96,7 @@ export class MoviesService {
     isPrivate: boolean,
     tagsFilter: number[] | undefined,
     user: User,
-  ): Promise<{ data: MovieFileInfo[]; count: number }> {
+  ): Promise<{ data: MusicFileInfo[]; count: number }> {
     // Create new File
     const [result, total] = await this.filesInfoRepo.findAndCount({
       relations: {
@@ -133,7 +133,7 @@ export class MoviesService {
     };
   }
 
-  async findOneMovieFileInfoById(id: number): Promise<MovieFileInfo> {
+  async findOneMusicFileInfoById(id: number): Promise<MusicFileInfo> {
     if (!id) {
       throw new NotFoundException('file not found');
     }
@@ -147,8 +147,8 @@ export class MoviesService {
     return find;
   }
 
-  async removeFile(user: User, id: number): Promise<MovieFileInfo> {
-    const fileInfo = await this.findOneMovieFileInfoById(id);
+  async removeFile(user: User, id: number): Promise<MusicFileInfo> {
+    const fileInfo = await this.findOneMusicFileInfoById(id);
     if (!fileInfo) {
       throw new NotFoundException('file not found');
     }
@@ -172,7 +172,7 @@ export class MoviesService {
     return removeFileInfo;
   }
 
-  async createMovieFilesInfo(user: User, infos: Partial<MovieFileInfo>[]) {
+  async createMusicFilesInfo(user: User, infos: Partial<MusicFileInfo>[]) {
     const newRecords = infos.map((info) =>
       this.filesInfoRepo.create({ ...info, owner: user }),
     );
@@ -188,6 +188,6 @@ export class MoviesService {
   }
 
   whereRU(): string {
-    return 'hello, you are in movies app.';
+    return 'hello, you are in musics app.';
   }
 }

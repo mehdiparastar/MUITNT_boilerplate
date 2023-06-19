@@ -27,32 +27,34 @@ import { strToBool } from 'src/helperFunctions/strToBool';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CurrentUser } from 'src/users/decorators/current-user.middleware';
 import { User } from 'src/users/entities/user.entity';
-import { MovieFileDto } from './dto/movie/movie.dto';
-import { PaginationMovieFilesDto } from './dto/movie/pagination-movies.dto';
-import { MovieFileInfo } from './entities/movieFileInfo.entity';
-import { MoviesService } from './movies.service';
-import { MovieFileValidationPipe } from './validation.pipe';
+import { MusicFileDto } from './dto/music/music.dto';
+import { PaginationMusicFilesDto } from './dto/music/pagination-musics.dto';
+import { MusicFileInfo } from './entities/musicFileInfo.entity';
+import { MusicsService } from './musics.service';
+import { MusicFileValidationPipe } from './validation.pipe';
 
-@Controller('movies_app')
-export class MoviesController {
+@Controller('musics_app')
+export class MusicsController {
   private uploadPath: string;
 
-  constructor(private readonly moviesService: MoviesService) {
-    this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'movies'); // Define your upload directory
+  constructor(
+    private readonly musicsService: MusicsService,
+  ) {
+    this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'musics'); // Define your upload directory
   }
 
   @Get('socket_initializing')
   @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(UserRoles.movieAppUserLL)
+  @Roles(UserRoles.musicAppUserLL)
   async socketInitilizing() {
     return {};
   }
 
-  @Get('movie_conversion/:id')
+  @Get('music_conversion/:id')
   @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(UserRoles.movieAppUserLL)
-  async movieConversionCompleteStatus(@Param('id') id: string) {
-    const fileInfo = await this.moviesService.findOneMovieFileInfoById(
+  @Roles(UserRoles.musicAppUserLL)
+  async musicConversionCompleteStatus(@Param('id') id: string) {
+    const fileInfo = await this.musicsService.findOneMusicFileInfoById(
       parseInt(id),
     );
     return { [id]: fileInfo.streamable };
@@ -60,7 +62,7 @@ export class MoviesController {
 
   @Post('uploads')
   @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(UserRoles.movieAppUserML)
+  @Roles(UserRoles.musicAppUserML)
   @UseInterceptors(
     FilesInterceptor('files', 100, {
       limits: { fileSize: 1024 * 1024 * 1024 * 10 },
@@ -84,9 +86,9 @@ export class MoviesController {
     @Body('fileHash') fileHash: string,
     @Body('fileInfoId') fileInfoId: string,
     @Body('segmentNo') segmentNo: string,
-    @UploadedFiles(MovieFileValidationPipe) files: Array<Express.Multer.File>,
+    @UploadedFiles(MusicFileValidationPipe) files: Array<Express.Multer.File>,
   ) {
-    const res = await this.moviesService.uploads(
+    const res = await this.musicsService.uploads(
       files.map((file, index) => {
         return {
           ...file,
@@ -103,7 +105,7 @@ export class MoviesController {
 
   @Get('all-files')
   @UseGuards(AccessTokenGuard)
-  @Serialize(PaginationMovieFilesDto)
+  @Serialize(PaginationMusicFilesDto)
   async getAllFiles(
     @CurrentUser() user: User,
     @Query('skip') skip: string,
@@ -115,7 +117,7 @@ export class MoviesController {
     //   await this.NMS.start();
     //   this.NMS.setEvents();
     // }
-    return await this.moviesService.findAll(
+    return await this.musicsService.findAll(
       parseInt(skip),
       parseInt(limit),
       strToBool(isPrivate),
@@ -134,7 +136,7 @@ export class MoviesController {
     @Res() res: Response,
   ) {
     try {
-      const fileInfo = await this.moviesService.findOneMovieFileInfoById(
+      const fileInfo = await this.musicsService.findOneMusicFileInfoById(
         parseInt(id),
       );
 
@@ -178,7 +180,7 @@ export class MoviesController {
     @Res() res: Response,
   ) {
     try {
-      const fileInfo = await this.moviesService.findOneMovieFileInfoById(
+      const fileInfo = await this.musicsService.findOneMusicFileInfoById(
         parseInt(id),
       );
 
@@ -211,34 +213,34 @@ export class MoviesController {
 
   @Delete('delete-file/:id')
   @UseGuards(AccessTokenGuard)
-  @Serialize(MovieFileDto)
+  @Serialize(MusicFileDto)
   async removeFile(@CurrentUser() user: User, @Param('id') id: string) {
-    return this.moviesService.removeFile(user, parseInt(id));
+    return this.musicsService.removeFile(user, parseInt(id));
   }
 
-  @Post('create-movie-files-info')
+  @Post('create-music-files-info')
   @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(UserRoles.movieAppUserML)
-  async createMovieFilesInfo(
+  @Roles(UserRoles.musicAppUserML)
+  async createMusicFilesInfo(
     @CurrentUser() user: User,
-    @Body() body: Partial<MovieFileInfo>[],
+    @Body() body: Partial<MusicFileInfo>[],
   ) {
-    return this.moviesService.createMovieFilesInfo(user, body);
+    return this.musicsService.createMusicFilesInfo(user, body);
   }
 
   @Post('set-uploading-file-as-completed')
   @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(UserRoles.movieAppUserML)
+  @Roles(UserRoles.musicAppUserML)
   async setUploadingFileAsCompleted(
     @CurrentUser() user: User,
     @Body('fileInfoId') fileInfoId: number,
   ) {
-    return this.moviesService.setUploadingFileAsCompleted(user, fileInfoId);
+    return this.musicsService.setUploadingFileAsCompleted(user, fileInfoId);
   }
 
   @Get()
   //   @UseGuards(AccessTokenGuard)
   whereRU(): string {
-    return this.moviesService.whereRU();
+    return this.musicsService.whereRU();
   }
 }

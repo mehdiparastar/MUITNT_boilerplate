@@ -25,6 +25,7 @@ import { Route, Routes } from 'react-router-dom';
 import About from '../pages/About/About';
 import Home from '../pages/Home/Home';
 import Movie from 'apps/Movie/Movie';
+import Music from 'apps/Music/Music';
 
 export const RoutesList: React.FC = () => {
   return (
@@ -70,11 +71,14 @@ export const RoutesList: React.FC = () => {
           <Route path="" element={<Movie />} />
         </Route>
 
+        <Route path="music" element={<RequireAuth allowedRoles={[UserRoles.musicAppUserLL]} />}>
+          <Route path="" element={<Music />} />
+        </Route>
+
         <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>
           <Route path="files" element={<Files />} />
           <Route path="video-call" element={<ComingSoon />} />
           <Route path="voice-call" element={<ComingSoon />} />
-          <Route path="music" element={<ComingSoon />} />
           <Route path="maps" element={<ComingSoon />} />
           <Route path="trade-bot" element={<ComingSoon />} />
           <Route path="online-shop" element={<ComingSoon />} />

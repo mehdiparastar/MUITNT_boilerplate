@@ -79,6 +79,8 @@ export const apiSlice = createApi({
     'Chat',
     'Movie',
     'MovieFileTags',
+    'Music',
+    'MusicFileTags',
   ],
   endpoints: (builder) => ({}),
 });

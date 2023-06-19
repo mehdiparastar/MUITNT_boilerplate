@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ChatSocketIOAdapter } from './apps/CHAT/socket-io-adapter';
 import { MovieSocketIOAdapter } from './apps/Movie/socket-io-adapter';
+import { MusicSocketIOAdapter } from './apps/Music/socket-io-adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -25,6 +26,7 @@ async function bootstrap() {
   var whitelist = [
     `http://localhost:${clientPort}`,
     `http://localhost:${serverPort}`,
+    `http://localhost:8000`,
     new RegExp(`^http:\/\/192\.168\.1\.([1-9]|[1-9]\\d):${clientPort}$`),
     new RegExp(`^http:\/\/192\.168\.1\.([1-9]|[1-9]\\d):${serverPort}$`),
     new RegExp(`^http:\/\/192\.168\.0\.([1-9]|[1-9]\\d):${clientPort}$`),
@@ -50,6 +52,8 @@ async function bootstrap() {
 
   app.useWebSocketAdapter(new ChatSocketIOAdapter(app, configService));
   app.useWebSocketAdapter(new MovieSocketIOAdapter(app, configService));
+  app.useWebSocketAdapter(new MusicSocketIOAdapter(app, configService));
+
 
   await app.listen(serverPort);
   console.log(`Application is running on: ${await app.getUrl()}`);

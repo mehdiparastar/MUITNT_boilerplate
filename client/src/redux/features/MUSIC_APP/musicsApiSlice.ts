@@ -1,61 +1,61 @@
-import { IAddMovieFileInfoDto } from 'models/MOVIES_APP/addMovieFile.model';
+import { IAddMusicFileInfoDto } from 'models/MUSICS_APP/addMusicFile.model';
 import {
-  IMovieFile,
-  IMovieFilePaginated,
-} from 'models/MOVIES_APP/movieFile.model';
+  IMusicFile,
+  IMusicFilePaginated,
+} from 'models/MUSICS_APP/musicFile.model';
 import { apiSlice } from '../../../api/rtkApi/apiSlice';
 
-export const moviesApiSlice = apiSlice.injectEndpoints({
+export const musicsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    createMultipleMovieFileInfo: builder.mutation<
-      IMovieFile[],
-      IAddMovieFileInfoDto[]
+    createMultipleMusicFileInfo: builder.mutation<
+      IMusicFile[],
+      IAddMusicFileInfoDto[]
     >({
       query(data) {
         return {
-          url: `movies_app/create-movie-files-info`,
+          url: `musics_app/create-music-files-info`,
           method: 'POST',
           body: data,
         };
       },
-      invalidatesTags: ['Movie'],
+      invalidatesTags: ['Music'],
     }),
 
-    uploadMultipleMovieFile: builder.mutation<
+    uploadMultipleMusicFile: builder.mutation<
       { id: number; segmentNo: number }[],
       FormData
     >({
       query(data) {
         return {
-          url: `movies_app/uploads`,
+          url: `musics_app/uploads`,
           method: 'POST',
           body: data,
         };
       },
-      invalidatesTags: ['Movie'],
+      invalidatesTags: ['Music'],
     }),
 
-    setUploadingMovieFileAsCompleted: builder.mutation<
-      IMovieFile,
+    setUploadingMusicFileAsCompleted: builder.mutation<
+      IMusicFile,
       { fileInfoId: number }
     >({
       query(arg) {
         return {
-          url: `movies_app/set-uploading-file-as-completed`,
+          url: `musics_app/set-uploading-file-as-completed`,
           method: 'POST',
           body: arg,
         };
       },
-      invalidatesTags: ['Movie'],
+      invalidatesTags: ['Music'],
     }),
 
-    downloadMovieFile: builder.mutation<
+    downloadMusicFile: builder.mutation<
       Blob,
       { fileId: number; fileName: string }
     >({
       query(arg) {
         return {
-          url: `movies_app/get-file/${arg.fileId}`,
+          url: `musics_app/get-file/${arg.fileId}`,
           method: 'GET',
           responseHandler: async (response) => {
             const hiddenElement = document.createElement('a');
@@ -73,15 +73,15 @@ export const moviesApiSlice = apiSlice.injectEndpoints({
       },
     }),    
 
-    getAllMovieFiles: builder.query<IMovieFilePaginated, { qry: string }>({
+    getAllMusicFiles: builder.query<IMusicFilePaginated, { qry: string }>({
       query(arg) {
         return {
-          url: `movies_app/all-files?${arg.qry}`,
+          url: `musics_app/all-files?${arg.qry}`,
           method: 'GET',
         };
       },
-      providesTags: ['Movie'],
-      transformResponse: (results: IMovieFilePaginated) => {
+      providesTags: ['Music'],
+      transformResponse: (results: IMusicFilePaginated) => {
         return {
           ...results,
           data: results.data.map((item) => ({
@@ -93,23 +93,23 @@ export const moviesApiSlice = apiSlice.injectEndpoints({
       },
     }),
 
-    deleteMovieFile: builder.mutation<IMovieFile, { id: number }>({
+    deleteMusicFile: builder.mutation<IMusicFile, { id: number }>({
       query({ id }) {
         return {
-          url: `movies_app/delete-file/${id}`,
+          url: `musics_app/delete-file/${id}`,
           method: 'Delete',
         };
       },
-      invalidatesTags: ['Movie'],
+      invalidatesTags: ['Music'],
     }),
   }),
 });
 
 export const {
-  useUploadMultipleMovieFileMutation,
-  useGetAllMovieFilesQuery,
-  useDownloadMovieFileMutation,
-  useDeleteMovieFileMutation,
-  useCreateMultipleMovieFileInfoMutation,
-  useSetUploadingMovieFileAsCompletedMutation,
-} = moviesApiSlice;
+  useUploadMultipleMusicFileMutation,
+  useGetAllMusicFilesQuery,
+  useDownloadMusicFileMutation,
+  useDeleteMusicFileMutation,
+  useCreateMultipleMusicFileInfoMutation,
+  useSetUploadingMusicFileAsCompletedMutation,
+} = musicsApiSlice;
