@@ -71,7 +71,7 @@ export const musicsApiSlice = apiSlice.injectEndpoints({
           cache: 'no-cache',
         };
       },
-    }),    
+    }),
 
     getAllMusicFiles: builder.query<IMusicFilePaginated, { qry: string }>({
       query(arg) {

@@ -1,6 +1,6 @@
-import { AttachFileRounded, DeleteForever, Download, Lock, LockOpen } from '@mui/icons-material'
+import { AttachFileRounded, DeleteForever, Download, Lock, LockOpen, PauseCircleFilledOutlined, PlayCircleFilledOutlined } from '@mui/icons-material'
 import StreamIcon from '@mui/icons-material/Stream'
-import { Box, Card, CardActionArea, CardActions, CardContent, CardHeader, CircularProgress, IconButton, LinearProgress, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia, CircularProgress, IconButton, LinearProgress, Stack, Typography, useTheme } from '@mui/material'
 import {
     CircularProgressProps,
 } from '@mui/material/CircularProgress'
@@ -12,12 +12,11 @@ import { filesize } from 'filesize'
 import { IMusicFile } from 'models/MUSICS_APP/musicFile.model'
 import { ICurrentUser } from 'models/WHOLE_APP/currentUser.model'
 import { useSnackbar } from 'notistack'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ReactAudioPlayer from 'react-audio-player'
 import ReactPlayer from 'react-player'
 import { useDeleteMusicFileMutation } from 'redux/features/MUSIC_APP/musicsApiSlice'
 import { UnauthorizedSVG } from 'svg/pages/UnauthorizedSVG'
-import WaveForm from './WaveForm'
 import Waveform from './WaveForm'
 
 function CircularProgressWithLabel(
@@ -64,6 +63,19 @@ const MusicFilesExcerpt =
         const [deleteFile, { isLoading: deletingLoad }] = useDeleteMusicFileMutation()
         const axiosPrivate = useAxiosPrivate();
         const [error, setError] = useState<boolean>(false)
+        const playPauseActionRef = useRef<HTMLElement>(null);
+        const [isPlaying, setIsPlaying] = useState<boolean>(false)
+
+        const handleplayPauseClick = useCallback(() => {
+            setIsPlaying(!isPlaying);
+        }, []);
+
+        const handleplayPauseButtonClick = () => {
+            if (playPauseActionRef.current) {
+                (playPauseActionRef.current as any).onPlayClick();
+            }
+        };
+
         // eslint-disable-next-line
         const saveChunkToFile = (chunk: ArrayBuffer, index: number) => {
             // Create a temporary <a> element to trigger the file download
@@ -144,11 +156,10 @@ const MusicFilesExcerpt =
                 enqueueSnackbar(`Deleting Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
             }
         }
-
-      
+        
 
         return (
-            <Grid xs={12} sm={6} md={4} >
+            <Grid xs={12} sm={6}>
                 {((uploadingProgress[file.fileHash] !== 100 && uploadingProgress[file.fileHash] !== undefined) || file.uploadedComplete === false) ?
                     <Typography
                         variant="caption"
@@ -175,29 +186,37 @@ const MusicFilesExcerpt =
                         },
                     }}>
                     <Card sx={{ width: 1, height: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} >
-                        <CardActionArea>
-                            <CardHeader
-                                action={
-                                    file.private ?
-                                        (file.streamable) ?
-                                            <Stack spacing={1} direction={'column'}>
-                                                <Lock color="primary" />
-                                                <StreamIcon color="secondary" />
-                                            </Stack> :
-                                            <Lock color="secondary" />
-                                        :
-                                        (file.streamable) ?
-                                            <Stack spacing={1} direction={'column'}>
-                                                <LockOpen color="primary" />
-                                                <StreamIcon color="secondary" />
-                                            </Stack> :
+                        {/* <CardActionArea> */}
+                        <CardHeader
+                            sx={{ background: theme.palette.alternate.dark }}
+                            action={
+                                file.private ?
+                                    (file.streamable) ?
+                                        <Stack spacing={1} direction={'column'}>
+                                            <Lock color="primary" />
+                                            <StreamIcon color="secondary" />
+                                        </Stack> :
+                                        <Lock color="secondary" />
+                                    :
+                                    (file.streamable) ?
+                                        <Stack spacing={1} direction={'column'}>
                                             <LockOpen color="primary" />
+                                            <StreamIcon color="secondary" />
+                                        </Stack> :
+                                        <LockOpen color="primary" />
 
-                                }
-                                avatar={<AttachFileRounded color='primary' />}
-                                title={file.name.length > 20 ? `${file.name.substring(0, 20)} ...` : file.name}
-                                subheader={`uploaded by ${file.owner?.name || 'UNKNOWN AUTHOR'} | ${filesize(file.size)}`}
-                            />
+                            }
+                            // avatar={<AttachFileRounded color='primary' />}
+                            avatar={<CardMedia
+                                component="img"
+                                sx={{ width: 90, m: '-16px' }}
+                                image="/statics/images/musicmedia.png"
+                                alt="Live from space album cover"
+                            />}
+                            title={file.name.length > 20 ? `${file.name.substring(0, 20)} ...` : file.name}
+                            subheader={`uploaded by ${file.owner?.name || 'UNKNOWN AUTHOR'} | ${filesize(file.size)}`}
+                        />
+                        <Box>
                             {
                                 error ?
                                     <Box
@@ -210,47 +229,30 @@ const MusicFilesExcerpt =
                                     <Box
                                         padding={1}
                                     >
-                                        {/* <Waveform audio={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`} /> */}
-                                        {/* <Waveform
-                                            height={100}
-                                            waveColor="rgb(200, 0, 200)"
-                                            progressColor="rgb(100, 0, 100)"
-                                            url={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
-                                        /> */}
-                                        {/* <audio
-                                            style={{ width: '100%' }}
-                                            src={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
-                                            controls
-                                        /> */}
-                                        <ReactAudioPlayer
-                                            src={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
-                                            style={{ width: '100%' }}
-                                            controls
-                                            onError={(error: any) => {
-                                                setError(true)
-                                            }}
-                                            
-                                        />
-                                        {/* <Box
-                                            ref={audioElmRef}
-
-                                        >
-
-                                            <ReactAudioPlayer
-                                                src={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
-                                                style={{ width: '100%' }}
-                                                controls
-                                                onError={(error: any) => {
-                                                    setError(true)
-                                                }}
-                                                onPlay={audioAnalyzer}
-                                            />
-                                        </Box> */}
+                                        {
+                                            (file.peaks || []).length > 0 ?
+                                                <Waveform
+                                                    // ref={playPauseActionRef}
+                                                    // height={100}
+                                                    url={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
+                                                    peaks={[file.peaks || []]}
+                                                /> :
+                                                <Box width={1} justifyContent={'center'} display={'flex'} alignItems={'center'}>
+                                                    <CircularProgress />
+                                                </Box>
+                                        }
+                                        {/* <ReactAudioPlayer controls src={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`} /> */}
                                     </Box>
                             }
-                            <CardContent>tags: {(file.tags && file.tags.length > 0) ? file.tags.map(tag => `#${tag.tag}`).join(', ') : 'without any tag'}</CardContent>
+                        </Box>
+
+                        <CardActionArea>
+                            <CardContent>
+                                tags: {(file.tags && file.tags.length > 0) ? file.tags.map(tag => `#${tag.tag}`).join(', ') : 'without any tag'}
+                            </CardContent>
                         </CardActionArea>
-                        <CardActions>
+                        {/* </CardActionArea> */}
+                        <CardActions sx={{ background: theme.palette.alternate.main }} >
                             <Stack width={'100%'} direction={'row'} display={'flex'} justifyContent='space-between' alignItems={'center'}>
                                 {formatDistanceToNow(file.createdAt)} ago
                                 <Box>
@@ -278,8 +280,9 @@ const MusicFilesExcerpt =
                         </CardActions>
                     </Card >
                 </Item>
-            </Grid>
+            </Grid >
         )
     }
 
+// export default MusicFilesExcerpt
 export default React.memo(MusicFilesExcerpt)

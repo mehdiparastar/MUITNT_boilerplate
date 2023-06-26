@@ -50,6 +50,7 @@ function MyBadge(props: MyBadgeProps) {
                 vertical: 'top',
                 horizontal: 'right',
             }}
+            max={999}
         >
             {children}
         </Badge>

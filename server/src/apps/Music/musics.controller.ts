@@ -37,9 +37,7 @@ import { MusicFileValidationPipe } from './validation.pipe';
 export class MusicsController {
   private uploadPath: string;
 
-  constructor(
-    private readonly musicsService: MusicsService,
-  ) {
+  constructor(private readonly musicsService: MusicsService) {
     this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'musics'); // Define your upload directory
   }
 
@@ -239,7 +237,7 @@ export class MusicsController {
   }
 
   @Get()
-  //   @UseGuards(AccessTokenGuard)
+  // @UseGuards(AccessTokenGuard)
   whereRU(): string {
     return this.musicsService.whereRU();
   }

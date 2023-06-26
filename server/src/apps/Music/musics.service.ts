@@ -9,6 +9,9 @@ import * as path from 'path';
 import { User } from 'src/users/entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { MusicFileInfo } from './entities/musicFileInfo.entity';
+import { spawn } from 'child_process';
+import { scaleJSON } from 'src/helperFunctions/wavesurfer-normalizer';
+import { MusicGateway } from './music.gateway';
 
 @Injectable()
 export class MusicsService {
@@ -16,6 +19,7 @@ export class MusicsService {
   constructor(
     @InjectRepository(MusicFileInfo)
     private filesInfoRepo: Repository<MusicFileInfo>,
+    private readonly musicSocketGateway: MusicGateway,
   ) {
     this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'musics'); // Define your upload directory
   }
@@ -71,11 +75,70 @@ export class MusicsService {
 
           writeStream.end();
 
-          await this.filesInfoRepo.save({
-            ...fileInfo,
-            hlsUrl: `http://localhost:8000/musics/${fileName}`,
-            uploadedComplete: true,
-            streamable: true,
+          const command = `audiowaveform -i ${completeFilePath} --input-format mp3 -o ${completeFilePath}.json -b 8`;
+
+          const childProcess = spawn(command, { shell: true });
+
+          childProcess.stdout.on('data', (data) => {
+            // Process the output or extract progress information
+            console.log('Output:', data.toString());
+
+            // Extract progress information and send it to the client if desired
+            const progressRegex = /Progress: (\d+)%/;
+            const progressMatch = data.toString().match(progressRegex);
+            if (progressMatch) {
+              const progress = parseInt(progressMatch[1], 10);
+              console.log(`Progress: ${progress}%`);
+              // You can emit progress updates to the client using sockets or send them in the response
+              // res.write(`Progress: ${progress}%\n`);
+
+              this.musicSocketGateway.emitStreamablizationingProgress(
+                user.email,
+                fileInfo.name,
+                Math.round(progress),
+              );
+            }
+          });
+
+          childProcess.stderr.on('data', (data) => {
+            console.error(`Error: ${data.toString()}`);
+            // Extract progress information and send it to the client if desired
+            const progressRegex = /Done: (\d+)%/;
+            const progressMatch = data.toString().match(progressRegex);
+            if (progressMatch) {
+              const progress = parseInt(progressMatch[1], 10);
+              console.log(`Progress: ${progress}%`);
+              // You can emit progress updates to the client using sockets or send them in the response
+              // res.write(`Progress: ${progress}%\n`);
+
+              this.musicSocketGateway.emitStreamablizationingProgress(
+                user.email,
+                fileInfo.name,
+                Math.round(progress),
+              );
+            }
+            // Send an error response to the client if desired
+            // res.status(500).send('An error occurred during waveform generation.');
+          });
+
+          childProcess.on('close', async (code) => {
+            console.log(`Command exited with code ${code}`);
+            // Read the generated waveform JSON file and extract the peaks data
+            const jsonFilePath = path.join(this.uploadPath, `${fileName}.json`);
+            await scaleJSON(jsonFilePath);
+            await this.filesInfoRepo.save({
+              ...fileInfo,
+              hlsUrl: `http://localhost:8000/musics/${fileName}`,
+              uploadedComplete: true,
+              streamable: true,
+            });
+            this.musicSocketGateway.emitStreamablizationingProgress(
+              user.email,
+              fileInfo.name,
+              Math.round(100),
+            );
+            const music = await this.findOneMusicFileInfoById(fileInfo.id);
+            this.musicSocketGateway.emitStreamablizationingComplete(music);
           });
         }
 
@@ -96,7 +159,10 @@ export class MusicsService {
     isPrivate: boolean,
     tagsFilter: number[] | undefined,
     user: User,
-  ): Promise<{ data: MusicFileInfo[]; count: number }> {
+  ): Promise<{
+    data: (MusicFileInfo & { peaks?: number[] })[];
+    count: number;
+  }> {
     // Create new File
     const [result, total] = await this.filesInfoRepo.findAndCount({
       relations: {
@@ -127,8 +193,19 @@ export class MusicsService {
       skip: skip,
     });
 
+    const peakedResuld = result.map((music) => {
+      if (music.uploadedComplete && music.streamable) {
+        const jsonFilePath = path.join(this.uploadPath, `${music.id}.json`);
+        const waveformData = require(jsonFilePath);
+        const peaks = waveformData.data;
+        return { ...music, peaks: peaks };
+      } else {
+        return music;
+      }
+    });
+
     return {
-      data: result,
+      data: peakedResuld,
       count: total,
     };
   }
@@ -144,7 +221,15 @@ export class MusicsService {
     if (!find) {
       throw new NotFoundException('file not found');
     }
-    return find;
+    if (find.uploadedComplete && find.streamable) {
+      const jsonFilePath = path.join(this.uploadPath, `${find.id}.json`);
+      const waveformData = require(jsonFilePath);
+      const peaks = waveformData.data;
+      const peakedResuld = { ...find, peaks: peaks };
+      return peakedResuld;
+    } else {
+      return find;
+    }
   }
 
   async removeFile(user: User, id: number): Promise<MusicFileInfo> {
@@ -164,10 +249,7 @@ export class MusicsService {
     });
     if (filesCount === 0) {
       fs.unlinkSync(path.join(this.uploadPath, `${id}`)); // Remove the file
-      fs.rmSync(path.join(this.uploadPath, 'streams', `${id}`), {
-        recursive: true,
-        force: true,
-      });
+      fs.unlinkSync(path.join(this.uploadPath, `${id}.json`));
     }
     return removeFileInfo;
   }

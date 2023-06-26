@@ -23,7 +23,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
           method: 'POST',
           body: { ...credentials },
         };
-      },      
+      },
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const tokens = await queryFulfilled;
@@ -90,6 +90,12 @@ export const authApiSlice = apiSlice.injectEndpoints({
       },
       invalidatesTags: ['CurrentUser', 'PermissionRequest', 'User'],
     }),
+    authRefreshNewAccessToken: builder.mutation<any, void>({
+      query: () => ({
+        url: 'auth/whereru',
+        method: 'get',
+      }),
+    }),
   }),
 });
 
@@ -97,4 +103,5 @@ export const {
   useAuthLocalLoginMutation,
   useAuthLocalRegisterMutation,
   useAuthLogoutMutation,
+  useAuthRefreshNewAccessTokenMutation,
 } = authApiSlice;

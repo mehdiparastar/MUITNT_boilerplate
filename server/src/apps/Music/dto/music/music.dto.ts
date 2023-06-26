@@ -32,6 +32,10 @@ export class MusicFileDto {
 
   @Expose()
   @ApiProperty()
+  peaks?: number[];
+
+  @Expose()
+  @ApiProperty()
   totalSegments: number;
 
   @Expose()

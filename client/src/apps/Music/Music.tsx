@@ -1,5 +1,5 @@
 import { Upload } from '@mui/icons-material';
-import { Box, Container, LinearProgress, Typography } from '@mui/material';
+import { Alert, Box, Container, LinearProgress, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { useTheme } from '@mui/material/styles';
 import SimpleSlideDialog from 'components/SimpleSlideDialog/SimpleSlideDialog';
@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import FilesDropZone from './components/FilesDropZone/FilesDropZone';
 import FilesList from './components/FilesList/FilesList';
 import Filter from './components/Filter/Filter';
+import { useMusicSocketQuery } from 'redux/features/MUSIC_APP/musicsSocketApiSlice';
 
 type Props = {}
 
@@ -17,16 +18,31 @@ const Music = (props: Props) => {
     const [privateFilter, setPrivateFilter] = useState<boolean>(false)
     const [tagsFilter, setTagsFilter] = useState<ITag[]>([])
     const [uploadingProgress, setUploadingProgress] = useState<{ [key: string]: number }>({})
+    const { data: socketData = {} } = useMusicSocketQuery()
+    const [showConversionProgress, setShowConversionProgress] = useState(true)
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return () => { };
     }, []);
 
+    const CompletedStreamblizedFiles = Object.fromEntries(Object.entries(socketData)
+        .filter(([key, value]) => value.complete))
+    const InCompletedStreamblizedFiles = Object.fromEntries(Object.entries(socketData)
+        .filter(([key, value]) => !value.complete))
+    const streamblizationingProgressFiles = Object.keys(InCompletedStreamblizedFiles)
+
 
     return (
         <Box width={1} height={1}>
             {loading && <LinearProgress color='primary' />}
+            {
+                (streamblizationingProgressFiles.length > 0 && showConversionProgress) &&
+                streamblizationingProgressFiles.map((item, index) => {
+                    return <Alert severity='info' onClose={() => { setShowConversionProgress(false) }} key={index}>{`${item} Conversion progress: ${socketData[item].progress}%`}</Alert>
+                }
+                )
+            }
             <Box
                 height={1}
                 width={1}
@@ -96,6 +112,7 @@ const Music = (props: Props) => {
                         privateFilter={privateFilter}
                         tagsFilter={tagsFilter}
                         uploadingProgress={uploadingProgress}
+                        socketData={CompletedStreamblizedFiles}
                     />
                 </Container>
             </Box>

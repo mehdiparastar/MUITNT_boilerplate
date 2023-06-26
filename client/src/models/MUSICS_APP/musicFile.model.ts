@@ -28,6 +28,8 @@ export interface IMusicFile {
   totalSegments: number;
 
   uploadedComplete: boolean;
+
+  peaks?: number[];
 }
 
 export interface IMusicFilePaginated {

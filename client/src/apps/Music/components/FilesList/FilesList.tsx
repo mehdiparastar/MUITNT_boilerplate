@@ -7,15 +7,17 @@ import React, { useEffect, useState } from 'react'
 import { useGetAllMusicFilesQuery } from 'redux/features/MUSIC_APP/musicsApiSlice'
 import MusicFilesExcerpt from './components/MusicFilesExcerpt'
 import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
+import { IMusicSocket } from 'models/MUSICS_APP/musicSocket.model'
 
 type Props = {
     privateFilter: boolean,
     tagsFilter: ITag[],
-    uploadingProgress: { [key: string]: number }
+    uploadingProgress: { [key: string]: number },
+    socketData: IMusicSocket
 }
 
 const FilesList = (props: Props) => {
-    const limit = 6
+    const limit = 2
     const [page, setPage] = useState<number>(1);
     const [skip, setSkip] = useState<number>(0);
 
@@ -42,13 +44,30 @@ const FilesList = (props: Props) => {
         setSkip((value - 1) * limit);
     };
 
-    const renderedFiles = files.map((file: IMusicFile) =>
-        <MusicFilesExcerpt
+
+    const renderedFiles = files.map((file: IMusicFile) => {
+
+        const socketFile = (Object.fromEntries(Object.entries(props.socketData)
+            .filter(([key, value]) => value.fileInfo.id === file.id)))[file.name]?.fileInfo;
+
+        const transformedSocketFile =
+            ('createdAt' in (socketFile || {})) ?
+                {
+                    ...socketFile,
+                    createdAt: new Date(socketFile.createdAt),
+                    updatedAt: new Date(socketFile.updatedAt),
+                }
+                :
+                (socketFile || {})
+
+        
+        return <MusicFilesExcerpt
             key={file.id}
-            file={file}
+            file={{ ...file, ...transformedSocketFile }}
             uploadingProgress={props.uploadingProgress}
             currentUser={currentUser}
-        />)
+        />
+    })
 
     useEffect(() => {
         setPage(1);

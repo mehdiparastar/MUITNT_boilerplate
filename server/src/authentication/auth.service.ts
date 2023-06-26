@@ -160,4 +160,8 @@ export class AuthService {
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
+
+  whereRU(): string {
+    return 'hello, you are in authenticating.';
+  }
 }
