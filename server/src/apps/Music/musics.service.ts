@@ -4,13 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { scaleJSON } from 'src/helperFunctions/wavesurfer-normalizer';
 import { User } from 'src/users/entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { MusicFileInfo } from './entities/musicFileInfo.entity';
-import { spawn } from 'child_process';
-import { scaleJSON } from 'src/helperFunctions/wavesurfer-normalizer';
 import { MusicGateway } from './music.gateway';
 
 @Injectable()

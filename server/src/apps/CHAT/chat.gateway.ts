@@ -15,19 +15,18 @@ import {
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
-  WsResponse,
+  WebSocketServer
 } from '@nestjs/websockets';
-import { Namespace, Socket } from 'socket.io';
+import { Namespace } from 'socket.io';
 import { ChatEvent } from 'src/enum/chatEvent.enum';
+import { chatIntendedParticipantStatus } from 'src/enum/chatIntendedParticipantStatus.enum';
 import { WsCatchAllFilter } from 'src/exceptions/ws-catch-all-filter';
 import { getArrayOfObjectUniqulyByKey } from 'src/helperFunctions/get-array-of-object-unique-by-key';
 import { AuthGatewayGuard } from './auth.gateway.guard';
 import { ChatService } from './chat.service';
+import { ChatIntendedParticipants } from './entities/intendedParticipants.entity';
 import { ChatMessage } from './entities/messages.entity';
 import { ChatRoom } from './entities/room.entity';
-import { chatIntendedParticipantStatus } from 'src/enum/chatIntendedParticipantStatus.enum';
-import { ChatIntendedParticipants } from './entities/intendedParticipants.entity';
 
 @UsePipes(new ValidationPipe())
 @UseFilters(new WsCatchAllFilter())

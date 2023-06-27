@@ -1,13 +1,11 @@
-const NodeMediaServer = require('node-media-server');
+const NodeMediaServer = require('node-media-server-with-auth-middleware');
+import {
+  ExecutionContext,
+  Injectable
+} from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import * as express from 'express';
 import * as path from 'path';
-import { Reflector } from '@nestjs/core';
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  UnauthorizedException,
-} from '@nestjs/common';
 import { StreamTokenGuard } from 'src/authentication/guards/streamToken.guard';
 import { UsersService } from 'src/users/users.service';
 
