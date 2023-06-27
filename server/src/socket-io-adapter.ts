@@ -1,7 +1,4 @@
-import {
-  INestApplicationContext,
-  Logger
-} from '@nestjs/common';
+import { INestApplicationContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { IoAdapter } from '@nestjs/platform-socket.io';
@@ -59,7 +56,7 @@ export class ApplicationSocketIOAdapter extends IoAdapter {
         ),
       );
 
-      const initMovieSocketServer = server
+    const initMovieSocketServer = server
       .of('movie')
       .use(
         createMovieTokenMiddleware(
@@ -116,7 +113,7 @@ const createChatTokenMiddleware =
     }
   };
 
-  const createMovieTokenMiddleware =
+const createMovieTokenMiddleware =
   (
     jwtService: JwtService,
     usersService: UsersService,

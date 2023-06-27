@@ -23,7 +23,7 @@ export class StreamTokenStrategy extends PassportStrategy(
       secretOrKey: configService.get<string>('JWT_STREAM_SECRET'),
       usernameField: 'email',
     });
-  }  
+  }
 
   async validate(payload: IJwtPayload) {
     if (payload.sub) {

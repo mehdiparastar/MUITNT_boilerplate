@@ -5,11 +5,11 @@ import { AuthGuard } from '@nestjs/passport';
 export class AccessTokenGuard extends AuthGuard('jwt') {
   async canActivate(context: ExecutionContext) {
     try {
-      const activate = (await super.canActivate(context)) as boolean;      
+      const activate = (await super.canActivate(context)) as boolean;
       // await super.logIn(request);
       return activate;
     } catch (ex) {
-      return false
+      return false;
     }
   }
 }

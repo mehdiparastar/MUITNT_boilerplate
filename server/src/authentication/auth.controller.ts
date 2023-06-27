@@ -307,7 +307,6 @@ export class AuthController {
     return this.permissionRequestService.rejectPReq(user, pReqId);
   }
 
-
   @Get('whereru')
   @UseGuards(AccessTokenGuard)
   whereRU(): string {

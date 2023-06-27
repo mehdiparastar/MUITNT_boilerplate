@@ -91,7 +91,7 @@ export class AuthService {
   async login(user: Partial<User>): Promise<IJWTTokensPair> {
     const tokens = await this.getTokens(user.id, user.email);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
-    await this.updateStreamToken(user.id, tokens.streamToken);    
+    await this.updateStreamToken(user.id, tokens.streamToken);
     return tokens;
   }
 
@@ -126,7 +126,9 @@ export class AuthService {
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_STREAM_SECRET'),
-        expiresIn: this.configService.get<string | number>('JWT_STREAM_EXPIRATION_TIME'),
+        expiresIn: this.configService.get<string | number>(
+          'JWT_STREAM_EXPIRATION_TIME',
+        ),
       }),
     ]);
 

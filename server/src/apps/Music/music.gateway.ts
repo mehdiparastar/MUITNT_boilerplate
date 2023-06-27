@@ -69,11 +69,9 @@ export class MusicGateway
     fileName: string,
     progress: number,
   ) {
-    this.io
-      .to(room)
-      .emit(MusicEvent.ConvertingProgress, {
-        [fileName]: { progress, complete: false },
-      });
+    this.io.to(room).emit(MusicEvent.ConvertingProgress, {
+      [fileName]: { progress, complete: false },
+    });
   }
 
   emitStreamablizationingComplete(music: MusicFileInfo & { peaks?: number[] }) {

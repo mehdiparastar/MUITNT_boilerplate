@@ -1,7 +1,7 @@
 import {
   Injectable,
   NotAcceptableException,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagDto } from 'src/tags/dto/tag.dto';

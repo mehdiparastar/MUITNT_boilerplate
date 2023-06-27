@@ -15,7 +15,7 @@ import {
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Namespace } from 'socket.io';
 import { ChatEvent } from 'src/enum/chatEvent.enum';
