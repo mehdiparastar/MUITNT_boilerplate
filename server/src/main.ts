@@ -18,13 +18,13 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService<IconfigService>);
   const serverPort = configService.get<number>('SERVER_PORT') || 3001;
-  const clientPort = configService.get('CLIENT_PORT');
+  const clientPort = configService.get<number>('CLIENT_PORT');
+  const nmsHttpPort = configService.get<number>('NMS_HTTP_PORT') || 8000;
 
-  // const serverPort = process.env.PORT || 3001;
   var whitelist = [
     `http://localhost:${clientPort}`,
     `http://localhost:${serverPort}`,
-    `http://localhost:8000`,
+    `http://localhost:${nmsHttpPort}`,
     new RegExp(`^http:\/\/192\.168\.1\.([1-9]|[1-9]\\d):${clientPort}$`),
     new RegExp(`^http:\/\/192\.168\.1\.([1-9]|[1-9]\\d):${serverPort}$`),
     new RegExp(`^http:\/\/192\.168\.0\.([1-9]|[1-9]\\d):${clientPort}$`),
@@ -49,7 +49,6 @@ async function bootstrap() {
   });
 
   app.useWebSocketAdapter(new ApplicationSocketIOAdapter(app, configService));
-  
 
   await app.listen(serverPort);
   console.log(`Application is running on: ${await app.getUrl()}`);

@@ -9,6 +9,7 @@ import * as path from 'path';
 import { User } from 'src/users/entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { MovieFileInfo } from './entities/movieFileInfo.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MoviesService {
@@ -16,6 +17,7 @@ export class MoviesService {
   constructor(
     @InjectRepository(MovieFileInfo)
     private filesInfoRepo: Repository<MovieFileInfo>,
+    protected configService: ConfigService<IconfigService>,
   ) {
     this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'movies'); // Define your upload directory
   }
@@ -73,7 +75,9 @@ export class MoviesService {
 
           await this.filesInfoRepo.save({
             ...fileInfo,
-            hlsUrl: `http://localhost:8000/movies/${fileName}`,
+            hlsUrl: `http://localhost:${
+              this.configService.get<number>('NMS_HTTP_PORT') || 8000
+            }/movies/${fileName}`,
             uploadedComplete: true,
             streamable: true,
           });

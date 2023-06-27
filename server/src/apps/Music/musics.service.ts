@@ -12,6 +12,7 @@ import { User } from 'src/users/entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { MusicFileInfo } from './entities/musicFileInfo.entity';
 import { MusicGateway } from './music.gateway';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MusicsService {
@@ -20,6 +21,7 @@ export class MusicsService {
     @InjectRepository(MusicFileInfo)
     private filesInfoRepo: Repository<MusicFileInfo>,
     private readonly musicSocketGateway: MusicGateway,
+    protected configService: ConfigService<IconfigService>,
   ) {
     this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'musics'); // Define your upload directory
   }
@@ -128,7 +130,9 @@ export class MusicsService {
             await scaleJSON(jsonFilePath);
             await this.filesInfoRepo.save({
               ...fileInfo,
-              hlsUrl: `http://localhost:8000/musics/${fileName}`,
+              hlsUrl: `http://localhost:${
+                this.configService.get<number>('NMS_HTTP_PORT') || 8000
+              }/musics/${fileName}`,
               uploadedComplete: true,
               streamable: true,
             });

@@ -1,49 +1,21 @@
-const NodeMediaServer = require('node-media-server-with-auth-middleware');
-import {
-  ExecutionContext,
-  Injectable
-} from '@nestjs/common';
+const NodeMediaServerWithAuth = require('node-media-server-with-auth-middleware');
+import { ExecutionContext, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import * as express from 'express';
 import * as path from 'path';
 import { StreamTokenGuard } from 'src/authentication/guards/streamToken.guard';
 import { UsersService } from 'src/users/users.service';
 
-const config = {
-  rtmp: {
-    port: 1935,
-    chunk_size: 60000,
-    gop_cache: true,
-    ping: 60,
-    ping_timeout: 30,
-  },
-  http: {
-    api: true,
-    port: 8000, // HTTP port for HLS
-    mediaroot: path.join(process.cwd(), '..', 'uploads'), // Directory where your media files are stored
-    allow_origin: '*', // Allow access from any domain,
-  },
-  trans: {
-    ffmpeg: '/usr/bin/ffmpeg',
-    tasks: [
-      {
-        app: 'live',
-        hls: true,
-        hlsFlags: '[hls_time=2:hls_list_size=3:hls_flags=delete_segments]',
-        dash: true,
-        dashFlags: '[f=dash:window_size=3:extra_window_size=5]',
-      },
-    ],
-  },
-};
-
 @Injectable()
 export class MediaServerService {
-  private nms: typeof NodeMediaServer;
+  private nms: typeof NodeMediaServerWithAuth;
+  private config: NMSConfig;
 
   constructor(
     private readonly reflector: Reflector,
     private readonly usersService: UsersService,
+    protected configService: ConfigService<IconfigService>,
   ) {
     const createExecutionContext = (
       req: express.Request,
@@ -81,7 +53,34 @@ export class MediaServerService {
       // Perform some logic or actions here
     };
 
-    this.nms = new NodeMediaServer(config, customMiddleware);
+    this.config = {
+      rtmp: {
+        port: this.configService.get<number>('NMS_RTMP_PORT'),
+        chunk_size: 60000,
+        gop_cache: true,
+        ping: 60,
+        ping_timeout: 30,
+      },
+      http: {
+        port: this.configService.get<number>('NMS_HTTP_PORT'), // HTTP port for HLS
+        mediaroot: path.join(process.cwd(), '..', 'uploads'), // Directory where your media files are stored
+        allow_origin: '*', // Allow access from any domain,
+      },
+      trans: {
+        ffmpeg: '/usr/bin/ffmpeg',
+        tasks: [
+          {
+            app: 'live',
+            hls: true,
+            hlsFlags: '[hls_time=2:hls_list_size=3:hls_flags=delete_segments]',
+            dash: true,
+            dashFlags: '[f=dash:window_size=3:extra_window_size=5]',
+          },
+        ],
+      },
+    };
+
+    this.nms = new NodeMediaServerWithAuth(this.config, customMiddleware);
 
     this.nms.run();
   }
