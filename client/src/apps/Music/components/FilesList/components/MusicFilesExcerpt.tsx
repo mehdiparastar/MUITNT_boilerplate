@@ -1,4 +1,4 @@
-import { AttachFileRounded, DeleteForever, Download, Lock, LockOpen, PauseCircleFilledOutlined, PlayCircleFilledOutlined } from '@mui/icons-material'
+import { DeleteForever, Download, Lock, LockOpen } from '@mui/icons-material'
 import StreamIcon from '@mui/icons-material/Stream'
 import { Box, Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia, CircularProgress, IconButton, LinearProgress, Stack, Typography, useTheme } from '@mui/material'
 import {
@@ -12,9 +12,7 @@ import { filesize } from 'filesize'
 import { IMusicFile } from 'models/MUSICS_APP/musicFile.model'
 import { ICurrentUser } from 'models/WHOLE_APP/currentUser.model'
 import { useSnackbar } from 'notistack'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import ReactAudioPlayer from 'react-audio-player'
-import ReactPlayer from 'react-player'
+import React, { useState } from 'react'
 import { useDeleteMusicFileMutation } from 'redux/features/MUSIC_APP/musicsApiSlice'
 import { UnauthorizedSVG } from 'svg/pages/UnauthorizedSVG'
 import Waveform from './WaveForm'
@@ -62,19 +60,9 @@ const MusicFilesExcerpt =
         // const [downloadFile] = useDownloadFileMutation()
         const [deleteFile, { isLoading: deletingLoad }] = useDeleteMusicFileMutation()
         const axiosPrivate = useAxiosPrivate();
+        // eslint-disable-next-line
         const [error, setError] = useState<boolean>(false)
-        const playPauseActionRef = useRef<HTMLElement>(null);
-        const [isPlaying, setIsPlaying] = useState<boolean>(false)
 
-        const handleplayPauseClick = useCallback(() => {
-            setIsPlaying(!isPlaying);
-        }, []);
-
-        const handleplayPauseButtonClick = () => {
-            if (playPauseActionRef.current) {
-                (playPauseActionRef.current as any).onPlayClick();
-            }
-        };
 
         // eslint-disable-next-line
         const saveChunkToFile = (chunk: ArrayBuffer, index: number) => {
@@ -156,7 +144,7 @@ const MusicFilesExcerpt =
                 enqueueSnackbar(`Deleting Failed! ${err.data?.msg || 'Unknown Error'}`, { variant: 'error' });
             }
         }
-        
+
 
         return (
             <Grid xs={12} sm={6}>

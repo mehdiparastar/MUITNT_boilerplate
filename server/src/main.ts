@@ -30,22 +30,28 @@ async function bootstrap() {
     new RegExp(`^http:\/\/192\.168\.0\.([1-9]|[1-9]\\d):${clientPort}$`),
     new RegExp(`^http:\/\/192\.168\.0\.([1-9]|[1-9]\\d):${serverPort}$`),
   ];
+  // app.enableCors({
+  //   // credentials: true,
+  //   origin: function (origin, callback) {
+  //     if (
+  //       !origin ||
+  //       whitelist.some(
+  //         (item) =>
+  //           (typeof item === 'string' && item === origin) ||
+  //           (item instanceof RegExp && item.test(origin)),
+  //       )
+  //     ) {
+  //       callback(null, true);
+  //     } else {
+  //       callback(new Error('Not allowed by CORS'));
+  //     }
+  //   },
+  // });
+
   app.enableCors({
-    // credentials: true,
-    origin: function (origin, callback) {
-      if (
-        !origin ||
-        whitelist.some(
-          (item) =>
-            (typeof item === 'string' && item === origin) ||
-            (item instanceof RegExp && item.test(origin)),
-        )
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: false, // Allow sending cookies from the client
   });
 
   app.useWebSocketAdapter(new ApplicationSocketIOAdapter(app, configService));

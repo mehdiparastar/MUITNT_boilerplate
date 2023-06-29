@@ -1,14 +1,10 @@
-import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
-import { Pause, PauseRounded, PlayArrow, PlayArrowRounded } from '@mui/icons-material';
+import { PauseRounded, PlayArrowRounded } from '@mui/icons-material';
 import { Box, IconButton, Slider, Stack, Typography, useTheme } from '@mui/material';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useAuthRefreshNewAccessTokenMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
 import WaveSurfer from 'wavesurfer.js';
 import Minimap from 'wavesurfer.js/dist/plugins/minimap';
-import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.js'
-import { useAuthRefreshNewAccessTokenMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
-
-interface WaveformProps {
-    audio: string;
-}
+import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.js';
 
 // WaveSurfer hook
 const useWavesurfer = (containerRef: any, options: any) => {
@@ -60,6 +56,7 @@ const useWavesurfer = (containerRef: any, options: any) => {
         return () => {
             ws.destroy()
         }
+        // eslint-disable-next-line 
     }, [options.peaks[0].length, containerRef])
 
     return wavesurfer
@@ -107,12 +104,12 @@ const Waveform = (props: any) => {
         return () => {
             subscriptions.forEach((unsub) => unsub())
         }
+        // eslint-disable-next-line 
     }, [wavesurfer])
 
     const mainIconColor = theme.palette.mode === 'dark' ? '#fff' : '#000';
-    const lightIconColor =
-        theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
-
+    // const lightIconColor =
+    //     theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
 
     return (
         <Box>

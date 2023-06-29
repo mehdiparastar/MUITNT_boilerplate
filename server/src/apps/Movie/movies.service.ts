@@ -73,9 +73,11 @@ export class MoviesService {
 
           writeStream.end();
 
+          
           await this.filesInfoRepo.save({
             ...fileInfo,
-            hlsUrl: `http://localhost:${
+            hlsUrl: `${this.configService.get<string>('RUNNING_MECHINE_URL')}:${
+              //http://localhost
               this.configService.get<number>('NMS_HTTP_PORT') || 8000
             }/movies/${fileName}`,
             uploadedComplete: true,

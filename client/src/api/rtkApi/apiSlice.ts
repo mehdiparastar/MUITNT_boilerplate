@@ -44,7 +44,6 @@ export const baseQueryWithReauth: BaseQueryFn<
     return login;
   } else {
     let result = await baseQuery_access(args, api, extraOptions);
-
     if (result.error?.status === 401 || result.error?.status === 403) {
       // send refresh token to get new access token
       const refreshResult = await baseQuery_refresh(

@@ -5,7 +5,7 @@ services:
       context: ./client
       dockerfile: dockerfile.dev
     ports:
-      - 3000:3000
+      - 3006:3006
     container_name: muitnt-client
     networks:
       - muitnt-stack-net
@@ -26,14 +26,17 @@ services:
     ports:
         - 3001:3001
         - 9229:9229
+        - 8000:8000
+        - 1935:1935
     networks:
         - muitnt-stack-net
     volumes:
         - ./server:/usr/src/app
+        - ./uploads:/usr/src/uploads
     restart: unless-stopped
 
   db:
-    container_name: mysqlcontainer
+    container_name: mysqlcontainer_dev
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=password
