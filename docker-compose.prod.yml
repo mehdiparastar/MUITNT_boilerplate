@@ -2,21 +2,64 @@ version: "3.8"
 
 services:
 
-  client:
+  client_production:
     build:
       context: ./client
       dockerfile: dockerfile.prod
 
     ports:
-      - 80:80
+      - 4004:80
 
-    container_name: muitnt-client
+    container_name: muitnt-client-prod    
 
     restart: "always"
 
     networks:
-      - muitnt-stack-net
+      - muitnt-stack-net-prod
+
+  server_production:
+    container_name: server-prod
+    build:
+        context: ./server
+        dockerfile: ./dockerfile.prod
+    ports:
+        - 3001:3001
+        - 9229:9229
+        - 8000:8000
+        - 1935:1935
+    networks:
+        - muitnt-stack-net-prod
+    volumes:
+        - ./uploads:/usr/src/uploads
+    restart: unless-stopped
+    depends_on:
+      - db_production
+
+
+  db_production:
+    container_name: mysqlcontainer_prod
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=prod_db
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+    command: [ --character-set-server=utf8, --collation-server=utf8_persian_ci, --max-allowed-packet=524288000, --default-authentication-plugin=mysql_native_password]
+    restart: always
+    ports:
+      - 4006:3306
+    volumes:
+      - db_vol:/var/lib/mysql
+      - ./server/docker_mysql_init/init:/docker-entrypoint-initdb.d
+    expose:
+      - 3306
+    networks:
+      - muitnt-stack-net-prod
+
+volumes:
+  db_vol:
+    driver: local
 
 networks:
-  muitnt-stack-net:
+  muitnt-stack-net-prod:
     driver: bridge

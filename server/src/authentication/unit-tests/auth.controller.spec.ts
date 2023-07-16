@@ -87,11 +87,13 @@ describe('AuthController', () => {
       } as IJWTTokensPair),
     };
 
+    const nodeENV = process.env.NODE_ENV 
+
     const app: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
-          envFilePath: `.${process.env.NODE_ENV}.env`,
+          envFilePath: `.${nodeENV}.env`,
         }),
         JwtModule.register({}),
       ],

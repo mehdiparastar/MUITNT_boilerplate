@@ -23,7 +23,7 @@ interface IDBConfig {
 const dbConfig: IDBConfig = {
   development: {
     type: 'mysql',
-    host: 'db', //'localhost',
+    host: 'db_development', //'localhost',
     port: 3306,
     username: 'admin',
     password: 'admin',
@@ -78,8 +78,36 @@ const dbConfig: IDBConfig = {
     logging: false,
     migrationsRun: true,
   },
+  production: {
+    type: 'mysql',
+    host: 'db_production', //'localhost',
+    port: 3306,
+    username: 'admin',
+    password: 'admin',
+    database: 'prod_db',
+    entities: [
+      User,
+      UserPermissionRequest,
+      CrudPost,
+      CrudReaction,
+      FileInfo,
+      FileBuffer,
+      FileTag,
+      ChatRoom,
+      ChatMessage,
+      ChatIntendedParticipants,
+      ChatDeliveredMessages,
+      ChatSeenMessages,
+      MovieFileInfo,
+      MusicFileInfo,
+    ],
+    synchronize: true,
+    // synchronize: false,
+    // migrations: ['src/migration_dev/*.js'],
+    logging: false,
+  },
 };
 
-export const AppDataSource = new DataSource(
-  dbConfig[`${process.env.NODE_ENV}`],
-);
+const nodeENV = process.env.NODE_ENV || 'production';
+
+export const AppDataSource = new DataSource(dbConfig[`${nodeENV}`]);

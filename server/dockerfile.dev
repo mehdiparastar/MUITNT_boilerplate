@@ -1,16 +1,13 @@
 
 FROM node:18.8.0-alpine3.16 AS development
 
-WORKDIR /usr/src/app
+# Install git
+RUN apk update && apk add --no-cache git
 
-COPY package*.json ./
+# Install ffmpeg
+RUN apk update && apk add ffmpeg
 
-RUN npm install glob rimraf
-
-RUN apk update
-RUN apk add
-RUN apk add ffmpeg
-
+# dependencies for alpine to use make
 RUN apk add --no-cache git make cmake gcc g++ libmad-dev \
     libid3tag-dev libsndfile-dev gd-dev boost-dev \
     libgd libpng-dev zlib-dev && \
@@ -23,6 +20,23 @@ RUN apk add --no-cache git make cmake gcc g++ libmad-dev \
     ./configure --enable-shared=no && \
     make && \
     make install
+
+
+WORKDIR /audiowaveform
+
+# Clone audiowaveform repository
+RUN git clone https://github.com/bbc/audiowaveform.git .
+
+# Build audiowaveform
+RUN mkdir build && cd build && cmake -D ENABLE_TESTS=0 BUILD_STATIC=1 .. && make
+RUN cd build && make install
+
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install glob rimraf
 
 RUN npm install --only=development
 

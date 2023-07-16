@@ -1,12 +1,12 @@
 #!/bin/bash
 
-docker-compose -f docker-compose.prod.yml down
+docker compose -f docker-compose.prod.yml down
 
 echo "\n\nstarting app..."
 
 sleep 2
 
-docker-compose -f docker-compose.prod.yml up --build -d
+docker compose -f docker-compose.prod.yml up --build -d
 
 sleep 2
 

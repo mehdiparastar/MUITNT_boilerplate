@@ -3,6 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from '../app.controller';
 import { AppService } from '../app.service';
 
+const nodeENV = process.env.NODE_ENV 
+
 describe('AppController', () => {
   let appController: AppController;
 
@@ -16,10 +18,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it(`should return Hello World! ENV=${process.env.NODE_ENV}`, () => {
-      expect(appController.getHello()).toBe(
-        `Hello World! ENV=${process.env.NODE_ENV}`,
-      );
+    it(`should return Hello World! ENV=${nodeENV}`, () => {
+      expect(appController.getHello()).toBe(`Hello World! ENV=${nodeENV}`);
     });
   });
 });

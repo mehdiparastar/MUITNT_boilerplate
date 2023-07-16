@@ -73,7 +73,6 @@ export class MoviesService {
 
           writeStream.end();
 
-          
           await this.filesInfoRepo.save({
             ...fileInfo,
             hlsUrl: `${this.configService.get<string>('RUNNING_MECHINE_URL')}:${

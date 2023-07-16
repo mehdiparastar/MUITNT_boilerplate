@@ -1,14 +1,14 @@
 version: '3.8'
 services:
-  client:
+  client_development:
     build:
       context: ./client
       dockerfile: dockerfile.dev
     ports:
       - 3006:3006
-    container_name: muitnt-client
+    container_name: muitnt_client_dev
     networks:
-      - muitnt-stack-net
+      - muitnt-stack-net-dev
     volumes:
       - ./client/src:/usr/app/src
       - ./client/public:/usr/app/public
@@ -16,8 +16,8 @@ services:
     stdin_open: true
     tty: true
 
-  server:
-    container_name: server
+  server_development:
+    container_name: muitnt_server_dev
     build:
         context: ./server
         target: development
@@ -29,14 +29,14 @@ services:
         - 8000:8000
         - 1935:1935
     networks:
-        - muitnt-stack-net
+        - muitnt-stack-net-dev
     volumes:
         - ./server:/usr/src/app
         - ./uploads:/usr/src/uploads
     restart: unless-stopped
 
-  db:
-    container_name: mysqlcontainer_dev
+  db_development:
+    container_name: muitnt_mysqlcontainer_dev
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=password
@@ -53,13 +53,13 @@ services:
     expose:
       - 3306
     networks:
-      - muitnt-stack-net
+      - muitnt-stack-net-dev
 
 volumes:
   db_vol:
     driver: local
 
 networks:
-  muitnt-stack-net:
+  muitnt-stack-net-dev:
     driver: bridge
 

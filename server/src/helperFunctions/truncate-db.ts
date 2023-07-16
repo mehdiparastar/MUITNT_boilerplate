@@ -2,7 +2,9 @@ import { AppDataSource } from '../data-source';
 
 const truncateDB = async () => {
   const entities = AppDataSource.entityMetadatas;
-  if (process.env.NODE_ENV === 'test') {
+  const nodeENV = process.env.NODE_ENV 
+
+  if (nodeENV === 'test') {
     for (const entity of entities) {
       const repository = AppDataSource.getRepository(entity.name);
       await repository.query(`SET FOREIGN_KEY_CHECKS = 0;`);

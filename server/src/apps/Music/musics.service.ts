@@ -13,6 +13,7 @@ import { In, Repository } from 'typeorm';
 import { MusicFileInfo } from './entities/musicFileInfo.entity';
 import { MusicGateway } from './music.gateway';
 import { ConfigService } from '@nestjs/config';
+import { sleep } from 'src/helperFunctions/sleep';
 
 @Injectable()
 export class MusicsService {
@@ -77,6 +78,8 @@ export class MusicsService {
 
           writeStream.end();
 
+          await sleep(2000);
+
           const command = `audiowaveform -i ${completeFilePath} --input-format mp3 -o ${completeFilePath}.json -b 8`;
 
           const childProcess = spawn(command, { shell: true });
@@ -130,7 +133,10 @@ export class MusicsService {
             await scaleJSON(jsonFilePath);
             await this.filesInfoRepo.save({
               ...fileInfo,
-              hlsUrl: `http://localhost:${
+              hlsUrl: `${this.configService.get<string>(
+                'RUNNING_MECHINE_URL',
+              )}:${
+                //http://localhost
                 this.configService.get<number>('NMS_HTTP_PORT') || 8000
               }/musics/${fileName}`,
               uploadedComplete: true,

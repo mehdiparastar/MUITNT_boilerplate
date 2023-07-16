@@ -7,9 +7,9 @@ export class TestOrDevModeGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    return process.env.NODE_ENV === 'test' ||
-      process.env.NODE_ENV === 'development'
-      ? true
-      : false;
+
+    const nodeENV = process.env.NODE_ENV 
+
+    return nodeENV === 'test' || nodeENV === 'development' ? true : false;
   }
 }

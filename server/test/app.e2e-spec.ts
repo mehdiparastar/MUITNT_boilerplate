@@ -5,6 +5,8 @@ import * as request from 'supertest';
 import { AppDataSource } from '../src/data-source';
 import { AppModule } from './../src/app.module';
 
+const nodeENV = process.env.NODE_ENV 
+
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   jest.setTimeout(600000);
@@ -28,6 +30,6 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
-      .expect(`Hello World! ENV=${process.env.NODE_ENV}`);
+      .expect(`Hello World! ENV=${nodeENV}`);
   });
 });

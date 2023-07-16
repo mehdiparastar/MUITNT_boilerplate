@@ -9,6 +9,8 @@ import { hashData } from '../../helperFunctions/hash-data';
 import { User } from '../entities/user.entity';
 import { UsersService } from '../users.service';
 
+const nodeENV = process.env.NODE_ENV 
+
 let getFakeUsersRepo = async () => [
   {
     id: 1,
@@ -69,7 +71,7 @@ describe('UsersService', () => {
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
-          envFilePath: `.${process.env.NODE_ENV}.env`,
+          envFilePath: `.${nodeENV}.env`,
         }),
       ],
       providers: [

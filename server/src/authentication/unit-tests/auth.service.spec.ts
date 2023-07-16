@@ -116,11 +116,14 @@ describe('AuthService', () => {
         return find;
       },
     };
+
+    const nodeENV = process.env.NODE_ENV 
+
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
-          envFilePath: `.${process.env.NODE_ENV}.env`,
+          envFilePath: `.${nodeENV}.env`,
         }),
         JwtModule.register({}),
       ],

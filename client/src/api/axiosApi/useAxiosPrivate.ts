@@ -30,7 +30,11 @@ const useAxiosPrivate = () => {
           | (AxiosRequestConfig<any> & { sent?: boolean })
           | undefined = err?.config;
 
-        if (err.response?.status === 401 && prevReq && !prevReq.sent) {
+        if (
+          (err.response?.status === 401 || err.response?.status === 403) &&
+          prevReq &&
+          !prevReq.sent
+        ) {
           prevReq.sent = true;
           try {
             const { aT: newAccessToken } = await refresh();

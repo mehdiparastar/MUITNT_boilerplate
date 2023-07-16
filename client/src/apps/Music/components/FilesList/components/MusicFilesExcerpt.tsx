@@ -16,6 +16,7 @@ import React, { useState } from 'react'
 import { useDeleteMusicFileMutation } from 'redux/features/MUSIC_APP/musicsApiSlice'
 import { UnauthorizedSVG } from 'svg/pages/UnauthorizedSVG'
 import Waveform from './WaveForm'
+import ReactAudioPlayer from 'react-audio-player'
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number },
@@ -145,7 +146,6 @@ const MusicFilesExcerpt =
             }
         }
 
-
         return (
             <Grid xs={12} sm={6}>
                 {((uploadingProgress[file.fileHash] !== 100 && uploadingProgress[file.fileHash] !== undefined) || file.uploadedComplete === false) ?
@@ -223,13 +223,21 @@ const MusicFilesExcerpt =
                                                     // ref={playPauseActionRef}
                                                     // height={100}
                                                     url={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
-                                                    peaks={[file.peaks || []]}
+                                                    peaks={[file.peaks || []]}                                                                                                        
                                                 /> :
                                                 <Box width={1} justifyContent={'center'} display={'flex'} alignItems={'center'}>
                                                     <CircularProgress />
                                                 </Box>
                                         }
-                                        {/* <ReactAudioPlayer controls src={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`} /> */}
+                                        <br />
+                                        {
+                                            (file.peaks || []).length <= 0 &&
+                                            <ReactAudioPlayer
+                                                controls
+                                                style={{ width: '100%' }}
+                                                src={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
+                                            />
+                                        }
                                     </Box>
                             }
                         </Box>

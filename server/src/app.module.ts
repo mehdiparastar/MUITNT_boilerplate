@@ -16,11 +16,13 @@ import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
 import { TagsModule } from './tags/tags.module';
 import { UsersModule } from './users/users.module';
 
+const nodeENV = process.env.NODE_ENV 
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.${process.env.NODE_ENV}.env`,
+      envFilePath: `.${nodeENV}.env`,
     }),
     TypeOrmModule.forRoot(AppDataSource.options),
     UsersModule,
