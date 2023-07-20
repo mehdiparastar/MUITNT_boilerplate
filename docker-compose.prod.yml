@@ -24,7 +24,6 @@ services:
         dockerfile: ./dockerfile.prod
     ports:
         - 3001:3001
-        - 9229:9229
         - 8000:8000
         - 1935:1935
     networks:
@@ -37,7 +36,7 @@ services:
 
 
   db_production:
-    container_name: mysqlcontainer_prod
+    container_name: muitnt_mysqlcontainer_prod
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=password
@@ -49,7 +48,7 @@ services:
     ports:
       - 4006:3306
     volumes:
-      - db_vol:/var/lib/mysql
+      - prod_db_vol:/var/lib/mysql
       - ./server/docker_mysql_init/init:/docker-entrypoint-initdb.d
     expose:
       - 3306
@@ -57,7 +56,7 @@ services:
       - muitnt-stack-net-prod
 
 volumes:
-  db_vol:
+  prod_db_vol:
     driver: local
 
 networks:

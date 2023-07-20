@@ -35,7 +35,7 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
           aria-label="Menu"
           edge="start"
           onClick={onSidebarOpen}
-          sx={{ mx: 1 }}
+          sx={{ mx: 0.5 }}
         >
           <MenuIcon />
         </IconButton>
@@ -62,8 +62,8 @@ export const TopbarContent: React.FC<Props & { onSidebarOpen: () => void }> = ({
               container
               key={item}
               bgcolor={colors[item][700]}
-              width={20}
-              height={20}
+              width={18}
+              height={18}
               borderRadius={'100%'}
               marginRight={i === paletteTypes.length - 1 ? 0 : 1}
               justifyContent={'center'}

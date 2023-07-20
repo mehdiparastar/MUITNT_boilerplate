@@ -109,5 +109,5 @@ const dbConfig: IDBConfig = {
 };
 
 const nodeENV = process.env.NODE_ENV || 'production';
-
+console.log('node env is : ', nodeENV);
 export const AppDataSource = new DataSource(dbConfig[`${nodeENV}`]);

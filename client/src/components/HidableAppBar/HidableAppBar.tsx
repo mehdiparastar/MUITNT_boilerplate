@@ -32,12 +32,12 @@ export const HidableAppBar: React.FC<Props> = ({ children }) => {
       <AppBar
         elevation={1}
         sx={{
-          backgroundColor: theme.palette.background.paper,
+          backgroundColor: theme.palette.background.paper,          
         }}
       // enableColorOnDark
       >
         <Toolbar>
-          <Container maxWidth="lg">{children}</Container>
+          <Container sx={{px:0}} maxWidth="lg">{children}</Container>
         </Toolbar>
       </AppBar>
     </HideOnScroll>
