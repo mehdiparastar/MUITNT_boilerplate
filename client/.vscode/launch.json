@@ -9,7 +9,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "front",
-            "url": "http://192.168.1.6:3006",
+            "url": "http://192.168.16.109:3006",
             "webRoot": "${workspaceFolder}"
         }
     ]

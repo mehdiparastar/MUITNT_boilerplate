@@ -1,8 +1,9 @@
-import { AddBox, JoinInnerOutlined, Notifications, Settings } from '@mui/icons-material';
-import { Badge, BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
+import { AddBox, Home, HomeMax, JoinInnerOutlined, Notifications, RoomOutlined, RoomPreferences, Settings } from '@mui/icons-material';
+import { Badge, BottomNavigation, BottomNavigationAction, Paper, useMediaQuery } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
+import { ChatRoomIsMobileSideContext } from '../ChatLayout';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -41,14 +42,19 @@ enum bottomNAVEnum {
     join = 'join',
     requests = 'requests',
     settings = 'settings',
+    home = 'home'
 }
 
 const BottomNav = (props: Props) => {
     const location = useLocation();
-    const currentLoc = location.pathname.split('/').at(-1) || '' as string
+    const currentLoc = (location.pathname.split('/').at(-1) || '' as string) === 'chat' ? 'home' : (location.pathname.split('/').at(-1) || '' as string)
     const [value, setValue] = React.useState<bottomNAVEnum | null | any>(currentLoc in bottomNAVEnum ? currentLoc : null);
     const navigate = useNavigate();
     const theme = useTheme();
+    const isMobileView = useMediaQuery(theme.breakpoints.down('md'), {
+        defaultMatches: true,
+    });
+    const roomSideOpen = useContext(ChatRoomIsMobileSideContext);
 
     useEffect(() => {
         if (value !== currentLoc) {
@@ -72,11 +78,23 @@ const BottomNav = (props: Props) => {
                 value={value}
                 onChange={(event, newValue) => {
                     if (newValue !== value) {
-                        setValue(newValue);
-                        navigate(newValue, { state: { from: location }, replace: true });
+                        if (newValue === 'rooms') {
+                            roomSideOpen.isMobileSideOpen.toggleOpen()
+                        }
+                        else {
+                            setValue(newValue);
+                            if (newValue === bottomNAVEnum.home) {
+                                navigate('/chat', { replace: true });
+                            }
+                            else {
+                                navigate(newValue, { state: { from: location }, replace: true });
+                            }
+                        }
                     }
                 }}
             >
+                {isMobileView && <BottomNavigationAction value={'rooms'} label="Rooms" icon={<HomeMax />} />}
+                <BottomNavigationAction value={bottomNAVEnum.home} label="Home" icon={<Home />} />
                 <BottomNavigationAction value={bottomNAVEnum.create} label="Create" icon={<AddBox />} />
                 <BottomNavigationAction value={bottomNAVEnum.join} label="join" icon={<JoinInnerOutlined />} />
                 <BottomNavigationAction value={bottomNAVEnum.requests} label="requests" icon={
