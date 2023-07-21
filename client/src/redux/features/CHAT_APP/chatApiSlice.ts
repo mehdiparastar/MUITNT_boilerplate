@@ -43,7 +43,12 @@ export const chatApiSlice = apiSlice.injectEndpoints({
             auth: { accessToken },
           } = getState() as RootState;
 
-          chatSocket = io(`${process.env.REACT_APP_API_SERVER_URL}/chat`, {
+          const url =
+            process.env.NODE_ENV === 'development'
+              ? process.env.REACT_APP_API_SERVER_URL_development
+              : process.env.REACT_APP_API_SERVER_URL_production;
+
+          chatSocket = io(`${url}/chat`, {
             // auth: { accessToken },
             query: { accessToken },
             reconnectionDelay: 1000,

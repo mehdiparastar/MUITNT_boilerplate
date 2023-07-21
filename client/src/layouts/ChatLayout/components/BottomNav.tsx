@@ -1,5 +1,5 @@
 import { AddBox, Home, HomeMax, JoinInnerOutlined, Notifications, RoomOutlined, RoomPreferences, Settings } from '@mui/icons-material';
-import { Badge, BottomNavigation, BottomNavigationAction, Paper, useMediaQuery } from '@mui/material';
+import { Badge, BottomNavigation, BottomNavigationAction, Box, Paper, useMediaQuery } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import React, { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
@@ -74,7 +74,11 @@ const BottomNav = (props: Props) => {
         >
             <BottomNavigation
                 showLabels
-                sx={{ backgroundColor: theme.palette.alternate.dark }}
+                sx={{
+                    backgroundColor: theme.palette.alternate.dark,
+                    overflow: 'auto',
+                    width: '100%'
+                }}
                 value={value}
                 onChange={(event, newValue) => {
                     if (newValue !== value) {

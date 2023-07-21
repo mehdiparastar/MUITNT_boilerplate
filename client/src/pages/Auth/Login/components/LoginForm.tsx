@@ -87,7 +87,11 @@ export const LoginForm = () => {
 
   const googleLogin = async () => {
     try {
-      window.open(`${process.env.REACT_APP_API_SERVER_URL}/auth/google-logins/${from.replaceAll('/', '@')}`, "_self");
+      const url =
+        process.env.NODE_ENV === 'development'
+          ? process.env.REACT_APP_API_SERVER_URL_development
+          : process.env.REACT_APP_API_SERVER_URL_production;
+      window.open(`${url}/auth/google-logins/${from.replaceAll('/', '@')}`, "_self");
       persistCheck ? localStorage.setItem('persist', String(persistCheck)) : localStorage.setItem('persist', String(null))
       dispatch(setPersist(persistCheck))
     } catch (ex) {

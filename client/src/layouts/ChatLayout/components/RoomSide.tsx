@@ -66,6 +66,7 @@ const RoomSide = (props: Props) => {
             <Toolbar sx={{ position: 'absolute', zIndex: 1, width: '100%', mt: 1 }}>
                 <Paper elevation={5} sx={{ width: 1, height: 1, p: 0 }}>
                     <TextField
+                        fullWidth
                         placeholder='Search'
                         InputProps={{
                             startAdornment: (

@@ -60,8 +60,8 @@ const getTheme = (mode: themeMode, paletteType: themePaletteType) =>
               }
 
               ::-webkit-scrollbar {
-                width: 4px;
-                height: 8px;
+                width: 2px;
+                height: 2px;
                 background-color: #aaa;
               }
 
