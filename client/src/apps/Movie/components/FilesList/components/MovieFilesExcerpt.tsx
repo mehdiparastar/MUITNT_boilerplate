@@ -208,7 +208,7 @@ const MovieFilesExcerpt =
                                         width={'100%'}
                                         height={300}
                                         onError={(error: any) => {
-                                            setError(true)
+                                            setError(error.target.error.code === 2)
                                         }}
                                     />
                             }

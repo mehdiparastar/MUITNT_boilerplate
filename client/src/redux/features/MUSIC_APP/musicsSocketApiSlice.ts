@@ -33,7 +33,12 @@ export const musicSocketApiSlice = apiSlice.injectEndpoints({
             auth: { accessToken },
           } = getState() as RootState;
 
-          musicSocket = io(`${process.env.REACT_APP_API_SERVER_URL}/music`, {
+          const url =
+            process.env.NODE_ENV === 'development'
+              ? process.env.REACT_APP_API_SERVER_URL_development
+              : process.env.REACT_APP_API_SERVER_URL_production;
+
+          musicSocket = io(`${url}/music`, {
             // auth: { accessToken },
             query: { accessToken },
             reconnectionDelay: 1000,
@@ -98,23 +103,6 @@ export const musicSocketApiSlice = apiSlice.injectEndpoints({
       ) {
         try {
           await cacheDataLoaded;
-
-          // const {
-          //   auth: { accessToken },
-          // } = getState() as RootState;
-
-          // musicSocket = io(`${process.env.REACT_APP_API_SERVER_URL}/music`, {
-          //   // auth: { accessToken },
-          //   query: { accessToken },
-          //   reconnectionDelay: 1000,
-          //   reconnection: true,
-          //   reconnectionAttempts: 100,
-          //   transports: ['websocket'],
-          //   agent: false,
-          //   upgrade: false,
-          //   rejectUnauthorized: false,
-          //   forceNew: true,
-          // });
 
           musicSocket.on(
             MusicEvent.ConvertingComplete,
