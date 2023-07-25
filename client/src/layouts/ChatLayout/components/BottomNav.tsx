@@ -47,7 +47,9 @@ enum bottomNAVEnum {
 
 const BottomNav = (props: Props) => {
     const location = useLocation();
-    const currentLoc = (location.pathname.split('/').at(-1) || '' as string) === 'chat' ? 'home' : (location.pathname.split('/').at(-1) || '' as string)
+    const splitedPathname = location.pathname.split('/')
+    const lastSplit = splitedPathname[splitedPathname.length - 1]
+    const currentLoc = (lastSplit || '' as string) === 'chat' ? 'home' : (lastSplit || '' as string)
     const [value, setValue] = React.useState<bottomNAVEnum | null | any>(currentLoc in bottomNAVEnum ? currentLoc : null);
     const navigate = useNavigate();
     const theme = useTheme();
