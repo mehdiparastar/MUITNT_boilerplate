@@ -324,11 +324,13 @@ export class ChatService {
         participant: true,
         room: true,
       },
+      where: [{ room: { id: roomId }, participant: { id: user.id } }],
       // where: [
       //   { creator: { id: user.id }, room: { id: roomId } },
       //   { participant: { id: user.id }, room: { id: roomId }, status: chatIntendedParticipantStatus.accepted },
       // ],
     });
+
     const x = find.filter(
       (intendedParticipant) =>
         (intendedParticipant.creator.id === user.id &&
@@ -615,8 +617,6 @@ export class ChatService {
         { intendedParticipant: intendedParticipant, message: msg },
         { conflictPaths: ['id'], skipUpdateIfNoValuesChanged: true },
       );
-
-      console.log(user.id, 'seen');
 
       return save;
     } catch (ex) {

@@ -99,6 +99,7 @@ const BottomNav = (props: Props) => {
                     }
                 }}
             >
+                <BottomNavigationAction />
                 {isMobileView && <BottomNavigationAction value={'rooms'} label="Rooms" icon={<HomeMax />} />}
                 <BottomNavigationAction value={bottomNAVEnum.home} label="Home" icon={<Home />} />
                 <BottomNavigationAction value={bottomNAVEnum.create} label="Create" icon={<AddBox />} />

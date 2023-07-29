@@ -162,7 +162,7 @@ export class AuthController {
 
   @Get('all')
   @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(UserRoles.superUser, UserRoles.admin)
+  @Roles(UserRoles.superUser, UserRoles.admin, UserRoles.chatAppUserLL)
   @Serialize(UserDto)
   async findAll(): Promise<User[]> {
     // await new Promise((resolve) => setTimeout(resolve, 2000));

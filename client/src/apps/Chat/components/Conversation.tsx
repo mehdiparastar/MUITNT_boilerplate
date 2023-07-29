@@ -12,6 +12,7 @@ import { chatSocket, useAddMessageMutation, useGetMessagesQuery } from 'redux/fe
 import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
 import SimpleBarReact from "simplebar-react";
 import UI04BGSVG from 'svg/backgrounds/UI04BGSVG';
+import { UnauthorizedSVG } from 'svg/pages/UnauthorizedSVG';
 import * as yup from 'yup';
 
 type Props = {}
@@ -31,7 +32,7 @@ const Conversation = (props: Props) => {
     const { enqueueSnackbar } = useSnackbar()
     const scrollableNodeRef = createRef<any>();
     const [addMessage] = useAddMessageMutation()
-    const { data: messages = [] } = useGetMessagesQuery({ roomId: parseInt(roomId as string) })
+    const { data: messages = [], error: getMessagesErr } = useGetMessagesQuery({ roomId: parseInt(roomId as string) })
     const { data: currentUser = null } = useGetCurrentUserQuery()
 
     const initialValues: IChatRoomAddMessageFormDto = {
@@ -68,6 +69,7 @@ const Conversation = (props: Props) => {
         onSubmit,
     });
 
+    console.log(getMessagesErr)
 
     return (
         <Stack spacing={1} height={1} width={1} display={'flex'} direction={'column'}>
@@ -128,35 +130,47 @@ const Conversation = (props: Props) => {
                     }}
                     style={{ maxHeight: 'calc(100vh - 410px', height: 'calc(100vh - 410px' }}
                 >
-                    {messages.map((msg, i) => {
-                        const isWriter = msg.writer.id === currentUser?.id
+                    {
+                        getMessagesErr ?
+                            <Box
+                                width={'100%'}
+                                display={'flex'}
+                                justifyContent={'center'}
+                                alignItems={'center'}
+                            // height={300}
+                            >
+                                <UnauthorizedSVG width={300} />
+                            </Box>
+                            :
+                            messages.map((msg, i) => {
+                                const isWriter = msg.writer.id === currentUser?.id
 
-                        return (
-                            <ListItemButton disableRipple key={i} sx={{ mb: 3, display: 'flex', justifyContent: 'flex-start', flexDirection: !isWriter ? 'row' : 'row-reverse', alignItems: 'flex-start' }}>
-                                <Avatar sx={{ mx: 1 }}>
-                                    <Box width={1} component={'img'} alt="writerImg" src={msg.writer.photo} />
-                                </Avatar>
-                                <Box sx={{ display: 'flex', alignItems: !isWriter ? 'flex-start' : 'flex-end', flexDirection: 'column' }}>
-                                    <Paper elevation={2} sx={{ width: 'fit-content', p: 0.5, backgroundColor: !isWriter ? theme.palette.alternate.dark : theme.palette.primary.main }}>
-                                        <ListItemText>
-                                            {msg.message}
-                                        </ListItemText>
-                                    </Paper>
-                                    <Box textAlign={!isWriter ? 'left' : 'right'} sx={{ display: 'flex', flexDirection: isWriter ? 'row' : 'row-reverse', alignItems: 'flex-end' }}>
-                                        {
-                                            isWriter && (
-                                                (msg.isDelivered && !msg.isSeen) ?
-                                                    <DoneAllIcon sx={{ mx: 1 }} /> :
-                                                    (msg.isDelivered && msg.isSeen) ?
-                                                        <DoneAllIcon sx={{ mx: 1 }} color='primary' /> :
-                                                        <Check sx={{ mx: 1 }} />)
-                                        }
-                                        <Typography variant={'caption'}>{formatRelative(msg.updatedAt, new Date())}</Typography>
-                                    </Box>
-                                </Box>
-                            </ListItemButton>
-                        )
-                    })}
+                                return (
+                                    <ListItemButton disableRipple key={i} sx={{ mb: 3, display: 'flex', justifyContent: 'flex-start', flexDirection: !isWriter ? 'row' : 'row-reverse', alignItems: 'flex-start' }}>
+                                        <Avatar sx={{ mx: 1 }}>
+                                            <Box width={1} component={'img'} alt="writerImg" src={msg.writer.photo} />
+                                        </Avatar>
+                                        <Box sx={{ display: 'flex', alignItems: !isWriter ? 'flex-start' : 'flex-end', flexDirection: 'column' }}>
+                                            <Paper elevation={2} sx={{ width: 'fit-content', p: 0.5, backgroundColor: !isWriter ? theme.palette.alternate.dark : theme.palette.primary.main }}>
+                                                <ListItemText>
+                                                    {msg.message}
+                                                </ListItemText>
+                                            </Paper>
+                                            <Box textAlign={!isWriter ? 'left' : 'right'} sx={{ display: 'flex', flexDirection: isWriter ? 'row' : 'row-reverse', alignItems: 'flex-end' }}>
+                                                {
+                                                    isWriter && (
+                                                        (msg.isDelivered && !msg.isSeen) ?
+                                                            <DoneAllIcon sx={{ mx: 1 }} /> :
+                                                            (msg.isDelivered && msg.isSeen) ?
+                                                                <DoneAllIcon sx={{ mx: 1 }} color='primary' /> :
+                                                                <Check sx={{ mx: 1 }} />)
+                                                }
+                                                <Typography variant={'caption'}>{formatRelative(msg.updatedAt, new Date())}</Typography>
+                                            </Box>
+                                        </Box>
+                                    </ListItemButton>
+                                )
+                            })}
                 </SimpleBarReact>
             </Box>
             <Paper elevation={2}>

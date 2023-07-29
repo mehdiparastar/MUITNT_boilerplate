@@ -32,7 +32,6 @@ export class UserPermissionRequest {
   @Column({
     type: 'enum',
     enum: UserRoles,
-    unique: true,
   })
   @ApiProperty()
   role: string;
