@@ -51,7 +51,7 @@ export class AuthController {
     private readonly usersService: UsersService,
     private readonly permissionRequestService: PermissionRequestsService,
     private configService: ConfigService<IconfigService>,
-  ) {}
+  ) { }
 
   @Post('local-create')
   @Serialize(JWTTokenDto)
@@ -73,7 +73,7 @@ export class AuthController {
 
   @Get('google-logins/:from')
   @UseGuards(GoogleOauthGuard)
-  async googleLogin(@Req() req: Request) {}
+  async googleLogin(@Req() req: Request) { }
 
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
@@ -309,7 +309,7 @@ export class AuthController {
 
   @Get('whereru')
   @UseGuards(AccessTokenGuard)
-  whereRU(): string {
+  whereRU() {
     return this.authService.whereRU();
   }
 }

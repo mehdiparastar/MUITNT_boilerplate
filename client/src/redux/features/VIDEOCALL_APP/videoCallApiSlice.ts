@@ -3,6 +3,7 @@ import { IVideoCallSocket } from 'models/VIDEOCALL_APP/videoCallSocket.model';
 import { RootState } from 'redux/store';
 import { Socket, io } from 'socket.io-client';
 import { apiSlice } from '../../../api/rtkApi/apiSlice';
+import { MyConferenceLinkDto } from 'models/VIDEOCALL_APP/room.model';
 
 export let videoCallSocket: Socket;
 
@@ -39,7 +40,7 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
               : process.env.REACT_APP_API_SERVER_URL_production;
 
           videoCallSocket = io(`${url}/videoCall`, {
-            // auth: { accessToken },
+            auth: { accessToken },
             query: { accessToken },
             reconnectionDelay: 1000,
             reconnection: true,
@@ -61,23 +62,37 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
             }
           });
 
-          videoCallSocket.emit(VideoCallEvent.NewMember, {});
-
           videoCallSocket.on('disconnect', (reason) => {
             console.log(reason);
+            updateCachedData((draft) => ({
+              ...draft,
+              onlineUsers: {}
+            }));
           });
 
           videoCallSocket.on(
             VideoCallEvent.NewMemberBroadCast,
             (data: IVideoCallSocket) => {
               updateCachedData((draft) => ({
+                ...draft,
                 onlineUsers: {
-                  ...draft.onlineUsers,
-                  ...data.onlineUsers,
-                },
+                  ...data.onlineUsers
+                }
               }));
             },
           );
+
+          videoCallSocket.on(
+            VideoCallEvent.MemberDisconnectBroadCast,
+            (data: IVideoCallSocket) => {
+              updateCachedData((draft) => ({
+                ...draft,
+                onlineUsers: {
+                  ...data.onlineUsers
+                }
+              }));
+            },
+          )
 
           await cacheEntryRemoved;
           // videoCallSocket.close()
@@ -86,7 +101,17 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+
+    getMyConferenceLink: builder.mutation<MyConferenceLinkDto, void>({
+      query() {
+        return {
+          url: `videoCall_app/get_my_conference_link`,
+          method: 'Get',
+        };
+      },
+    }),
   }),
 });
 
-export const { useVideoCallSocketQuery } = videoCallApiSlice;
+export const { useVideoCallSocketQuery, useGetMyConferenceLinkMutation } =
+  videoCallApiSlice;

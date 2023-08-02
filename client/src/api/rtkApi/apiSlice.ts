@@ -42,7 +42,9 @@ export const baseQueryWithReauth: BaseQueryFn<
     const login = await baseQuery_login(args, api, extraOptions);
     // api.dispatch(setAuthTokens(login.data as IAuthResponse))
     return login;
-  } else {
+  }
+  else {
+    let aT: string = ''
     let result = await baseQuery_access(args, api, extraOptions);
     if (result.error?.status === 401 || result.error?.status === 403) {
       // send refresh token to get new access token
@@ -52,6 +54,7 @@ export const baseQueryWithReauth: BaseQueryFn<
         extraOptions,
       );
       if (refreshResult.data) {
+        aT = (refreshResult.data as any).accessToken
         // store the new token
         api.dispatch(setAuthTokens({ ...refreshResult.data } as IAuthResponse));
         // retry the original query with new access token
@@ -60,7 +63,10 @@ export const baseQueryWithReauth: BaseQueryFn<
         api.dispatch(setAuthTokens({ accessToken: null, refreshToken: null }));
       }
     }
-
+    if (api.endpoint === 'authRefreshNewAccessToken') {
+      // write your code here
+      ((result.data as unknown as any).aT) = aT
+    }
     return result;
   }
 };

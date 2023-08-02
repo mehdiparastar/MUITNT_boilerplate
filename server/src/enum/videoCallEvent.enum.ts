@@ -1,6 +1,8 @@
 export enum VideoCallEvent {
   NewMember = 'new_member',
   NewMemberBroadCast = 'new_member_broadcast',
+  MemberDisconnectBroadCast = 'member_disconnect_broadcast',
+  
   NewMessage = 'new_message',
   NewMessageBroadCast = 'new_message_broadcast',
   MessageSeen = 'message_seen',

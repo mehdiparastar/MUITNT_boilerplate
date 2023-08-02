@@ -7,6 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import { ChatService } from './apps/CHAT/chat.service';
 import { MoviesService } from './apps/Movie/movies.service';
 import { MusicsService } from './apps/Music/musics.service';
+import { VideoCallService } from './apps/VIDEOCALL/videoCall.service';
 
 export class ApplicationSocketIOAdapter extends IoAdapter {
   private readonly logger = new Logger(ApplicationSocketIOAdapter.name);
@@ -42,10 +43,22 @@ export class ApplicationSocketIOAdapter extends IoAdapter {
     const jwtService = this.app.get(JwtService);
     const usersService = this.app.get(UsersService);
     const chatService = this.app.get(ChatService);
+    const videoCallService = this.app.get(VideoCallService);
     const movieService = this.app.get(MoviesService);
     const musicService = this.app.get(MusicsService);
 
     const server: Server = super.createIOServer(port, optionsWithCORS);
+
+    const initVideoCallSocketServer = server
+      .of('videoCall')
+      .use(
+        createVideoCallTokenMiddleware(
+          jwtService,
+          usersService,
+          videoCallService,
+          this.logger,
+        ),
+      );
 
     const initChatSocketServer = server
       .of('chat')
@@ -84,6 +97,38 @@ export class ApplicationSocketIOAdapter extends IoAdapter {
   }
 }
 
+const createVideoCallTokenMiddleware =
+  (
+    jwtService: JwtService,
+    usersService: UsersService,
+    videoCallService: VideoCallService,
+    logger: Logger,
+  ) =>
+    async (socket: SocketWithAuth, next) => {
+      // for Postman testing support, fallback to token header
+      const accessToken = (socket.handshake.auth.accessToken || socket.handshake.query.accessToken) as string;
+      console.log('\n', accessToken);
+      try {
+        const payload = jwtService.verify(accessToken);
+        const [user] = await usersService.findByEmail(payload.email);
+
+        // const allMyRooms = await videoCallService.findMyAllRooms(user);
+
+        // const roomsId = allMyRooms.map((room) => room.id.toString());
+
+        logger.debug(`Validating auth token before connection: ${user.email}`);
+
+        socket.user = user;
+        socket.roomsId = [];
+
+        next();
+      } catch (ex) {
+        console.log(ex)
+        next(ex);
+        // next(new Error('FORBIDDEN'));
+      }
+    };
+
 const createChatTokenMiddleware =
   (
     jwtService: JwtService,
@@ -91,29 +136,29 @@ const createChatTokenMiddleware =
     chatService: ChatService,
     logger: Logger,
   ) =>
-  async (socket: SocketWithAuth, next) => {
-    // for Postman testing support, fallback to token header
-    const accessToken = socket.handshake.query.accessToken as string;
-    console.log(accessToken);
-    try {
-      const payload = jwtService.verify(accessToken);
-      const [user] = await usersService.findByEmail(payload.email);
+    async (socket: SocketWithAuth, next) => {
+      // for Postman testing support, fallback to token header
+      const accessToken = socket.handshake.query.accessToken as string;
+      console.log(accessToken);
+      try {
+        const payload = jwtService.verify(accessToken);
+        const [user] = await usersService.findByEmail(payload.email);
 
-      const allMyRooms = await chatService.findMyAllRooms(user);
+        const allMyRooms = await chatService.findMyAllRooms(user);
 
-      const roomsId = allMyRooms.map((room) => room.id.toString());
+        const roomsId = allMyRooms.map((room) => room.id.toString());
 
-      logger.debug(`Validating auth token before connection: ${user.email}`);
+        logger.debug(`Validating auth token before connection: ${user.email}`);
 
-      socket.user = user;
-      socket.roomsId = roomsId;
+        socket.user = user;
+        socket.roomsId = roomsId;
 
-      next();
-    } catch (ex) {
-      next(ex);
-      // next(new Error('FORBIDDEN'));
-    }
-  };
+        next();
+      } catch (ex) {
+        next(ex);
+        // next(new Error('FORBIDDEN'));
+      }
+    };
 
 const createMovieTokenMiddleware =
   (
@@ -122,25 +167,25 @@ const createMovieTokenMiddleware =
     movieService: MoviesService,
     logger: Logger,
   ) =>
-  async (socket: SocketWithAuth, next) => {
-    // for Postman testing support, fallback to token header
-    const accessToken = socket.handshake.query.accessToken as string;
+    async (socket: SocketWithAuth, next) => {
+      // for Postman testing support, fallback to token header
+      const accessToken = socket.handshake.query.accessToken as string;
 
-    try {
-      const payload = jwtService.verify(accessToken);
-      const [user] = await usersService.findByEmail(payload.email);
+      try {
+        const payload = jwtService.verify(accessToken);
+        const [user] = await usersService.findByEmail(payload.email);
 
-      logger.debug(`Validating auth token before connection: ${user.email}`);
+        logger.debug(`Validating auth token before connection: ${user.email}`);
 
-      socket.user = user;
-      socket.roomsId = [user.email];
+        socket.user = user;
+        socket.roomsId = [user.email];
 
-      next();
-    } catch (ex) {
-      next(ex);
-      // next(new Error('FORBIDDEN'));
-    }
-  };
+        next();
+      } catch (ex) {
+        next(ex);
+        // next(new Error('FORBIDDEN'));
+      }
+    };
 
 const createMusicTokenMiddleware =
   (
@@ -149,22 +194,22 @@ const createMusicTokenMiddleware =
     musicService: MusicsService,
     logger: Logger,
   ) =>
-  async (socket: SocketWithAuth, next) => {
-    // for Postman testing support, fallback to token header
-    const accessToken = socket.handshake.query.accessToken as string;
+    async (socket: SocketWithAuth, next) => {
+      // for Postman testing support, fallback to token header
+      const accessToken = socket.handshake.query.accessToken as string;
 
-    try {
-      const payload = jwtService.verify(accessToken);
-      const [user] = await usersService.findByEmail(payload.email);
+      try {
+        const payload = jwtService.verify(accessToken);
+        const [user] = await usersService.findByEmail(payload.email);
 
-      logger.debug(`Validating auth token before connection: ${user.email}`);
+        logger.debug(`Validating auth token before connection: ${user.email}`);
 
-      socket.user = user;
-      socket.roomsId = [user.email];
+        socket.user = user;
+        socket.roomsId = [user.email];
 
-      next();
-    } catch (ex) {
-      next(ex);
-      // next(new Error('FORBIDDEN'));
-    }
-  };
+        next();
+      } catch (ex) {
+        next(ex);
+        // next(new Error('FORBIDDEN'));
+      }
+    };

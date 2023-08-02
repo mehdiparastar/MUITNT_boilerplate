@@ -1,4 +1,4 @@
 export interface IVideoCallSocket {
-    onlineUsers: { [roomId: number]: [] };
+    onlineUsers: { [roomId: string]: [] };
   }
   

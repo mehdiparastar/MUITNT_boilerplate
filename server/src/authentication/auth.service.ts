@@ -18,7 +18,7 @@ export class AuthService {
     protected configService: ConfigService<IconfigService>,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async localUserValidate(
     email: string,
@@ -163,7 +163,7 @@ export class AuthService {
     return tokens;
   }
 
-  whereRU(): string {
-    return 'hello, you are in authenticating.';
+  whereRU() {
+    return ({ aT: 'hello, you are in authenticating.' })
   }
 }

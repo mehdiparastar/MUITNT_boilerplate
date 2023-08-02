@@ -90,7 +90,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       },
       invalidatesTags: ['CurrentUser', 'PermissionRequest', 'User'],
     }),
-    authRefreshNewAccessToken: builder.mutation<any, void>({
+    authRefreshNewAccessToken: builder.mutation<{ aT: string }, void>({
       query: () => ({
         url: 'auth/whereru',
         method: 'get',

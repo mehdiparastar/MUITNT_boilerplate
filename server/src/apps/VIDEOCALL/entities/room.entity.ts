@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-@Index(['title', 'creator'], { unique: true })
+@Index(['link', 'creator'], { unique: true })
 export class VideoCallRoom {
   @PrimaryGeneratedColumn()
   @ApiProperty()

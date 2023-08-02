@@ -35,3 +35,9 @@ export class RoomDtoWithoutMessages {
   @ApiProperty()
   onlineUsers?: UserCompressDto[];
 }
+
+export class MyConferenceLinkDto {
+  @Expose()
+  @ApiProperty()
+  link: string;
+}

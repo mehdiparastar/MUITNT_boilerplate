@@ -16,7 +16,6 @@ export const currentUserApiSlice = apiSlice.injectEndpoints({
       // },
       providesTags: ['CurrentUser'],
       transformErrorResponse(baseQueryReturnValue, meta, arg) {
-        console.log('');
         return { data: null };
       },
       keepUnusedDataFor: 0,
