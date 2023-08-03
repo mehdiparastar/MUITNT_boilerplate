@@ -110,8 +110,20 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
         };
       },
     }),
+
+    publishVideo: builder.mutation<void, { stream: Blob, streamKey: string }>({
+      query: (arg) => ({
+        url: 'videoCall_app/publish-video',
+        params: { streamKey: arg.streamKey },
+        method: 'POST',
+        body: arg.stream,
+        headers: {
+          'Content-Type': 'video/webm', // Replace with the correct MIME type of the video
+        },
+      }),
+    }),
   }),
 });
 
-export const { useVideoCallSocketQuery, useGetMyConferenceLinkMutation } =
+export const { useVideoCallSocketQuery, useGetMyConferenceLinkMutation, usePublishVideoMutation } =
   videoCallApiSlice;

@@ -3,11 +3,11 @@ import { Box, Button, Container, Divider, IconButton, InputBase, Paper, Stack, T
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { useTheme } from '@mui/material/styles';
 import Item from 'components/Item/Item';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import { useGetMyConferenceLinkMutation, useVideoCallSocketQuery, videoCallSocket } from 'redux/features/VIDEOCALL_APP/videoCallApiSlice';
+import { useGetMyConferenceLinkMutation, usePublishVideoMutation, useVideoCallSocketQuery, videoCallSocket } from 'redux/features/VIDEOCALL_APP/videoCallApiSlice';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
@@ -17,6 +17,7 @@ import { getKeysWithValueOne } from 'helperFunctions/getObjectValueByValue';
 import { useAppSelector } from 'redux/hooks';
 import { selectCurrentAccessToken } from 'redux/features/WHOLE_APP/auth/authSlice';
 import { useAuthRefreshNewAccessTokenMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
+import ReactPlayer from 'react-player';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -48,8 +49,6 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 
-
-
 type Props = {}
 
 
@@ -58,6 +57,7 @@ const VideoCall = (props: Props) => {
     const [getMyConferenceLink, { isLoading: gettingLinkLoading }] = useGetMyConferenceLinkMutation()
     const theme = useTheme();
     const localVideoRef = useRef<HTMLVideoElement>(null);
+    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const [link, setLink] = useState<string>('')
     const [localMicrophoneOn, setLocalMicrophoneOn] = useState(true);
@@ -65,6 +65,7 @@ const VideoCall = (props: Props) => {
     const onlineUsersCount = (socketData.onlineUsers)[link]?.length || 0
     const [refreshNewAccessToken] = useAuthRefreshNewAccessTokenMutation()
     const accessToken = useAppSelector(selectCurrentAccessToken)
+    const [publishVideo] = usePublishVideoMutation()
 
     const handleStartCall = async () => {
         try {
@@ -79,6 +80,22 @@ const VideoCall = (props: Props) => {
                 setLocalCameraOn(true)
                 setLocalMicrophoneOn(true)
                 videoCallSocket.emit(VideoCallEvent.NewMember, { roomId: link })
+                // publishing ...
+                const options = { mimeType: 'video/webm; codecs=vp9' };
+                const mediaRecorder = new MediaRecorder(stream, options);
+                const socket = new WebSocket('ws://192.168.1.6:8005/live/mehdi');
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        socket.send(event.data);
+                        // console.log(socket)
+                        // publishVideo({ stream: event.data, streamKey: link });
+                    }
+                };
+
+                mediaRecorderRef.current = mediaRecorder;
+                mediaRecorder.start(1000);
+
             }
         } catch (error) {
             console.error('Error starting the call:', error);
@@ -129,9 +146,15 @@ const VideoCall = (props: Props) => {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setConderenceLink()
+
+        window.addEventListener('beforeunload', handleEndCall);
+
         return () => {
-            videoCallSocket && videoCallSocket.disconnect()
-            handleEndCall()
+            if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+                mediaRecorderRef.current.stop();
+                mediaRecorderRef.current = null;
+            }
+            window.removeEventListener('beforeunload', handleEndCall);
         };
     }, []);
 
@@ -185,6 +208,16 @@ const VideoCall = (props: Props) => {
                     <Grid xs={12}>
                         <Paper sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }}>
                             <video autoPlay muted id="local-video"></video>
+                            <ReactPlayer
+                                // url={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
+                                url={'rtmp://192.168.1.6:8005/live/mehdis'}
+                                controls
+                                width={400}
+                                height={300}
+                            // onError={(error: any) => {
+                            //     setError(error.target.error.code === 2)
+                            // }}
+                            />
                         </Paper>
                     </Grid>
                     <Grid xs={6} sm={4} md={3}>
@@ -216,4 +249,4 @@ const VideoCall = (props: Props) => {
     )
 }
 
-export default VideoCall
+export default memo(VideoCall)

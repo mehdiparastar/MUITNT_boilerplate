@@ -35,22 +35,23 @@ export class MediaServerService {
       res: express.Response,
       next: express.NextFunction,
     ) => {
-      req.headers = { ...req.headers, authorization: req.query.auth as string };
-      const guard = new StreamTokenGuard(this.reflector);
-      const canActivate = await guard.canActivate(
-        createExecutionContext(req, res),
-      );
-      if (
-        canActivate &&
-        `Bearer ${(req.user as any).streamToken}` === req.query.auth
-      ) {
-        // Call the next function to move to the next middleware or route handler
-        next();
-      } else {
-        res.status(401).send('Unauthorized');
-        // throw new UnauthorizedException();
-      }
-      // Perform some logic or actions here
+      // req.headers = { ...req.headers, authorization: req.query.auth as string };
+      // const guard = new StreamTokenGuard(this.reflector);
+      // const canActivate = await guard.canActivate(
+      //   createExecutionContext(req, res),
+      // );
+      // if (
+      //   canActivate &&
+      //   `Bearer ${(req.user as any).streamToken}` === req.query.auth
+      // ) {
+      //   // Call the next function to move to the next middleware or route handler
+      //   next();
+      // } else {
+      //   res.status(401).send('Unauthorized');
+      //   // throw new UnauthorizedException();
+      // }
+      // // Perform some logic or actions here
+      next()
     };
 
     this.config = {
@@ -71,6 +72,12 @@ export class MediaServerService {
         tasks: [
           {
             app: 'live',
+            vc: "copy",
+            vcParam: [],
+            ac: "aac",
+            acParam: ['-ab', '64k', '-ac', '1', '-ar', '44100'],
+            rtmp: true,
+            rtmpApp: 'live2',
             hls: true,
             hlsFlags: '[hls_time=2:hls_list_size=3:hls_flags=delete_segments]',
             dash: true,
@@ -83,5 +90,52 @@ export class MediaServerService {
     this.nms = new NodeMediaServerWithAuth(this.config, customMiddleware);
 
     this.nms.run();
+
+    this.nms.on('preConnect', (id, args) => {
+      console.log('[NodeEvent on preConnect]', `id=${id} args=${JSON.stringify(args)}`);
+      // let session = this.nms.getSession(id);
+      // session.reject();
+    });
+
+    this.nms.on('postConnect', (id, args) => {
+      console.log('[NodeEvent on postConnect]', `id=${id} args=${JSON.stringify(args)}`);
+    });
+
+    this.nms.on('prePlay', (id, StreamPath, args) => {
+      console.log('[NodeEvent on prePlay]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+      // let session = this.nms.getSession(id);
+      // session.reject();
+    });
+
+
+
+
+
+
+    this.nms.on('doneConnect', (id, args) => {
+      console.log('[NodeEvent on doneConnect]', `id=${id} args=${JSON.stringify(args)}`);
+    });
+
+    this.nms.on('prePublish', (id, StreamPath, args) => {
+      console.log('[NodeEvent on prePublish]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+      // let session = this.nms.getSession(id);
+      // session.reject();
+    });
+
+    this.nms.on('postPublish', (id, StreamPath, args) => {
+      console.log('[NodeEvent on postPublish]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+    });
+
+    this.nms.on('donePublish', (id, StreamPath, args) => {
+      console.log('[NodeEvent on donePublish]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+    });
+
+    this.nms.on('postPlay', (id, StreamPath, args) => {
+      console.log('[NodeEvent on postPlay]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+    });
+
+    this.nms.on('donePlay', (id, StreamPath, args) => {
+      console.log('[NodeEvent on donePlay]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+    });
   }
 }

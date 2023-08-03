@@ -74,7 +74,7 @@ export class VideoCallGateway
       .to(client.roomsId)
       .emit(VideoCallEvent.NewMemberBroadCast, { onlineUsers: uniqueOnlineUsers });
 
-    console.log(uniqueOnlineUsers, `user with email of '${client.user.email}' disconnected.`);
+    console.log(`user with email of '${client.user.email}' disconnected.`);
   }
 
   async getUniqueOnlineUsers(client: SocketWithAuth) {
@@ -119,7 +119,6 @@ export class VideoCallGateway
 
     // console.log(this.getRoomsId(client))
     const uniqueOnlineUsers = await this.getUniqueOnlineUsers(client);
-    console.log(Math.random(), uniqueOnlineUsers)
 
     this.io.to(roomId).emit(VideoCallEvent.NewMemberBroadCast, { onlineUsers: uniqueOnlineUsers })
 

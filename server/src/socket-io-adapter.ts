@@ -107,7 +107,6 @@ const createVideoCallTokenMiddleware =
     async (socket: SocketWithAuth, next) => {
       // for Postman testing support, fallback to token header
       const accessToken = (socket.handshake.auth.accessToken || socket.handshake.query.accessToken) as string;
-      console.log('\n', accessToken);
       try {
         const payload = jwtService.verify(accessToken);
         const [user] = await usersService.findByEmail(payload.email);
