@@ -23,6 +23,14 @@ import { WsCatchAllFilter } from 'src/exceptions/ws-catch-all-filter';
 import { getArrayOfObjectUniqulyByKey } from 'src/helperFunctions/get-array-of-object-unique-by-key';
 import { VideoCallService } from './videoCall.service';
 import { AuthGatewayGuard } from './auth.gateway.guard';
+import * as path from 'path';
+import * as fs from 'fs';
+import { Readable } from 'stream';
+import { buffer } from 'stream/consumers';
+import { MediaServerService } from 'src/NMS/nms.service';
+import { spawn } from 'child_process';
+// import ffmpeg from 'fluent-ffmpeg'
+const ffmpeg = require('fluent-ffmpeg')
 
 @UsePipes(new ValidationPipe())
 @UseFilters(new WsCatchAllFilter())
@@ -32,13 +40,45 @@ import { AuthGatewayGuard } from './auth.gateway.guard';
 export class VideoCallGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(VideoCallGateway.name);
+  private uploadPath: string;
+  private ffmpegProcess: any
 
   @WebSocketServer() io: Namespace;
 
   constructor(
     @Inject(forwardRef(() => VideoCallService))
     private readonly videoCallService: VideoCallService,
-  ) { }
+  ) {
+    this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'conference'); // Define your upload directory
+    // Spawn ffmpeg process to send video stream to RTMP server
+    this.ffmpegProcess =
+      spawn('ffmpeg', [
+        '-i', '-',                            // Input from stdin
+        '-c:v', 'libx264',                    // Video codec
+        '-preset', 'ultrafast',               // Encoding speed preset
+        '-tune', 'zerolatency',               // Tune for low-latency
+        '-f', 'flv',                          // Output format
+        'rtmp://192.168.1.6:1955/live/stream_key' // RTMP server URL and stream key
+      ]);
+
+    // Handle FFmpeg process events
+    this.ffmpegProcess.stdout.on('data', data => {
+      console.log(`FFmpeg stdout: ${data}`);
+    });
+
+    this.ffmpegProcess.stderr.on('data', data => {
+      console.error(`FFmpeg stderr: ${data}`);
+    });
+
+    this.ffmpegProcess.on('close', code => {
+      console.log(`FFmpeg process exited with code ${code}`);
+    });
+
+    // Close the FFmpeg process on server shutdown
+    process.on('exit', () => {
+      this.ffmpegProcess.stdin.end();
+    });
+  }
 
   getRoomsId(client: SocketWithAuth): string[] {
     const allRooms = [];
@@ -137,5 +177,28 @@ export class VideoCallGateway
     // this.io
     //   .to(client.roomsId)
     //   .emit(ChatEvent.NewMemberBroadCast, { onlineUsers: uniqueOnlineUsers });
+  }
+
+
+  // @UseGuards(AuthGatewayGuard)
+  @SubscribeMessage('clientcamera')
+  async ClientCameraChunksEvent(
+    @MessageBody() chunk: any,
+    @ConnectedSocket() client: SocketWithAuth,
+  ) {
+
+    // ffmpeg -re -i mehdi2.webm -c:v libx264 -preset veryfast -tune zerolatency -c:a aac -ar 44100 -f flv rtmp://192.168.1.6:1955/live/stream3
+
+    // fs.appendFileSync(path.join(this.uploadPath, 'mehdi.webm'), chunk)
+
+    try {
+      this.ffmpegProcess.stdin.write(chunk);
+    }
+    catch (ex) {
+      console.log(ex)
+    }
+
+
+
   }
 }

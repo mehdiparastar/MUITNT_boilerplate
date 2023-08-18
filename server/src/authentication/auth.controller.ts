@@ -80,9 +80,10 @@ export class AuthController {
   async googleLoginCallback(@Req() req: Request, @Res() res: Response) {
     const auth = await this.authService.login(req.user);
     const clientPort = this.configService.get<number>('CLIENT_PORT');
+    const runningMechineURL = this.configService.get<string>('RUNNING_MECHINE_URL')
 
     res.redirect(
-      `http://localhost:${clientPort}/google-oauth-success-redirect/${auth.accessToken}/${auth.refreshToken}${req.params.from}`,
+      `${runningMechineURL}:${clientPort}/google-oauth-success-redirect/${auth.accessToken}/${auth.refreshToken}${req.params.from === "" ? "home" : req.params.from}`,
     );
   }
 

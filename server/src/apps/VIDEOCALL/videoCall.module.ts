@@ -7,6 +7,9 @@ import { VideoCallRoom } from './entities/room.entity';
 import { VideoCallController } from './videoCall.controller';
 import { VideoCallGateway } from './videoCall.gateway';
 import { VideoCallService } from './videoCall.service';
+import { MediaServerService } from 'src/NMS/nms.service';
+import { UsersService } from 'src/users/users.service';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -29,4 +32,4 @@ import { VideoCallService } from './videoCall.service';
   controllers: [VideoCallController],
   providers: [VideoCallGateway, VideoCallService],
 })
-export class VideoCallModule {}
+export class VideoCallModule { }

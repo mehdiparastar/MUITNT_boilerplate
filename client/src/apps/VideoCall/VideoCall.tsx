@@ -18,6 +18,8 @@ import { useAppSelector } from 'redux/hooks';
 import { selectCurrentAccessToken } from 'redux/features/WHOLE_APP/auth/authSlice';
 import { useAuthRefreshNewAccessTokenMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
 import ReactPlayer from 'react-player';
+import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
+// import flvjs from 'flv.js';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -56,8 +58,11 @@ const VideoCall = (props: Props) => {
     const { data: socketData = { onlineUsers: {} } } = useVideoCallSocketQuery()
     const [getMyConferenceLink, { isLoading: gettingLinkLoading }] = useGetMyConferenceLinkMutation()
     const theme = useTheme();
+
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+    // const flvPlayer = useRef<any>(null);
+
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const [link, setLink] = useState<string>('')
     const [localMicrophoneOn, setLocalMicrophoneOn] = useState(true);
@@ -66,11 +71,23 @@ const VideoCall = (props: Props) => {
     const [refreshNewAccessToken] = useAuthRefreshNewAccessTokenMutation()
     const accessToken = useAppSelector(selectCurrentAccessToken)
     const [publishVideo] = usePublishVideoMutation()
+    const { data: currentUser = null } = useGetCurrentUserQuery()
+
+    // const socket = new WebSocket('ws://192.168.1.6:8005');
+    let mediaRecorder: MediaRecorder
 
     const handleStartCall = async () => {
         try {
             const mediaDevices = navigator.mediaDevices
-            const stream = await mediaDevices.getUserMedia({ video: true, audio: true });
+            const stream = await mediaDevices.getUserMedia({
+                video: {
+                    frameRate: { max: 15 },
+                    width: { exact: 640 },
+                    height: { exact: 480 }
+                },
+                // video: true,
+                audio: true
+            });
             setLocalStream(stream)
             if (localVideoRef.current) {
                 const { aT } = await refreshNewAccessToken().unwrap()
@@ -81,24 +98,68 @@ const VideoCall = (props: Props) => {
                 setLocalMicrophoneOn(true)
                 videoCallSocket.emit(VideoCallEvent.NewMember, { roomId: link })
                 // publishing ...
-                const options = { mimeType: 'video/webm; codecs=vp9' };
-                const mediaRecorder = new MediaRecorder(stream, options);
-                const socket = new WebSocket('ws://192.168.1.6:8005/live/mehdi');
 
+                const options = { mimeType: 'video/webm; codecs=vp8' };
+                // const options = { mimeType: 'video/webm;codecs=h264,vp9,opus' };
+                // const options = {
+                //     mimeType: 'video/mp4; codecs="avc1.424028, mp4a.40.2"',
+                // };
+                mediaRecorder = new MediaRecorder(stream, options);
+
+                mediaRecorder.onerror = ev => {
+                    console.log('err', ev)
+                }
+                mediaRecorder.onstart = ev => {
+                    console.log('start', ev)
+                }
+                mediaRecorder.onpause = ev => {
+                    console.log('pause', ev)
+                }
+                mediaRecorder.onresume = ev => {
+                    console.log('resume', ev)
+                }
+                const no = []
                 mediaRecorder.ondataavailable = (event) => {
+                    no.push('ondataavailable')
+
                     if (event.data.size > 0) {
-                        socket.send(event.data);
+                        console.log(no.length)
+                        videoCallSocket.emit('clientcamera', event.data)
+                        // socket.send(event.data)
+                        // const blob = new Blob([event.data], { type: event.data.type })
+
+
+                        // Convert Blob data to ArrayBuffer
+                        // const arrayBuffer = await event.data.arrayBuffer();
+                        // const chunk = new Uint8Array(arrayBuffer)
+                        // socket.send(chunk)
+                        // // Send the video stream to the NMS RTMP server using flv.js
+                        // if (!flvPlayer.current) {
+                        //     flvPlayer.current = flvjs.createPlayer({
+                        //         type: 'flv',
+                        //         url: `rtmp://192.168.1.6:1955/live/${link}`,
+                        //     });
+                        //     flvPlayer.current.attachMediaElement(localVideoRef.current);
+                        //     flvPlayer.current.load();
+                        //     flvPlayer.current.play();
+                        // }
+                        // flvPlayer.current.write(arrayBuffer);
+
+
+
+
+                        // socket.send(event.data);
                         // console.log(socket)
                         // publishVideo({ stream: event.data, streamKey: link });
                     }
                 };
 
                 mediaRecorderRef.current = mediaRecorder;
-                mediaRecorder.start(1000);
+                mediaRecorder.start(500);
 
             }
         } catch (error) {
-            console.error('Error starting the call:', error);
+            console.error('Error starting the call:');
         }
     };
 
@@ -109,7 +170,12 @@ const VideoCall = (props: Props) => {
                 setLocalCameraOn(false)
                 setLocalMicrophoneOn(false)
                 setLocalStream(null)
-                videoCallSocket.disconnect()
+                if (mediaRecorder) {
+                    mediaRecorder.onstop = ev => {
+                        console.log('stop', ev)
+                        videoCallSocket.disconnect()
+                    }
+                }
             }
         }
         catch (ex) {
@@ -208,16 +274,18 @@ const VideoCall = (props: Props) => {
                     <Grid xs={12}>
                         <Paper sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }}>
                             <video autoPlay muted id="local-video"></video>
-                            <ReactPlayer
-                                // url={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
-                                url={'rtmp://192.168.1.6:8005/live/mehdis'}
-                                controls
-                                width={400}
-                                height={300}
-                            // onError={(error: any) => {
-                            //     setError(error.target.error.code === 2)
-                            // }}
-                            />
+                            {localVideoRef.current?.srcObject && localCameraOn &&
+                                <ReactPlayer
+                                    // url={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
+                                    url={'http://192.168.1.6:1955/live/stream_key'}
+                                    controls
+                                    width={400}
+                                    height={300}
+                                // onError={(error: any) => {
+                                //     setError(error.target.error.code === 2)
+                                // }}
+                                />
+                            }
                         </Paper>
                     </Grid>
                     <Grid xs={6} sm={4} md={3}>
@@ -244,6 +312,7 @@ const VideoCall = (props: Props) => {
                         </Paper>
                     </Grid>
                 </Grid>
+                <Button href={`http://192.168.1.6:8005/admin?auth=Bearer ${currentUser?.streamToken}`} target='_blank'>NMS Admn Pannel</Button>
             </Container>
         </Box>
     )

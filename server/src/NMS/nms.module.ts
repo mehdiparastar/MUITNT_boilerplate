@@ -7,4 +7,4 @@ import { UsersModule } from 'src/users/users.module';
   imports: [UsersModule],
   providers: [MediaServerService],
 })
-export class MediaServerModule {}
+export class MediaServerModule { }

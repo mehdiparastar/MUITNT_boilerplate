@@ -48,6 +48,7 @@ export const RoutesList: React.FC = () => {
         </Route>
         {/* public routes */}
         <Route path="" element={<Home />} />
+        <Route path="home" element={<Home />} />
         <Route path="unauthorized" element={<Unauthorized />} />
         <Route path="notfound" element={<NotFound />} />
         <Route path="maintenance" element={<Maintenance />} />
