@@ -31,26 +31,6 @@ export class VideoCallController {
     return this.videoCallService.getMyConferenceLink(user);
   }
 
-  @Post('publish-video')
-  async publishVideo(@Req() req: Request) {
-    // const streamKey = req.url.split('/').pop(); // Extract the stream key from the URL
-
-    // // Create a write stream to save the incoming video stream
-    // const streamPath = `./public/${streamKey}.flv`;
-    // const writeStream = fs.createWriteStream(streamPath);
-
-    req.on('data', (chunk) => {
-      // writeStream.write(chunk);
-      console.log(Math.random())
-    });
-
-    req.on('end', () => {
-      // writeStream.end();
-    });
-
-    return { message: 'Video stream received successfully' };
-  }
-
   @Get('whereRU')
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Roles(UserRoles.videoCallAppUserLL)

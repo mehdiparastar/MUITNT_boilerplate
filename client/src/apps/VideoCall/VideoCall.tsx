@@ -1,25 +1,18 @@
-import { EditNoteRounded, ExitToApp, MicExternalOffOutlined, MicNoneOutlined, MicOffOutlined, MicOutlined, NewReleasesSharp, NewReleasesTwoTone, OnlinePrediction, VideocamOff, VideocamOffOutlined, VideocamOffRounded, VideocamOutlined } from '@mui/icons-material';
-import { Box, Button, Container, Divider, IconButton, InputBase, Paper, Stack, TextField, Tooltip, Typography } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2/Grid2';
-import { useTheme } from '@mui/material/styles';
-import Item from 'components/Item/Item';
-import React, { memo, useEffect, useRef, useState } from 'react'
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
+import { ExitToApp, MicOffOutlined, MicOutlined, VideocamOffOutlined, VideocamOutlined } from '@mui/icons-material';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import { useGetMyConferenceLinkMutation, usePublishVideoMutation, useVideoCallSocketQuery, videoCallSocket } from 'redux/features/VIDEOCALL_APP/videoCallApiSlice';
-import VideoCallIcon from '@mui/icons-material/VideoCall';
-import { styled } from '@mui/material/styles';
+import { Box, Button, Container, Divider, IconButton, InputBase, Paper, Tooltip } from '@mui/material';
 import Badge from '@mui/material/Badge';
-import Avatar from '@mui/material/Avatar';
+import Grid from '@mui/material/Unstable_Grid2/Grid2';
+import { styled, useTheme } from '@mui/material/styles';
 import { VideoCallEvent } from 'enum/videoCallEvent.enum';
-import { getKeysWithValueOne } from 'helperFunctions/getObjectValueByValue';
-import { useAppSelector } from 'redux/hooks';
-import { selectCurrentAccessToken } from 'redux/features/WHOLE_APP/auth/authSlice';
-import { useAuthRefreshNewAccessTokenMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
+import { memo, useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
+import { useGetMyConferenceLinkMutation, useVideoCallSocketQuery, videoCallSocket } from 'redux/features/VIDEOCALL_APP/videoCallApiSlice';
+import { useAuthRefreshNewAccessTokenMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
+import { selectCurrentAccessToken } from 'redux/features/WHOLE_APP/auth/authSlice';
 import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
-// import flvjs from 'flv.js';
+import { useAppSelector } from 'redux/hooks';
+
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -55,13 +48,11 @@ type Props = {}
 
 
 const VideoCall = (props: Props) => {
-    const { data: socketData = { onlineUsers: {} } } = useVideoCallSocketQuery()
+    const { data: socketData = { onlineUsers: {}, rtmpLinks: {} } } = useVideoCallSocketQuery()
     const [getMyConferenceLink, { isLoading: gettingLinkLoading }] = useGetMyConferenceLinkMutation()
     const theme = useTheme();
-
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-    // const flvPlayer = useRef<any>(null);
 
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const [link, setLink] = useState<string>('')
@@ -70,20 +61,21 @@ const VideoCall = (props: Props) => {
     const onlineUsersCount = (socketData.onlineUsers)[link]?.length || 0
     const [refreshNewAccessToken] = useAuthRefreshNewAccessTokenMutation()
     const accessToken = useAppSelector(selectCurrentAccessToken)
-    const [publishVideo] = usePublishVideoMutation()
     const { data: currentUser = null } = useGetCurrentUserQuery()
 
     // const socket = new WebSocket('ws://192.168.1.6:8005');
     let mediaRecorder: MediaRecorder
+    const rtmpLinks: string[] = (socketData?.rtmpLinks && socketData?.rtmpLinks[link]) || []
 
     const handleStartCall = async () => {
         try {
             const mediaDevices = navigator.mediaDevices
             const stream = await mediaDevices.getUserMedia({
                 video: {
-                    frameRate: { max: 15 },
-                    width: { exact: 640 },
-                    height: { exact: 480 }
+                    // frameRate: { max: 15 },
+                    // sampleSize: { max: 10 },
+                    width: { exact: 6 },// { ideal: 640 },
+                    height: { exact: 4 }
                 },
                 // video: true,
                 audio: true
@@ -99,12 +91,13 @@ const VideoCall = (props: Props) => {
                 videoCallSocket.emit(VideoCallEvent.NewMember, { roomId: link })
                 // publishing ...
 
-                const options = { mimeType: 'video/webm; codecs=vp8' };
-                // const options = { mimeType: 'video/webm;codecs=h264,vp9,opus' };
-                // const options = {
-                //     mimeType: 'video/mp4; codecs="avc1.424028, mp4a.40.2"',
-                // };
-                mediaRecorder = new MediaRecorder(stream, options);
+                mediaRecorder = new MediaRecorder(
+                    stream,
+                    {
+                        mimeType: 'video/webm; codecs=vp9',
+                        // videoBitsPerSecond: 100000,           
+                    }
+                );
 
                 mediaRecorder.onerror = ev => {
                     console.log('err', ev)
@@ -118,44 +111,16 @@ const VideoCall = (props: Props) => {
                 mediaRecorder.onresume = ev => {
                     console.log('resume', ev)
                 }
-                const no = []
+
                 mediaRecorder.ondataavailable = (event) => {
-                    no.push('ondataavailable')
 
                     if (event.data.size > 0) {
-                        console.log(no.length)
-                        videoCallSocket.emit('clientcamera', event.data)
-                        // socket.send(event.data)
-                        // const blob = new Blob([event.data], { type: event.data.type })
-
-
-                        // Convert Blob data to ArrayBuffer
-                        // const arrayBuffer = await event.data.arrayBuffer();
-                        // const chunk = new Uint8Array(arrayBuffer)
-                        // socket.send(chunk)
-                        // // Send the video stream to the NMS RTMP server using flv.js
-                        // if (!flvPlayer.current) {
-                        //     flvPlayer.current = flvjs.createPlayer({
-                        //         type: 'flv',
-                        //         url: `rtmp://192.168.1.6:1955/live/${link}`,
-                        //     });
-                        //     flvPlayer.current.attachMediaElement(localVideoRef.current);
-                        //     flvPlayer.current.load();
-                        //     flvPlayer.current.play();
-                        // }
-                        // flvPlayer.current.write(arrayBuffer);
-
-
-
-
-                        // socket.send(event.data);
-                        // console.log(socket)
-                        // publishVideo({ stream: event.data, streamKey: link });
+                        videoCallSocket.emit('clientcamera', { chunk: event.data, roomId: link })
                     }
                 };
 
                 mediaRecorderRef.current = mediaRecorder;
-                mediaRecorder.start(500);
+                mediaRecorder.start(400);
 
             }
         } catch (error) {
@@ -199,7 +164,7 @@ const VideoCall = (props: Props) => {
         }
     };
 
-    const setConderenceLink = async () => {
+    const setConferenceLink = async () => {
         try {
             const res = await getMyConferenceLink().unwrap()
             setLink(res.link)
@@ -211,7 +176,7 @@ const VideoCall = (props: Props) => {
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        setConderenceLink()
+        setConferenceLink()
 
         window.addEventListener('beforeunload', handleEndCall);
 
@@ -222,8 +187,8 @@ const VideoCall = (props: Props) => {
             }
             window.removeEventListener('beforeunload', handleEndCall);
         };
+        // eslint-disable-next-line
     }, []);
-
 
     return (
         <Box width={1} height={1} display="flex" paddingBottom={15} pt={2}>
@@ -272,24 +237,38 @@ const VideoCall = (props: Props) => {
                         </Paper>
                     </Grid>
                     <Grid xs={12}>
-                        <Paper sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }}>
-                            <video autoPlay muted id="local-video"></video>
-                            {localVideoRef.current?.srcObject && localCameraOn &&
-                                <ReactPlayer
-                                    // url={`${file.hlsUrl}?auth=Bearer ${currentUser?.streamToken}`}
-                                    url={'http://192.168.1.6:1955/live/stream_key'}
-                                    controls
-                                    width={400}
-                                    height={300}
-                                // onError={(error: any) => {
-                                //     setError(error.target.error.code === 2)
-                                // }}
-                                />
-                            }
+                        <Paper sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', minHeight: 500 }}>
+                            <Grid container spacing={1} width={1}>
+                                {rtmpLinks.map((rtmp, i) =>
+                                    <Grid
+                                        key={i}
+                                        xs={rtmpLinks.length === 1 ? 12 : 6}
+                                        sm={rtmpLinks.length === 1 ? 12 : rtmpLinks.length === 2 ? 6 : 4}
+                                        md={rtmpLinks.length === 1 ? 12 : rtmpLinks.length === 2 ? 6 : rtmpLinks.length === 3 ? 4 : 3}
+                                        lg={rtmpLinks.length === 1 ? 12 : rtmpLinks.length === 2 ? 6 : rtmpLinks.length === 3 ? 4 : rtmpLinks.length === 4 ? 3 : 2}
+                                    >
+                                        <video
+                                            src={`http://192.168.1.6:8005/live/${rtmp}.flv`}
+                                            autoPlay
+                                            playsInline
+                                        />
+                                        {/* <ReactPlayer
+                                            //url={"http://192.168.1.6:8005/live/stream_key.flv"}
+                                            url={`http://192.168.1.6:8005/live/${rtmp}.flv`}
+                                            playing={true} // Auto-play the video
+                                            controls={false} // Dont Show video controls (play, pause, volume, etc.)
+                                            width={'100%'}
+                                            // height={'100%'}
+                                            // width={640}
+                                            style={{ maxHeight: 480 }}
+                                        /> */}
+                                    </Grid>
+                                )}
+                            </Grid>
                         </Paper>
                     </Grid>
                     <Grid xs={6} sm={4} md={3}>
-                        <Paper sx={{ p: '2px 4px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                        <Paper sx={{ p: '2px 4px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', minHeight: 200 }}>
                             <video style={{ transform: 'scaleX(-1)' }} width={'100%'} ref={localVideoRef} autoPlay playsInline />
                             {localStream &&
                                 <Box>

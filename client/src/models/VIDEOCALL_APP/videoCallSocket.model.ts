@@ -1,4 +1,4 @@
 export interface IVideoCallSocket {
-    onlineUsers: { [roomId: string]: [] };
-  }
-  
+  onlineUsers: { [roomId: string]: [] };
+  rtmpLinks: { [roomId: string]: [] };
+}

@@ -82,9 +82,9 @@ export class MediaServerService {
       rtmp: {
         port: this.configService.get<number>('NMS_RTMP_PORT'),
         chunk_size: 60000,
-        gop_cache: true,
+        gop_cache: false,
         ping: 60,
-        ping_timeout: 30,
+        ping_timeout: 30,        
       },
       http: {
         port: this.configService.get<number>('NMS_HTTP_PORT'), // HTTP port for HLS

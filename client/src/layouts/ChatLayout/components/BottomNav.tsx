@@ -1,5 +1,5 @@
-import { AddBox, Home, HomeMax, JoinInnerOutlined, Notifications, RoomOutlined, RoomPreferences, Settings } from '@mui/icons-material';
-import { Badge, BottomNavigation, BottomNavigationAction, Box, Paper, useMediaQuery } from '@mui/material';
+import { AddBox, Home, HomeMax, JoinInnerOutlined, Notifications, Settings } from '@mui/icons-material';
+import { Badge, BottomNavigation, BottomNavigationAction, Paper, useMediaQuery } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import React, { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";

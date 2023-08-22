@@ -17,18 +17,14 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { ChildProcess, spawn } from 'child_process';
+import * as path from 'path';
 import { Namespace } from 'socket.io';
 import { VideoCallEvent } from 'src/enum/videoCallEvent.enum';
 import { WsCatchAllFilter } from 'src/exceptions/ws-catch-all-filter';
 import { getArrayOfObjectUniqulyByKey } from 'src/helperFunctions/get-array-of-object-unique-by-key';
-import { VideoCallService } from './videoCall.service';
 import { AuthGatewayGuard } from './auth.gateway.guard';
-import * as path from 'path';
-import * as fs from 'fs';
-import { Readable } from 'stream';
-import { buffer } from 'stream/consumers';
-import { MediaServerService } from 'src/NMS/nms.service';
-import { spawn } from 'child_process';
+import { VideoCallService } from './videoCall.service';
 // import ffmpeg from 'fluent-ffmpeg'
 const ffmpeg = require('fluent-ffmpeg')
 
@@ -41,7 +37,7 @@ export class VideoCallGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(VideoCallGateway.name);
   private uploadPath: string;
-  private ffmpegProcess: any
+  private ffmpegProcess: { [roomId: string]: { [clientId: string]: ChildProcess } }
 
   @WebSocketServer() io: Namespace;
 
@@ -51,33 +47,7 @@ export class VideoCallGateway
   ) {
     this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'conference'); // Define your upload directory
     // Spawn ffmpeg process to send video stream to RTMP server
-    this.ffmpegProcess =
-      spawn('ffmpeg', [
-        '-i', '-',                            // Input from stdin
-        '-c:v', 'libx264',                    // Video codec
-        '-preset', 'ultrafast',               // Encoding speed preset
-        '-tune', 'zerolatency',               // Tune for low-latency
-        '-f', 'flv',                          // Output format
-        'rtmp://192.168.1.6:1955/live/stream_key' // RTMP server URL and stream key
-      ]);
-
-    // Handle FFmpeg process events
-    this.ffmpegProcess.stdout.on('data', data => {
-      console.log(`FFmpeg stdout: ${data}`);
-    });
-
-    this.ffmpegProcess.stderr.on('data', data => {
-      console.error(`FFmpeg stderr: ${data}`);
-    });
-
-    this.ffmpegProcess.on('close', code => {
-      console.log(`FFmpeg process exited with code ${code}`);
-    });
-
-    // Close the FFmpeg process on server shutdown
-    process.on('exit', () => {
-      this.ffmpegProcess.stdin.end();
-    });
+    this.ffmpegProcess = {}
   }
 
   getRoomsId(client: SocketWithAuth): string[] {
@@ -115,6 +85,8 @@ export class VideoCallGateway
       .emit(VideoCallEvent.NewMemberBroadCast, { onlineUsers: uniqueOnlineUsers });
 
     console.log(`user with email of '${client.user.email}' disconnected.`);
+    console.log(client.roomsId)
+
   }
 
   async getUniqueOnlineUsers(client: SocketWithAuth) {
@@ -145,54 +117,75 @@ export class VideoCallGateway
     @MessageBody() { roomId }: { roomId: string },
     @ConnectedSocket() client: SocketWithAuth,
   ) {
-    // console.log(roomId, client.user);
-    // const thisRoom = await this.chatService.findRoomById(room.id);
-    // const intendedParticipants = thisRoom.intendedParticipants.filter(
-    //   (item) => item.status === chatIntendedParticipantStatus.requested,
-    // );
+    try {
+      await client.join(roomId);
+      if (!client.roomsId.includes(roomId)) {
+        client.roomsId.push(roomId)
+      }
 
-    await client.join(roomId);
-    if (!client.roomsId.includes(roomId)) {
-      client.roomsId.push(roomId)
+
+      // console.log(this.getRoomsId(client))
+      const uniqueOnlineUsers = await this.getUniqueOnlineUsers(client);
+
+      // console.log(this.ffmpegProcess[roomId][`client-${client.user.id}`].stdin.closed)
+      if (!this.ffmpegProcess[roomId])
+        this.ffmpegProcess[roomId] = {}
+      if (this.ffmpegProcess[roomId][`client-${client.user.id}`])
+        this.ffmpegProcess[roomId][`client-${client.user.id}`] = null
+
+      this.ffmpegProcess[roomId][`client-${client.user.id}`] =
+        spawn('ffmpeg', [
+          '-i', '-',                            // Input from stdin
+          '-c:v', 'libx264',                    // Video codec
+          '-preset', 'ultrafast',               // Encoding speed preset
+          '-tune', 'zerolatency',               // Tune for low-latency
+          '-f', 'flv',                          // Output format
+          `rtmp://192.168.1.6:1955/live/${roomId}-client-${client.user.id}` // RTMP server URL and stream key
+        ]);
+
+      // Handle FFmpeg process events
+      this.ffmpegProcess[roomId][`client-${client.user.id}`].stdout.on('data', data => {
+        console.log(`${roomId}-${client.user.id}: FFmpeg stdout: ${data}`);
+      });
+
+      this.ffmpegProcess[roomId][`client-${client.user.id}`].stderr.on('data', data => {
+        console.error(`${roomId}-${client.user.id}: FFmpeg stderr: ${data}`);
+      });
+
+      this.ffmpegProcess[roomId][`client-${client.user.id}`].on('close', code => {
+        console.log(`${roomId}-${client.user.id}: FFmpeg process exited with code ${code}`);
+      });
+
+      // Close the FFmpeg process on server shutdown
+      process.on('exit', () => {
+        this.ffmpegProcess[roomId][`client-${client.user.id}`].stdin.end();
+      });
+
+      this.io.to(roomId).emit(VideoCallEvent.NewMemberBroadCast, {
+        onlineUsers: uniqueOnlineUsers,
+        rtmpLinks: { [roomId]: Object.keys(this.ffmpegProcess[roomId]).map(item => `${roomId}-${item}`) }
+      })
     }
-
-
-    // console.log(this.getRoomsId(client))
-    const uniqueOnlineUsers = await this.getUniqueOnlineUsers(client);
-
-    this.io.to(roomId).emit(VideoCallEvent.NewMemberBroadCast, { onlineUsers: uniqueOnlineUsers })
-
-    // this.io.emit(
-    //   ChatEvent.NewRoomIntendedParticipantBroadcast,
-    //   intendedParticipants,
-    // );
-
-    // this.io.emit(ChatEvent.NewRoomCreatedBroadcast, {
-    //   newRoom: thisRoom,
-    //   socketOwner: client.user,
-    // });
-
-    // const uniqueOnlineUsers = await this.getUniqueOnlineUsers(client);
-
-    // this.io
-    //   .to(client.roomsId)
-    //   .emit(ChatEvent.NewMemberBroadCast, { onlineUsers: uniqueOnlineUsers });
+    catch (ex) {
+      console.log('\n\n\nnew mwmber\n\n\n', ex)
+    }
   }
 
 
   // @UseGuards(AuthGatewayGuard)
   @SubscribeMessage('clientcamera')
   async ClientCameraChunksEvent(
-    @MessageBody() chunk: any,
+    @MessageBody() msg: { chunk: any, roomId: string },
     @ConnectedSocket() client: SocketWithAuth,
   ) {
 
     // ffmpeg -re -i mehdi2.webm -c:v libx264 -preset veryfast -tune zerolatency -c:a aac -ar 44100 -f flv rtmp://192.168.1.6:1955/live/stream3
 
     // fs.appendFileSync(path.join(this.uploadPath, 'mehdi.webm'), chunk)
-
+    // console.log(msg.roomId)
+    // console.log(client.user.name)
     try {
-      this.ffmpegProcess.stdin.write(chunk);
+      this.ffmpegProcess[msg.roomId][`client-${client.user.id}`].stdin.write(msg.chunk);
     }
     catch (ex) {
       console.log(ex)
