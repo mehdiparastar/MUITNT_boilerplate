@@ -25,6 +25,7 @@ import { WsCatchAllFilter } from 'src/exceptions/ws-catch-all-filter';
 import { getArrayOfObjectUniqulyByKey } from 'src/helperFunctions/get-array-of-object-unique-by-key';
 import { AuthGatewayGuard } from './auth.gateway.guard';
 import { VideoCallService } from './videoCall.service';
+import { ConfigService } from '@nestjs/config';
 // import ffmpeg from 'fluent-ffmpeg'
 const ffmpeg = require('fluent-ffmpeg')
 
@@ -44,6 +45,7 @@ export class VideoCallGateway
   constructor(
     @Inject(forwardRef(() => VideoCallService))
     private readonly videoCallService: VideoCallService,
+    protected configService: ConfigService<IconfigService>,
   ) {
     this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'conference'); // Define your upload directory
     // Spawn ffmpeg process to send video stream to RTMP server
@@ -80,12 +82,26 @@ export class VideoCallGateway
 
   async handleDisconnect(client: SocketWithAuth) {
     const uniqueOnlineUsers = await this.getUniqueOnlineUsers(client);
+
     this.io
       .to(client.roomsId)
-      .emit(VideoCallEvent.NewMemberBroadCast, { onlineUsers: uniqueOnlineUsers });
+      .emit(VideoCallEvent.NewMemberBroadCast, {
+        onlineUsers: uniqueOnlineUsers,
+        rtmpLinks: client.roomsId.reduce((p, roomId) => ({
+          ...p,
+          [roomId]: Object.keys(this.ffmpegProcess[roomId])
+            .filter(item => uniqueOnlineUsers[roomId].map(x => x.id).includes(Number(item.split("-")[1])))
+            .map(item => `${roomId}-${item}`)
+        }), {})
+      });
 
-    console.log(`user with email of '${client.user.email}' disconnected.`);
-    console.log(client.roomsId)
+    for (const roomId of client.roomsId) {
+      if (this.ffmpegProcess[roomId] && this.ffmpegProcess[roomId][`client-${client.user.id}`]) {
+        this.ffmpegProcess[roomId][`client-${client.user.id}`].stdin.end()
+        this.ffmpegProcess[roomId][`client-${client.user.id}`] = null
+      }
+    }
+    console.log(`user with email of '${client.user.email} ' disconnected.`);
 
   }
 
@@ -130,17 +146,17 @@ export class VideoCallGateway
       // console.log(this.ffmpegProcess[roomId][`client-${client.user.id}`].stdin.closed)
       if (!this.ffmpegProcess[roomId])
         this.ffmpegProcess[roomId] = {}
-      if (this.ffmpegProcess[roomId][`client-${client.user.id}`])
+      if (!this.ffmpegProcess[roomId][`client-${client.user.id}`])
         this.ffmpegProcess[roomId][`client-${client.user.id}`] = null
 
       this.ffmpegProcess[roomId][`client-${client.user.id}`] =
-        spawn('ffmpeg', [
+        spawn('ffmpeg', [          
           '-i', '-',                            // Input from stdin
           '-c:v', 'libx264',                    // Video codec
           '-preset', 'ultrafast',               // Encoding speed preset
-          '-tune', 'zerolatency',               // Tune for low-latency
+          '-tune', 'zerolatency',               // Tune for low-latency          
           '-f', 'flv',                          // Output format
-          `rtmp://192.168.1.6:1955/live/${roomId}-client-${client.user.id}` // RTMP server URL and stream key
+          `rtmp://192.168.1.6:${this.configService.get<number>('NMS_RTMP_PORT')}/live/${roomId}-client-${client.user.id}` // RTMP server URL and stream key
         ]);
 
       // Handle FFmpeg process events
@@ -163,7 +179,11 @@ export class VideoCallGateway
 
       this.io.to(roomId).emit(VideoCallEvent.NewMemberBroadCast, {
         onlineUsers: uniqueOnlineUsers,
-        rtmpLinks: { [roomId]: Object.keys(this.ffmpegProcess[roomId]).map(item => `${roomId}-${item}`) }
+        rtmpLinks: {
+          [roomId]: Object.keys(this.ffmpegProcess[roomId])
+            .filter(item => uniqueOnlineUsers[roomId].map(x => x.id).includes(Number(item.split("-")[1])))
+            .map(item => `${roomId}-${item}`)
+        }
       })
     }
     catch (ex) {

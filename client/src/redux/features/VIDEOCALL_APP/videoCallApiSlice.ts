@@ -66,7 +66,8 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
             console.log(reason);
             updateCachedData((draft) => ({
               ...draft,
-              onlineUsers: {}
+              onlineUsers: {},
+              rtmpLinks: {}
             }));
           });
 
@@ -79,7 +80,7 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
                   ...data.onlineUsers
                 },
                 rtmpLinks: {
-                  ...draft.rtmpLinks,
+                  // ...draft.rtmpLinks,
                   ...data.rtmpLinks
                 }
               }));

@@ -1,4 +1,5 @@
 const NodeMediaServerWithAuth = require('node-media-server-with-auth-middleware');
+// import NodeMediaServerWithAuth from 'node-media-server'
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
@@ -18,7 +19,7 @@ import ffmpeg from 'fluent-ffmpeg'
 @Injectable()
 export class MediaServerService {
   private nms: typeof NodeMediaServerWithAuth;
-  private config: any//NMSConfig;
+  private config: NMSConfig;
   private uploadPath: string;
 
   constructor(
@@ -79,12 +80,13 @@ export class MediaServerService {
     };
 
     this.config = {
+      logType: 3,
       rtmp: {
         port: this.configService.get<number>('NMS_RTMP_PORT'),
         chunk_size: 60000,
         gop_cache: false,
         ping: 60,
-        ping_timeout: 30,        
+        ping_timeout: 30,
       },
       http: {
         port: this.configService.get<number>('NMS_HTTP_PORT'), // HTTP port for HLS
@@ -107,9 +109,9 @@ export class MediaServerService {
             // hlsKeep: true, // to prevent hls file delete after end the stream
             dash: true,
             dashFlags: '[f=dash:window_size=3:extra_window_size=5]',
-            // mp4: true,
-            // mp4Flags: '[movflags=frag_keyframe+empty_moov]',
             // dashKeep: true // to prevent dash file delete after end the stream
+            mp4: true,
+            mp4Flags: '[movflags=frag_keyframe+empty_moov]',
           },
         ],
       },

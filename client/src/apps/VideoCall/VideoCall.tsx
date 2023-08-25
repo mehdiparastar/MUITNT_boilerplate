@@ -1,6 +1,6 @@
 import { ExitToApp, MicOffOutlined, MicOutlined, VideocamOffOutlined, VideocamOutlined } from '@mui/icons-material';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import { Box, Button, Container, Divider, IconButton, InputBase, Paper, Tooltip } from '@mui/material';
+import { Box, Button, Chip, Container, Divider, IconButton, InputBase, Paper, Stack, Tooltip } from '@mui/material';
 import Badge from '@mui/material/Badge';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { styled, useTheme } from '@mui/material/styles';
@@ -48,11 +48,12 @@ type Props = {}
 
 
 const VideoCall = (props: Props) => {
-    const { data: socketData = { onlineUsers: {}, rtmpLinks: {} } } = useVideoCallSocketQuery()
+    const { data: socketData = { onlineUsers: {}, rtmpLinks: {} }, refetch } = useVideoCallSocketQuery()
     const [getMyConferenceLink, { isLoading: gettingLinkLoading }] = useGetMyConferenceLinkMutation()
     const theme = useTheme();
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+    const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
 
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const [link, setLink] = useState<string>('')
@@ -64,20 +65,24 @@ const VideoCall = (props: Props) => {
     const { data: currentUser = null } = useGetCurrentUserQuery()
 
     // const socket = new WebSocket('ws://192.168.1.6:8005');
-    let mediaRecorder: MediaRecorder
     const rtmpLinks: string[] = (socketData?.rtmpLinks && socketData?.rtmpLinks[link]) || []
 
     const handleStartCall = async () => {
         try {
+            if (
+                JSON.stringify(socketData.onlineUsers) === JSON.stringify({}) &&
+                JSON.stringify(socketData.rtmpLinks) === JSON.stringify({})
+            ) {
+                refetch()
+            }
             const mediaDevices = navigator.mediaDevices
             const stream = await mediaDevices.getUserMedia({
                 video: {
-                    // frameRate: { max: 15 },
+                    frameRate: { max: 15 },
                     // sampleSize: { max: 10 },
-                    width: { exact: 6 },// { ideal: 640 },
-                    height: { exact: 4 }
+                    width: { exact: 320 },
+                    height: { exact: 240 }
                 },
-                // video: true,
                 audio: true
             });
             setLocalStream(stream)
@@ -91,36 +96,42 @@ const VideoCall = (props: Props) => {
                 videoCallSocket.emit(VideoCallEvent.NewMember, { roomId: link })
                 // publishing ...
 
-                mediaRecorder = new MediaRecorder(
+                const recorder = new MediaRecorder(
                     stream,
                     {
                         mimeType: 'video/webm; codecs=vp9',
-                        // videoBitsPerSecond: 100000,           
+                        // videoBitsPerSecond: 10000,           
                     }
                 );
 
-                mediaRecorder.onerror = ev => {
+                recorder.onerror = ev => {
                     console.log('err', ev)
                 }
-                mediaRecorder.onstart = ev => {
+                recorder.onstart = ev => {
                     console.log('start', ev)
                 }
-                mediaRecorder.onpause = ev => {
+                recorder.onpause = ev => {
                     console.log('pause', ev)
                 }
-                mediaRecorder.onresume = ev => {
+                recorder.onresume = ev => {
                     console.log('resume', ev)
                 }
+                recorder.onstop = ev => {
+                    console.log('stop', ev)
+                    videoCallSocket.disconnect()
+                }
 
-                mediaRecorder.ondataavailable = (event) => {
+                recorder.ondataavailable = (event) => {
 
                     if (event.data.size > 0) {
                         videoCallSocket.emit('clientcamera', { chunk: event.data, roomId: link })
                     }
                 };
 
-                mediaRecorderRef.current = mediaRecorder;
-                mediaRecorder.start(400);
+                mediaRecorderRef.current = recorder;
+                recorder.start(400);
+
+                setMediaRecorder(recorder)
 
             }
         } catch (error) {
@@ -130,17 +141,14 @@ const VideoCall = (props: Props) => {
 
     const handleEndCall = async () => {
         try {
+            if (mediaRecorder) {
+                mediaRecorder.stop()
+            }
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop())
                 setLocalCameraOn(false)
                 setLocalMicrophoneOn(false)
                 setLocalStream(null)
-                if (mediaRecorder) {
-                    mediaRecorder.onstop = ev => {
-                        console.log('stop', ev)
-                        videoCallSocket.disconnect()
-                    }
-                }
             }
         }
         catch (ex) {
@@ -237,7 +245,7 @@ const VideoCall = (props: Props) => {
                         </Paper>
                     </Grid>
                     <Grid xs={12}>
-                        <Paper sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', minHeight: 500 }}>
+                        <Paper sx={{ p: '2px 4px', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', minHeight: 500 }}>
                             <Grid container spacing={1} width={1}>
                                 {rtmpLinks.map((rtmp, i) =>
                                     <Grid
@@ -247,21 +255,24 @@ const VideoCall = (props: Props) => {
                                         md={rtmpLinks.length === 1 ? 12 : rtmpLinks.length === 2 ? 6 : rtmpLinks.length === 3 ? 4 : 3}
                                         lg={rtmpLinks.length === 1 ? 12 : rtmpLinks.length === 2 ? 6 : rtmpLinks.length === 3 ? 4 : rtmpLinks.length === 4 ? 3 : 2}
                                     >
-                                        <video
-                                            src={`http://192.168.1.6:8005/live/${rtmp}.flv`}
-                                            autoPlay
-                                            playsInline
-                                        />
-                                        {/* <ReactPlayer
-                                            //url={"http://192.168.1.6:8005/live/stream_key.flv"}
-                                            url={`http://192.168.1.6:8005/live/${rtmp}.flv`}
-                                            playing={true} // Auto-play the video
-                                            controls={false} // Dont Show video controls (play, pause, volume, etc.)
-                                            width={'100%'}
-                                            // height={'100%'}
-                                            // width={640}
-                                            style={{ maxHeight: 480 }}
-                                        /> */}
+                                        <Stack direction={'column'} spacing={1}>
+                                            <Chip
+                                                color='primary'
+                                                size='medium'
+                                                sx={{ width: '100%' }}
+                                                variant='outlined'
+                                                label={(socketData.onlineUsers[link].find((item: { id: number }) => item.id === Number(rtmp.split("-").pop())) as any)?.email}
+                                            />
+                                            <ReactPlayer
+                                                url={`${process.env.NODE_ENV === 'development'
+                                                    ? process.env.REACT_APP_API_NMS_SERVER_URL_development
+                                                    : process.env.REACT_APP_API_NMS_SERVER_URL_production}/live/${rtmp}.flv`}
+                                                playing={true} // Auto-play the video
+                                                controls={false} // Dont Show video controls (play, pause, volume, etc.)
+                                                width={'100%'}
+                                                height={'100%'}
+                                            />
+                                        </Stack>
                                     </Grid>
                                 )}
                             </Grid>
@@ -291,9 +302,11 @@ const VideoCall = (props: Props) => {
                         </Paper>
                     </Grid>
                 </Grid>
-                <Button href={`http://192.168.1.6:8005/admin?auth=Bearer ${currentUser?.streamToken}`} target='_blank'>NMS Admn Pannel</Button>
+                <Button href={`${process.env.NODE_ENV === 'development'
+                    ? process.env.REACT_APP_API_NMS_SERVER_URL_development
+                    : process.env.REACT_APP_API_NMS_SERVER_URL_production}/admin?auth=Bearer ${currentUser?.streamToken}`} target='_blank'>NMS Admn Pannel</Button>
             </Container>
-        </Box>
+        </Box >
     )
 }
 
