@@ -6,6 +6,7 @@ services:
       dockerfile: dockerfile.dev
     ports:
       - 3006:3006
+      - 9229:9229 # Expose the debugging port
     container_name: muitnt_client_dev
     networks:
       - muitnt-stack-net-dev
@@ -27,6 +28,7 @@ services:
         - 3005:3005
         - 8005:8005
         - 1955:1955
+        - 9230:9229
     networks:
         - muitnt-stack-net-dev
     volumes:

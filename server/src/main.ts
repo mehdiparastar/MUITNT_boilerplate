@@ -12,7 +12,7 @@ console.warn(
 );
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, { cors: true, logger: ['error', 'debug', 'log', 'verbose'] });
   const config = new DocumentBuilder()
     .setTitle('MUITNT api')
     .setDescription('The MUITNT API description')
