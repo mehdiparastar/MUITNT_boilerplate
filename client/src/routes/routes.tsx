@@ -26,7 +26,7 @@ import About from '../pages/About/About';
 import Home from '../pages/Home/Home';
 import Movie from 'apps/Movie/Movie';
 import Music from 'apps/Music/Music';
-import VideoCall from 'apps/VideoCall/VideoCall';
+import RTMPCall from 'apps/RTMPCall/RTMPCall';
 
 export const RoutesList: React.FC = () => {
   return (
@@ -77,8 +77,8 @@ export const RoutesList: React.FC = () => {
           <Route path="" element={<Music />} />
         </Route>
 
-        <Route path="video-call" element={<RequireAuth allowedRoles={[UserRoles.videoCallAppUserLL]} />}>
-          <Route path="" element={<VideoCall />} />
+        <Route path="rtmp-call" element={<RequireAuth allowedRoles={[UserRoles.rtmpCallAppUserLL]} />}>
+          <Route path="" element={<RTMPCall />} />
         </Route>
 
         <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>

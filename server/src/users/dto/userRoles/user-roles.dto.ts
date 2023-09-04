@@ -46,19 +46,19 @@ export class UserRolesDto {
 
   @Expose()
   @ApiProperty({ default: false })
-  [UserRoles.videoCallAppAdmin]?: boolean;
+  [UserRoles.rtmpCallAppAdmin]?: boolean;
 
   @Expose()
   @ApiProperty({ default: false })
-  [UserRoles.videoCallAppUserHL]?: boolean;
+  [UserRoles.rtmpCallAppUserHL]?: boolean;
 
   @Expose()
   @ApiProperty({ default: false })
-  [UserRoles.videoCallAppUserML]?: boolean;
+  [UserRoles.rtmpCallAppUserML]?: boolean;
 
   @Expose()
   @ApiProperty({ default: false })
-  [UserRoles.videoCallAppUserLL]?: boolean;
+  [UserRoles.rtmpCallAppUserLL]?: boolean;
 
   @Expose()
   @ApiProperty({ default: false })

@@ -3,17 +3,17 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/authentication/auth.module';
-import { VideoCallRoom } from './entities/room.entity';
-import { VideoCallController } from './videoCall.controller';
-import { VideoCallGateway } from './videoCall.gateway';
-import { VideoCallService } from './videoCall.service';
+import { RTMPCallRoom } from './entities/room.entity';
+import { RTMPCallController } from './rtmpCall.controller';
+import { RTMPCallGateway } from './rtmpCall.gateway';
+import { RTMPCallService } from './rtmpCall.service';
 import { MediaServerService } from 'src/NMS/nms.service';
 import { UsersService } from 'src/users/users.service';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([VideoCallRoom]),
+    TypeOrmModule.forFeature([RTMPCallRoom]),
     AuthModule,
     JwtModule.registerAsync({
       useFactory: (config: ConfigService<IconfigService>) => {
@@ -29,7 +29,7 @@ import { UsersModule } from 'src/users/users.module';
       inject: [ConfigService],
     }),
   ],
-  controllers: [VideoCallController],
-  providers: [VideoCallGateway, VideoCallService],
+  controllers: [RTMPCallController],
+  providers: [RTMPCallGateway, RTMPCallService],
 })
-export class VideoCallModule { }
+export class RTMPCallModule { }

@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
-import { VideoCallRoom } from './entities/room.entity';
+import { RTMPCallRoom } from './entities/room.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
-export class VideoCallService {
+export class RTMPCallService {
   constructor(
-    @InjectRepository(VideoCallRoom)
-    private roomsRepo: Repository<VideoCallRoom>,
+    @InjectRepository(RTMPCallRoom)
+    private roomsRepo: Repository<RTMPCallRoom>,
   ) {}
 
   async findMyAllRooms(user: User) {
@@ -50,6 +50,6 @@ export class VideoCallService {
   }
 
   whereRU(): string {
-    return 'hello, you are in service of videoCall app.';
+    return 'hello, you are in service of rtmpCall app.';
   }
 }

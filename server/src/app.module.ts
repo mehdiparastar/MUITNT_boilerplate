@@ -15,7 +15,7 @@ import { AppDataSource } from './data-source';
 import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
 import { TagsModule } from './tags/tags.module';
 import { UsersModule } from './users/users.module';
-import { VideoCallModule } from './apps/VIDEOCALL/videoCall.module';
+import { RTMPCallModule } from './apps/RTMPCALL/rtmpCall.module';
 
 const nodeENV = process.env.NODE_ENV;
 
@@ -35,7 +35,7 @@ const nodeENV = process.env.NODE_ENV;
     MoviesModule,
     MusicsModule,
     MediaServerModule,
-    VideoCallModule,
+    RTMPCallModule,
   ],
   controllers: [AppController],
   providers: [

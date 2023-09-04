@@ -7,7 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import { ChatService } from './apps/CHAT/chat.service';
 import { MoviesService } from './apps/Movie/movies.service';
 import { MusicsService } from './apps/Music/musics.service';
-import { VideoCallService } from './apps/VIDEOCALL/videoCall.service';
+import { RTMPCallService } from './apps/RTMPCALL/rtmpCall.service';
 
 export class ApplicationSocketIOAdapter extends IoAdapter {
   private readonly logger = new Logger(ApplicationSocketIOAdapter.name);
@@ -43,19 +43,19 @@ export class ApplicationSocketIOAdapter extends IoAdapter {
     const jwtService = this.app.get(JwtService);
     const usersService = this.app.get(UsersService);
     const chatService = this.app.get(ChatService);
-    const videoCallService = this.app.get(VideoCallService);
+    const rtmpCallService = this.app.get(RTMPCallService);
     const movieService = this.app.get(MoviesService);
     const musicService = this.app.get(MusicsService);
 
     const server: Server = super.createIOServer(port, optionsWithCORS);
 
-    const initVideoCallSocketServer = server
-      .of('videoCall')
+    const initRTMPCallSocketServer = server
+      .of('rtmpCall')
       .use(
-        createVideoCallTokenMiddleware(
+        createRTMPCallTokenMiddleware(
           jwtService,
           usersService,
-          videoCallService,
+          rtmpCallService,
           this.logger,
         ),
       );
@@ -97,11 +97,11 @@ export class ApplicationSocketIOAdapter extends IoAdapter {
   }
 }
 
-const createVideoCallTokenMiddleware =
+const createRTMPCallTokenMiddleware =
   (
     jwtService: JwtService,
     usersService: UsersService,
-    videoCallService: VideoCallService,
+    rtmpCallService: RTMPCallService,
     logger: Logger,
   ) =>
     async (socket: SocketWithAuth, next) => {
@@ -111,7 +111,7 @@ const createVideoCallTokenMiddleware =
         const payload = jwtService.verify(accessToken);
         const [user] = await usersService.findByEmail(payload.email);
 
-        // const allMyRooms = await videoCallService.findMyAllRooms(user);
+        // const allMyRooms = await rtmpCallService.findMyAllRooms(user);
 
         // const roomsId = allMyRooms.map((room) => room.id.toString());
 

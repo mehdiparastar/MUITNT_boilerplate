@@ -15,10 +15,10 @@ export enum UserRoles {
   chatAppUserML = '3023',
   chatAppUserLL = '3024',
 
-  videoCallAppAdmin = '3031',
-  videoCallAppUserHL = '3032',
-  videoCallAppUserML = '3033',
-  videoCallAppUserLL = '3034',
+  rtmpCallAppAdmin = '3031',
+  rtmpCallAppUserHL = '3032',
+  rtmpCallAppUserML = '3033',
+  rtmpCallAppUserLL = '3034',
 
   voiceCallAppAdmin = '3041',
   voiceCallAppUserHL = '3042',

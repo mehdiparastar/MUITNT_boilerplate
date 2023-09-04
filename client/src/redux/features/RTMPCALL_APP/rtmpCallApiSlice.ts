@@ -1,18 +1,18 @@
-import { VideoCallEvent } from 'enum/videoCallEvent.enum';
-import { IVideoCallSocket } from 'models/VIDEOCALL_APP/videoCallSocket.model';
+import { RTMPCallEvent } from 'enum/rtmpCallEvent.enum';
+import { IRTMPCallSocket } from 'models/RTMPCALL_APP/rtmpCallSocket.model';
 import { RootState } from 'redux/store';
 import { Socket, io } from 'socket.io-client';
 import { apiSlice } from '../../../api/rtkApi/apiSlice';
-import { MyConferenceLinkDto } from 'models/VIDEOCALL_APP/room.model';
+import { MyConferenceLinkDto } from 'models/RTMPCALL_APP/room.model';
 
-export let videoCallSocket: Socket;
+export let rtmpCallSocket: Socket;
 
-export const videoCallApiSlice = apiSlice.injectEndpoints({
+export const rtmpCallApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    videoCallSocket: builder.query<IVideoCallSocket, void>({
+    rtmpCallSocket: builder.query<IRTMPCallSocket, void>({
       query() {
         return {
-          url: `videoCall_app/socket_initializing`,
+          url: `rtmpCall_app/socket_initializing`,
           method: 'GET',
         };
       },
@@ -39,7 +39,7 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
               ? process.env.REACT_APP_API_SERVER_URL_development
               : process.env.REACT_APP_API_SERVER_URL_production;
 
-          videoCallSocket = io(`${url}/videoCall`, {
+          rtmpCallSocket = io(`${url}/rtmpCall`, {
             auth: { accessToken },
             query: { accessToken },
             reconnectionDelay: 1000,
@@ -52,17 +52,17 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
             forceNew: true,
           });
 
-          videoCallSocket.on('connect_error', async (err) => {
+          rtmpCallSocket.on('connect_error', async (err) => {
             if (
               err.message === 'invalid credentials' ||
               err.message === 'jwt expired'
             ) {
               console.log(err.message);
-              videoCallSocket.close();
+              rtmpCallSocket.close();
             }
           });
 
-          videoCallSocket.on('disconnect', (reason) => {
+          rtmpCallSocket.on('disconnect', (reason) => {
             console.log(reason);
             updateCachedData((draft) => ({
               ...draft,
@@ -71,9 +71,9 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
             }));
           });
 
-          videoCallSocket.on(
-            VideoCallEvent.NewMemberBroadCast,
-            (data: IVideoCallSocket) => {
+          rtmpCallSocket.on(
+            RTMPCallEvent.NewMemberBroadCast,
+            (data: IRTMPCallSocket) => {
               updateCachedData((draft) => ({
                 ...draft,
                 onlineUsers: {
@@ -87,9 +87,9 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
             },
           );
 
-          videoCallSocket.on(
-            VideoCallEvent.MemberDisconnectBroadCast,
-            (data: IVideoCallSocket) => {
+          rtmpCallSocket.on(
+            RTMPCallEvent.MemberDisconnectBroadCast,
+            (data: IRTMPCallSocket) => {
               updateCachedData((draft) => ({
                 ...draft,
                 onlineUsers: {
@@ -100,7 +100,7 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
           )
 
           await cacheEntryRemoved;
-          // videoCallSocket.close()
+          // rtmpCallSocket.close()
         } catch (ex) {
           console.log(ex);
         }
@@ -110,7 +110,7 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
     getMyConferenceLink: builder.mutation<MyConferenceLinkDto, void>({
       query() {
         return {
-          url: `videoCall_app/get_my_conference_link`,
+          url: `rtmpCall_app/get_my_conference_link`,
           method: 'Get',
         };
       },
@@ -118,5 +118,5 @@ export const videoCallApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useVideoCallSocketQuery, useGetMyConferenceLinkMutation } =
-  videoCallApiSlice;
+export const { useRtmpCallSocketQuery: useRTMPCallSocketQuery, useGetMyConferenceLinkMutation } =
+  rtmpCallApiSlice;

@@ -20,11 +20,11 @@ import {
 import { ChildProcess, spawn } from 'child_process';
 import * as path from 'path';
 import { Namespace } from 'socket.io';
-import { VideoCallEvent } from 'src/enum/videoCallEvent.enum';
+import { RTMPCallEvent } from 'src/enum/rtmpCallEvent.enum';
 import { WsCatchAllFilter } from 'src/exceptions/ws-catch-all-filter';
 import { getArrayOfObjectUniqulyByKey } from 'src/helperFunctions/get-array-of-object-unique-by-key';
 import { AuthGatewayGuard } from './auth.gateway.guard';
-import { VideoCallService } from './videoCall.service';
+import { RTMPCallService } from './rtmpCall.service';
 import { ConfigService } from '@nestjs/config';
 // import ffmpeg from 'fluent-ffmpeg'
 const ffmpeg = require('fluent-ffmpeg')
@@ -32,19 +32,19 @@ const ffmpeg = require('fluent-ffmpeg')
 @UsePipes(new ValidationPipe())
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({
-  namespace: 'videoCall',
+  namespace: 'rtmpCall',
 })
-export class VideoCallGateway
+export class RTMPCallGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-  private readonly logger = new Logger(VideoCallGateway.name);
+  private readonly logger = new Logger(RTMPCallGateway.name);
   private uploadPath: string;
   private ffmpegProcess: { [roomId: string]: { [clientId: string]: ChildProcess } }
 
   @WebSocketServer() io: Namespace;
 
   constructor(
-    @Inject(forwardRef(() => VideoCallService))
-    private readonly videoCallService: VideoCallService,
+    @Inject(forwardRef(() => RTMPCallService))
+    private readonly rtmpCallService: RTMPCallService,
     protected configService: ConfigService<IconfigService>,
   ) {
     this.uploadPath = path.join(process.cwd(), '..', 'uploads', 'conference'); // Define your upload directory
@@ -85,7 +85,7 @@ export class VideoCallGateway
 
     this.io
       .to(client.roomsId)
-      .emit(VideoCallEvent.NewMemberBroadCast, {
+      .emit(RTMPCallEvent.NewMemberBroadCast, {
         onlineUsers: uniqueOnlineUsers,
         rtmpLinks: client.roomsId.reduce((p, roomId) => ({
           ...p,
@@ -128,7 +128,7 @@ export class VideoCallGateway
   }
 
   @UseGuards(AuthGatewayGuard)
-  @SubscribeMessage(VideoCallEvent.NewMember)
+  @SubscribeMessage(RTMPCallEvent.NewMember)
   async NewMemberEvent(
     @MessageBody() { roomId }: { roomId: string },
     @ConnectedSocket() client: SocketWithAuth,
@@ -177,7 +177,7 @@ export class VideoCallGateway
         this.ffmpegProcess[roomId][`client-${client.user.id}`].stdin.end();
       });
 
-      this.io.to(roomId).emit(VideoCallEvent.NewMemberBroadCast, {
+      this.io.to(roomId).emit(RTMPCallEvent.NewMemberBroadCast, {
         onlineUsers: uniqueOnlineUsers,
         rtmpLinks: {
           [roomId]: Object.keys(this.ffmpegProcess[roomId])

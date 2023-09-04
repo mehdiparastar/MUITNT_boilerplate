@@ -11,7 +11,7 @@ import { WsUnauthorizedException } from 'src/exceptions/ws-exceptions';
 export class AuthGatewayGuard implements CanActivate {
   private readonly logger = new Logger(AuthGatewayGuard.name);
   constructor(
-    private readonly jwtService: JwtService, // private readonly videoCallsService: VideoCallService,
+    private readonly jwtService: JwtService, // private readonly rtmpCallsService: RTMPCallService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // regular `Socket` from socket.io is probably sufficient

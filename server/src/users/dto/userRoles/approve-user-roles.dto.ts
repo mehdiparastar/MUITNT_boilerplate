@@ -45,19 +45,19 @@ export class ApproveUserRolesDto {
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.videoCallAppAdmin]?: boolean;
+  [UserRoles.rtmpCallAppAdmin]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.videoCallAppUserHL]?: boolean;
+  [UserRoles.rtmpCallAppUserHL]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.videoCallAppUserML]?: boolean;
+  [UserRoles.rtmpCallAppUserML]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })
-  [UserRoles.videoCallAppUserLL]?: boolean;
+  [UserRoles.rtmpCallAppUserLL]?: boolean;
 
   @IsBoolean()
   @ApiProperty({ default: false })

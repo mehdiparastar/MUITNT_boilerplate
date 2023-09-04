@@ -13,7 +13,7 @@ import NotFoundIcon from '@mui/icons-material/BrowserNotSupported';
 import MovieIcon from '@mui/icons-material/LocalMovies';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import MapIcon from '@mui/icons-material/MyLocation';
-import VideoCall from '@mui/icons-material/OndemandVideo';
+import RTMPCall from '@mui/icons-material/OndemandVideo';
 import VoiceCallIcon from '@mui/icons-material/RecordVoiceOver';
 import OnlineShopIcon from '@mui/icons-material/ShoppingCartCheckout';
 import TradeBotIcon from '@mui/icons-material/SmartToy';
@@ -52,9 +52,9 @@ export const navigationPages: navPage[] = [
       { title: 'CRUD', href: '/crud', icon: <CRUDIcon sx={{ pr: 0.5 }} /> },
       { title: 'Chat', href: '/chat', icon: <ChatIcon sx={{ pr: 0.5 }} /> },
       {
-        title: 'Video Call',
-        href: '/video-call',
-        icon: <VideoCall sx={{ pr: 0.5 }} />,
+        title: 'RTMP Call',
+        href: '/rtmp-call',
+        icon: <RTMPCall sx={{ pr: 0.5 }} />,
       },
       {
         title: 'Voice Call',

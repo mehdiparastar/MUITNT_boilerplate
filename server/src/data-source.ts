@@ -13,7 +13,7 @@ import { UserPermissionRequest } from './users/entities/permission-requests.enti
 import { User } from './users/entities/user.entity';
 import { MovieFileInfo } from './apps/Movie/entities/movieFileInfo.entity';
 import { MusicFileInfo } from './apps/Music/entities/musicFileInfo.entity';
-import { VideoCallRoom } from './apps/VIDEOCALL/entities/room.entity';
+import { RTMPCallRoom } from './apps/RTMPCALL/entities/room.entity';
 
 interface IDBConfig {
   development: DataSourceOptions;
@@ -44,7 +44,7 @@ const dbConfig: IDBConfig = {
       ChatSeenMessages,
       MovieFileInfo,
       MusicFileInfo,
-      VideoCallRoom,
+      RTMPCallRoom,
     ],
     synchronize: true,
     // synchronize: false,
@@ -73,7 +73,7 @@ const dbConfig: IDBConfig = {
       ChatSeenMessages,
       MovieFileInfo,
       MusicFileInfo,
-      VideoCallRoom,
+      RTMPCallRoom,
     ],
     synchronize: true,
     // synchronize: false,
@@ -103,7 +103,7 @@ const dbConfig: IDBConfig = {
       ChatSeenMessages,
       MovieFileInfo,
       MusicFileInfo,
-      VideoCallRoom,
+      RTMPCallRoom,
     ],
     synchronize: true,
     // synchronize: false,

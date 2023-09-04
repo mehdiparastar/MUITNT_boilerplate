@@ -12,7 +12,7 @@ import {
 
 @Entity()
 @Index(['link', 'creator'], { unique: true })
-export class VideoCallRoom {
+export class RTMPCallRoom {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id: number;

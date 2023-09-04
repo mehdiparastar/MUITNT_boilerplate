@@ -4,10 +4,10 @@ import { Box, Button, Chip, Container, Divider, IconButton, InputBase, Paper, St
 import Badge from '@mui/material/Badge';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { styled, useTheme } from '@mui/material/styles';
-import { VideoCallEvent } from 'enum/videoCallEvent.enum';
+import { RTMPCallEvent } from 'enum/rtmpCallEvent.enum';
 import { memo, useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { useGetMyConferenceLinkMutation, useVideoCallSocketQuery, videoCallSocket } from 'redux/features/VIDEOCALL_APP/videoCallApiSlice';
+import { useGetMyConferenceLinkMutation, useRTMPCallSocketQuery, rtmpCallSocket } from 'redux/features/RTMPCALL_APP/rtmpCallApiSlice';
 import { useAuthRefreshNewAccessTokenMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
 import { selectCurrentAccessToken } from 'redux/features/WHOLE_APP/auth/authSlice';
 import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
@@ -47,8 +47,8 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 type Props = {}
 
 
-const VideoCall = (props: Props) => {
-    const { data: socketData = { onlineUsers: {}, rtmpLinks: {} }, refetch } = useVideoCallSocketQuery()
+const RTMPCall = (props: Props) => {
+    const { data: socketData = { onlineUsers: {}, rtmpLinks: {} }, refetch } = useRTMPCallSocketQuery()
     const [getMyConferenceLink, { isLoading: gettingLinkLoading }] = useGetMyConferenceLinkMutation()
     const theme = useTheme();
     const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -88,12 +88,12 @@ const VideoCall = (props: Props) => {
             setLocalStream(stream)
             if (localVideoRef.current) {
                 const { aT } = await refreshNewAccessToken().unwrap()
-                videoCallSocket.auth = { accessToken: aT !== '' ? aT : accessToken }
-                videoCallSocket.connect()
+                rtmpCallSocket.auth = { accessToken: aT !== '' ? aT : accessToken }
+                rtmpCallSocket.connect()
                 localVideoRef.current.srcObject = stream;
                 setLocalCameraOn(true)
                 setLocalMicrophoneOn(true)
-                videoCallSocket.emit(VideoCallEvent.NewMember, { roomId: link })
+                rtmpCallSocket.emit(RTMPCallEvent.NewMember, { roomId: link })
                 // publishing ...
 
                 const recorder = new MediaRecorder(
@@ -118,13 +118,13 @@ const VideoCall = (props: Props) => {
                 }
                 recorder.onstop = ev => {
                     console.log('stop', ev)
-                    videoCallSocket.disconnect()
+                    rtmpCallSocket.disconnect()
                 }
 
                 recorder.ondataavailable = (event) => {
 
                     if (event.data.size > 0) {
-                        videoCallSocket.emit('clientcamera', { chunk: event.data, roomId: link })
+                        rtmpCallSocket.emit('clientcamera', { chunk: event.data, roomId: link })
                     }
                 };
 
@@ -310,4 +310,4 @@ const VideoCall = (props: Props) => {
     )
 }
 
-export default memo(VideoCall)
+export default memo(RTMPCall)
