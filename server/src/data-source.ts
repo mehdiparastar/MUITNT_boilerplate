@@ -14,6 +14,8 @@ import { User } from './users/entities/user.entity';
 import { MovieFileInfo } from './apps/Movie/entities/movieFileInfo.entity';
 import { MusicFileInfo } from './apps/Music/entities/musicFileInfo.entity';
 import { RTMPCallRoom } from './apps/RTMPCALL/entities/room.entity';
+import { WEBRTCCallRoom } from './apps/WEBRTCCALL/entities/room.entity';
+import { WEBRTCCallInfo } from './apps/WEBRTCCALL/entities/callInfo.entity';
 
 interface IDBConfig {
   development: DataSourceOptions;
@@ -24,7 +26,7 @@ interface IDBConfig {
 const dbConfig: IDBConfig = {
   development: {
     type: 'mysql',
-    host: 'db_development', //'localhost',
+    host: '192.168.1.6', //'192.168.1.6', //'db_development', //'localhost',
     port: 3306,
     username: 'admin',
     password: 'admin',
@@ -45,6 +47,8 @@ const dbConfig: IDBConfig = {
       MovieFileInfo,
       MusicFileInfo,
       RTMPCallRoom,
+      WEBRTCCallRoom,
+      WEBRTCCallInfo
     ],
     synchronize: true,
     // synchronize: false,
@@ -74,6 +78,8 @@ const dbConfig: IDBConfig = {
       MovieFileInfo,
       MusicFileInfo,
       RTMPCallRoom,
+      WEBRTCCallRoom,
+      WEBRTCCallInfo
     ],
     synchronize: true,
     // synchronize: false,
@@ -104,6 +110,8 @@ const dbConfig: IDBConfig = {
       MovieFileInfo,
       MusicFileInfo,
       RTMPCallRoom,
+      WEBRTCCallRoom,
+      WEBRTCCallInfo
     ],
     synchronize: true,
     // synchronize: false,

@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  db_local:
+  db:
     container_name: mysqlcontainer
     image: mysql
     environment:
@@ -8,6 +8,7 @@ services:
       - MYSQL_DATABASE=dev_db
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=admin
+      - TZ=Asia/Tehran
     command: [ --character-set-server=utf8, --collation-server=utf8_persian_ci, --max-allowed-packet=524288000, --default-authentication-plugin=mysql_native_password]
     restart: always
     ports:

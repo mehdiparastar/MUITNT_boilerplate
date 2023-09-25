@@ -95,6 +95,9 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url: 'auth/whereru',
         method: 'get',
       }),
+      transformResponse(baseQueryReturnValue: { aT: string }, meta, arg) {
+        return { aT: baseQueryReturnValue.aT }
+      },
     }),
   }),
 });

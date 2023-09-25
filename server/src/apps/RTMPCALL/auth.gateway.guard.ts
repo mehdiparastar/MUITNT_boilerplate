@@ -12,7 +12,7 @@ export class AuthGatewayGuard implements CanActivate {
   private readonly logger = new Logger(AuthGatewayGuard.name);
   constructor(
     private readonly jwtService: JwtService, // private readonly rtmpCallsService: RTMPCallService,
-  ) {}
+  ) { }
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // regular `Socket` from socket.io is probably sufficient
     const socket: SocketWithAuth = context.switchToWs().getClient();
@@ -26,10 +26,7 @@ export class AuthGatewayGuard implements CanActivate {
     }
 
     try {
-      this.logger.debug(
-        `Validating admin using token payload`,
-        socket.user.email,
-      );
+      this.logger.debug(`\nValidating admin using token payload ${socket.user.email}\n`);
 
       // if (sub !== poll.adminID) {
       //     throw new WsUnauthorizedException('Admin privileges required');

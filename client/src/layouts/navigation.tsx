@@ -13,7 +13,7 @@ import NotFoundIcon from '@mui/icons-material/BrowserNotSupported';
 import MovieIcon from '@mui/icons-material/LocalMovies';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import MapIcon from '@mui/icons-material/MyLocation';
-import RTMPCall from '@mui/icons-material/OndemandVideo';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
 import VoiceCallIcon from '@mui/icons-material/RecordVoiceOver';
 import OnlineShopIcon from '@mui/icons-material/ShoppingCartCheckout';
 import TradeBotIcon from '@mui/icons-material/SmartToy';
@@ -54,7 +54,12 @@ export const navigationPages: navPage[] = [
       {
         title: 'RTMP Call',
         href: '/rtmp-call',
-        icon: <RTMPCall sx={{ pr: 0.5 }} />,
+        icon: <VideoCallIcon sx={{ pr: 0.5 }} />,
+      },
+      {
+        title: 'WEBRTC Call',
+        href: '/webrtc-call',
+        icon: <VideoCallIcon sx={{ pr: 0.5 }} />,
       },
       {
         title: 'Voice Call',

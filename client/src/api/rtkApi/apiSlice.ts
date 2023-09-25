@@ -44,7 +44,7 @@ export const baseQueryWithReauth: BaseQueryFn<
     return login;
   }
   else {
-    let aT: string = ''
+    let aT: string = (api.getState() && (api.getState() as unknown as any).auth && (api.getState() as unknown as any).auth?.accessToken) || ''
     let result = await baseQuery_access(args, api, extraOptions);
     if (result.error?.status === 401 || result.error?.status === 403) {
       // send refresh token to get new access token
@@ -65,7 +65,7 @@ export const baseQueryWithReauth: BaseQueryFn<
     }
     if (api.endpoint === 'authRefreshNewAccessToken') {
       // write your code here
-      ((result.data as unknown as any).aT) = aT
+      ((result.data as unknown as any).aT) = (result.data as unknown as any).aT || aT
     }
     return result;
   }

@@ -9,7 +9,7 @@ services:
       - 9229:9229 # Expose the debugging port
     container_name: muitnt_client_dev
     networks:
-      - muitnt-stack-net-dev
+      - muitnt_stack_net_dev
     volumes:
       - ./client/src:/usr/app/src
       - ./client/public:/usr/app/public
@@ -30,7 +30,7 @@ services:
         - 1955:1955
         - 9230:9229
     networks:
-        - muitnt-stack-net-dev
+        - muitnt_stack_net_dev
     volumes:
         - ./server:/usr/src/app
         - ./uploads:/usr/src/uploads
@@ -54,13 +54,13 @@ services:
     expose:
       - 3306
     networks:
-      - muitnt-stack-net-dev
+      - muitnt_stack_net_dev
 
 volumes:
   dev_db_vol:
     driver: local
 
 networks:
-  muitnt-stack-net-dev:
+  muitnt_stack_net_dev:
     driver: bridge
 

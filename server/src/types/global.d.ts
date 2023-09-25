@@ -50,7 +50,7 @@ declare global {
   }
 
   type AuthPayload = {
-    user: UserEntity;
+    user: UserEntity & { socketId?: string };
     roomsId: string[];
   };
 
@@ -148,4 +148,4 @@ declare global {
   }
 }
 
-export {};
+export { };

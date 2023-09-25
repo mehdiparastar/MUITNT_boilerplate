@@ -203,4 +203,20 @@ export class UserRolesDto {
   @Expose()
   @ApiProperty({ default: false })
   [UserRoles.bingoAppUserLL]?: boolean;
+
+  @Expose()
+  @ApiProperty({ default: false })
+  [UserRoles.webrtcCallAppAdmin]?: boolean;
+
+  @Expose()
+  @ApiProperty({ default: false })
+  [UserRoles.webrtcCallAppUserHL]?: boolean;
+
+  @Expose()
+  @ApiProperty({ default: false })
+  [UserRoles.webrtcCallAppUserML]?: boolean;
+
+  @Expose()
+  @ApiProperty({ default: false })
+  [UserRoles.webrtcCallAppUserLL]?: boolean;
 }

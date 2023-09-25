@@ -18,7 +18,7 @@ Content-Type: application/json
 
 # @name localLogin
 
-POST http://localhost:3001/auth/login
+POST http://192.168.1.6:3005/auth/login
 Content-Type: application/json
 
 {

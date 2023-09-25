@@ -16,6 +16,8 @@ import { AllExceptionFilter } from './exceptions/all-exceptions.filter';
 import { TagsModule } from './tags/tags.module';
 import { UsersModule } from './users/users.module';
 import { RTMPCallModule } from './apps/RTMPCALL/rtmpCall.module';
+import { WEBRTCCallModule } from './apps/WEBRTCCALL/webrtcCall.module';
+import { AutoDestroyedCronService } from './autoDestroyedCronJob.service';
 
 const nodeENV = process.env.NODE_ENV;
 
@@ -36,6 +38,7 @@ const nodeENV = process.env.NODE_ENV;
     MusicsModule,
     MediaServerModule,
     RTMPCallModule,
+    WEBRTCCallModule
   ],
   controllers: [AppController],
   providers: [
@@ -52,4 +55,4 @@ const nodeENV = process.env.NODE_ENV;
     AppService,
   ],
 })
-export class AppModule {}
+export class AppModule { }

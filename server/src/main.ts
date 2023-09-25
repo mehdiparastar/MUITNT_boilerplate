@@ -62,7 +62,7 @@ async function bootstrap() {
 
   app.useWebSocketAdapter(new ApplicationSocketIOAdapter(app, configService));
 
-  await app.listen(serverPort);
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  await app.listen(serverPort, '0.0.0.0');
+  console.log(`Application is running on: ${await app.getUrl()}`,"in docker");
 }
 bootstrap();

@@ -34,10 +34,7 @@ export class AuthService {
       );
     }
 
-    const passwordValidation = await validateHashedData(
-      password,
-      user.password,
-    );
+    const passwordValidation = await validateHashedData(password, user.password);
 
     if (user && passwordValidation) {
       const { password, ...rest } = user;

@@ -27,6 +27,7 @@ import Home from '../pages/Home/Home';
 import Movie from 'apps/Movie/Movie';
 import Music from 'apps/Music/Music';
 import RTMPCall from 'apps/RTMPCall/RTMPCall';
+import WEBRTCCall from 'apps/WEBRTCCall/WEBRTCCall';
 
 export const RoutesList: React.FC = () => {
   return (
@@ -79,6 +80,10 @@ export const RoutesList: React.FC = () => {
 
         <Route path="rtmp-call" element={<RequireAuth allowedRoles={[UserRoles.rtmpCallAppUserLL]} />}>
           <Route path="" element={<RTMPCall />} />
+        </Route>
+
+        <Route path="webrtc-call" element={<RequireAuth allowedRoles={[UserRoles.webrtcCallAppUserLL]} />}>
+          <Route path="" element={<WEBRTCCall />} />
         </Route>
 
         <Route element={<RequireAuth allowedRoles={[UserRoles.admin]} />}>

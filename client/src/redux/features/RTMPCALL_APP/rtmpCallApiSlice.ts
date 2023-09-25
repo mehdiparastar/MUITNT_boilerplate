@@ -107,7 +107,7 @@ export const rtmpCallApiSlice = apiSlice.injectEndpoints({
       },
     }),
 
-    getMyConferenceLink: builder.mutation<MyConferenceLinkDto, void>({
+    getMyRTMPConferenceLink: builder.mutation<MyConferenceLinkDto, void>({
       query() {
         return {
           url: `rtmpCall_app/get_my_conference_link`,
@@ -118,5 +118,5 @@ export const rtmpCallApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useRtmpCallSocketQuery: useRTMPCallSocketQuery, useGetMyConferenceLinkMutation } =
+export const { useRtmpCallSocketQuery: useRTMPCallSocketQuery, useGetMyRTMPConferenceLinkMutation } =
   rtmpCallApiSlice;

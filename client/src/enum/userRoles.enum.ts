@@ -64,6 +64,11 @@ export enum UserRoles {
   bingoAppUserHL = '3122',
   bingoAppUserML = '3123',
   bingoAppUserLL = '3124',
+
+  webrtcCallAppAdmin = '3131',
+  webrtcCallAppUserHL = '3132',
+  webrtcCallAppUserML = '3133',
+  webrtcCallAppUserLL = '3134',
 }
 
 export const UserRolesFliped = flipObject(UserRoles);

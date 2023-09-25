@@ -7,7 +7,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import { RTMPCallEvent } from 'enum/rtmpCallEvent.enum';
 import { memo, useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { useGetMyConferenceLinkMutation, useRTMPCallSocketQuery, rtmpCallSocket } from 'redux/features/RTMPCALL_APP/rtmpCallApiSlice';
+import { useGetMyRTMPConferenceLinkMutation, useRTMPCallSocketQuery, rtmpCallSocket } from 'redux/features/RTMPCALL_APP/rtmpCallApiSlice';
 import { useAuthRefreshNewAccessTokenMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
 import { selectCurrentAccessToken } from 'redux/features/WHOLE_APP/auth/authSlice';
 import { useGetCurrentUserQuery } from 'redux/features/WHOLE_APP/currentUser/currentUserApiSlice';
@@ -49,7 +49,7 @@ type Props = {}
 
 const RTMPCall = (props: Props) => {
     const { data: socketData = { onlineUsers: {}, rtmpLinks: {} }, refetch } = useRTMPCallSocketQuery()
-    const [getMyConferenceLink, { isLoading: gettingLinkLoading }] = useGetMyConferenceLinkMutation()
+    const [getMyConferenceLink, { isLoading: gettingLinkLoading }] = useGetMyRTMPConferenceLinkMutation()
     const theme = useTheme();
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);

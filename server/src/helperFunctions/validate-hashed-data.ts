@@ -4,7 +4,13 @@ const validateHashedData = async (
   toValidateHashedData: string,
   primaryHashedData: string,
 ): Promise<boolean> => {
-  return bcrypt.compare(toValidateHashedData, primaryHashedData);
+  try {
+    const result = await bcrypt.compare(toValidateHashedData, primaryHashedData);
+    return result
+  }
+  catch (ex) {
+    console.log(ex)
+  }
 };
 
 export { validateHashedData };

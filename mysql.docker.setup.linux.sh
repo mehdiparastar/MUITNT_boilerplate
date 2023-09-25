@@ -36,6 +36,7 @@ l07="\t\t\t- MYSQL_ROOT_PASSWORD=password\n"
 l08="\t\t\t- MYSQL_DATABASE=${MYSQL_DATABASE}\n"
 l09="\t\t\t- MYSQL_USER=${MYSQL_DEV_USER}\n"
 l10="\t\t\t- MYSQL_PASSWORD=${MYSQL_DEV_PASSWORD}\n"
+l10_1="\t\t\t- TZ=Asia/Tehran\n"
 l11="\t\tcommand: [ --character-set-server=utf8, --collation-server=utf8_persian_ci, --max-allowed-packet=524288000, --default-authentication-plugin=mysql_native_password]\n"
 l12="\t\trestart: always\n"
 l13="\t\tports:\n"
@@ -57,7 +58,7 @@ l28="\tmysql_dev_db_network:\n"
 l29="\t\tdriver: bridge\n"
 l30=""
 l31=""
-docker_compose="${l01}${l02}${l03}${l04}${l05}${l06}${l07}${l08}${l09}${l10}${l11}${l12}${l13}${l14}${l15}${l16}${l17}${l18}${l19}${l20}${l21}${l22}${l23}${l24}${l25}${l26}${l27}${l28}${l29}${l30}${l31}"
+docker_compose="${l01}${l02}${l03}${l04}${l05}${l06}${l07}${l08}${l09}${l10}${l10_1}${l11}${l12}${l13}${l14}${l15}${l16}${l17}${l18}${l19}${l20}${l21}${l22}${l23}${l24}${l25}${l26}${l27}${l28}${l29}${l30}${l31}"
 
 echo ${docker_compose} >./server/docker_mysql_init/docker-compose-mysql-only.yml
 

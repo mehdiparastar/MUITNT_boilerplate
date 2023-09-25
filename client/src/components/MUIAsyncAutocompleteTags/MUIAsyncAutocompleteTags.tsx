@@ -105,9 +105,12 @@ export const MUIAsyncAutocompleteTags = <T,>(props: ICustomAutoCompleteTagsProps
             //     props.setValue(newValue);
             // }}
             value={props.value || []}
-            onChange={(event: any, newValue: T[] | null) => {
-                props.setValue(newValue);
+            onChange={(event, newValue) => {
+                props.setValue(newValue as T[]);
             }}
+        // onChange={(event: any, newValue: T[] | null) => {
+        //     props.setValue(newValue);
+        // }}
         />
     );
 }

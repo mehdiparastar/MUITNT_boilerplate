@@ -310,7 +310,9 @@ export class AuthController {
 
   @Get('whereru') // dont change this at all.
   @UseGuards(AccessTokenGuard)
-  whereRU() {
+  whereRU(@Req() request: Request) {
+    const aT = request.headers.authorization.replace('Bearer ', '')
+    return { aT: aT }
     return this.authService.whereRU();
   }
 }

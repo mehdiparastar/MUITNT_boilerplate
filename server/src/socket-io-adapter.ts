@@ -8,6 +8,7 @@ import { ChatService } from './apps/CHAT/chat.service';
 import { MoviesService } from './apps/Movie/movies.service';
 import { MusicsService } from './apps/Music/musics.service';
 import { RTMPCallService } from './apps/RTMPCALL/rtmpCall.service';
+import { WEBRTCCallService } from './apps/WEBRTCCALL/webrtcCall.service';
 
 export class ApplicationSocketIOAdapter extends IoAdapter {
   private readonly logger = new Logger(ApplicationSocketIOAdapter.name);
@@ -45,9 +46,21 @@ export class ApplicationSocketIOAdapter extends IoAdapter {
     const chatService = this.app.get(ChatService);
     const rtmpCallService = this.app.get(RTMPCallService);
     const movieService = this.app.get(MoviesService);
+    const webrtcCallService = this.app.get(WEBRTCCallService);
     const musicService = this.app.get(MusicsService);
 
     const server: Server = super.createIOServer(port, optionsWithCORS);
+
+    const initWEBRTCCallSocketServer = server
+      .of('webrtcCall')
+      .use(
+        createWEBRTCCallTokenMiddleware(
+          jwtService,
+          usersService,
+          webrtcCallService,
+          this.logger,
+        ),
+      );
 
     const initRTMPCallSocketServer = server
       .of('rtmpCall')
@@ -96,6 +109,33 @@ export class ApplicationSocketIOAdapter extends IoAdapter {
     return server;
   }
 }
+
+const createWEBRTCCallTokenMiddleware =
+  (
+    jwtService: JwtService,
+    usersService: UsersService,
+    webrtcCallService: WEBRTCCallService,
+    logger: Logger,
+  ) =>
+    async (socket: SocketWithAuth, next) => {
+      // for Postman testing support, fallback to token header
+      const accessToken = (socket.handshake.auth.accessToken || socket.handshake.query.accessToken) as string;
+      try {
+        const payload = jwtService.verify(accessToken);
+        const [user] = await usersService.findByEmail(payload.email);
+
+        logger.debug(`\nValidating auth token before connection:  ${user.email}\n`);
+
+        socket.user = { ...user, socketId: socket.id };
+        socket.roomsId = [];
+
+        next();
+      } catch (ex) {
+        console.log(ex)
+        next(ex);
+        // next(new Error('FORBIDDEN'));
+      }
+    };
 
 const createRTMPCallTokenMiddleware =
   (
