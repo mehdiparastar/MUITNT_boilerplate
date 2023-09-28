@@ -125,6 +125,7 @@ export class WEBRTCCallGateway
       if (call.roomLink === link) {
         const allSockets = await this.io.fetchSockets() as unknown as SocketWithAuth[]
         const callerSocket = allSockets.find(socket => socket.user.email === call.caller.email)
+        const calleeSocket = allSockets.find(socket => socket.user.id === client.user.id)
         const lastValidCallInfo = await this.webrtcCallService.findLastValidCallInfoByEmailAndRoomLink(call.caller.email, call.roomLink)
         if (lastValidCallInfo) {
           await callerSocket.join(call.roomLink)
@@ -176,6 +177,19 @@ export class WEBRTCCallGateway
           this.io.to(call.roomLink).emit(WEBRTCCallEvent.NewMemberBroadCast, {
             onlineUsers: uniqueOnlineUsers,
           })
+
+          this.io.to(callerSocket.id).emit(WEBRTCCallEvent.CallEstablished_callerSide, {
+            callerSocketId: callerSocket.id,
+            calleeSocketId: calleeSocket.id,
+            roomLink: link
+          })
+
+          this.io.to(calleeSocket.id).emit(WEBRTCCallEvent.CallEstablished_calleeSide, {
+            callerSocketId: callerSocket.id,
+            calleeSocketId: calleeSocket.id,
+            roomLink: link
+          })
+
         }
       }
     }
@@ -379,40 +393,56 @@ export class WEBRTCCallGateway
   @UseGuards(AuthGatewayGuard, AccessRoomAuthGatewayGuard)
   @SubscribeMessage(WEBRTCCallEvent.WEBRTCSignaling)
   async NewSignalingEvent(
-    @MessageBody() { type, sdp, candidate, roomLink, callerEmail, accessToken }: { type: WEBRTCSignaling, sdp: RTCSessionDescriptionInit, candidate: RTCIceCandidate, roomLink: string, callerEmail: string, accessToken: string },
+    @MessageBody() { type, sdp, candidate, roomLink, callerEmail, calleeEmail, accessToken }: { type: WEBRTCSignaling, sdp: RTCSessionDescriptionInit, candidate: RTCIceCandidate, roomLink: string, callerEmail: string, calleeEmail: string, accessToken: string },
     @ConnectedSocket() client: SocketWithAuth,
   ) {
     try {
       const thisRoomAllConnectedSockets = await this.fetchAllRoomSockets(roomLink)
-      let calleeSocket: SocketWithAuth
-      let callerSocket: SocketWithAuth
+      const roomOwnerEmail = (await this.webrtcCallService.findRoomByLink(roomLink)).creator.email
 
       switch (type) {
         case WEBRTCSignaling.Offer:
-          calleeSocket = thisRoomAllConnectedSockets.find(socket => socket.user.id === client.user.id)
-          callerSocket = thisRoomAllConnectedSockets.find(socket => socket.user.email === callerEmail)
+          const offerCallerSocket = thisRoomAllConnectedSockets.find(socket => socket.user.id === client.user.id)
+          const offerCalleeSocket = thisRoomAllConnectedSockets.find(socket => socket.user.email === roomOwnerEmail)
 
-          if (calleeSocket && callerSocket) {
-            this.io.to(callerSocket.id).emit(WEBRTCCallEvent.WEBRTCSignaling, {
+          if (offerCalleeSocket && offerCallerSocket && (offerCalleeSocket.id !== offerCallerSocket.id)) {
+            this.io.to(offerCalleeSocket.id).emit(WEBRTCCallEvent.WEBRTCSignaling, {
               type: WEBRTCSignaling.Offer,
               sdp: sdp,
               roomLink: roomLink,
+              callerEmail: client.user.email
             })
           }
           break
 
         case WEBRTCSignaling.Answer:
-          callerSocket = thisRoomAllConnectedSockets.find(socket => socket.user.id === client.user.id)
-          const calleeEmail = (await this.webrtcCallService.findRoomByLink(roomLink)).creator.email
-          calleeSocket = thisRoomAllConnectedSockets.find(socket => socket.user.email === calleeEmail)
-          console.warn('answer send to ', calleeSocket.user.email)
-          if (calleeSocket && callerSocket) {
-            this.io.to(calleeSocket.id).emit(WEBRTCCallEvent.WEBRTCSignaling, {
+          const answerCalleeSocket = thisRoomAllConnectedSockets.find(socket => socket.user.email === roomOwnerEmail)
+          const answerCallerSocket = thisRoomAllConnectedSockets.find(socket => socket.user.email === callerEmail)
+          console.warn('answer send to', answerCalleeSocket.user.email)
+          if (answerCalleeSocket && answerCallerSocket && (answerCalleeSocket.id !== answerCallerSocket.id)) {
+            this.io.to(answerCallerSocket.id).emit(WEBRTCCallEvent.WEBRTCSignaling, {
               type: WEBRTCSignaling.Answer,
               sdp: sdp,
               roomLink: roomLink,
+              callerEmail: callerEmail,
+              calleeEmail: client.user.email
             })
           }
+          break
+
+        case WEBRTCSignaling.WEBRTCHandShakeComplete:
+          const callerSocket = thisRoomAllConnectedSockets.find(socket => socket.user.email === callerEmail)
+          const calleeSocket = thisRoomAllConnectedSockets.find(socket => socket.user.email === calleeEmail)
+          this.io.to(callerSocket.id).emit(WEBRTCCallEvent.WEBRTCSignaling, {
+            type: WEBRTCSignaling.WEBRTCHandShakeComplete,
+            callerEmail: callerEmail,
+            calleeEmail: calleeEmail
+          })
+          this.io.to(calleeSocket.id).emit(WEBRTCCallEvent.WEBRTCSignaling, {
+            type: WEBRTCSignaling.WEBRTCHandShakeComplete,
+            callerEmail: callerEmail,
+            calleeEmail: calleeEmail
+          })
           break
 
         case WEBRTCSignaling.IceCandidate:

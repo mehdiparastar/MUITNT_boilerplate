@@ -20,6 +20,8 @@ export interface IWEBRTCOfferContext {
   sdp: RTCSessionDescriptionInit,
   candidate: RTCIceCandidate,
   roomLink: string,
+  callerEmail: string,
+  calleeEmail: string,
   owner: {
     email: string,
     id: number
@@ -33,5 +35,8 @@ export interface IWEBRTCCallSocket {
   onlineUsers: { [roomId: string]: [] };
   webrtcLinks: {
     [roomId: string]: { [userEmail: string]: RTCIceCandidate }
+  },
+  webrtcEstablishedConnection: {
+    [userEmail: string]: boolean
   }
 }

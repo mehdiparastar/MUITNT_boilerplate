@@ -120,61 +120,128 @@ export const webrtcCallApiSlice = apiSlice.injectEndpoints({
               },
             )
 
-            webrtcCallSocket.on(WEBRTCCallEvent.WEBRTCSignaling, async (data: IWEBRTCOfferContext) => {
-              try {
-                const type = data.type
+            webrtcCallSocket.on(
+              WEBRTCCallEvent.CallEstablished_callerSide,
+              async (data: { callerSocketId: string, calleeSocketId: string, roomLink: string }) => {
+                // createWEBRTCPeerConnection()
+                const offerSDP = await getWEBRTCPeerConnection().createOffer()
+                await getWEBRTCPeerConnection().setLocalDescription(offerSDP)
+                console.log('set created offer as local description.')
 
-                switch (type) {
-                  case WEBRTCSignaling.Offer:
-                    createWEBRTCPeerConnection()
-
-                    await getWEBRTCPeerConnection().setRemoteDescription(data.sdp)
-                    const callerSDP = await getWEBRTCPeerConnection().createAnswer()
-                    await getWEBRTCPeerConnection().setLocalDescription(callerSDP)
-
-                    const refresh = await axios.get('auth/refresh', { headers: { Authorization: `Bearer ${refreshToken}` } })
-                    if (refresh.data.accessToken) {
-                      dispatch(setAuthTokens(refresh.data))
-                    }
-
-                    webrtcCallSocket.emit(WEBRTCCallEvent.WEBRTCSignaling, {
-                      type: WEBRTCSignaling.Answer,
-                      sdp: callerSDP,
-                      roomLink: data.roomLink,
-                      accessToken: refresh.data.accessToken,
-                    })
-                    break
-
-                  case WEBRTCSignaling.Answer:
-                    await getWEBRTCPeerConnection().setRemoteDescription(data.sdp)
-                    console.log('xxx', getWEBRTCPeerConnection())
-                    break
-
-                  case WEBRTCSignaling.IceCandidate:
-                    await getWEBRTCPeerConnection().addIceCandidate(data.candidate)
-                    console.log('recieving ice candidate of other peer.')
-
-                    // updateCachedData((draft) => ({
-                    //   ...draft,
-                    //   webrtcLinks: {
-                    //     ...draft.webrtcLinks,
-                    //     [data.roomLink]: {
-                    //       ...draft.webrtcLinks[data.roomLink],
-                    //       [data.owner.email]: data.candidate
-                    //     }
-                    //   }
-                    // }));
-                    break
-
-                  default:
-                    return
+                const refresh = await axios.get('auth/refresh', { headers: { Authorization: `Bearer ${refreshToken}` } })
+                if (refresh.data.accessToken) {
+                  dispatch(setAuthTokens(refresh.data))
                 }
+
+                console.log('send created offer to other peer.')
+                webrtcCallSocket.emit(WEBRTCCallEvent.WEBRTCSignaling, {
+                  type: WEBRTCSignaling.Offer,
+                  sdp: offerSDP,
+                  roomLink: data.roomLink,
+                  accessToken: refresh.data.accessToken,
+                })
+              })
+
+            webrtcCallSocket.on(
+              WEBRTCCallEvent.CallEstablished_calleeSide,
+              async (data: { callerSocketId: string, calleeSocketId: string, roomLink: string }) => {
+                // createWEBRTCPeerConnection()
+                // const offerSDP = await getWEBRTCPeerConnection().createOffer()
+                // await getWEBRTCPeerConnection().setLocalDescription(offerSDP)
+                // console.log('set created offer as local description.')
               }
-              catch (ex) {
-                const x = getWEBRTCPeerConnection()
-                console.log(ex)
-              }
-            })
+            )
+
+            webrtcCallSocket.on(
+              WEBRTCCallEvent.WEBRTCSignaling,
+              async (data: IWEBRTCOfferContext) => {
+                try {
+                  const type = data.type
+                  console.log('recieve signal', type)
+                  switch (type) {
+                    case WEBRTCSignaling.Offer:
+                      console.log('trying to set recieved offer as remote description.')
+                      await getWEBRTCPeerConnection().setRemoteDescription(data.sdp)
+                      console.log('set recieved offer as remote description.')
+
+                      console.log('trying to create answer.')
+                      const answerSDP = await getWEBRTCPeerConnection().createAnswer()
+                      await getWEBRTCPeerConnection().setLocalDescription(answerSDP)
+                      console.log('set created answer as local description.')
+
+                      const refresh = await axios.get('auth/refresh', { headers: { Authorization: `Bearer ${refreshToken}` } })
+                      if (refresh.data.accessToken) {
+                        dispatch(setAuthTokens(refresh.data))
+                      }
+                      console.log('send created answer to caller.')
+                      webrtcCallSocket.emit(WEBRTCCallEvent.WEBRTCSignaling, {
+                        type: WEBRTCSignaling.Answer,
+                        sdp: answerSDP,
+                        roomLink: data.roomLink,
+                        callerEmail: data.callerEmail,
+                        accessToken: refresh.data.accessToken,
+                      })
+                      break
+
+                    case WEBRTCSignaling.Answer:
+                      await getWEBRTCPeerConnection().setRemoteDescription(data.sdp)
+                      console.log('set recieved answer as remote description.')
+
+                      const refresh_ = await axios.get('auth/refresh', { headers: { Authorization: `Bearer ${refreshToken}` } })
+                      if (refresh_.data.accessToken) {
+                        dispatch(setAuthTokens(refresh_.data))
+                      }
+
+                      console.log('announcing of completing handshake stages.')
+                      webrtcCallSocket.emit(
+                        WEBRTCCallEvent.WEBRTCSignaling,
+                        {
+                          type: WEBRTCSignaling.WEBRTCHandShakeComplete,
+                          callerEmail: data.callerEmail,
+                          calleeEmail: data.calleeEmail,
+                          roomLink: data.roomLink,
+                          accessToken: refresh_.data.accessToken,
+                        }
+                      )
+                      break
+
+                    case WEBRTCSignaling.WEBRTCHandShakeComplete:
+                      console.log('received handshake completed announce.')
+                      updateCachedData((draft) => ({
+                        ...draft,
+                        webrtcEstablishedConnection: {
+                          ...draft.webrtcEstablishedConnection,
+                          [data.calleeEmail]: true,
+                          [data.callerEmail]: true
+                        }
+                      }))
+                      break
+
+                    case WEBRTCSignaling.IceCandidate:
+                      await getWEBRTCPeerConnection().addIceCandidate(data.candidate)
+                      console.log('recieving ice candidate of other peer.')
+
+                      // updateCachedData((draft) => ({
+                      //   ...draft,
+                      //   webrtcLinks: {
+                      //     ...draft.webrtcLinks,
+                      //     [data.roomLink]: {
+                      //       ...draft.webrtcLinks[data.roomLink],
+                      //       [data.owner.email]: data.candidate
+                      //     }
+                      //   }
+                      // }));
+                      break
+
+                    default:
+                      return
+                  }
+                }
+                catch (ex) {
+                  const x = getWEBRTCPeerConnection()
+                  console.log(ex)
+                }
+              })
           }
 
           await cacheEntryRemoved;

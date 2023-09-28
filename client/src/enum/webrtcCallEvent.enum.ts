@@ -9,7 +9,8 @@ export enum CallInfoState {
 export enum WEBRTCSignaling {
   Offer = 'offer',
   Answer = 'answer',
-  IceCandidate = 'ice_candidate'
+  IceCandidate = 'ice_candidate',
+  WEBRTCHandShakeComplete = 'WEBRTCHandShakeComplete',
 }
 
 export enum WEBRTCCallEvent {
@@ -21,7 +22,8 @@ export enum WEBRTCCallEvent {
   AcceptCall = 'accept_call',
   RejectCall = 'reject_call',
   WEBRTCSignaling = 'webrtc_signaling',
-
+  CallEstablished_callerSide = 'CallEstablished_callerSide',
+  CallEstablished_calleeSide = 'CallEstablished_calleeSide',
 
   NewMessage = 'new_message',
   NewMessageBroadCast = 'new_message_broadcast',
