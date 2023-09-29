@@ -1,40 +1,42 @@
-export let peerConnection: RTCPeerConnection
+// export let peerConnection: RTCPeerConnection
 
-export const getWEBRTCPeerConnection = () => peerConnection
+// export const getWEBRTCPeerConnection = () => peerConnection
 
-export const setWEBRTCPeerConnection = (rtcPeerConnection: RTCPeerConnection) => {
-    peerConnection = rtcPeerConnection
-    return peerConnection
-}
+// export const setWEBRTCPeerConnection = (rtcPeerConnection: RTCPeerConnection) => {
+//     peerConnection = rtcPeerConnection
+//     return peerConnection
+// }
 
-export const createWEBRTCPeerConnection = () => {
-    console.log('creating webrtc peer connection.')
-    if (!peerConnection) {
+// export const createWEBRTCPeerConnection = () => {
+//     console.log('creating webrtc peer connection.')
+//     if (!peerConnection) {
 
-        const newRTCPeerConnection = new RTCPeerConnection({
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:13902' }
-            ]
-        })
-        setWEBRTCPeerConnection(newRTCPeerConnection)
-
-
-        // // recieving tracks ..
-        // const remoteStream = new MediaStream()
+//         const newRTCPeerConnection = new RTCPeerConnection({
+//             iceServers: [
+//                 { urls: 'stun:stun.l.google.com:13902' }
+//             ]
+//         })
+//         setWEBRTCPeerConnection(newRTCPeerConnection)
 
 
-
-        // getWEBRTCPeerConnection().ontrack = ev => {
-        //     remoteStream.addTrack(ev.track)
-        // }
+//         // // recieving tracks ..
+//         // const remoteStream = new MediaStream()
 
 
-        // // add our stream to peer connection
-        // localStream?.getTracks().forEach(track => {
-        //     getWEBRTCPeerConnection().addTrack(track, localStream)
-        // })
-    }
 
-    return peerConnection
-}
+//         // getWEBRTCPeerConnection().ontrack = ev => {
+//         //     remoteStream.addTrack(ev.track)
+//         // }
 
+
+//         // // add our stream to peer connection
+//         // localStream?.getTracks().forEach(track => {
+//         //     getWEBRTCPeerConnection().addTrack(track, localStream)
+//         // })
+//     }
+
+//     return peerConnection
+// }
+
+
+export { }

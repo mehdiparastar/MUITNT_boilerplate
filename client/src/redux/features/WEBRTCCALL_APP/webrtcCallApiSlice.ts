@@ -6,7 +6,8 @@ import { RootState } from 'redux/store';
 import { Socket, io } from 'socket.io-client';
 import { apiSlice } from '../../../api/rtkApi/apiSlice';
 import { setAuthTokens } from '../WHOLE_APP/auth/authSlice';
-import { createWEBRTCPeerConnection, getWEBRTCPeerConnection } from './peerConnectionContext';
+import { getWEBRTCPeerConnection } from 'apps/WEBRTCCall/WEBRTCCall';
+// import { createWEBRTCPeerConnection, getWEBRTCPeerConnection } from './getWEBRTCPeerConnection()Context';
 
 export let webrtcCallSocket: Socket;
 
@@ -124,6 +125,7 @@ export const webrtcCallApiSlice = apiSlice.injectEndpoints({
               WEBRTCCallEvent.CallEstablished_callerSide,
               async (data: { callerSocketId: string, calleeSocketId: string, roomLink: string }) => {
                 // createWEBRTCPeerConnection()
+                console.log(getWEBRTCPeerConnection())
                 const offerSDP = await getWEBRTCPeerConnection().createOffer()
                 await getWEBRTCPeerConnection().setLocalDescription(offerSDP)
                 console.log('set created offer as local description.')

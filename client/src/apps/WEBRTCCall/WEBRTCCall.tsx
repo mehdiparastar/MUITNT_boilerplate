@@ -16,7 +16,7 @@ import { IWEBRTCCall_JOINREQUEST } from 'models/WEBRTCCALL_APP/webrtcCallSocket.
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
 import { memo, useEffect, useRef, useState } from 'react';
-import { createWEBRTCPeerConnection, getWEBRTCPeerConnection } from 'redux/features/WEBRTCCALL_APP/peerConnectionContext';
+// import { createWEBRTCPeerConnection, getWEBRTCPeerConnection } from 'redux/features/WEBRTCCALL_APP/peerConnectionContext';
 import { useGetMyWEBRTCConferenceLinkMutation, useWEBRTCCallSocketQuery, webrtcCallSocket } from 'redux/features/WEBRTCCALL_APP/webrtcCallApiSlice';
 import { useAuthRefreshNewAccessTokenMutation } from 'redux/features/WHOLE_APP/auth/authApiSlice';
 import { selectCurrentAccessToken } from 'redux/features/WHOLE_APP/auth/authSlice';
@@ -25,6 +25,10 @@ import { useAppSelector } from 'redux/hooks';
 import CallReject from 'svg/signs/CallReject';
 import CallingSVG from 'svg/signs/Calling';
 import CallingPhoto from 'svg/signs/CallingPhoto';
+
+export let peerConnection: RTCPeerConnection
+
+export const getWEBRTCPeerConnection = () => peerConnection
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -116,48 +120,9 @@ const WEBRTCCall = (props: Props) => {
                     accessToken: aT !== '' ? aT : accessToken
                 })
 
-                createWEBRTCPeerConnection()
+                createWEBRTCPeerConnection(stream)
 
-                getWEBRTCPeerConnection().onicecandidate = async (ev) => {
-                    console.log('getting ice candidates from stun server', currentUser?.email, ev.candidate?.usernameFragment)
-                    if (ev.candidate) {
-                        //send our ice candidates to other peer ..
-                        const { aT } = await refreshNewAccessToken().unwrap()
-                        console.log(`sending ${currentUser?.email} ice.`)
-                        webrtcCallSocket.emit(WEBRTCCallEvent.WEBRTCSignaling, {
-                            type: WEBRTCSignaling.IceCandidate,
-                            candidate: ev.candidate,
-                            roomLink: link,
-                            accessToken: aT !== '' ? aT : accessToken
-                        })
-
-                    }
-                }
-
-                console.log('add remote stream to peer connection')
-                // recieving tracks ..
-                const thisRemoteStream = new MediaStream()
-                setRemoteStream(thisRemoteStream)
-                getWEBRTCPeerConnection().ontrack = ev => {
-                    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-                    thisRemoteStream.addTrack(ev.track)
-                }
-                if (remoteVideoRef.current) {
-                    remoteVideoRef.current.srcObject = thisRemoteStream;
-                }
-
-
-                console.log('add our stream to peer connection')
-                // add our stream to peer connection
-                stream.getTracks().forEach(track => {
-                    getWEBRTCPeerConnection().addTrack(track, stream)
-                })
-
-                setRemoteStream(thisRemoteStream)
-                setLocalStream(stream)
-
-
-                // getWEBRTCPeerConnection().onicecandidateerror = ev => {
+                // peerConnection.onicecandidateerror = ev => {
                 //     console.log('err', ev)
                 // }
 
@@ -206,7 +171,7 @@ const WEBRTCCall = (props: Props) => {
     };
 
     const handlePeerConnection = () => {
-        // getWEBRTCPeerConnection().onicecandidate = async (ev) => {
+        // peerConnection.onicecandidate = async (ev) => {
         //     console.log('getting ice candidates from stun server', currentUser?.email, ev.candidate?.usernameFragment)
         //     if (ev.candidate) {
         //         //send our ice candidates to other peer ..
@@ -226,7 +191,7 @@ const WEBRTCCall = (props: Props) => {
         // // recieving tracks ..
         // const thisRemoteStream = new MediaStream()
         // setRemoteStream(thisRemoteStream)
-        // getWEBRTCPeerConnection().ontrack = ev => {
+        // peerConnection.ontrack = ev => {
         //     thisRemoteStream.addTrack(ev.track)
         //     console.log('add remote track')
         // }
@@ -239,7 +204,7 @@ const WEBRTCCall = (props: Props) => {
         // console.log('add our stream to peer connection')
         // // add our stream to peer connection
         // localStream.getTracks().forEach(track => {
-        //     getWEBRTCPeerConnection().addTrack(track, localStream)
+        //     peerConnection.addTrack(track, localStream)
         // })
 
     }
@@ -311,6 +276,74 @@ const WEBRTCCall = (props: Props) => {
         // eslint-disable-next-line
     }, []);
 
+    const createWEBRTCPeerConnection = (stream: MediaStream) => {
+        console.log('creating webrtc peer connection.', currentUser?.email)
+        if (!peerConnection) {
+
+            peerConnection = new RTCPeerConnection({
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:13902' }
+                ]
+            })
+
+            peerConnection.onicecandidate = async (ev) => {
+                console.log('getting ice candidates from stun server', currentUser?.email, ev.candidate?.usernameFragment)
+                if (ev.candidate) {
+                    //send our ice candidates to other peer ..
+                    const { aT } = await refreshNewAccessToken().unwrap()
+                    console.log(`sending ${currentUser?.email} ice.`)
+                    webrtcCallSocket.emit(WEBRTCCallEvent.WEBRTCSignaling, {
+                        type: WEBRTCSignaling.IceCandidate,
+                        candidate: ev.candidate,
+                        roomLink: link,
+                        accessToken: aT !== '' ? aT : accessToken
+                    })
+
+                }
+            }
+
+            console.log('add remote stream to peer connection')
+            // recieving tracks ..
+            const thisRemoteStream = new MediaStream()
+            setRemoteStream(thisRemoteStream)
+            peerConnection.ontrack = ev => {
+                console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+                thisRemoteStream.addTrack(ev.track)
+            }
+            if (remoteVideoRef.current) {
+                remoteVideoRef.current.srcObject = thisRemoteStream;
+            }
+
+
+            console.log('add our stream to peer connection')
+            // add our stream to peer connection
+            stream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, stream)
+            })
+
+            setRemoteStream(thisRemoteStream)
+            setLocalStream(stream)
+
+
+
+            // // recieving tracks ..
+            // const remoteStream = new MediaStream()
+
+
+
+            // peerConnection.ontrack = ev => {
+            //     remoteStream.addTrack(ev.track)
+            // }
+
+
+            // // add our stream to peer connection
+            // localStream?.getTracks().forEach(track => {
+            //     peerConnection.addTrack(track, localStream)
+            // })
+        }
+        console.log('created webrtc peer connection.', currentUser?.email, peerConnection)
+        return peerConnection
+    }
 
     const handleAcceptCall = async (call: IWEBRTCCall_JOINREQUEST) => {
         try {
@@ -325,7 +358,7 @@ const WEBRTCCall = (props: Props) => {
             )
         }
         catch (ex) {
-            const x = getWEBRTCPeerConnection()
+            const x = peerConnection
             console.log(ex)
         }
     }
@@ -335,8 +368,8 @@ const WEBRTCCall = (props: Props) => {
     }
 
     const sendWebRTCOffer = async ({ roomLink }: { roomLink: string }) => {
-        const offerSDP = await getWEBRTCPeerConnection().createOffer()
-        await getWEBRTCPeerConnection().setLocalDescription(offerSDP)
+        const offerSDP = await peerConnection.createOffer()
+        await peerConnection.setLocalDescription(offerSDP)
         console.log('set created offer as local description.')
 
         console.log('send created offer to other peer.')
@@ -361,17 +394,17 @@ const WEBRTCCall = (props: Props) => {
     //         console.log('handled')
     //     }
     //     catch (ex) {
-    //         const x = getWEBRTCPeerConnection()
+    //         const x = peerConnection
     //         console.log(ex)
     //     }
     // }
 
-    useEffect(() => {
-        if (currentUser?.email && socketData?.webrtcEstablishedConnection[currentUser.email]) {
-            // console.log('mehdi', currentUser?.email, socketData?.webrtcEstablishedConnection)
-            handlePeerConnection()
-        }
-    }, [socketData?.webrtcEstablishedConnection])
+    // useEffect(() => {
+    //     if (currentUser?.email && socketData?.webrtcEstablishedConnection[currentUser.email]) {
+    //         // console.log('mehdi', currentUser?.email, socketData?.webrtcEstablishedConnection)
+    //         handlePeerConnection()
+    //     }
+    // }, [socketData?.webrtcEstablishedConnection])
 
     return (
         <>
